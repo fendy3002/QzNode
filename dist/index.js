@@ -11,9 +11,11 @@ var _limit2 = _interopRequireDefault(_limit);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Service = function Service() {
-    promise: {
-        limit: _limit2.default;
-    }
+    return {
+        promise: {
+            limit: _limit2.default
+        }
+    };
 };
 
 exports.default = Service;

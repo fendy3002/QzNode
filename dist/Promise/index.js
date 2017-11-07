@@ -1,19 +1,21 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _index = require("./Promise/index.js");
+var _limit = require('./limit.js');
 
-var _index2 = _interopRequireDefault(_index);
+var _limit2 = _interopRequireDefault(_limit);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Service = function Service() {
+var Service = function Service(callback) {
     return {
-        promise: _index2.default
+        callback: callback
     };
 };
+
+Service.limit = _limit2.default;
 
 exports.default = Service;

@@ -14,27 +14,27 @@ var Service = function Service(_ref) {
         return function () {
             var lastValue = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
-            return new Promise(function (resolve, reject) {
-                Promise.all(promises).then(function (values) {
-                    if (onLoop) {
-                        onLoop(values);
-                    }
-                    var newValues = lastValue.concat(values);
-                    resolve(newValues);
-                });
+            return Promise.all(promises.map(function (k) {
+                return new Promise(k.callback);
+            })).then(function (values) {
+                if (onLoop) {
+                    onLoop(values);
+                }
+                var newValues = lastValue.concat(values);
+                return newValues;
             });
         };
     };
 
-    return function (promises) {
+    return function (qzPromises) {
         var onLoop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-        if (!promises) {
+        if (!qzPromises) {
             callback([]);
         }
         var lastPromise = null;
-        for (var i = 0; i < promises.length; i += limit) {
-            var slicePromise = promises.slice(i, i + limit);
+        for (var i = 0; i < qzPromises.length; i += limit) {
+            var slicePromise = qzPromises.slice(i, i + limit);
             if (!lastPromise) {
                 lastPromise = processPromises(slicePromise, onLoop)([]);
             } else {

@@ -1,10 +1,8 @@
-import limit from "./Promise/limit.js";
+import promise from "./Promise/index.js";
 
 var Service = function() {
     return {
-        promise: {
-            limit: limit
-        }
+        promise: promise
     };
 };
 

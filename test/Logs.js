@@ -68,4 +68,51 @@ describe('Logs', function() {
             testLog(log);
         });
     });
+    
+    describe('Prefix and Time Log', function() {
+        it('should write to console', function(done) {
+            var context = {
+                call: 0,
+                text: ""
+            };
+            
+            var consoleLog = qz.logs.console(() => { context.call++; });
+            var log = qz.logs.prefix(
+                qz.logs.timed(
+                    consoleLog
+                ), {
+                    "prefix": "TEST"
+                });
+            consoleLog._.stdout = {
+                write: (text) => { context.text += text; }
+            };
+            testLog(log);
+
+            assert.equal(context.call, 8);
+            assert.equal(context.text.length > 10, true);
+            done();
+        });
+    });
+    
+    describe('PrefixTimed Log', function() {
+        it('should write to console', function(done) {
+            var context = {
+                call: 0,
+                text: ""
+            };
+            
+            var consoleLog = qz.logs.console(() => { context.call++; });
+            var log = qz.logs.prefixTimed(consoleLog, {
+                    "prefix": "TEST"
+                });
+            consoleLog._.stdout = {
+                write: (text) => { context.text += text; }
+            };
+            testLog(log);
+
+            assert.equal(context.call, 6);
+            assert.equal(context.text.length > 10, true);
+            done();
+        });
+    });
 });

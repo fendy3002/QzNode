@@ -12,12 +12,17 @@ var _index3 = require("./Logs/index.js");
 
 var _index4 = _interopRequireDefault(_index3);
 
+var _index5 = require("./IO/index.js");
+
+var _index6 = _interopRequireDefault(_index5);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Service = function Service() {
     return {
         promise: _index2.default,
-        logs: _index4.default
+        logs: _index4.default,
+        io: _index6.default
     };
 };
 

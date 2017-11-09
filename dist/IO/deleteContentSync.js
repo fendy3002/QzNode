@@ -21,7 +21,7 @@ var deleteFolderRecursive = function deleteFolderRecursive(path) {
             if (_fs2.default.lstatSync(curPath).isDirectory()) {
                 // recurse
                 deleteFolderRecursive(curPath);
-                _fs2.default.rmdirSync(path);
+                _fs2.default.rmdirSync(curPath);
             } else {
                 // delete file
                 _fs2.default.unlinkSync(curPath);

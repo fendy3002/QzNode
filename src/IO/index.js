@@ -1,7 +1,7 @@
-import deleteContent from './deleteContent.js';
+import deleteContentSync from './deleteContentSync.js';
 
 var Service = {
-    deleteContent: deleteContent
+    deleteContentSync: deleteContentSync
 };
 
 export default Service;

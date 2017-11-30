@@ -20,6 +20,10 @@ var _index7 = require("./Uuid/index.js");
 
 var _index8 = _interopRequireDefault(_index7);
 
+var _Require = require("./Require.js");
+
+var _Require2 = _interopRequireDefault(_Require);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Service = function Service() {
@@ -27,7 +31,8 @@ var Service = function Service() {
         promise: _index2.default,
         logs: _index4.default,
         io: _index6.default,
-        uuid: _index8.default
+        uuid: _index8.default,
+        require: _Require2.default
     };
 };
 

@@ -1,12 +1,23 @@
 
-var Service = function({
+let Service = function({
     limit = 5
 }) {
-    var processPromises = (promises, onLoop = null) => {
+    let qzPromiseToPromise = (qzPromise) => {
+        if(qzPromise.before){
+            return qzPromiseToPromise(qzPromise.before).then((result) => {
+                return new Promise(qzPromise.callback(result));
+            });
+        }
+        else{
+            return new Promise(qzPromise.callback);
+        }
+    };
+    let processPromises = (qzPromises, onLoop = null) => {
         return (lastValue = []) => {
-            return Promise.all(promises.map(k => new Promise(k.callback))).then((values) => {
+            let promises = qzPromises.map(qzPromiseToPromise);
+            return Promise.all(promises).then((values) => {
                 if(onLoop){ onLoop(values); }
-                var newValues = lastValue.concat(values);
+                let newValues = lastValue.concat(values);
                 return newValues;
             });
         };
@@ -16,15 +27,15 @@ var Service = function({
         if(!qzPromises){
             callback([]);
         }
-        var lastPromise = null;
-        for(var i = 0; i < qzPromises.length; i += limit){
-            var slicePromise = qzPromises.slice(i, i + limit);
+        let lastPromise = null;
+        for(let i = 0; i < qzPromises.length; i += limit){
+            let slicePromise = qzPromises.slice(i, i + limit);
             if(!lastPromise){
                 lastPromise = processPromises(slicePromise, onLoop)([]);
             }
             else{
-                var currentPromise = processPromises(slicePromise, onLoop);
-                var nextPromise = lastPromise.then(currentPromise);
+                let currentPromise = processPromises(slicePromise, onLoop);
+                let nextPromise = lastPromise.then(currentPromise);
                 lastPromise = nextPromise;
             }
         }

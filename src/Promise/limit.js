@@ -24,8 +24,8 @@ let Service = function({
     }
 
     return (qzPromises, onLoop = null) => {
-        if(!qzPromises){
-            callback([]);
+        if(!qzPromises || qzPromises.length == 0){
+            return new Promise((resolve) => resolve(null));
         }
         let lastPromise = null;
         for(let i = 0; i < qzPromises.length; i += limit){

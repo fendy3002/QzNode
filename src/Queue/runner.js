@@ -105,7 +105,8 @@ let runner = (param = {}) => {
                     let selectStatement = results[3];
                     if(selectStatement){
                         let job = selectStatement[0];
-                        console.log(job);
+                        let scriptToRun = require(job.run_script);
+                        resolve(scriptToRun(JSON.parse(job.params)));
                     }
                     else{
                         console.log("no job");

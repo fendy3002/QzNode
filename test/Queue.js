@@ -34,6 +34,7 @@ describe('QzQueue', function() {
                 password: "password"
             }
         }).once().then((result) => {
+            assert.equal(result, "RUN FUNCTION");
             done();
         });
     });

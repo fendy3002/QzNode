@@ -1,1 +1,5 @@
-Console.log("RUN");
+console.log("RUN");
+
+module.exports = () => {
+    return "RUN FUNCTION";
+};

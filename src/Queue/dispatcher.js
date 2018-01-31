@@ -48,6 +48,7 @@ let dispatcher = (param = {}) => {
                     'retry': 0,
                     'utc_created': moment.utc().format("YYYY-MM-DDTHH:mm:ss"),
                 }, (err, results) => {
+                    db.end();
                     if(err){ reject(err); }
                     else{ resolve(results); }
                 });

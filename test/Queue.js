@@ -24,4 +24,17 @@ describe('QzQueue', function() {
             done();
         });
     });
+    it('should get from database', function(done) {
+        runner({
+            connection: {
+                host: "127.0.0.1",
+                database: "tmp_db",
+                port: "3306",
+                user: "root",
+                password: "password"
+            }
+        }).once().then((result) => {
+            done();
+        });
+    });
 });

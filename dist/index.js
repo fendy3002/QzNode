@@ -28,6 +28,10 @@ var _Require = require("./Require.js");
 
 var _Require2 = _interopRequireDefault(_Require);
 
+var _index11 = require("./Queue/index.js");
+
+var _index12 = _interopRequireDefault(_index11);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Service = function Service() {
@@ -37,7 +41,8 @@ var Service = function Service() {
         date: _index10.default,
         io: _index6.default,
         uuid: _index8.default,
-        require: _Require2.default
+        require: _Require2.default,
+        queue: _index12.default
     };
 };
 

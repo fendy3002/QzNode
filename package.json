@@ -1,12 +1,13 @@
 {
   "name": "@fendy3002/qz-node",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require babel-core/register --require babel-polyfill",
     "compile": "./node_modules/.bin/babel src --out-dir dist",
-    "compileWatch": "./node_modules/.bin/babel src --out-dir dist --watch"
+    "compileWatch": "./node_modules/.bin/babel src --out-dir dist --watch",
+    "prepublish": "npm run compile"
   },
   "repository": {
     "type": "git",

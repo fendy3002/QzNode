@@ -1,6 +1,7 @@
 import { setInterval } from 'timers';
 import uuid from '../Uuid/index.js';
 
+import emptyLog from '../Logs/emptyLog';
 let mysql = require('mysql');
 let moment = require('moment');
 let openDbConnection = require('./helper/openDbConnection.js');
@@ -13,7 +14,8 @@ let runner = (param = {}) => {
         runningTableName,
         failedTableName,
         tag,
-        retry
+        retry,
+        log
     } = {
         ...{
             driver: "mysql",
@@ -22,7 +24,8 @@ let runner = (param = {}) => {
             runningTableName: "qz_queue_running",
             failedTableName: "qz_queue_failed",
             tag: "default",
-            retry: 0
+            retry: 0,
+            log: emptyLog()
         },
         ...param
     };
@@ -101,24 +104,34 @@ let runner = (param = {}) => {
         return new Promise(openDbConnection(usedConnection)).then((db) => {
             return new Promise((resolve, reject) => {
                 let q = db.query(selectQuery, (err, results) => {
-                    console.log(results);
                     let selectStatement = results[3];
-                    if(selectStatement){
+                    if(selectStatement && selectStatement.length > 0){
                         let job = selectStatement[0];
                         let scriptToRun = require(job.run_script);
+                        if(!scriptToRun){
+
+                        }
                         let runResult = scriptToRun(JSON.parse(job.params));
                         db.end();
-                        resolve(runResult);
+
+                        resolve({
+                            run: true,
+                            data: runResult
+                        });
                     }
                     else{
-                        console.log("no job");
+                        resolve({
+                            run: false,
+                            code: "1",
+                            message: "No Job"
+                        });
                     }
                 });
-                console.log(q.sql);
             });
         });
     };
     let listen = ({ interval = 1000 }) => {
+        once();
         setInterval(once, interval);
     };
 

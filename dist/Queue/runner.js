@@ -14,6 +14,10 @@ var _index = require('../Uuid/index.js');
 
 var _index2 = _interopRequireDefault(_index);
 
+var _emptyLog = require('../Logs/emptyLog');
+
+var _emptyLog2 = _interopRequireDefault(_emptyLog);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mysql = require('mysql');
@@ -30,7 +34,8 @@ var runner = function runner() {
         runningTableName: "qz_queue_running",
         failedTableName: "qz_queue_failed",
         tag: "default",
-        retry: 0
+        retry: 0,
+        log: (0, _emptyLog2.default)()
     }, param),
         driver = _driver$connection$ta.driver,
         connection = _driver$connection$ta.connection,
@@ -38,7 +43,8 @@ var runner = function runner() {
         runningTableName = _driver$connection$ta.runningTableName,
         failedTableName = _driver$connection$ta.failedTableName,
         tag = _driver$connection$ta.tag,
-        retry = _driver$connection$ta.retry;
+        retry = _driver$connection$ta.retry,
+        log = _driver$connection$ta.log;
 
     var usedConnection = (0, _extends3.default)({
         host: "localhost",
@@ -60,19 +66,26 @@ var runner = function runner() {
         return new Promise(openDbConnection(usedConnection)).then(function (db) {
             return new Promise(function (resolve, reject) {
                 var q = db.query(selectQuery, function (err, results) {
-                    console.log(results);
                     var selectStatement = results[3];
-                    if (selectStatement) {
+                    if (selectStatement && selectStatement.length > 0) {
                         var job = selectStatement[0];
                         var scriptToRun = require(job.run_script);
+                        if (!scriptToRun) {}
                         var runResult = scriptToRun(JSON.parse(job.params));
                         db.end();
-                        resolve(runResult);
+
+                        resolve({
+                            run: true,
+                            data: runResult
+                        });
                     } else {
-                        console.log("no job");
+                        resolve({
+                            run: false,
+                            code: "1",
+                            message: "No Job"
+                        });
                     }
                 });
-                console.log(q.sql);
             });
         });
     };
@@ -80,6 +93,7 @@ var runner = function runner() {
         var _ref$interval = _ref.interval,
             interval = _ref$interval === undefined ? 1000 : _ref$interval;
 
+        once();
         (0, _timers.setInterval)(once, interval);
     };
 

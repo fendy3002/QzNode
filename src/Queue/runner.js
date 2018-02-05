@@ -105,14 +105,18 @@ let runner = (param = {}) => {
             return new Promise((resolve, reject) => {
                 let q = db.query(selectQuery, (err, results) => {
                     let selectStatement = results[3];
+                    db.end();
                     if(selectStatement && selectStatement.length > 0){
                         let job = selectStatement[0];
                         let scriptToRun = require(job.run_script);
                         if(!scriptToRun){
-
+                            resolve({
+                                run: false,
+                                code: "2",
+                                message: "Script not found"
+                            });
                         }
                         let runResult = scriptToRun(JSON.parse(job.params));
-                        db.end();
 
                         resolve({
                             run: true,

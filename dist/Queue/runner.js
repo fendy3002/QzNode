@@ -67,12 +67,18 @@ var runner = function runner() {
             return new Promise(function (resolve, reject) {
                 var q = db.query(selectQuery, function (err, results) {
                     var selectStatement = results[3];
+                    db.end();
                     if (selectStatement && selectStatement.length > 0) {
                         var job = selectStatement[0];
                         var scriptToRun = require(job.run_script);
-                        if (!scriptToRun) {}
+                        if (!scriptToRun) {
+                            resolve({
+                                run: false,
+                                code: "2",
+                                message: "Script not found"
+                            });
+                        }
                         var runResult = scriptToRun(JSON.parse(job.params));
-                        db.end();
 
                         resolve({
                             run: true,

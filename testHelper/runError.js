@@ -1,3 +1,3 @@
 module.exports = () => (resolve, reject) => {
-    resolve("RUN FUNCTION");
+    reject("RUN ERROR");
 };

@@ -29,7 +29,7 @@ let errorHandler = (param) => {
     };
 
     let insertToQueue = (db, running, callback) => {
-        let insertQuery = `INSERT INTO qz_queue(
+        let insertQuery = `INSERT INTO ${tableName} (
                 tag,
                 utc_run,
                 run_script,
@@ -37,22 +37,25 @@ let errorHandler = (param) => {
                 priority,
                 retry,
                 utc_created)
-            SET ?`;
-        let insertParam = {
-            'tag': running.tag,
-            'utc_run': running.utc_run,
-            'run_script': running.run_script,
-            'params': running.params,
-            'priority': running.priority,
-            'retry': running.retry + 1,
-            'utc_created': moment.utc().format("YYYY-MM-DDTHH:mm:ss")
-        };
+            VALUES (?)`;
+        let insertParam = [
+            running.tag,
+            running.utc_run,
+            running.run_script,
+            running.params,
+            running.priority,
+            running.retry + 1,
+            moment.utc().format("YYYY-MM-DDTHH:mm:ss")
+        ];
         let escRunUuid = mysql.escape(running.uuid);
-        let deleteQuery = `DELETE FROM qz_queue_running WHERE uuid = ${escRunUuid}`;
-        db.query(insertQuery, insertParam, (err, results) => {
+        let deleteQuery = `DELETE FROM ${runningTableName} WHERE uuid = ${escRunUuid}`;
+        let dbq = db.query(insertQuery, [insertParam], (err, results) => {
             db.query(deleteQuery, (err, results) => {
                 db.end();
-                callback();
+                callback({
+                    retry: true,
+                    code: 0
+                });
             });
         });
     };
@@ -77,7 +80,11 @@ let errorHandler = (param) => {
             db.query(selectQuery, (err, results) => {
                 if(err){
                     db.end();
-                    callback();
+                    callback({
+                        retry: false,
+                        code: -1,
+                        error: err
+                    });
                 }
                 else{
                     if(results[0].retry < retry){
@@ -85,7 +92,10 @@ let errorHandler = (param) => {
                     }
                     else{
                         db.end();
-                        callback();
+                        callback({
+                            retry: false,
+                            code: 2
+                        });
                     }
                 }
             });

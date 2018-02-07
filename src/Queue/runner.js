@@ -128,20 +128,21 @@ let runner = (param = {}) => {
                             });
                         }
                         new Promise(scriptToRun(JSON.parse(job.params)))
-                            .catch((err) => {
-                                errorHandler.handle(jobUuid, () => {
-                                    resolve({
-                                        run: false,
-                                        code: "2",
-                                        message: "Error",
-                                        error: err
-                                    });
-                                });
-                            })
                             .then((result) => {
                                 resolve({
                                     run: true,
                                     data: result
+                                });
+                            })
+                            .catch((err) => {
+                                errorHandler(jobUuid, (retryResult) => {
+                                    resolve({
+                                        run: false,
+                                        code: "2",
+                                        message: "Error",
+                                        error: err,
+                                        retry: retryResult
+                                    });
                                 });
                             });
                     }

@@ -38,8 +38,9 @@ var dispatcher = function dispatcher() {
 
     var dispatch = function dispatch(scriptPath) {
         var param = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-        var _ref = arguments[2];
-        var _ref$tag = _ref.tag,
+
+        var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+            _ref$tag = _ref.tag,
             tag = _ref$tag === undefined ? "default" : _ref$tag,
             _ref$priority = _ref.priority,
             priority = _ref$priority === undefined ? 3 : _ref$priority,

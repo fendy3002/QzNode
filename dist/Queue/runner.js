@@ -10,6 +10,18 @@ var _extends3 = _interopRequireDefault(_extends2);
 
 var _timers = require('timers');
 
+var _mysql = require('mysql');
+
+var _mysql2 = _interopRequireDefault(_mysql);
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _openDbConnection = require('./helper/openDbConnection.js');
+
+var _openDbConnection2 = _interopRequireDefault(_openDbConnection);
+
 var _index = require('../Uuid/index.js');
 
 var _index2 = _interopRequireDefault(_index);
@@ -18,11 +30,13 @@ var _emptyLog = require('../Logs/emptyLog');
 
 var _emptyLog2 = _interopRequireDefault(_emptyLog);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _errorHandler = require('./errorHandler');
 
-var mysql = require('mysql');
-var moment = require('moment');
-var openDbConnection = require('./helper/openDbConnection.js');
+var _errorHandler2 = _interopRequireDefault(_errorHandler);
+
+var _vm = require('vm');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var runner = function runner() {
     var param = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -53,17 +67,26 @@ var runner = function runner() {
         user: "root"
     }, connection);
 
+    var errorHandler = (0, _errorHandler2.default)({
+        driver: driver,
+        connection: usedConnection,
+        tableName: tableName,
+        runningTableName: runningTableName,
+        retry: retry,
+        log: log
+    });
+
     var once = function once() {
         var escTableName = tableName;
         var escRunningTableName = runningTableName;
-        var escTag = mysql.escape(tag);
-        var escRetry = mysql.escape(retry);
+        var escTag = _mysql2.default.escape(tag);
+        var escRetry = _mysql2.default.escape(retry);
 
         var jobUuid = (0, _index2.default)();
         //let utcNow = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
         var selectQuery = 'START TRANSACTION;\n            INSERT INTO ' + escRunningTableName + '(\n                queue_id,\n                uuid,\n                tag,\n                utc_run,\n                run_script,\n                params,\n                priority,\n                retry,\n                queue_utc_created,\n                utc_created\n            )\n            SELECT \n                TR.id,\n                \'' + jobUuid + '\',\n                TR.tag,\n                TR.utc_run,\n                TR.run_script,\n                TR.params,\n                TR.priority,\n                TR.retry,\n                TR.utc_created,\n                UTC_TIMESTAMP()\n            FROM ' + escTableName + ' TR \n            WHERE TR.tag = ' + escTag + '\n                AND TR.retry <= ' + escRetry + '\n                AND TR.utc_run <= UTC_TIMESTAMP()\n            ORDER BY TR.priority desc,\n                TR.utc_created asc\n            LIMIT 1;\n            \n            DELETE TW \n            FROM ' + escTableName + ' TW\n                INNER JOIN ' + escRunningTableName + ' RW\n                    ON TW.id = RW.queue_id\n            WHERE RW.uuid = \'' + jobUuid + '\';\n\n            SELECT \n                queue_id,\n                tag,\n                utc_run,\n                run_script,\n                params,\n                priority,\n                retry,\n                queue_utc_created,\n                utc_created\n            FROM ' + escRunningTableName + ' RR\n            WHERE RR.uuid = \'' + jobUuid + '\';\n\n            COMMIT;';
 
-        return new Promise(openDbConnection(usedConnection)).then(function (db) {
+        return new Promise((0, _openDbConnection2.default)(usedConnection)).then(function (db) {
             return new Promise(function (resolve, reject) {
                 var q = db.query(selectQuery, function (err, results) {
                     var selectStatement = results[3];
@@ -78,11 +101,21 @@ var runner = function runner() {
                                 message: "Script not found"
                             });
                         }
-                        var runResult = scriptToRun(JSON.parse(job.params));
-
-                        resolve({
-                            run: true,
-                            data: runResult
+                        new Promise(scriptToRun(JSON.parse(job.params))).then(function (result) {
+                            resolve({
+                                run: true,
+                                data: result
+                            });
+                        }).catch(function (err) {
+                            errorHandler(jobUuid, function (retryResult) {
+                                resolve({
+                                    run: false,
+                                    code: "2",
+                                    message: "Error",
+                                    error: err,
+                                    retry: retryResult
+                                });
+                            });
                         });
                     } else {
                         resolve({

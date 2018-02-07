@@ -1,5 +1,5 @@
 console.log("RUN");
 
-module.exports = () => {
-    return "RUN FUNCTION";
+module.exports = () => (resolve, reject) => {
+    resolve("RUN FUNCTION");
 };

@@ -1,10 +1,12 @@
 import { setInterval } from 'timers';
-import uuid from '../Uuid/index.js';
+import mysql from 'mysql';
+import moment from 'moment';
 
+import openDbConnection from './helper/openDbConnection.js';
+import uuid from '../Uuid/index.js';
 import emptyLog from '../Logs/emptyLog';
-let mysql = require('mysql');
-let moment = require('moment');
-let openDbConnection = require('./helper/openDbConnection.js');
+import errorHandlerRaw from './errorHandler';
+import { runInContext } from 'vm';
 
 let runner = (param = {}) => {
     let {
@@ -39,6 +41,15 @@ let runner = (param = {}) => {
         },
         ...connection,
     };
+
+    let errorHandler = errorHandlerRaw({
+        driver: driver,
+        connection: usedConnection,
+        tableName: tableName,
+        runningTableName: runningTableName,
+        retry: retry,
+        log: log
+    });
 
     let once = () => {
         let escTableName = tableName;
@@ -116,13 +127,23 @@ let runner = (param = {}) => {
                                 message: "Script not found"
                             });
                         }
-                        let runResult = new Promise(scriptToRun(JSON.parse(job.params)));
-                        runResult.then((result) => {
-                            resolve({
-                                run: true,
-                                data: result
+                        new Promise(scriptToRun(JSON.parse(job.params)))
+                            .catch((err) => {
+                                errorHandler.handle(jobUuid, () => {
+                                    resolve({
+                                        run: false,
+                                        code: "2",
+                                        message: "Error",
+                                        error: err
+                                    });
+                                });
+                            })
+                            .then((result) => {
+                                resolve({
+                                    run: true,
+                                    data: result
+                                });
                             });
-                        });
                     }
                     else{
                         resolve({

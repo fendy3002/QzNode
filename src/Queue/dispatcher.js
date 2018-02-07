@@ -30,7 +30,7 @@ let dispatcher = (param = {}) => {
         tag = "default",
         priority = 3,
         when = null
-    }) => {
+    } = {}) => {
         let utcInsert = null;
         if(when){
             utcInsert = momentTz(when, timezone).utc().format("YYYY-MM-DDTHH:mm:ss");

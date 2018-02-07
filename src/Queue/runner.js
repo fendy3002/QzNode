@@ -116,11 +116,12 @@ let runner = (param = {}) => {
                                 message: "Script not found"
                             });
                         }
-                        let runResult = scriptToRun(JSON.parse(job.params));
-
-                        resolve({
-                            run: true,
-                            data: runResult
+                        let runResult = new Promise(scriptToRun(JSON.parse(job.params)));
+                        runResult.then((result) => {
+                            resolve({
+                                run: true,
+                                data: result
+                            });
                         });
                     }
                     else{

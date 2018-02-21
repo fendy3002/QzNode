@@ -1,12 +1,23 @@
+import chalk from 'chalk';
 import commandLineArgs from 'command-line-args';
 
-let helpLine = "QzNode Queue\n" +
-        "====================\n" +
-        "Available commands:\n" +
-        "pending\t To list all pending queue\n" +
-        "running\t To list all running queue\n" +
-        "failed\t To list all failed queue and cannot be retried\n" +
-        "help\t To show this page";
+let helpLine = "\n" +
+        chalk.bold.underline("QzNode-cli") + " \n" +
+        "\n" +
+        "Utilities for queue\n" +
+        "\n" +
+        "Usage: exec.js queue [options ...]\n" +
+        "\n" +
+        chalk.bold.underline("Available Commands") + " \n" +
+        "\n" +
+        "  " + chalk.green("pending") + "\t To list all pending queue\n" +
+        "  " + chalk.green("running") + "\t To list all running queue\n" +
+        "  " + chalk.green("failed") + "\t To list all failed queue\n" +
+        "\n" +
+        chalk.bold.underline("Options") + " \n" +
+        "\n" +
+        "  " + chalk.yellow("-h") + ", " + chalk.yellow("--help") + "\t Show this page\n" +
+        "\n";
 
 let pendingHelp = "QzNode Pending Queue\n" +
     "====================\n" +

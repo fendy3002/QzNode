@@ -16,33 +16,38 @@ var _index5 = require("./IO/index.js");
 
 var _index6 = _interopRequireDefault(_index5);
 
-var _index7 = require("./Uuid/index.js");
+var _index7 = require("./Exec/index.js");
 
 var _index8 = _interopRequireDefault(_index7);
 
-var _index9 = require("./Date/index.js");
+var _index9 = require("./Uuid/index.js");
 
 var _index10 = _interopRequireDefault(_index9);
+
+var _index11 = require("./Date/index.js");
+
+var _index12 = _interopRequireDefault(_index11);
 
 var _Require = require("./Require.js");
 
 var _Require2 = _interopRequireDefault(_Require);
 
-var _index11 = require("./Queue/index.js");
+var _index13 = require("./Queue/index.js");
 
-var _index12 = _interopRequireDefault(_index11);
+var _index14 = _interopRequireDefault(_index13);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Service = function Service() {
     return {
+        exec: _index8.default,
         promise: _index2.default,
         logs: _index4.default,
-        date: _index10.default,
+        date: _index12.default,
         io: _index6.default,
-        uuid: _index8.default,
+        uuid: _index10.default,
         require: _Require2.default,
-        queue: _index12.default
+        queue: _index14.default
     };
 };
 

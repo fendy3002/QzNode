@@ -47,7 +47,7 @@ var dispatcher = function dispatcher() {
             _ref$when = _ref.when,
             when = _ref$when === undefined ? null : _ref$when;
 
-        var utcInsert = null;
+        var utcInsert = moment.utc();
         if (when) {
             utcInsert = momentTz(when, timezone).utc().format("YYYY-MM-DDTHH:mm:ss");
         }

@@ -17,7 +17,8 @@ let runner = (param = {}) => {
         failedTableName,
         tag,
         retry,
-        log
+        log,
+        workerLimit
     } = {
         ...{
             driver: "mysql",
@@ -27,7 +28,8 @@ let runner = (param = {}) => {
             failedTableName: "qz_queue_failed",
             tag: "default",
             retry: 0,
-            log: emptyLog()
+            log: emptyLog(),
+            workerLimit: {}
         },
         ...param
     };
@@ -51,6 +53,7 @@ let runner = (param = {}) => {
         log: log
     });
 
+    let runningProcesses = {};
     let once = () => {
         let escTableName = tableName;
         let escRunningTableName = runningTableName;
@@ -109,7 +112,7 @@ let runner = (param = {}) => {
                 utc_created
             FROM ${escRunningTableName} RR
             WHERE RR.uuid = '${jobUuid}';
-
+            
             COMMIT;`;
 
         return new Promise(openDbConnection(usedConnection)).then((db) => {
@@ -119,32 +122,50 @@ let runner = (param = {}) => {
                     db.end();
                     if(selectStatement && selectStatement.length > 0){
                         let job = selectStatement[0];
-                        let scriptToRun = require(job.run_script);
-                        if(!scriptToRun){
-                            resolve({
-                                run: false,
-                                code: "2",
-                                message: "Script not found"
-                            });
+                        let runningScriptProcess = runningProcesses[job.run_script] || 
+                            (runningProcesses[job.run_script] = {});
+                        let canRunJob = true;
+                        if(workerLimit && workerLimit[job.run_script]){
+                            let workerLimit = workerLimit[job.run_script];
+                            let runningCount = Object.keys(runningScriptProcess).length;
+                            if(workerLimit.limit <= runningCount){
+                                
+                                canRunJob = false;
+                            }
                         }
-                        new Promise(scriptToRun(JSON.parse(job.params)))
-                            .then((result) => {
+                        if(canRunJob){
+                            let scriptToRun = require(job.run_script);
+                            if(!scriptToRun){
                                 resolve({
-                                    run: true,
-                                    data: result
+                                    run: false,
+                                    code: "2",
+                                    message: "Script not found"
                                 });
-                            })
-                            .catch((err) => {
-                                errorHandler(jobUuid, (retryResult) => {
-                                    resolve({
-                                        run: false,
-                                        code: "2",
-                                        message: "Error",
-                                        error: err,
-                                        retry: retryResult
-                                    });
-                                });
-                            });
+                            }
+                            runningScriptProcess[jobUuid] = {
+                                at: moment.utc(),
+                                promise: new Promise(scriptToRun(JSON.parse(job.params)))
+                                    .then((result) => {
+                                        resolve({
+                                            run: true,
+                                            data: result
+                                        });
+                                        delete runningScriptProcess[jobUuid];
+                                    })
+                                    .catch((err) => {
+                                        delete runningScriptProcess[jobUuid];
+                                        errorHandler(jobUuid, (retryResult) => {
+                                            resolve({
+                                                run: false,
+                                                code: "2",
+                                                message: "Error",
+                                                error: err,
+                                                retry: retryResult
+                                            });
+                                        });
+                                    })
+                            };
+                        }
                     }
                     else{
                         resolve({

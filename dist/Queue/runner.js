@@ -62,7 +62,8 @@ var runner = function runner() {
         tag: "default",
         retry: 0,
         log: (0, _emptyLog2.default)(),
-        workerLimit: {}
+        workerLimit: {},
+        logLevel: {}
     }, param),
         driver = _driver$connection$ta.driver,
         connection = _driver$connection$ta.connection,
@@ -72,6 +73,7 @@ var runner = function runner() {
         tag = _driver$connection$ta.tag,
         retry = _driver$connection$ta.retry,
         log = _driver$connection$ta.log,
+        logLevel = _driver$connection$ta.logLevel,
         workerLimit = _driver$connection$ta.workerLimit;
 
     var usedConnection = (0, _extends3.default)({
@@ -80,6 +82,15 @@ var runner = function runner() {
         port: "3306",
         user: "root"
     }, connection);
+    logLevel = (0, _extends3.default)({
+        start: false,
+        error: true,
+        done: true,
+        scriptNotFound: true,
+        workerLimit: false,
+        noJob: false
+
+    }, logLevel);
 
     var errorHandler = (0, _errorHandler2.default)({
         driver: driver,
@@ -104,51 +115,67 @@ var runner = function runner() {
             return new Promise((0, _queueRetrieve2.default)(context)(jobUuid));
         }).then(function (selectStatement) {
             if (selectStatement && selectStatement.length > 0) {
-                var job = selectStatement[0];
-                return new Promise(jobCountManager.isJobOverLimit(job)).then(function (canRunJob) {
+                var _job = selectStatement[0];
+                return new Promise(jobCountManager.isJobOverLimit(_job)).then(function (canRunJob) {
                     if (canRunJob) {
                         if (context.db) {
                             context.db.end();
                             context.db = null;
                         }
 
-                        var scriptToRun = require(job.run_script);
-                        log.messageln('RUNNING: ' + job.run_script);
+                        var scriptToRun = require(_job.run_script);
+                        if (logLevel.start) {
+                            log.messageln('START: ' + _job.run_script);
+                        }
                         if (!scriptToRun) {
-                            log.messageln('ERROR: ' + job.run_script + ' NOT FOUND');
+                            if (logLevel.scriptNotFound) {
+                                log.messageln('ERROR: ' + _job.run_script + ' NOT FOUND');
+                            }
                             return Promise.resolve({
                                 run: false,
                                 code: "2",
                                 message: "Script not found"
                             });
                         }
-                        var servicePromise = new Promise(scriptToRun(JSON.parse(job.params))).then(function (result) {
-                            log.messageln('DONE: ' + job.run_script);
+                        var servicePromise = new Promise(scriptToRun(JSON.parse(_job.params))).then(function (result) {
+                            if (logLevel.done) {
+                                log.messageln('DONE: ' + _job.run_script);
+                            }
                             return Promise.resolve({
                                 run: true,
                                 data: result
                             });
                         }).catch(function (err) {
                             return new Promise(errorHandler(jobUuid)).then(function (retryResult) {
-                                log.messageln('ERROR: ' + job.run_script);
-                                return Promise.resolve({
+                                var resolveResult = {
                                     run: false,
                                     code: "2",
                                     message: "Error",
                                     error: err,
                                     retry: retryResult
-                                });
+                                };
+                                if (logLevel.error) {
+                                    log.messageln('ERROR: ' + _job.run_script);
+                                    log.messageln('ERROR_RESULT: ' + JSON.stringify({
+                                        error: err,
+                                        retry: retryResult
+                                    }));
+                                }
+                                return Promise.resolve(resolveResult);
                             });
                         });
-                        new Promise(jobCountManager.add(jobUuid, job, servicePromise));
+                        new Promise(jobCountManager.add(jobUuid, _job, servicePromise));
                         return servicePromise;
                     } else {
-                        return new Promise((0, _insertToQueue2.default)(context)(job)).then(function () {
+                        return new Promise((0, _insertToQueue2.default)(context)(_job)).then(function () {
                             if (context.db) {
                                 context.db.end();
                                 context.db = null;
                             }
-                            log.messageln('WORKER LIMIT: ' + job.run_script);
+
+                            if (logLevel.workerLimit) {
+                                log.messageln('WORKER LIMIT: ' + _job.run_script);
+                            }
                             return Promise.resolve({
                                 run: false,
                                 code: "3",
@@ -158,6 +185,9 @@ var runner = function runner() {
                     }
                 });
             } else {
+                if (logLevel.noJob) {
+                    log.messageln('WORKER LIMIT: ' + job.run_script);
+                }
                 return Promise.resolve({
                     run: false,
                     code: "1",
@@ -171,9 +201,7 @@ var runner = function runner() {
         var _ref$interval = _ref.interval,
             interval = _ref$interval === undefined ? 5000 : _ref$interval;
 
-        once().then(function (result) {
-            log.messageln(JSON.stringify(result));
-        });
+        once();
         (0, _timers.setInterval)(once, interval);
     };
 

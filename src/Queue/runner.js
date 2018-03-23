@@ -21,6 +21,7 @@ let runner = (param = {}) => {
         tag,
         retry,
         log,
+        logLevel,
         workerLimit
     } = {
         ...{
@@ -32,7 +33,8 @@ let runner = (param = {}) => {
             tag: "default",
             retry: 0,
             log: emptyLog(),
-            workerLimit: {}
+            workerLimit: {},
+            logLevel: {}
         },
         ...param
     };
@@ -45,6 +47,16 @@ let runner = (param = {}) => {
             user: "root"
         },
         ...connection,
+    };
+    logLevel = {
+        start: false,
+        error: true,
+        done: true,
+        scriptNotFound: true,
+        workerLimit: false,
+        noJob: false,
+
+        ...logLevel
     };
 
     let errorHandler = errorHandlerRaw({
@@ -81,9 +93,13 @@ let runner = (param = {}) => {
                             }
 
                             let scriptToRun = require(job.run_script);
-                            log.messageln(`RUNNING: ${job.run_script}`);
+                            if(logLevel.start){
+                                log.messageln(`START: ${job.run_script}`);
+                            }
                             if(!scriptToRun){
-                                log.messageln(`ERROR: ${job.run_script} NOT FOUND`);
+                                if(logLevel.scriptNotFound){
+                                    log.messageln(`ERROR: ${job.run_script} NOT FOUND`);
+                                }
                                 return Promise.resolve({
                                     run: false,
                                     code: "2",
@@ -92,7 +108,9 @@ let runner = (param = {}) => {
                             }
                             let servicePromise = new Promise(scriptToRun(JSON.parse(job.params)))
                                 .then((result) => {
-                                    log.messageln(`DONE: ${job.run_script}`);
+                                    if(logLevel.done){
+                                        log.messageln(`DONE: ${job.run_script}`);
+                                    }
                                     return Promise.resolve({
                                         run: true,
                                         data: result
@@ -101,14 +119,21 @@ let runner = (param = {}) => {
                                 .catch((err) => {
                                     return new Promise(errorHandler(jobUuid))
                                         .then((retryResult) => {
-                                            log.messageln(`ERROR: ${job.run_script}`);
-                                            return Promise.resolve({
+                                            let resolveResult = {
                                                 run: false,
                                                 code: "2",
                                                 message: "Error",
                                                 error: err,
                                                 retry: retryResult
-                                            })
+                                            };
+                                            if(logLevel.error){
+                                                log.messageln(`ERROR: ${job.run_script}`);
+                                                log.messageln(`ERROR_RESULT: ` + JSON.stringify({
+                                                    error: err,
+                                                    retry: retryResult
+                                                }));
+                                            }
+                                            return Promise.resolve(resolveResult);
                                         });
                                 });
                             new Promise(jobCountManager.add(jobUuid, job, servicePromise));
@@ -121,7 +146,10 @@ let runner = (param = {}) => {
                                     context.db.end();
                                     context.db = null;
                                 }
-                                log.messageln(`WORKER LIMIT: ${job.run_script}`);
+                                
+                                if(logLevel.workerLimit){
+                                    log.messageln(`WORKER LIMIT: ${job.run_script}`);
+                                }
                                 return Promise.resolve({
                                     run: false,
                                     code: "3",
@@ -132,6 +160,9 @@ let runner = (param = {}) => {
                     });
                 }
                 else{
+                    if(logLevel.noJob){
+                        log.messageln(`WORKER LIMIT: ${job.run_script}`);
+                    }
                     return Promise.resolve({
                         run: false,
                         code: "1",
@@ -142,9 +173,7 @@ let runner = (param = {}) => {
         };
 
     let listen = ({ interval = 5000 }) => {
-        once().then((result) => {
-            log.messageln(JSON.stringify(result));
-        });
+        once();
         setInterval(once, interval);
     };
 

@@ -81,7 +81,9 @@ let runner = (param = {}) => {
                             }
 
                             let scriptToRun = require(job.run_script);
+                            log.messageln(`RUNNING: ${job.run_script}`);
                             if(!scriptToRun){
+                                log.messageln(`ERROR: ${job.run_script} NOT FOUND`);
                                 return Promise.resolve({
                                     run: false,
                                     code: "2",
@@ -90,6 +92,7 @@ let runner = (param = {}) => {
                             }
                             let servicePromise = new Promise(scriptToRun(JSON.parse(job.params)))
                                 .then((result) => {
+                                    log.messageln(`DONE: ${job.run_script}`);
                                     return Promise.resolve({
                                         run: true,
                                         data: result
@@ -98,6 +101,7 @@ let runner = (param = {}) => {
                                 .catch((err) => {
                                     return new Promise(errorHandler(jobUuid))
                                         .then((retryResult) => {
+                                            log.messageln(`ERROR: ${job.run_script}`);
                                             return Promise.resolve({
                                                 run: false,
                                                 code: "2",
@@ -117,6 +121,7 @@ let runner = (param = {}) => {
                                     context.db.end();
                                     context.db = null;
                                 }
+                                log.messageln(`WORKER LIMIT: ${job.run_script}`);
                                 return Promise.resolve({
                                     run: false,
                                     code: "3",

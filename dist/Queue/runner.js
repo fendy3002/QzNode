@@ -113,7 +113,9 @@ var runner = function runner() {
                         }
 
                         var scriptToRun = require(job.run_script);
+                        log.messageln('RUNNING: ' + job.run_script);
                         if (!scriptToRun) {
+                            log.messageln('ERROR: ' + job.run_script + ' NOT FOUND');
                             return Promise.resolve({
                                 run: false,
                                 code: "2",
@@ -121,12 +123,14 @@ var runner = function runner() {
                             });
                         }
                         var servicePromise = new Promise(scriptToRun(JSON.parse(job.params))).then(function (result) {
+                            log.messageln('DONE: ' + job.run_script);
                             return Promise.resolve({
                                 run: true,
                                 data: result
                             });
                         }).catch(function (err) {
                             return new Promise(errorHandler(jobUuid)).then(function (retryResult) {
+                                log.messageln('ERROR: ' + job.run_script);
                                 return Promise.resolve({
                                     run: false,
                                     code: "2",
@@ -144,6 +148,7 @@ var runner = function runner() {
                                 context.db.end();
                                 context.db = null;
                             }
+                            log.messageln('WORKER LIMIT: ' + job.run_script);
                             return Promise.resolve({
                                 run: false,
                                 code: "3",

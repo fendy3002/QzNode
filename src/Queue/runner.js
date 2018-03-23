@@ -4,8 +4,11 @@ import moment from 'moment';
 
 import openDbConnection from './helper/openDbConnection.js';
 import uuid from '../Uuid/index.js';
-import emptyLog from '../Logs/emptyLog';
-import errorHandlerRaw from './errorHandler';
+import emptyLog from '../Logs/emptyLog.js';
+import errorHandlerRaw from './errorHandler.js';
+import insertToQueue from './runner/insertToQueue.js';
+import queueRetrieve from './runner/queueRetrieve.js';
+import jobCountManagerRaw from './runner/jobCountManager.js';
 import { runInContext } from 'vm';
 
 let runner = (param = {}) => {
@@ -52,134 +55,91 @@ let runner = (param = {}) => {
         retry: retry,
         log: log
     });
-
-    let runningProcesses = {};
+    let jobCountManager = jobCountManagerRaw({workerLimit});
     let once = () => {
-        let escTableName = tableName;
-        let escRunningTableName = runningTableName;
-        let escTag = mysql.escape(tag);
-        let escRetry = mysql.escape(retry);
-
+        let context = {
+            db: null,
+            tableName: tableName,
+            runningTableName: runningTableName,
+            tag: tag,
+            retry: retry
+        };
         let jobUuid = uuid();
-        //let utcNow = moment.utc().format('YYYY-MM-DDTHH:mm:ss');
-        let selectQuery = `START TRANSACTION;
-            INSERT INTO ${escRunningTableName}(
-                queue_id,
-                uuid,
-                tag,
-                utc_run,
-                run_script,
-                params,
-                priority,
-                retry,
-                queue_utc_created,
-                utc_created
-            )
-            SELECT 
-                TR.id,
-                '${jobUuid}',
-                TR.tag,
-                TR.utc_run,
-                TR.run_script,
-                TR.params,
-                TR.priority,
-                TR.retry,
-                TR.utc_created,
-                UTC_TIMESTAMP()
-            FROM ${escTableName} TR 
-            WHERE TR.tag = ${escTag}
-                AND TR.retry <= ${escRetry}
-                AND TR.utc_run <= UTC_TIMESTAMP()
-            ORDER BY TR.priority desc,
-                TR.utc_created asc
-            LIMIT 1;
-            
-            DELETE TW 
-            FROM ${escTableName} TW
-                INNER JOIN ${escRunningTableName} RW
-                    ON TW.id = RW.queue_id
-            WHERE RW.uuid = '${jobUuid}';
-
-            SELECT 
-                queue_id,
-                tag,
-                utc_run,
-                run_script,
-                params,
-                priority,
-                retry,
-                queue_utc_created,
-                utc_created
-            FROM ${escRunningTableName} RR
-            WHERE RR.uuid = '${jobUuid}';
-            
-            COMMIT;`;
-
-        return new Promise(openDbConnection(usedConnection)).then((db) => {
-            return new Promise((resolve, reject) => {
-                let q = db.query(selectQuery, (err, results) => {
-                    let selectStatement = results[3];
-                    db.end();
-                    if(selectStatement && selectStatement.length > 0){
-                        let job = selectStatement[0];
-                        let runningScriptProcess = runningProcesses[job.run_script] || 
-                            (runningProcesses[job.run_script] = {});
-                        let canRunJob = true;
-                        if(workerLimit && workerLimit[job.run_script]){
-                            let workerLimit = workerLimit[job.run_script];
-                            let runningCount = Object.keys(runningScriptProcess).length;
-                            if(workerLimit.limit <= runningCount){
-                                
-                                canRunJob = false;
-                            }
-                        }
+        return new Promise(openDbConnection(usedConnection))
+            .then((db) => { 
+                context.db = db;
+                return new Promise(queueRetrieve(context)(jobUuid));
+            })
+            .then((selectStatement) => {
+                if(selectStatement && selectStatement.length > 0){
+                    let job = selectStatement[0];
+                    return new Promise(jobCountManager.isJobOverLimit(job)).then((canRunJob) =>{
                         if(canRunJob){
+                            if(context.db){
+                                context.db.end();
+                                context.db = null;
+                            }
+
                             let scriptToRun = require(job.run_script);
                             if(!scriptToRun){
-                                resolve({
+                                return Promise.resolve({
                                     run: false,
                                     code: "2",
                                     message: "Script not found"
                                 });
                             }
-                            runningScriptProcess[jobUuid] = {
-                                at: moment.utc(),
-                                promise: new Promise(scriptToRun(JSON.parse(job.params)))
-                                    .then((result) => {
-                                        resolve({
-                                            run: true,
-                                            data: result
-                                        });
-                                        delete runningScriptProcess[jobUuid];
-                                    })
-                                    .catch((err) => {
-                                        delete runningScriptProcess[jobUuid];
-                                        errorHandler(jobUuid, (retryResult) => {
-                                            resolve({
+                            let servicePromise = new Promise(scriptToRun(JSON.parse(job.params)))
+                                .then((result) => {
+                                    return Promise.resolve({
+                                        run: true,
+                                        data: result
+                                    });
+                                })
+                                .catch((err) => {
+                                    return new Promise(errorHandler(jobUuid))
+                                        .then((retryResult) => {
+                                            return Promise.resolve({
                                                 run: false,
                                                 code: "2",
                                                 message: "Error",
                                                 error: err,
                                                 retry: retryResult
-                                            });
+                                            })
                                         });
-                                    })
-                            };
+                                });
+                            new Promise(jobCountManager.add(jobUuid, job, servicePromise));
+                            return servicePromise;
                         }
-                    }
-                    else{
-                        resolve({
-                            run: false,
-                            code: "1",
-                            message: "No Job"
-                        });
-                    }
-                });
+                        else{
+                            return new Promise(insertToQueue(context)(job))
+                            .then(() => {
+                                if(context.db){
+                                    context.db.end();
+                                    context.db = null;
+                                }
+                                return Promise.resolve({
+                                    run: false,
+                                    code: "3",
+                                    message: "Worker limit reached"
+                                });
+                            });
+                        }
+                    });
+                }
+                else{
+                    return Promise.resolve({
+                        run: false,
+                        code: "1",
+                        message: "No Job"
+                    });
+                }
             });
+        };
+
+    let listen = ({ interval = 5000 }) => {
+        once().then((result) => {
+            log.messageln(JSON.parse(result));
         });
-    };
-    let listen = ({ interval = 1000 }) => {
-        once();
         setInterval(once, interval);
     };
 

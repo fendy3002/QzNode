@@ -4,8 +4,8 @@ var lo = require('lodash');
 var path = require('path');
 var fs = require('fs');
 
-describe('IO', function() {
+describe('Exec', function() {
     it('Should show help', function(done) {
-        
+        done();
     });
 });

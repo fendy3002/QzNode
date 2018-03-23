@@ -43,14 +43,65 @@ describe('QzQueue', function() {
         }, {
             when: "2018-01-01"
         }).then(() => {
-            runner({
+            let runnerObj = runner({
                 connection: connection,
                 retry: 1
-            }).once().then((result) => {
+            });
+            runnerObj.once().then((result) => {
                 assert.equal(result.run, false);
                 assert.equal(result.error, "RUN ERROR");
+                assert.equal(result.retry.retry, true);
+                return runnerObj.once();
+            }).then((result) => {
+                assert.equal(result.run, false);
+                assert.equal(result.error, "RUN ERROR");
+                assert.equal(result.retry.retry, false);
                 done();
             });
         });
+    });
+    it('should throw error if execute twice', function(done) {
+        let scriptName = path.resolve(__dirname, '..', 'testHelper', 'runLonger.js');
+        let dispatcherObj = dispatcher({
+            connection: connection
+        });
+        let runnerObj = runner({
+            connection: connection,
+            retry: 1,
+            workerLimit: {
+                [scriptName]: {limit: 1}
+            }
+        });
+        let dispatching = () => {
+            return dispatcherObj.dispatch(scriptName, {
+                param1: "value1",
+                param2: "value2",
+                name: "Luke Skywalker"
+            }, {
+                when: "2018-01-01"
+            });
+        };
+        dispatching().then(dispatching)
+            .then(() => {
+                let p1 = runnerObj.once().then((result) => {
+                    assert.equal(result.run, true);
+                    assert.equal(result.data, "RUN LONGER");
+                });
+                setTimeout(() => {
+                    let p2 = runnerObj.once().then((result) => {
+                        assert.equal(result.run, false);
+                        assert.equal(result.code, 3);
+                    });
+                    Promise.all([p1, p2]).then(() => {
+                        setTimeout(() => {
+                            runnerObj.once().then((result) => {
+                                assert.equal(result.run, true);
+                                assert.equal(result.data, "RUN LONGER");
+                                done();
+                            });
+                        }, 35);
+                    });
+                }, 20);
+            });
     });
 });

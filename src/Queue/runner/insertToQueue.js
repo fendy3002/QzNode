@@ -1,5 +1,11 @@
+import moment from 'moment';
+import mysql from 'mysql';
+
 let insertToQueue = ({
-    db}) => (running, callback) => {
+    db,
+    tableName,
+    runningTableName
+}) => (running) => (resolve, reject) => {
     let insertQuery = `INSERT INTO ${tableName} (
             tag,
             utc_run,
@@ -15,18 +21,14 @@ let insertToQueue = ({
         running.run_script,
         running.params,
         running.priority,
-        running.retry + 1,
+        running.retry,
         moment.utc().format("YYYY-MM-DDTHH:mm:ss")
     ];
     let escRunUuid = mysql.escape(running.uuid);
     let deleteQuery = `DELETE FROM ${runningTableName} WHERE uuid = ${escRunUuid}`;
     let dbq = db.query(insertQuery, [insertParam], (err, results) => {
         db.query(deleteQuery, (err, results) => {
-            db.end();
-            callback({
-                retry: true,
-                code: 0
-            });
+            resolve();
         });
     });
 };

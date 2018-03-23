@@ -172,7 +172,7 @@ var runner = function runner() {
             interval = _ref$interval === undefined ? 5000 : _ref$interval;
 
         once().then(function (result) {
-            log.messageln(JSON.parse(result));
+            log.messageln(JSON.stringify(result));
         });
         (0, _timers.setInterval)(once, interval);
     };

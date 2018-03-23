@@ -143,7 +143,7 @@ let runner = (param = {}) => {
 
     let listen = ({ interval = 5000 }) => {
         once().then((result) => {
-            log.messageln(JSON.parse(result));
+            log.messageln(JSON.stringify(result));
         });
         setInterval(once, interval);
     };

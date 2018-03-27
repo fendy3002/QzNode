@@ -1,4 +1,5 @@
 let assert = require('assert');
+let mysql = require('mysql');
 let dispatcher = require('../src/Queue/dispatcher.js').default;
 let runner = require('../src/Queue/runner.js').default;
 let path = require('path');
@@ -13,16 +14,18 @@ let connection = {
 };
 describe('QzQueue', function() {
     it('should insert to database', function(done) {
-        dispatcher({
-            connection: connection
-        }).dispatch(path.resolve(__dirname, '..', 'testHelper', 'run.js'), {
-            param1: "value1",
-            param2: "value2",
-            name: "Luke Skywalker"
-        }, {
-            when: "2018-01-01"
-        }).then(() => {
-            done();
+        clearTable().then(() => {
+            dispatcher({
+                connection: connection
+            }).dispatch(path.resolve(__dirname, '..', 'testHelper', 'run.js'), {
+                param1: "value1",
+                param2: "value2",
+                name: "Luke Skywalker"
+            }, {
+                when: "2018-01-01"
+            }).then(() => {
+                done();
+            });
         });
     });
     it('should get from database', function(done) {
@@ -104,4 +107,61 @@ describe('QzQueue', function() {
                 }, 20);
             });
     });
+    it('should throw error if over than timeout', (done) => {
+        let scriptName = path.resolve(__dirname, '..', 'testHelper', 'runEternity.js');
+        let dispatcherObj = dispatcher({
+            connection: connection
+        });
+        let runnerObj = runner({
+            connection: connection,
+            retry: 1,
+            workerLimit: {
+                [scriptName]: {limit: 1, timeout: 5000},
+            }
+        });
+        let dispatching = () => {
+            return dispatcherObj.dispatch(scriptName, {
+                param1: "value1",
+                param2: "value2",
+                name: "Luke Skywalker"
+            }, {
+                when: "2018-01-01"
+            });
+        };
+        dispatching()
+            .then(() => {
+                runnerObj.once().then((err) => {
+                    assert.equal(err.run, false);
+                    assert.equal(err.code, "2");
+                    assert.equal(err.error.run, false);
+                    assert.equal(err.error.code, "4");
+                    clearTable().then(done);
+                });
+            });
+    }).timeout(10000);
 });
+
+
+
+
+
+
+let clearTable = () => {
+    let db = mysql.createConnection({
+        host     : connection.host,
+        user     : connection.user,
+        password : connection.password,
+        database : connection.database,
+        port     : connection.port,
+        dateStrings: 'date',
+        multipleStatements: true
+    });
+    return new Promise((resolve, reject) => {
+        db.connect((err) => {
+            db.query("TRUNCATE TABLE qz_queue; TRUNCATE TABLE qz_queue_running;", (err) => {
+                db.end();
+                resolve();
+            });
+        });
+    });
+};

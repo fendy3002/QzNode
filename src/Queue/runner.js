@@ -1,6 +1,7 @@
 import { setInterval } from 'timers';
 import mysql from 'mysql';
 import moment from 'moment';
+import { runInContext } from 'vm';
 
 import openDbConnection from './helper/openDbConnection.js';
 import uuid from '../Uuid/index.js';
@@ -9,7 +10,7 @@ import errorHandlerRaw from './errorHandler.js';
 import insertToQueue from './runner/insertToQueue.js';
 import queueRetrieve from './runner/queueRetrieve.js';
 import jobCountManagerRaw from './runner/jobCountManager.js';
-import { runInContext } from 'vm';
+import getScriptPromise from './runner/getScriptPromise.js';
 
 let runner = (param = {}) => {
     let {
@@ -92,21 +93,10 @@ let runner = (param = {}) => {
                                 context.db = null;
                             }
 
-                            let scriptToRun = require(job.run_script);
                             if(logLevel.start){
                                 log.messageln(`START: ${job.run_script}`);
                             }
-                            if(!scriptToRun){
-                                if(logLevel.scriptNotFound){
-                                    log.messageln(`ERROR: ${job.run_script} NOT FOUND`);
-                                }
-                                return Promise.resolve({
-                                    run: false,
-                                    code: "2",
-                                    message: "Script not found"
-                                });
-                            }
-                            let servicePromise = new Promise(scriptToRun(JSON.parse(job.params)))
+                            let servicePromise = getScriptPromise({workerLimit, log, logLevel}, job)
                                 .then((result) => {
                                     if(logLevel.done){
                                         log.messageln(`DONE: ${job.run_script}`);
@@ -117,6 +107,7 @@ let runner = (param = {}) => {
                                     });
                                 })
                                 .catch((err) => {
+                                    console.log(err);
                                     return new Promise(errorHandler(jobUuid))
                                         .then((retryResult) => {
                                             let resolveResult = {
@@ -133,6 +124,7 @@ let runner = (param = {}) => {
                                                     retry: retryResult
                                                 }));
                                             }
+                                            console.log(resolveResult);
                                             return Promise.resolve(resolveResult);
                                         });
                                 });

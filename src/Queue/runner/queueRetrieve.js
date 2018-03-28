@@ -65,14 +65,17 @@ let queueRetrieve = ({
     WHERE RR.uuid = '${jobUuid}';
     
     COMMIT;`;
-    db.query(selectQuery, (err, results) => {
-        if(err){ 
-            if(logLevel.error){
-                log.messageln(`ERROR 2173: ` + JSON.stringify(err));
+    db.getConnection((err, connection) => {
+        connection.query(selectQuery, (err, results) => {
+            connection.destroy();
+            if(err){
+                if(logLevel.error){
+                    log.messageln(`ERROR 2173: ` + JSON.stringify(err));
+                }
             }
-        }
-        let selectStatement = results[3];
-        resolve(selectStatement);
+            let selectStatement = results[3];
+            resolve(selectStatement);
+        });
     });
 };
 

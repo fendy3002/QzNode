@@ -136,7 +136,7 @@ let runner = (param = {}) => {
                                     context.db.end();
                                     context.db = null;
                                 }
-                                
+
                                 if(logLevel.workerLimit){
                                     log.messageln(`WORKER LIMIT: ${job.run_script}`);
                                 }

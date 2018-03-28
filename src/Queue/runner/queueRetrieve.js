@@ -5,6 +5,7 @@ let queueRetrieve = ({
     tableName,
     runningTableName,
     tag,
+    log,
     retry
 }) => (jobUuid) => (resolve, reject) => {
     let escTableName = tableName;
@@ -65,7 +66,11 @@ let queueRetrieve = ({
     
     COMMIT;`;
     db.query(selectQuery, (err, results) => {
-        if(err){ console.log(err); }
+        if(err){ 
+            if(logLevel.error){
+                log.messageln(`ERROR 2173: ` + JSON.stringify(err));
+            }
+        }
         let selectStatement = results[3];
         resolve(selectStatement);
     });

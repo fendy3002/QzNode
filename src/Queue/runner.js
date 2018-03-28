@@ -107,7 +107,6 @@ let runner = (param = {}) => {
                                     });
                                 })
                                 .catch((err) => {
-                                    console.log(err);
                                     return new Promise(errorHandler(jobUuid))
                                         .then((retryResult) => {
                                             let resolveResult = {
@@ -124,7 +123,6 @@ let runner = (param = {}) => {
                                                     retry: retryResult
                                                 }));
                                             }
-                                            console.log(resolveResult);
                                             return Promise.resolve(resolveResult);
                                         });
                                 });

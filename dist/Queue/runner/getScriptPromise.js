@@ -23,7 +23,6 @@ var getScriptPromise = function getScriptPromise(_ref, job) {
     }
     var scriptPromise = new Promise(scriptToRun(JSON.parse(job.params)));
     if (workerLimit[job.run_script] && workerLimit[job.run_script].timeout) {
-        console.log("timeout", workerLimit[job.run_script].timeout);
         var timeoutPromise = new Promise(function (resolve, reject) {
             setTimeout(function () {
                 reject({

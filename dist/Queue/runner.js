@@ -139,7 +139,6 @@ var runner = function runner() {
                                 data: result
                             });
                         }).catch(function (err) {
-                            console.log(err);
                             return new Promise(errorHandler(jobUuid)).then(function (retryResult) {
                                 var resolveResult = {
                                     run: false,
@@ -155,7 +154,6 @@ var runner = function runner() {
                                         retry: retryResult
                                     }));
                                 }
-                                console.log(resolveResult);
                                 return Promise.resolve(resolveResult);
                             });
                         });

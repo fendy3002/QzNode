@@ -4,7 +4,7 @@ var mysql = require('mysql');
 
 var Service = function Service(dbConfig) {
     return function (resolve, reject) {
-        var db = mysql.createConnection({
+        var db = mysql.createPool({
             host: dbConfig.host,
             user: dbConfig.user,
             password: dbConfig.password,
@@ -13,14 +13,16 @@ var Service = function Service(dbConfig) {
             dateStrings: 'date',
             multipleStatements: true
         });
+        resolve(db);
 
-        db.connect(function (err) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(db);
-            }
-        });
+        // db.connect(function(err){
+        //     if (err){
+        //         reject(err);
+        //     }
+        //     else{
+        //         resolve(db);
+        //     }
+        // });
     };
 };
 

@@ -24,9 +24,13 @@ var insertToQueue = function insertToQueue(_ref) {
             var insertParam = [running.tag, running.utc_run, running.run_script, running.params, running.priority, running.retry, _moment2.default.utc().format("YYYY-MM-DDTHH:mm:ss")];
             var escRunUuid = _mysql2.default.escape(running.uuid);
             var deleteQuery = 'DELETE FROM ' + runningTableName + ' WHERE uuid = ' + escRunUuid;
-            var dbq = db.query(insertQuery, [insertParam], function (err, results) {
-                db.query(deleteQuery, function (err, results) {
-                    resolve();
+
+            db.getConnection(function (err, connection) {
+                var dbq = connection.query(insertQuery, [insertParam], function (err, results) {
+                    connection.query(deleteQuery, function (err, results) {
+                        connection.destroy();
+                        resolve();
+                    });
                 });
             });
         };

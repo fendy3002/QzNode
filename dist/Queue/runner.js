@@ -18,6 +18,8 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
+var _vm = require('vm');
+
 var _openDbConnection = require('./helper/openDbConnection.js');
 
 var _openDbConnection2 = _interopRequireDefault(_openDbConnection);
@@ -46,7 +48,9 @@ var _jobCountManager = require('./runner/jobCountManager.js');
 
 var _jobCountManager2 = _interopRequireDefault(_jobCountManager);
 
-var _vm = require('vm');
+var _getScriptPromise = require('./runner/getScriptPromise.js');
+
+var _getScriptPromise2 = _interopRequireDefault(_getScriptPromise);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -123,21 +127,10 @@ var runner = function runner() {
                             context.db = null;
                         }
 
-                        var scriptToRun = require(_job.run_script);
                         if (logLevel.start) {
                             log.messageln('START: ' + _job.run_script);
                         }
-                        if (!scriptToRun) {
-                            if (logLevel.scriptNotFound) {
-                                log.messageln('ERROR: ' + _job.run_script + ' NOT FOUND');
-                            }
-                            return Promise.resolve({
-                                run: false,
-                                code: "2",
-                                message: "Script not found"
-                            });
-                        }
-                        var servicePromise = new Promise(scriptToRun(JSON.parse(_job.params))).then(function (result) {
+                        var servicePromise = (0, _getScriptPromise2.default)({ workerLimit: workerLimit, log: log, logLevel: logLevel }, _job).then(function (result) {
                             if (logLevel.done) {
                                 log.messageln('DONE: ' + _job.run_script);
                             }
@@ -146,6 +139,7 @@ var runner = function runner() {
                                 data: result
                             });
                         }).catch(function (err) {
+                            console.log(err);
                             return new Promise(errorHandler(jobUuid)).then(function (retryResult) {
                                 var resolveResult = {
                                     run: false,
@@ -161,6 +155,7 @@ var runner = function runner() {
                                         retry: retryResult
                                     }));
                                 }
+                                console.log(resolveResult);
                                 return Promise.resolve(resolveResult);
                             });
                         });

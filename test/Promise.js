@@ -74,3 +74,31 @@ describe('Limit', function() {
         });
     });
 });
+describe('Retry', function() {
+    it('should retry 3 times', function(done) {
+        let retry = qz.promise.retry;
+        let token = 0;
+        let promise = retry((resolve, reject) => {
+            if(token == 2){ resolve(token); }
+            else{ token++; reject(); }
+        }, {retry: 3});
+
+        new Promise(promise.callback).then((lastToken) => {
+            assert.equal(token, 2);
+            done();
+        });
+    });
+    it('should retry 3 times and failed', function(done) {
+        let retry = qz.promise.retry;
+        let token = 0;
+        let promise = retry((resolve, reject) => {
+            token++;
+            reject(token);
+        }, {retry: 3});
+
+        new Promise(promise.callback).catch((err) => {
+            assert.equal(err, 4);
+            done();
+        });
+    });
+});

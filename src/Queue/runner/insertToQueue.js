@@ -26,7 +26,6 @@ let insertToQueue = ({
     ];
     let escRunUuid = mysql.escape(running.uuid);
     let deleteQuery = `DELETE FROM ${runningTableName} WHERE uuid = ${escRunUuid}`;
-
     db.getConnection((err, connection) => {
         let dbq = connection.query(insertQuery, [insertParam], (err, results) => {
             connection.query(deleteQuery, (err, results) => {

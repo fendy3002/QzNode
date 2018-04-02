@@ -75,7 +75,9 @@ let runner = (param = {}) => {
             tableName: tableName,
             runningTableName: runningTableName,
             tag: tag,
-            retry: retry
+            retry: retry,
+            log: log,
+            logLevel: logLevel
         };
         let jobUuid = uuid();
         return new Promise(openDbConnection(usedConnection))
@@ -85,7 +87,10 @@ let runner = (param = {}) => {
             })
             .then((selectStatement) => {
                 if(selectStatement && selectStatement.length > 0){
-                    let job = selectStatement[0];
+                    let job = {
+                        ...selectStatement[0],
+                        uuid: jobUuid
+                    };
                     return new Promise(jobCountManager.isJobOverLimit(job)).then((canRunJob) =>{
                         if(canRunJob){
                             if(context.db){

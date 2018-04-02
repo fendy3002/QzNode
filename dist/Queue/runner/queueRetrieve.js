@@ -16,6 +16,7 @@ var queueRetrieve = function queueRetrieve(_ref) {
         runningTableName = _ref.runningTableName,
         tag = _ref.tag,
         log = _ref.log,
+        logLevel = _ref.logLevel,
         retry = _ref.retry;
     return function (jobUuid) {
         return function (resolve, reject) {

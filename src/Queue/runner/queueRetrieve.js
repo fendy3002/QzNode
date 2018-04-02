@@ -6,6 +6,7 @@ let queueRetrieve = ({
     runningTableName,
     tag,
     log,
+    logLevel,
     retry
 }) => (jobUuid) => (resolve, reject) => {
     let escTableName = tableName;

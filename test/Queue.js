@@ -102,9 +102,9 @@ describe('QzQueue', function() {
                                 assert.equal(result.data, "RUN LONGER");
                                 done();
                             });
-                        }, 35);
+                        }, 50);
                     });
-                }, 20);
+                }, 35);
             });
     });
     it('should throw error if over than timeout', (done) => {
@@ -136,6 +136,7 @@ describe('QzQueue', function() {
                     assert.equal(err.error.run, false);
                     assert.equal(err.error.code, "4");
                     clearTable().then(done);
+                    // done();
                 });
             });
     }).timeout(10000);

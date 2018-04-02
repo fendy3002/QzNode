@@ -111,7 +111,9 @@ var runner = function runner() {
             tableName: tableName,
             runningTableName: runningTableName,
             tag: tag,
-            retry: retry
+            retry: retry,
+            log: log,
+            logLevel: logLevel
         };
         var jobUuid = (0, _index2.default)();
         return new Promise((0, _openDbConnection2.default)(usedConnection)).then(function (db) {
@@ -119,7 +121,9 @@ var runner = function runner() {
             return new Promise((0, _queueRetrieve2.default)(context)(jobUuid));
         }).then(function (selectStatement) {
             if (selectStatement && selectStatement.length > 0) {
-                var _job = selectStatement[0];
+                var _job = (0, _extends3.default)({}, selectStatement[0], {
+                    uuid: jobUuid
+                });
                 return new Promise(jobCountManager.isJobOverLimit(_job)).then(function (canRunJob) {
                     if (canRunJob) {
                         if (context.db) {

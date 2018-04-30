@@ -53,9 +53,11 @@ var errorHandler = function errorHandler(_ref) {
                             new Promise(insertToQueue((0, _extends3.default)({}, results[0], {
                                 retry: results[0].retry + 1
                             }))).then(function () {
-                                resolve({
-                                    retry: true,
-                                    code: 0
+                                db.end(function (err) {
+                                    resolve({
+                                        retry: true,
+                                        code: 0
+                                    });
                                 });
                             });
                         } else {

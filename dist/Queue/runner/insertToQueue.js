@@ -27,7 +27,7 @@ var insertToQueue = function insertToQueue(_ref) {
             db.getConnection(function (err, connection) {
                 var dbq = connection.query(insertQuery, [insertParam], function (err, results) {
                     connection.query(deleteQuery, function (err, results) {
-                        connection.destroy();
+                        connection.release();
                         resolve();
                     });
                 });

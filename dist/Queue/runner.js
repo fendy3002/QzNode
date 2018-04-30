@@ -126,11 +126,6 @@ var runner = function runner() {
                 });
                 return new Promise(jobCountManager.isJobOverLimit(_job)).then(function (canRunJob) {
                     if (canRunJob) {
-                        if (context.db) {
-                            context.db.end();
-                            context.db = null;
-                        }
-
                         if (logLevel.start) {
                             log.messageln('START: ' + _job.run_script);
                         }
@@ -165,11 +160,6 @@ var runner = function runner() {
                         return servicePromise;
                     } else {
                         return new Promise((0, _insertToQueue2.default)(context)(_job)).then(function () {
-                            if (context.db) {
-                                context.db.end();
-                                context.db = null;
-                            }
-
                             if (logLevel.workerLimit) {
                                 log.messageln('WORKER LIMIT: ' + _job.run_script);
                             }
@@ -180,8 +170,24 @@ var runner = function runner() {
                             });
                         });
                     }
+                }).then(function (execResult) {
+                    return new Promise(function (resolve, reject) {
+                        if (context.db) {
+                            context.db.end(function (err) {
+                                context.db = null;
+                                resolve(execResult);
+                            });
+                        } else {
+                            resolve(execResult);
+                        }
+                    });
                 });
             } else {
+                if (context.db) {
+                    context.db.end();
+                    context.db = null;
+                }
+
                 if (logLevel.noJob) {
                     log.messageln('WORKER LIMIT: ' + job.run_script);
                 }

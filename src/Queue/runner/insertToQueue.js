@@ -29,7 +29,7 @@ let insertToQueue = ({
     db.getConnection((err, connection) => {
         let dbq = connection.query(insertQuery, [insertParam], (err, results) => {
             connection.query(deleteQuery, (err, results) => {
-                connection.destroy();
+                connection.release();
                 resolve();
             });
         });

@@ -68,7 +68,7 @@ let queueRetrieve = ({
     COMMIT;`;
     db.getConnection((err, connection) => {
         connection.query(selectQuery, (err, results) => {
-            connection.destroy();
+            connection.release();
             if(err){
                 if(logLevel.error){
                     log.messageln(`ERROR 2173: ` + JSON.stringify(err));

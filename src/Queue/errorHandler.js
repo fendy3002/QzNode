@@ -49,9 +49,11 @@ let errorHandler = ({
                                     ...results[0],
                                     retry: results[0].retry + 1
                                 })).then(() => {
-                                    resolve({
-                                        retry: true,
-                                        code: 0
+                                    db.end((err) => {
+                                        resolve({
+                                            retry: true,
+                                            code: 0
+                                        });
                                     });
                                 });
                         }

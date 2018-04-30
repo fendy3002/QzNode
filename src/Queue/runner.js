@@ -93,11 +93,6 @@ let runner = (param = {}) => {
                     };
                     return new Promise(jobCountManager.isJobOverLimit(job)).then((canRunJob) =>{
                         if(canRunJob){
-                            if(context.db){
-                                context.db.end();
-                                context.db = null;
-                            }
-
                             if(logLevel.start){
                                 log.messageln(`START: ${job.run_script}`);
                             }
@@ -137,11 +132,6 @@ let runner = (param = {}) => {
                         else{
                             return new Promise(insertToQueue(context)(job))
                             .then(() => {
-                                if(context.db){
-                                    context.db.end();
-                                    context.db = null;
-                                }
-
                                 if(logLevel.workerLimit){
                                     log.messageln(`WORKER LIMIT: ${job.run_script}`);
                                 }
@@ -152,9 +142,26 @@ let runner = (param = {}) => {
                                 });
                             });
                         }
+                    }).then((execResult) => {
+                        return new Promise((resolve, reject) => {
+                            if(context.db){
+                                context.db.end((err) => {
+                                    context.db = null;
+                                    resolve(execResult);
+                                });
+                            }
+                            else{
+                                resolve(execResult);
+                            }
+                        });
                     });
                 }
                 else{
+                    if(context.db){
+                        context.db.end();
+                        context.db = null;
+                    }
+
                     if(logLevel.noJob){
                         log.messageln(`WORKER LIMIT: ${job.run_script}`);
                     }

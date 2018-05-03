@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/qz-node",
-  "version": "0.2.17",
+  "version": "0.2.18",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -39,6 +39,7 @@
     "style-loader": "^0.13.1"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "chalk": "^2.3.1",
     "command-line-args": "^4.0.7",
     "install": "^0.10.4",

@@ -14,6 +14,7 @@ var mysql = require('mysql');
 var moment = require('moment');
 var momentTz = require('moment');
 var openDbConnection = require('./helper/openDbConnection.js');
+var uuidGen = require('../Uuid/index.js').default;
 
 var dispatcher = function dispatcher() {
     var param = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -45,7 +46,9 @@ var dispatcher = function dispatcher() {
             _ref$priority = _ref.priority,
             priority = _ref$priority === undefined ? 3 : _ref$priority,
             _ref$when = _ref.when,
-            when = _ref$when === undefined ? null : _ref$when;
+            when = _ref$when === undefined ? null : _ref$when,
+            _ref$key = _ref.key,
+            key = _ref$key === undefined ? null : _ref$key;
 
         var utcInsert = moment.utc().format("YYYY-MM-DDTHH:mm:ss");
         if (when) {
@@ -55,12 +58,15 @@ var dispatcher = function dispatcher() {
         var escTableName = tableName;
         return new Promise(openDbConnection(usedConnection)).then(function (db) {
             return new Promise(function (resolve, reject) {
+                var queueUuid = uuidGen();
                 var query = db.query('INSERT INTO ' + escTableName + ' SET ?', {
                     'tag': tag,
                     'utc_run': utcInsert,
                     'run_script': scriptPath,
                     'params': JSON.stringify(param),
                     'priority': priority,
+                    'uuid': queueUuid,
+                    'key': key,
                     'retry': 0,
                     'utc_created': moment.utc().format("YYYY-MM-DDTHH:mm:ss")
                 }, function (err, results) {
@@ -68,7 +74,11 @@ var dispatcher = function dispatcher() {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(results);
+                        resolve({
+                            uuid: queueUuid,
+                            key: key
+                            //results: results
+                        });
                     }
                 });
             });

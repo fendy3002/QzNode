@@ -20,8 +20,8 @@ var insertToQueue = function insertToQueue(_ref) {
         runningTableName = _ref.runningTableName;
     return function (running) {
         return function (resolve, reject) {
-            var insertQuery = 'INSERT INTO ' + tableName + ' (\n            tag,\n            utc_run,\n            run_script,\n            params,\n            priority,\n            retry,\n            utc_created)\n        VALUES (?)';
-            var insertParam = [running.tag, running.utc_run, running.run_script, running.params, running.priority, running.retry, _moment2.default.utc().format("YYYY-MM-DDTHH:mm:ss")];
+            var insertQuery = 'INSERT INTO ' + tableName + ' (\n            tag,\n            uuid,\n            `key`,\n            utc_run,\n            run_script,\n            params,\n            priority,\n            retry,\n            utc_created)\n        VALUES (?)';
+            var insertParam = [running.tag, running.queue_uuid, running.key, running.utc_run, running.run_script, running.params, running.priority, running.retry, _moment2.default.utc().format("YYYY-MM-DDTHH:mm:ss")];
             var escRunUuid = _mysql2.default.escape(running.uuid);
             var deleteQuery = 'DELETE FROM ' + runningTableName + ' WHERE uuid = ' + escRunUuid;
             db.getConnection(function (err, connection) {

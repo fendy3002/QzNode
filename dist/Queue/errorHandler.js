@@ -39,7 +39,7 @@ var errorHandler = function errorHandler(_ref) {
                     tableName: tableName,
                     runningTableName: runningTableName
                 });
-                var selectQuery = 'SELECT \n                        a.id,\n                        a.uuid,\n                        a.queue_id,\n                        a.tag,\n                        a.utc_run,\n                        a.run_script,\n                        a.params,\n                        a.priority,\n                        a.retry,\n                        a.queue_utc_created,\n                        a.utc_created\n                    FROM ' + runningTableName + ' a\n                    WHERE a.uuid = ' + escRunUuid;
+                var selectQuery = 'SELECT \n                        a.id,\n                        a.uuid,\n                        a.queue_id,\n                        a.queue_uuid,\n                        a.key,\n                        a.tag,\n                        a.utc_run,\n                        a.run_script,\n                        a.params,\n                        a.priority,\n                        a.retry,\n                        a.queue_utc_created,\n                        a.utc_created\n                    FROM ' + runningTableName + ' a\n                    WHERE a.uuid = ' + escRunUuid;
                 db.query(selectQuery, function (err, results) {
                     if (err) {
                         db.end();

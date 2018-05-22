@@ -8,6 +8,8 @@ let insertToQueue = ({
 }) => (running) => (resolve, reject) => {
     let insertQuery = `INSERT INTO ${tableName} (
             tag,
+            uuid,
+            \`key\`,
             utc_run,
             run_script,
             params,
@@ -17,6 +19,8 @@ let insertToQueue = ({
         VALUES (?)`;
     let insertParam = [
         running.tag,
+        running.queue_uuid,
+        running.key,
         running.utc_run,
         running.run_script,
         running.params,

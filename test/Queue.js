@@ -23,7 +23,8 @@ describe('QzQueue', function() {
                 name: "Luke Skywalker"
             }, {
                 when: "2018-01-01"
-            }).then(() => {
+            }).then((dispatchResult) => {
+                assert.equal(!!dispatchResult.uuid, true);
                 done();
             });
         });

@@ -17,6 +17,8 @@ let queueRetrieve = ({
     let selectQuery = `START TRANSACTION;
     INSERT INTO ${escRunningTableName}(
         queue_id,
+        queue_uuid,
+        \`key\`,
         uuid,
         tag,
         utc_run,
@@ -29,6 +31,8 @@ let queueRetrieve = ({
     )
     SELECT 
         TR.id,
+        TR.uuid,
+        TR.\`key\`,
         '${jobUuid}',
         TR.tag,
         TR.utc_run,
@@ -54,6 +58,8 @@ let queueRetrieve = ({
 
     SELECT 
         queue_id,
+        queue_uuid,
+        \`key\`,
         tag,
         utc_run,
         run_script,

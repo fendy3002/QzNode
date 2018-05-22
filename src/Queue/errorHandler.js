@@ -24,6 +24,8 @@ let errorHandler = ({
                         a.id,
                         a.uuid,
                         a.queue_id,
+                        a.queue_uuid,
+                        a.key,
                         a.tag,
                         a.utc_run,
                         a.run_script,

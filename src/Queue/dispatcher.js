@@ -2,6 +2,7 @@ let mysql = require('mysql');
 let moment = require('moment');
 let momentTz = require('moment');
 let openDbConnection = require('./helper/openDbConnection.js');
+let uuidGen = require('../Uuid/index.js').default;
 
 let dispatcher = (param = {}) => {
     let {driver,
@@ -29,7 +30,8 @@ let dispatcher = (param = {}) => {
     let dispatch = (scriptPath, param = {}, {
         tag = "default",
         priority = 3,
-        when = null
+        when = null,
+        key = null
     } = {}) => {
         let utcInsert = moment.utc().format("YYYY-MM-DDTHH:mm:ss");
         if(when){
@@ -39,18 +41,25 @@ let dispatcher = (param = {}) => {
         let escTableName = tableName;
         return new Promise(openDbConnection(usedConnection)).then((db) => {
             return new Promise((resolve, reject) => {
+                let queueUuid = uuidGen();
                 let query = db.query(`INSERT INTO ${escTableName} SET ?`, {
                     'tag': tag,
                     'utc_run': utcInsert,
                     'run_script': scriptPath,
                     'params': JSON.stringify(param),
                     'priority': priority,
+                    'uuid': queueUuid,
+                    'key': key,
                     'retry': 0,
                     'utc_created': moment.utc().format("YYYY-MM-DDTHH:mm:ss"),
                 }, (err, results) => {
                     db.end();
                     if(err){ reject(err); }
-                    else{ resolve(results); }
+                    else{ resolve({
+                        uuid: queueUuid,
+                        key: key
+                        //results: results
+                    }); }
                 });
             });
         });

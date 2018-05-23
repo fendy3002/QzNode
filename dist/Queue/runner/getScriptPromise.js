@@ -15,7 +15,7 @@ var getScriptPromise = function getScriptPromise(_ref, job) {
         if (logLevel.scriptNotFound) {
             log.messageln("ERROR: " + job.run_script + " NOT FOUND");
         }
-        return Promise.resolve({
+        return Promise.reject({
             run: false,
             code: "2",
             message: "Script not found"

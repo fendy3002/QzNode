@@ -96,6 +96,8 @@ let runner = (param = {}) => {
                             if(logLevel.start){
                                 log.messageln(`START: ${job.run_script}`);
                             }
+                            context.db.end();
+                            context.db = null;
                             let servicePromise = getScriptPromise({workerLimit, log, logLevel}, job)
                                 .then((result) => {
                                     if(logLevel.done){
@@ -107,7 +109,10 @@ let runner = (param = {}) => {
                                     });
                                 })
                                 .catch((err) => {
-                                    return new Promise(errorHandler(jobUuid))
+                                    return new Promise(openDbConnection(usedConnection))
+                                    .then((db) => { 
+                                        context.db = db;
+                                        return new Promise(errorHandler(jobUuid))
                                         .then((retryResult) => {
                                             let resolveResult = {
                                                 run: false,
@@ -125,6 +130,7 @@ let runner = (param = {}) => {
                                             }
                                             return Promise.resolve(resolveResult);
                                         });
+                                    });
                                 });
                             new Promise(jobCountManager.add(jobUuid, job, servicePromise));
                             return servicePromise;

@@ -129,6 +129,8 @@ var runner = function runner() {
                         if (logLevel.start) {
                             log.messageln('START: ' + _job.run_script);
                         }
+                        context.db.end();
+                        context.db = null;
                         var servicePromise = (0, _getScriptPromise2.default)({ workerLimit: workerLimit, log: log, logLevel: logLevel }, _job).then(function (result) {
                             if (logLevel.done) {
                                 log.messageln('DONE: ' + _job.run_script);
@@ -138,22 +140,25 @@ var runner = function runner() {
                                 data: result
                             });
                         }).catch(function (err) {
-                            return new Promise(errorHandler(jobUuid)).then(function (retryResult) {
-                                var resolveResult = {
-                                    run: false,
-                                    code: "2",
-                                    message: "Error",
-                                    error: err,
-                                    retry: retryResult
-                                };
-                                if (logLevel.error) {
-                                    log.messageln('ERROR: ' + _job.run_script);
-                                    log.messageln('ERROR_RESULT: ' + JSON.stringify({
+                            return new Promise((0, _openDbConnection2.default)(usedConnection)).then(function (db) {
+                                context.db = db;
+                                return new Promise(errorHandler(jobUuid)).then(function (retryResult) {
+                                    var resolveResult = {
+                                        run: false,
+                                        code: "2",
+                                        message: "Error",
                                         error: err,
                                         retry: retryResult
-                                    }));
-                                }
-                                return Promise.resolve(resolveResult);
+                                    };
+                                    if (logLevel.error) {
+                                        log.messageln('ERROR: ' + _job.run_script);
+                                        log.messageln('ERROR_RESULT: ' + JSON.stringify({
+                                            error: err,
+                                            retry: retryResult
+                                        }));
+                                    }
+                                    return Promise.resolve(resolveResult);
+                                });
                             });
                         });
                         new Promise(jobCountManager.add(jobUuid, _job, servicePromise));

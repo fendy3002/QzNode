@@ -117,7 +117,7 @@ describe('QzQueue', function() {
             connection: connection,
             retry: 1,
             workerLimit: {
-                [scriptName]: {limit: 1, timeout: 5000},
+                [scriptName]: {limit: 1, timeout: 500},
             }
         });
         let dispatching = () => {
@@ -140,7 +140,7 @@ describe('QzQueue', function() {
                     // done();
                 });
             });
-    }).timeout(10000);
+    }).timeout(2000);
 });
 
 

@@ -103,7 +103,7 @@ describe('QzQueue', function() {
                                 assert.equal(result.data, "RUN LONGER");
                                 done();
                             });
-                        }, 50);
+                        }, 100);
                     });
                 }, 35);
             });

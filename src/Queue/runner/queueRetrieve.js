@@ -14,7 +14,14 @@ let queueRetrieve = ({
     let escTag = mysql.escape(tag);
     let escRetry = mysql.escape(retry);
 
-    let selectQuery = `START TRANSACTION;
+    let selectQuery = `SET @last_autocommit = @@autocommit;
+    SET autocommit = 0;
+    LOCK TABLES 
+        ${tableName} WRITE,
+        ${tableName} as TR READ,
+        ${escRunningTableName} WRITE,
+        ${escRunningTableName} as RW READ;
+
     INSERT INTO ${escRunningTableName}(
         queue_id,
         queue_uuid,
@@ -50,10 +57,10 @@ let queueRetrieve = ({
         TR.utc_created asc
     LIMIT 1;
     
-    DELETE TW 
-    FROM ${escTableName} TW
+    DELETE ${escTableName}
+    FROM ${escTableName}
         INNER JOIN ${escRunningTableName} RW
-            ON TW.id = RW.queue_id
+            ON ${escTableName}.id = RW.queue_id
     WHERE RW.uuid = '${jobUuid}';
 
     SELECT 
@@ -68,10 +75,13 @@ let queueRetrieve = ({
         retry,
         queue_utc_created,
         utc_created
-    FROM ${escRunningTableName} RR
-    WHERE RR.uuid = '${jobUuid}';
+    FROM ${escRunningTableName} RW
+    WHERE RW.uuid = '${jobUuid}';
     
-    COMMIT;`;
+    COMMIT;
+    UNLOCK TABLES;
+    SET autocommit = @last_autocommit;`;
+
     db.getConnection((err, connection) => {
         connection.query(selectQuery, (err, results) => {
             connection.release();
@@ -80,7 +90,7 @@ let queueRetrieve = ({
                     log.messageln(`ERROR 2173: ` + JSON.stringify(err));
                 }
             }
-            let selectStatement = results[3];
+            let selectStatement = results[5];
             resolve(selectStatement);
         });
     });

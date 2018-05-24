@@ -16,7 +16,26 @@ let insertToQueue = ({
             priority,
             retry,
             utc_created)
-        VALUES (?)`;
+        VALUES (?);`;
+    let escRunUuid = mysql.escape(running.uuid);
+    let deleteQuery = `DELETE FROM ${runningTableName} WHERE uuid = ${escRunUuid};`;
+
+    let fullQuery = `SET @last_autocommit = @@autocommit;
+    SET autocommit = 0;
+    LOCK TABLES 
+        ${tableName} WRITE,
+        ${tableName} as TR READ,
+        ${runningTableName} WRITE,
+        ${runningTableName} as RW READ;
+    
+    ${insertQuery}
+    
+    ${deleteQuery}
+    
+    COMMIT;
+    UNLOCK TABLES;
+    SET autocommit = @last_autocommit;`;
+    
     let insertParam = [
         running.tag,
         running.queue_uuid,
@@ -28,14 +47,11 @@ let insertToQueue = ({
         running.retry,
         moment.utc().format("YYYY-MM-DDTHH:mm:ss")
     ];
-    let escRunUuid = mysql.escape(running.uuid);
-    let deleteQuery = `DELETE FROM ${runningTableName} WHERE uuid = ${escRunUuid}`;
+
     db.getConnection((err, connection) => {
-        let dbq = connection.query(insertQuery, [insertParam], (err, results) => {
-            connection.query(deleteQuery, (err, results) => {
-                connection.release();
-                resolve();
-            });
+        let dbq = connection.query(fullQuery, [insertParam], (err, results) => {
+            connection.release();
+            resolve();
         });
     });
 };

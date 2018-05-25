@@ -1,7 +1,7 @@
 import mysql from 'mysql';
 
 let queueRetrieve = ({
-    db,
+    openDb,
     tableName,
     runningTableName,
     tag,
@@ -82,16 +82,20 @@ let queueRetrieve = ({
     UNLOCK TABLES;
     SET autocommit = @last_autocommit;`;
 
-    db.getConnection((err, connection) => {
-        connection.query(selectQuery, (err, results) => {
-            connection.release();
-            if(err){
-                if(logLevel.error){
-                    log.messageln(`ERROR 2173: ` + JSON.stringify(err));
+    openDb().then((db) => {
+        db.getConnection((err, connection) => {
+            connection.query(selectQuery, (err, results) => {
+                connection.release();
+                if(err){
+                    if(logLevel.error){
+                        log.messageln(`ERROR 2173: ` + JSON.stringify(err));
+                    }
                 }
-            }
-            let selectStatement = results[5];
-            resolve(selectStatement);
+                let selectStatement = results[5];
+                db.end((err) => {
+                    resolve(selectStatement);
+                });
+            });
         });
     });
 };

@@ -1,11 +1,12 @@
 import moment from 'moment';
 import mysql from 'mysql';
 
-let insertToQueue = ({
-    db,
-    tableName,
-    runningTableName
-}) => (running) => (resolve, reject) => {
+let insertToQueue = (context) => (running) => (resolve, reject) => {
+    let {
+        openDb,
+        tableName,
+        runningTableName
+    } = context;
     let insertQuery = `INSERT INTO ${tableName} (
             tag,
             uuid,
@@ -47,13 +48,17 @@ let insertToQueue = ({
         running.retry,
         moment.utc().format("YYYY-MM-DDTHH:mm:ss")
     ];
+    openDb().then((db) => {
+        db.getConnection((err, connection) => {
+            let dbq = connection.query(fullQuery, [insertParam], (err, results) => {
+                connection.release();
 
-    db.getConnection((err, connection) => {
-        let dbq = connection.query(fullQuery, [insertParam], (err, results) => {
-            connection.release();
-            resolve();
+                db.end((err) => {
+                    resolve();
+                });
+            });
         });
-    });
+    })
 };
 
 export default insertToQueue;

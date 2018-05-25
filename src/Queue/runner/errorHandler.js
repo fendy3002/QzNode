@@ -1,22 +1,40 @@
 let mysql = require('mysql');
 let moment = require('moment');
 let momentTz = require('moment');
-import openDbConnection from './helper/openDbConnection.js';
-import insertToQueueRaw from './runner/insertToQueue.js';
+import insertToQueueRaw from './insertToQueue.js';
 
 let errorHandler = ({
-    driver,
-    connection,
+    openDb,
     tableName,
     runningTableName,
-    retry
+    retry,
+    log,
+    logLevel
 }) => {
-    let handle = (runUuid) => (resolve, reject) => {
+    let handle = (err, job, runUuid) => (resolve, reject) => {
+        let handleLogAndResolve = (retryResult) => {
+            let resolveResult = {
+                run: false,
+                code: "2",
+                message: "Error",
+                error: err,
+                retry: retryResult
+            };
+            if(logLevel.error){
+                log.messageln(`ERROR: ${job.run_script}`);
+                log.messageln(`ERROR_RESULT: ` + JSON.stringify({
+                    error: err,
+                    retry: retryResult
+                }));
+            }
+            return resolve(resolveResult);
+        };
+
         let escRunUuid = mysql.escape(runUuid);
-        new Promise(openDbConnection(connection))
+        openDb()
             .then((db) => {
                 let insertToQueue = insertToQueueRaw({
-                    db,
+                    openDb,
                     tableName,
                     runningTableName
                 });
@@ -36,34 +54,37 @@ let errorHandler = ({
                         a.utc_created
                     FROM ${runningTableName} a
                     WHERE a.uuid = ${escRunUuid}`;
+
                 db.query(selectQuery, (err, results) => {
                     if(err){
-                        db.end();
-                        resolve({
-                            retry: false,
-                            code: -1,
-                            error: err
+                        db.end((err) => {
+                            handleLogAndResolve({
+                                retry: false,
+                                code: -1,
+                                error: err
+                            });
                         });
                     }
                     else{
                         if(results[0].retry < retry){
-                            new Promise(insertToQueue({
+                            db.end((err) => {
+                                new Promise(insertToQueue({
                                     ...results[0],
                                     retry: results[0].retry + 1
                                 })).then(() => {
-                                    db.end((err) => {
-                                        resolve({
-                                            retry: true,
-                                            code: 0
-                                        });
+                                    handleLogAndResolve({
+                                        retry: true,
+                                        code: 0
                                     });
                                 });
+                            });
                         }
                         else{
-                            db.end();
-                            resolve({
-                                retry: false,
-                                code: 2
+                            db.end((err) => {
+                                handleLogAndResolve({
+                                    retry: false,
+                                    code: 2
+                                });
                             });
                         }
                     }

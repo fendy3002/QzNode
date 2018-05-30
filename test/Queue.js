@@ -22,7 +22,8 @@ describe('QzQueue', function() {
                 param2: "value2",
                 name: "Luke Skywalker"
             }, {
-                when: "2018-01-01"
+                when: "2018-01-01",
+                key: "11234"
             }).then((dispatchResult) => {
                 assert.equal(!!dispatchResult.uuid, true);
                 done();
@@ -31,7 +32,7 @@ describe('QzQueue', function() {
     });
     it('should get from database', function(done) {
         runner({
-            connection: connection
+            connection: connection,
         }).once().then((result) => {
             assert.equal(result.data, "RUN FUNCTION");
             done();

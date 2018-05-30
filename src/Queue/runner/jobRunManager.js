@@ -6,7 +6,11 @@ let jobRunManager = (context, jobCountManager, errorHandler) => (jobUuid, job) =
     return new Promise(jobCountManager.isJobOverLimit(job)).then((canRunJob) => {
         if(canRunJob){
             if(logLevel.start){
-                log.messageln(`START: ${job.run_script}`);
+                let startMessage = `START: ${job.run_script}`;
+                if(job.key){
+                    startMessage = `START: ${job.run_script} with key: ${job.key}`;
+                }
+                log.messageln(startMessage);
             }
 
             let servicePromise = new Promise(runJobScript({workerLimit, log, logLevel})(job))

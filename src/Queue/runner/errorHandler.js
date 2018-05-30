@@ -21,7 +21,12 @@ let errorHandler = ({
                 retry: retryResult
             };
             if(logLevel.error){
-                log.messageln(`ERROR: ${job.run_script}`);
+                let errorMessage = `ERROR: ${job.run_script}`;
+                if(job.key){
+                    errorMessage = `ERROR: ${job.run_script} with key: ${job.key}`;
+                }
+                log.messageln(errorMessage);
+
                 log.messageln(`ERROR_RESULT: ` + JSON.stringify({
                     error: err,
                     retry: retryResult

@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
 var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
@@ -32,25 +36,21 @@ var _emptyLog = require('../Logs/emptyLog.js');
 
 var _emptyLog2 = _interopRequireDefault(_emptyLog);
 
-var _errorHandler = require('./errorHandler.js');
-
-var _errorHandler2 = _interopRequireDefault(_errorHandler);
-
-var _insertToQueue = require('./runner/insertToQueue.js');
-
-var _insertToQueue2 = _interopRequireDefault(_insertToQueue);
-
 var _queueRetrieve = require('./runner/queueRetrieve.js');
 
 var _queueRetrieve2 = _interopRequireDefault(_queueRetrieve);
+
+var _errorHandler = require('./runner/errorHandler.js');
+
+var _errorHandler2 = _interopRequireDefault(_errorHandler);
 
 var _jobCountManager = require('./runner/jobCountManager.js');
 
 var _jobCountManager2 = _interopRequireDefault(_jobCountManager);
 
-var _getScriptPromise = require('./runner/getScriptPromise.js');
+var _jobRunManager = require('./runner/jobRunManager.js');
 
-var _getScriptPromise2 = _interopRequireDefault(_getScriptPromise);
+var _jobRunManager2 = _interopRequireDefault(_jobRunManager);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -96,103 +96,38 @@ var runner = function runner() {
 
     }, logLevel);
 
-    var errorHandler = (0, _errorHandler2.default)({
-        driver: driver,
-        connection: usedConnection,
+    var context = {
+        openDb: function openDb() {
+            return new Promise((0, _openDbConnection2.default)(usedConnection));
+        },
+        tableName: tableName,
+        runningTableName: runningTableName,
+        tag: tag,
+        retry: retry,
+        log: log,
+        logLevel: logLevel,
+        workerLimit: workerLimit
+    };
+
+    var errorHandler = (0, _errorHandler2.default)((0, _defineProperty3.default)({
+        openDb: context.openDb,
         tableName: tableName,
         runningTableName: runningTableName,
         retry: retry,
-        log: log
-    });
+        log: log,
+        logLevel: logLevel }, 'logLevel', logLevel));
     var jobCountManager = (0, _jobCountManager2.default)({ workerLimit: workerLimit });
+    var jobRunManager = (0, _jobRunManager2.default)(context, jobCountManager, errorHandler);
+
     var once = function once() {
-        var context = {
-            db: null,
-            tableName: tableName,
-            runningTableName: runningTableName,
-            tag: tag,
-            retry: retry,
-            log: log,
-            logLevel: logLevel
-        };
         var jobUuid = (0, _index2.default)();
-        return new Promise((0, _openDbConnection2.default)(usedConnection)).then(function (db) {
-            context.db = db;
-            return new Promise((0, _queueRetrieve2.default)(context)(jobUuid));
-        }).then(function (selectStatement) {
+        return new Promise((0, _queueRetrieve2.default)(context)(jobUuid)).then(function (selectStatement) {
             if (selectStatement && selectStatement.length > 0) {
                 var _job = (0, _extends3.default)({}, selectStatement[0], {
                     uuid: jobUuid
                 });
-                return new Promise(jobCountManager.isJobOverLimit(_job)).then(function (canRunJob) {
-                    if (canRunJob) {
-                        if (logLevel.start) {
-                            log.messageln('START: ' + _job.run_script);
-                        }
-                        context.db.end();
-                        context.db = null;
-                        var servicePromise = (0, _getScriptPromise2.default)({ workerLimit: workerLimit, log: log, logLevel: logLevel }, _job).then(function (result) {
-                            if (logLevel.done) {
-                                log.messageln('DONE: ' + _job.run_script);
-                            }
-                            return Promise.resolve({
-                                run: true,
-                                data: result
-                            });
-                        }).catch(function (err) {
-                            return new Promise((0, _openDbConnection2.default)(usedConnection)).then(function (db) {
-                                context.db = db;
-                                return new Promise(errorHandler(jobUuid)).then(function (retryResult) {
-                                    var resolveResult = {
-                                        run: false,
-                                        code: "2",
-                                        message: "Error",
-                                        error: err,
-                                        retry: retryResult
-                                    };
-                                    if (logLevel.error) {
-                                        log.messageln('ERROR: ' + _job.run_script);
-                                        log.messageln('ERROR_RESULT: ' + JSON.stringify({
-                                            error: err,
-                                            retry: retryResult
-                                        }));
-                                    }
-                                    return Promise.resolve(resolveResult);
-                                });
-                            });
-                        });
-                        new Promise(jobCountManager.add(jobUuid, _job, servicePromise));
-                        return servicePromise;
-                    } else {
-                        return new Promise((0, _insertToQueue2.default)(context)(_job)).then(function () {
-                            if (logLevel.workerLimit) {
-                                log.messageln('WORKER LIMIT: ' + _job.run_script);
-                            }
-                            return Promise.resolve({
-                                run: false,
-                                code: "3",
-                                message: "Worker limit reached"
-                            });
-                        });
-                    }
-                }).then(function (execResult) {
-                    return new Promise(function (resolve, reject) {
-                        if (context.db) {
-                            context.db.end(function (err) {
-                                context.db = null;
-                                resolve(execResult);
-                            });
-                        } else {
-                            resolve(execResult);
-                        }
-                    });
-                });
+                return new Promise(jobRunManager(jobUuid, _job));
             } else {
-                if (context.db) {
-                    context.db.end();
-                    context.db = null;
-                }
-
                 if (logLevel.noJob) {
                     log.messageln('WORKER LIMIT: ' + job.run_script);
                 }

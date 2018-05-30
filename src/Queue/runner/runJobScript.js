@@ -14,7 +14,11 @@ let runJobScript = ({workerLimit, log, logLevel}) => (job) => (resolve, reject) 
     let scriptPromise = new Promise(scriptToRun(JSON.parse(job.params))).catch(reject);
     let onDone = (result) => {
         if(logLevel.done){
-            log.messageln(`DONE: ${job.run_script}`);
+            let doneMessage = `DONE: ${job.run_script}`;
+            if(job.key){
+                doneMessage = `DONE: ${job.run_script} with key: ${job.key}`;
+            }
+            log.messageln(doneMessage);
         }
         return resolve({
             run: true,

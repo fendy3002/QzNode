@@ -6,6 +6,7 @@ import uuid from "./Uuid/index.js";
 import date from "./Date/index.js";
 import require from "./Require.js";
 import queue from "./Queue/index.js";
+import fileLister from "./FileLister/index.js";
 
 var Service = function() {
     return {
@@ -16,7 +17,8 @@ var Service = function() {
         io: io,
         uuid: uuid,
         require: require,
-        queue: queue
+        queue: queue,
+        fileLister: fileLister
     };
 };
 

@@ -38,7 +38,6 @@ if (!options.path) {
     new Promise((0, _index2.default)({
         log: log
     })(path)).then(function (result) {
-        console.log(result);
         (0, _output2.default)(options)(result, function (err) {
             if (err) {
                 log.messageln(err);

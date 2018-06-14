@@ -3,7 +3,7 @@ import fs from 'fs';
 import commandLineArgs from 'command-line-args';
 import reader from './reader/index.js';
 import readerOutput from './reader/output.js';
-import readerLog from './reader/log.js';
+import qz from '../index.js';
 
 const optionDefinitions = [
     { name: 'path', type: String, alias: 'p',multiple: false, defaultOption: true},
@@ -11,19 +11,23 @@ const optionDefinitions = [
     { name: 'out', type: String, alias: 'o',multiple: false },
     { name: 'log', type: String,multiple: false }
 ];
-var options = commandLineArgs(optionDefinitions);
+let options = commandLineArgs(optionDefinitions);
 
-export default () => {
-    if(!options.path){
-        console.log("Usage: node exec.js <path-to-list>");
+if(!options.path){
+    console.log("Usage: node exec.js <path-to-list>");
+}
+else{
+    let path = options.path;
+    let log = null;
+    if(options.log){
+        log = qz().logs.file(options.log);
     }
     else{
-        var path = options.path;
-        var log = readerLog(options);
-        reader({
-            log: log
-        })(path, (result) => {
-            readerOutput(options)(result, (err) => { if(err){ log(null, err); } });
-        });
+        log = qz().logs.console();
     }
+    new Promise(reader({
+        log: log
+    })(path)).then((result) => {
+        readerOutput(options)(result, (err) => { if(err){ log.messageln(err); } });
+    });
 }

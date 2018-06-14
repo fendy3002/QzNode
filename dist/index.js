@@ -36,6 +36,10 @@ var _index13 = require("./Queue/index.js");
 
 var _index14 = _interopRequireDefault(_index13);
 
+var _index15 = require("./FileLister/index.js");
+
+var _index16 = _interopRequireDefault(_index15);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Service = function Service() {
@@ -47,7 +51,8 @@ var Service = function Service() {
         io: _index6.default,
         uuid: _index10.default,
         require: _Require2.default,
-        queue: _index14.default
+        queue: _index14.default,
+        fileLister: _index16.default
     };
 };
 

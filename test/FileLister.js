@@ -1,6 +1,7 @@
 let assert = require('assert');
 let path = require('path');
 let fileLister = require('../src/index.js').default().fileLister;
+let qz = require("../src/index.js").default;
 let fs = require('fs');
 
 describe('FileLister', function() {
@@ -35,12 +36,15 @@ describe('FileLister', function() {
         it('should output log file', function(done) {
             let readPath = path.join(__dirname, "..", "testHelper", "fileToList");
             let logPath = path.join(__dirname, "..", "testHelper", "output", "log");
-            let log = fileLister().readerLog({out: true, log: logPath});
-            new Promise(fileLister().reader({log: log})(readPath))
-            .then((result) => {
-                assert.equal(true, result.size > 0.02);
-                assert.equal(7, result.data.length);
-                done();
+            fs.unlink(logPath, (err) => {
+                let log = qz().logs.file(logPath);
+                new Promise(fileLister().reader({log: log})(readPath))
+                .then((result) => {
+                    fs.readFile(logPath, (err, data) => {
+                        assert.equal(true, !!data);
+                        done();
+                    });
+                });
             });
         });
     });

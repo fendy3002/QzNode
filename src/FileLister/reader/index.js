@@ -1,11 +1,11 @@
 import fs from 'fs';
 import lo from 'lodash';
 import path from 'path';
-import readerLog from './log.js';
+import qz from '../../index.js';
 
 let Service = ({log} = {}) => {
     if(!log){
-        log = readerLog({});
+        log = qz().logs.empty();
     }
     return (pathArg, callback) => (resolve, reject) => {
         let absolutePath = pathArg;
@@ -13,13 +13,13 @@ let Service = ({log} = {}) => {
             path.resolve(pathArg);
         }
         
-        log("Processing for:" + absolutePath);
+        log.messageln("Processing for:" + absolutePath);
         
         let processPath = function(pathArg, tag){
             return new Promise((resolve, reject) => {
                 fs.lstat(pathArg, (err, stats) => {
                     if(err){
-                        log(err);
+                        log.messageln(err);
                     }
                     else if(stats.isDirectory()){
                         trace(pathArg, tag).then((result) => {

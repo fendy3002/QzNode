@@ -7,6 +7,7 @@ import date from "./Date/index.js";
 import require from "./Require.js";
 import queue from "./Queue/index.js";
 import fileLister from "./FileLister/index.js";
+import time from "./Time/index.js";
 
 var Service = function() {
     return {
@@ -18,7 +19,8 @@ var Service = function() {
         uuid: uuid,
         require: require,
         queue: queue,
-        fileLister: fileLister
+        fileLister: fileLister,
+        time: time
     };
 };
 

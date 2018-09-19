@@ -1,17 +1,25 @@
 let dataSet = require('../DataSet/index.js');
 
 let Service = (source, compared) => {
-    let spacedSource = source.split(" ");
-    let spacedSourceObj = dataSet.arrToSet(spacedSource);
-    let spacedCompared = compared.split(" ");
-    let spacedComparedObj = dataSet.arrToSet(spacedCompared);
+    return fromArray(source.split(" "), compared.split(" ")).then(result => {
+        return Promise.resolve({
+            ...result,
+            source: source,
+            compared: compared,
+        });
+    });
+};
+
+let fromArray = (sourceArray, comparedArray) => {
+    let spacedSourceObj = dataSet.arrToSet(sourceArray);
+    let spacedComparedObj = dataSet.arrToSet(comparedArray);
     return new Promise((resolve, reject) => {
         let sourceResult = [];
         let sourceBreakList = [];
         let comparedResult = [];
         let comparedBreakList = [];
 
-        spacedSource.forEach(sourceWord => {
+        sourceArray.forEach(sourceWord => {
             let breakResult = breakWordArray(sourceWord, spacedComparedObj);
             if(!breakResult || breakResult.length <= 1){
                 sourceResult.push(sourceWord);
@@ -23,7 +31,7 @@ let Service = (source, compared) => {
                 sourceResult = sourceResult.concat(breakResult);
             }
         });
-        spacedCompared.forEach(comparedWord => {
+        comparedArray.forEach(comparedWord => {
             let breakResult = breakWordArray(comparedWord, spacedSourceObj);
             if(!breakResult || breakResult.length <= 1){
                 comparedResult.push(comparedWord);
@@ -37,8 +45,8 @@ let Service = (source, compared) => {
         });
 
         resolve({
-            source: source,
-            compared: compared,
+            source: sourceArray,
+            compared: comparedArray,
             break: {
                 source: {
                     match: sourceBreakList,
@@ -52,6 +60,7 @@ let Service = (source, compared) => {
         });
     });
 };
+Service.fromArray = fromArray;
 
 let breakWordArray = (word, compareObj) => {
     if(compareObj[word]){

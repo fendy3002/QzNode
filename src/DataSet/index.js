@@ -21,4 +21,4 @@ let Service = {
     setToArr
 };
 
-export default Service;
+module.exports = Service;

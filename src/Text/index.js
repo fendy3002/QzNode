@@ -1,6 +1,8 @@
 let properBreakWord = require('./properBreakWord.js');
+let findPhrase = require('./findPhrase.js');
 let Service = {
-    properBreakWord
+    properBreakWord,
+    findPhrase
 };
 
 export default Service;

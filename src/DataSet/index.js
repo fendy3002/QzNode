@@ -1,9 +1,14 @@
 let lo = require('lodash');
 
-let arrToSet = (arr, handler = (val) => true) => {
+let arrToSet = (arr, handler = (val, index) => true) => {
     let result = {};
-    arr.forEach(ele => {
-        result[ele] = handler(ele);
+    arr.forEach((ele, index) => {
+        if(!result[ele]){
+            result[ele] = handler(ele, index);
+        }
+        else if(result[ele] && Array.isArray(result[ele])){
+            result[ele] = result[ele].concat(handler(ele, index));
+        }
     });
     return result;
 };

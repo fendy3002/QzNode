@@ -52,8 +52,8 @@ let fromArray = (sourceArray, comparedArray) => {
         let sourceSentence = sourceArray.join(" ");
         let comparedSentence = comparedArray.join(" ");
         lo.forOwn(result, (val, key) => {
-            sourceSentence = sourceSentence.replace(new RegExp(key, "gi"), "").replace(/  /g, " ");
-            comparedSentence = comparedSentence.replace(new RegExp(key, "gi"), "").replace(/  /g, " ");
+            sourceSentence = sourceSentence.replace(new RegExp(key, "gi"), "").replace(/  /g, " ").trim();
+            comparedSentence = comparedSentence.replace(new RegExp(key, "gi"), "").replace(/  /g, " ").trim();
         });
 
         resolve({

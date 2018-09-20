@@ -48,7 +48,21 @@ let fromArray = (sourceArray, comparedArray) => {
                 });
             }
         }
-        resolve(result);
+
+        let sourceSentence = sourceArray.join(" ");
+        let comparedSentence = comparedArray.join(" ");
+        lo.forOwn(result, (val, key) => {
+            sourceSentence = sourceSentence.replace(new RegExp(key, "gi"), "").replace(/  /g, " ");
+            comparedSentence = comparedSentence.replace(new RegExp(key, "gi"), "").replace(/  /g, " ");
+        });
+
+        resolve({
+            phrase: result,
+            nonPhrase: {
+                source: sourceSentence.split(" ").filter(k => k),
+                compared: comparedSentence.split(" ").filter(k => k)
+            }
+        });
     });
 };
 Service.fromArray = fromArray;

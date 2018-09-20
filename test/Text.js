@@ -31,8 +31,10 @@ describe('FindPhrase', function() {
         let compared = 'an experienced surgeon named arnold he is very good surgeon';
     
         findPhrase(source, compared).then((result) => {
-            assert.deepEqual(result["arnold he is"], ["arnold", "he", "is"]);
-            assert.deepEqual(result["an experienced surgeon"], ["an", "experienced", "surgeon"]);
+            assert.deepEqual(result.phrase["arnold he is"], ["arnold", "he", "is"]);
+            assert.deepEqual(result.phrase["an experienced surgeon"], ["an", "experienced", "surgeon"]);
+            assert.deepEqual(result.nonPhrase.source, ["this", "is"]);
+            assert.deepEqual(result.nonPhrase.compared, ["named", "very", "good", "surgeon"]);
             done();
         });
     });
@@ -41,8 +43,10 @@ describe('FindPhrase', function() {
         let compared = 'this is arnold he is an experienced surgeon';
     
         findPhrase(source, compared).then((result) => {
-            assert.deepEqual(result["arnold he is"], ["arnold", "he", "is"]);
-            assert.deepEqual(result["an experienced surgeon"], ["an", "experienced", "surgeon"]);
+            assert.deepEqual(result.phrase["arnold he is"], ["arnold", "he", "is"]);
+            assert.deepEqual(result.phrase["an experienced surgeon"], ["an", "experienced", "surgeon"]);
+            assert.deepEqual(result.nonPhrase.source, ["named", "very", "good", "surgeon"]);
+            assert.deepEqual(result.nonPhrase.compared, ["this", "is"]);
             done();
         });
     });

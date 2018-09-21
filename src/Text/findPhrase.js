@@ -1,4 +1,5 @@
 let lo = require('lodash');
+let util = require('util');
 let dataSet = require('../DataSet/index.js');
 
 let Service = (source, compared) => {
@@ -15,93 +16,197 @@ let fromArray = (sourceArray, comparedArray) => {
     let comparedObj = dataSet.arrToSet(comparedArray, (val, index) => {
         return [index];
     });
+
     return new Promise((resolve, reject) => {
         let result = {};
+
+        let sourcePosObj = {};
+        let comparedPosObj = {};
+        let phrasesList = [];
 
         for(let sourceIndex = 0; sourceIndex < sourceArray.length; sourceIndex++){
             let sourceWord = sourceArray[sourceIndex];
             if(comparedObj[sourceWord]){
                 comparedObj[sourceWord].forEach((compareIndex, forEachIndex) => {
-                    let phraseObj = {
-                        sourcePos : {
-                            start: sourceIndex, 
-                            list: [sourceIndex],
-                            end: null
-                        },
-                        comparedPos: {
-                            start: compareIndex,
-                            list: [compareIndex],
-                            end: null
-                        },
-                        phrase: {
-                            text: sourceWord,
-                            array: [sourceWord]
-                        }
-                    };
-
-                    for(let loopCompare = 1; loopCompare < comparedArray.length - compareIndex; loopCompare++){
-                        if(sourceArray.length > sourceIndex + loopCompare){
-                            if(sourceArray[sourceIndex + loopCompare] == comparedArray[compareIndex + loopCompare]){
-                                //compareMatch.push(sourceArray[sourceIndex + loopCompare]);
-                                phraseObj.sourcePos.list.push(sourceIndex + loopCompare);
-                                phraseObj.comparedPos.list.push(compareIndex + loopCompare);
-                                phraseObj.phrase.array.push(sourceArray[sourceIndex + loopCompare]);
-                                phraseObj.phrase.text += " " + sourceArray[sourceIndex + loopCompare];
-                            } else {
-                                break;
-                            }
-                        }
+                    if(sourcePosObj[sourceIndex] 
+                        && (sourcePosObj[sourceIndex].to !== null)
+                        && sourcePosObj[
+                            sourcePosObj[sourceIndex].to
+                        ].compared[compareIndex] === true)
+                    {
+                        return;
                     }
-                    phraseObj.sourcePos.end = Math.max(...phraseObj.sourcePos.list);
-                    phraseObj.comparedPos.end = Math.max(...phraseObj.comparedPos.list);
-                    
-                    if(phraseObj.sourcePos.list.length > 1){
-                        let alreadyExists = false;
-                        lo.forOwn(result, (existingPhraseObj, existingPhrase) => {
-                            if(alreadyExists){ return; }
-                            alreadyExists = alreadyExists || compareExistingPhrase(phraseObj, existingPhraseObj);
-                        });
+                    let phrasePosInfo = populatePhrasePosInfo(sourceArray, comparedArray, sourceIndex, compareIndex);
 
-                        if(!alreadyExists){
-                            if(!result[phraseObj.phrase.text]){
-                                result[phraseObj.phrase.text] = {
-                                    sourcePos: [phraseObj.sourcePos],
-                                    comparedPos: [phraseObj.comparedPos],
-                                    phrase: phraseObj.phrase
-                                };
+                    if(phrasePosInfo.num > 1){
+                        phrasesList.push(phrasePosInfo);
+                        if(!sourcePosObj[sourceIndex]){
+                            sourcePosObj[sourceIndex] = {
+                                compared: {},
+                                to: null
+                            };
+                        }
+                        sourcePosObj[sourceIndex].compared = {
+                            ...sourcePosObj[sourceIndex].compared,
+                            ...phrasePosInfo.source.objWith
+                        };
+                        phrasePosInfo.source.arrFrom.forEach((i) => {
+                            if(i == sourceIndex){ return; }
+                            if(sourcePosObj[i]){
+                                sourcePosObj[i].to = phrasePosInfo.sourceNeighbor[i].to;
                             }
                             else{
-                                let existingPhrase = result[phraseObj.phrase.text];
-                                if(!isSubset(phraseObj.sourcePos, existingPhrase.sourcePos)){
-                                    existingPhrase.sourcePos.push(phraseObj.sourcePos);
-                                }
-                                if(!isSubset(phraseObj.comparedPos, existingPhrase.comparedPos)){
-                                    existingPhrase.comparedPos.push(phraseObj.comparedPos);
-                                }
+                                sourcePosObj[i] = {
+                                    to: phrasePosInfo.sourceNeighbor[i].to,
+                                    compared: {}
+                                };
                             }
-                        }
+                        })
                     }
                 });
             }
+            else{
+                sourcePosObj[sourceIndex] = false;
+            }
         }
 
+        let distinctPhraseList = distinctPhrase(phrasesList);
+        let transformedPhrases = populatePhrase(sourceArray, distinctPhraseList);
         resolve({
-            phrase: result,
+            phrase: transformedPhrases,
             nonPhrase: {
-                source: getNonPhrase(sourceArray, result, (val) => val.sourcePos),
-                compared: getNonPhrase(comparedArray, result, (val) => val.comparedPos)
-            }
+                source: getNonPhrase(sourceArray, distinctPhraseList, (val) => val.arrFrom),
+                compared: getNonPhrase(comparedArray, distinctPhraseList, (val) => val.arrWith)
+            },
+            source: sourceArray,
+            compared: comparedArray,
         });
     });
 };
 
-let compareExistingPhrase = (phrase, existingPhrase) => {
-    let sourceSubset = isSubset(phrase.sourcePos, existingPhrase.sourcePos);
-    let comparedSubset = isSubset(phrase.comparedPos, existingPhrase.comparedPos);
+let populatePhrasePosInfo = (sourceArray, comparedArray, sourceIndex, compareIndex) => {
+    let posIndexInfo = {
+        num: 1,
+        source: {
+            arrFrom: [sourceIndex],
+            objFrom: {
+                [sourceIndex]: true
+            },
+            arrWith: [compareIndex],
+            objWith: {
+                [compareIndex]: true
+            },
+            to: null
+        },
+        // compared: {
+        //     arrFrom: [compareIndex],
+        //     objFrom: {
+        //         [compareIndex]: true
+        //     },
+        //     arrWith: [sourceIndex],
+        //     objWith: {
+        //         [sourceIndex]: true
+        //     },
+        //     to: null
+        // },
+        sourceNeighbor: {},
+        //comparedNeighbor: {}
+    };
+
+    for(let loopCompare = 1; loopCompare < comparedArray.length - compareIndex; loopCompare++){
+        if(sourceArray.length > sourceIndex + loopCompare){
+            if(sourceArray[sourceIndex + loopCompare] == comparedArray[compareIndex + loopCompare]){
+                posIndexInfo.source.arrFrom.push(sourceIndex + loopCompare);
+                posIndexInfo.source.arrWith.push(compareIndex + loopCompare);
+                posIndexInfo.source.objFrom[sourceIndex + loopCompare] = true;
+                posIndexInfo.source.objWith[compareIndex + loopCompare] = true;
+                // posIndexInfo.compared.arrFrom.push(compareIndex + loopCompare);
+                // posIndexInfo.compared.arrWith.push(sourceIndex + loopCompare);
+                // posIndexInfo.compared.objFrom[compareIndex + loopCompare] = true;
+                // posIndexInfo.compared.objWith[sourceIndex + loopCompare] = true;
+
+                posIndexInfo.sourceNeighbor[sourceIndex + loopCompare] = {
+                    to: sourceIndex
+                };
+                // posIndexInfo.comparedNeighbor[compareIndex + loopCompare] = {
+                //     to: compareIndex
+                // };
+                posIndexInfo.num++;
+            } else {
+                break;
+            }
+        }
+    }
+    return posIndexInfo;
+};
+let populatePhrase = (sourceArray, phrasePosInfoList) => {
+    let result = {};
+    phrasePosInfoList.forEach(phrasePosInfo => {
+        let phraseArr = phrasePosInfo.source.arrFrom.map(k=> {
+            return sourceArray[k]
+        });
+        let phraseText = phraseArr.join(" ");
+        let sourcePos = {
+            start: phrasePosInfo.source.arrFrom[0], 
+            list: phrasePosInfo.source.arrFrom,
+            end: phrasePosInfo.source.arrFrom[phrasePosInfo.source.arrFrom.length-1]
+        };
+        let comparedPos = {
+            start: phrasePosInfo.source.arrWith[0],
+            list: phrasePosInfo.source.arrWith,
+            end: phrasePosInfo.source.arrWith[phrasePosInfo.source.arrWith.length-1]
+        };
+        if(!result[phraseText]){ 
+            result[phraseText] = {
+                sourcePos : [],
+                comparedPos: [],
+                phrase: {
+                    text: phraseText,
+                    array: phraseArr
+                }
+            }; 
+        }
+        result[phraseText].sourcePos.push(sourcePos);
+        result[phraseText].comparedPos.push(comparedPos);
+    });
+
+    return result;
+};
+let distinctPhrase = (phrasePosList) => {
+    let distinctResult = [];
+    phrasePosList.forEach((phrasePos, index) => {
+        let exists = compareExistingPhrasePos(phrasePos, phrasePosList.filter((k, l) => {
+            return l !== index;
+        }));
+        if(!exists){
+            distinctResult.push(phrasePos);
+        }
+    });
+    return distinctResult;
+};
+
+let compareExistingPhrasePos = (pos, existingPosList) => {
+    let toStartEnd = (arr) => {
+        return {
+            start: arr[0],
+            end: arr[arr.length - 1]
+        };
+    }
+    let sourceSubset = isSubset(
+        toStartEnd(pos.source.arrFrom), 
+        existingPosList.map(k => {
+            return toStartEnd(k.source.arrFrom);
+        })
+    );
+    let comparedSubset = isSubset(
+        toStartEnd(pos.source.arrWith),
+        existingPosList.map(k => {
+            return toStartEnd(k.source.arrWith);
+        })
+    );
     
     return sourceSubset && comparedSubset;
 };
-
 let isSubset = (source, existingArr) => {
     let isExists = false;
     existingArr.forEach(existing => {
@@ -111,18 +216,23 @@ let isSubset = (source, existingArr) => {
     });
     return isExists;
 };
-let getNonPhrase = (arr, result, getHandler) => {
+let getNonPhrase = (arr, phrasePosList, getHandler) => {
     let nonPhraseObj = {};
     arr.forEach((k, index) => {
         nonPhraseObj[index] = true;
     });
-    lo.forOwn(result, (val, key) => {
-        getHandler(val).forEach((posObj) => {
-            posObj.list.forEach(pos => {
-                nonPhraseObj[pos] = false;
-            })
+    phrasePosList.forEach((phrasePos) => {
+        getHandler(phrasePos.source).forEach((index) => {
+            nonPhraseObj[index] = false
         });
     });
+    // lo.forOwn(result, (val, key) => {
+    //     getHandler(val).forEach((posObj) => {
+    //         posObj.list.forEach(pos => {
+    //             nonPhraseObj[pos] = false;
+    //         })
+    //     });
+    // });
 
     let nonPhraseArr = [];
     lo.forOwn(nonPhraseObj, (val, key) => {

@@ -62,11 +62,43 @@ describe('FindPhrase', function() {
             done();
         });
     });
+    it('should find more complex possible phrases in two sentence pt1', function(done) {
+        let source = 'an experienced surgeon named arnold he is very good and experienced surgeon';
+        let compared = 'this is arnold he is an experienced surgeon and very good and experienced surgeon';
+    
+        findPhrase(source, compared).then((result) => {
+            assert.deepEqual(result.phrase["arnold he is"].phrase.text, "arnold he is");
+            assert.deepEqual(result.phrase["an experienced surgeon"].phrase.array, ["an", "experienced", "surgeon"]);
+            assert.deepEqual(result.phrase["very good and experienced surgeon"].phrase.text, "very good and experienced surgeon");
+            assert.deepEqual(result.nonPhrase.source.word, ["named"]);
+            assert.deepEqual(result.nonPhrase.source.pos, [3]);
+            assert.deepEqual(result.nonPhrase.compared.word, ["this", "is", "and"]);
+            assert.deepEqual(result.nonPhrase.compared.pos, [0, 1, 8]);
+            done();
+        });
+    });
+    it('should find more complex possible phrases in two sentence pt2', function(done) {
+        let source = 'an experienced surgeon named arnold he is very good and experienced';
+        let compared = 'this is arnold he is an experienced surgeon and very good and experienced surgeon';
+    
+        findPhrase(source, compared).then((result) => {
+            assert.deepEqual(result.phrase["arnold he is"].phrase.text, "arnold he is");
+            assert.deepEqual(result.phrase["an experienced surgeon"].phrase.array, ["an", "experienced", "surgeon"]);
+            assert.deepEqual(result.phrase["very good and experienced"].phrase.text, "very good and experienced");
+            assert.deepEqual(result.phrase["experienced surgeon"].sourcePos[0].list, [1, 2]);
+            assert.deepEqual(result.phrase["experienced surgeon"].comparedPos[0].list, [12, 13]);
+            assert.deepEqual(result.nonPhrase.source.word, ["named"]);
+            assert.deepEqual(result.nonPhrase.source.pos, [3]);
+            assert.deepEqual(result.nonPhrase.compared.word, ["this", "is", "and"]);
+            assert.deepEqual(result.nonPhrase.compared.pos, [0, 1, 8]);
+            done();
+        });
+    });
 });
 // describe('wordSwap', function() {
 //     let wordSwap = require('../src/Text/wordSwap.js');
 //     it('should find possible swaps in two sentence', function(done) {
-//         let source = 'this is arnold he is an experienced surgeon';
+//         let source = 'this is arnold he is an experienced surgeon and very good';
 //         let compared = 'an experienced surgeon named arnold he is very good surgeon';
     
 //         wordSwap(source, compared).then((result) => {

@@ -123,16 +123,8 @@ let populatePhrase = (sourceArray, phrasePosInfoList) => {
             return sourceArray[k]
         });
         let phraseText = phraseArr.join(" ");
-        let sourcePos = {
-            start: phrasePosInfo.source.arrFrom[0], 
-            list: phrasePosInfo.source.arrFrom,
-            end: phrasePosInfo.source.arrFrom[phrasePosInfo.source.arrFrom.length-1]
-        };
-        let comparedPos = {
-            start: phrasePosInfo.source.arrWith[0],
-            list: phrasePosInfo.source.arrWith,
-            end: phrasePosInfo.source.arrWith[phrasePosInfo.source.arrWith.length-1]
-        };
+        let sourcePos = phrasePosInfo.source.arrFrom;
+        let comparedPos = phrasePosInfo.source.arrWith;
         if(!result[phraseText]){ 
             result[phraseText] = {
                 sourcePos : [],

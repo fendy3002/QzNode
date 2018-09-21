@@ -33,9 +33,8 @@ describe('FindPhrase', function() {
         findPhrase(source, compared).then((result) => {
             assert.equal(result.phrase["arnold he is"].phrase.text, "arnold he is");
             assert.equal(result.phrase["arnold he is"].sourcePos.length, 1);
-            assert.equal(result.phrase["arnold he is"].sourcePos[0].start, 2);
-            assert.equal(result.phrase["arnold he is"].sourcePos[0].end, 4);
-            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0].list, [2, 3, 4]);
+            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0], [2, 3, 4]);
+            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0], [2, 3, 4]);
             assert.deepEqual(result.phrase["arnold he is"].phrase.array, ["arnold", "he", "is"]);
 
             assert.deepEqual(result.phrase["an experienced surgeon"].phrase.array, ["an", "experienced", "surgeon"]);
@@ -52,9 +51,7 @@ describe('FindPhrase', function() {
             assert.deepEqual(result.phrase["arnold he is"].phrase.text, "arnold he is");
             assert.deepEqual(result.phrase["arnold he is"].phrase.array, ["arnold", "he", "is"]);
             assert.deepEqual(result.phrase["arnold he is"].sourcePos.length, 1);
-            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0].start, 4);
-            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0].end, 6);
-            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0].list, [4, 5, 6]);
+            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0], [4, 5, 6]);
             assert.deepEqual(result.phrase["an experienced surgeon"].phrase.array, ["an", "experienced", "surgeon"]);
             assert.deepEqual(result.nonPhrase.source.word, ["named", "surgeon"]);
             assert.deepEqual(result.nonPhrase.source.pos, [3, 9]);
@@ -85,8 +82,8 @@ describe('FindPhrase', function() {
             assert.deepEqual(result.phrase["arnold he is"].phrase.text, "arnold he is");
             assert.deepEqual(result.phrase["an experienced surgeon"].phrase.array, ["an", "experienced", "surgeon"]);
             assert.deepEqual(result.phrase["very good and experienced"].phrase.text, "very good and experienced");
-            assert.deepEqual(result.phrase["experienced surgeon"].sourcePos[0].list, [1, 2]);
-            assert.deepEqual(result.phrase["experienced surgeon"].comparedPos[0].list, [12, 13]);
+            assert.deepEqual(result.phrase["experienced surgeon"].sourcePos[0], [1, 2]);
+            assert.deepEqual(result.phrase["experienced surgeon"].comparedPos[0], [12, 13]);
             assert.deepEqual(result.nonPhrase.source.word, ["named"]);
             assert.deepEqual(result.nonPhrase.source.pos, [3]);
             assert.deepEqual(result.nonPhrase.compared.word, ["this", "is", "and"]);

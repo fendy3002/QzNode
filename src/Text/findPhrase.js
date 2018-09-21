@@ -18,16 +18,14 @@ let fromArray = (sourceArray, comparedArray) => {
     });
 
     return new Promise((resolve, reject) => {
-        let result = {};
-
         let sourcePosObj = {};
-        let comparedPosObj = {};
         let phrasesList = [];
 
         for(let sourceIndex = 0; sourceIndex < sourceArray.length; sourceIndex++){
             let sourceWord = sourceArray[sourceIndex];
             if(comparedObj[sourceWord]){
                 comparedObj[sourceWord].forEach((compareIndex, forEachIndex) => {
+                    // check if already part of phrase
                     if(sourcePosObj[sourceIndex] 
                         && (sourcePosObj[sourceIndex].to !== null)
                         && sourcePosObj[
@@ -40,6 +38,8 @@ let fromArray = (sourceArray, comparedArray) => {
 
                     if(phrasePosInfo.num > 1){
                         phrasesList.push(phrasePosInfo);
+
+                        // set link to check for existed subset
                         if(!sourcePosObj[sourceIndex]){
                             sourcePosObj[sourceIndex] = {
                                 compared: {},
@@ -89,28 +89,13 @@ let populatePhrasePosInfo = (sourceArray, comparedArray, sourceIndex, compareInd
         num: 1,
         source: {
             arrFrom: [sourceIndex],
-            objFrom: {
-                [sourceIndex]: true
-            },
-            arrWith: [compareIndex],
+            arrWith: [compareIndex], // compared index list
             objWith: {
                 [compareIndex]: true
             },
             to: null
         },
-        // compared: {
-        //     arrFrom: [compareIndex],
-        //     objFrom: {
-        //         [compareIndex]: true
-        //     },
-        //     arrWith: [sourceIndex],
-        //     objWith: {
-        //         [sourceIndex]: true
-        //     },
-        //     to: null
-        // },
-        sourceNeighbor: {},
-        //comparedNeighbor: {}
+        sourceNeighbor: {}
     };
 
     for(let loopCompare = 1; loopCompare < comparedArray.length - compareIndex; loopCompare++){
@@ -118,19 +103,11 @@ let populatePhrasePosInfo = (sourceArray, comparedArray, sourceIndex, compareInd
             if(sourceArray[sourceIndex + loopCompare] == comparedArray[compareIndex + loopCompare]){
                 posIndexInfo.source.arrFrom.push(sourceIndex + loopCompare);
                 posIndexInfo.source.arrWith.push(compareIndex + loopCompare);
-                posIndexInfo.source.objFrom[sourceIndex + loopCompare] = true;
                 posIndexInfo.source.objWith[compareIndex + loopCompare] = true;
-                // posIndexInfo.compared.arrFrom.push(compareIndex + loopCompare);
-                // posIndexInfo.compared.arrWith.push(sourceIndex + loopCompare);
-                // posIndexInfo.compared.objFrom[compareIndex + loopCompare] = true;
-                // posIndexInfo.compared.objWith[sourceIndex + loopCompare] = true;
-
+                
                 posIndexInfo.sourceNeighbor[sourceIndex + loopCompare] = {
                     to: sourceIndex
                 };
-                // posIndexInfo.comparedNeighbor[compareIndex + loopCompare] = {
-                //     to: compareIndex
-                // };
                 posIndexInfo.num++;
             } else {
                 break;
@@ -185,6 +162,8 @@ let distinctPhrase = (phrasePosList) => {
     return distinctResult;
 };
 
+// to compare if phrase has already existed in other phrase
+// ex: two three ; is already existed in ; one two three four
 let compareExistingPhrasePos = (pos, existingPosList) => {
     let toStartEnd = (arr) => {
         return {
@@ -216,6 +195,7 @@ let isSubset = (source, existingArr) => {
     });
     return isExists;
 };
+// to get words without phrase
 let getNonPhrase = (arr, phrasePosList, getHandler) => {
     let nonPhraseObj = {};
     arr.forEach((k, index) => {
@@ -226,13 +206,6 @@ let getNonPhrase = (arr, phrasePosList, getHandler) => {
             nonPhraseObj[index] = false
         });
     });
-    // lo.forOwn(result, (val, key) => {
-    //     getHandler(val).forEach((posObj) => {
-    //         posObj.list.forEach(pos => {
-    //             nonPhraseObj[pos] = false;
-    //         })
-    //     });
-    // });
 
     let nonPhraseArr = [];
     lo.forOwn(nonPhraseObj, (val, key) => {

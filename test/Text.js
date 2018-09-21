@@ -27,27 +27,50 @@ const util = require('util');
 describe('FindPhrase', function() {
     let findPhrase = require('../src/Text/findPhrase.js');
     it('should find possible phrases in two sentence', function(done) {
-        let source = 'this is arnold he is an experienced surgeon';
+        let source = 'this is arnold he is an experienced surgeon and very good';
         let compared = 'an experienced surgeon named arnold he is very good surgeon';
     
         findPhrase(source, compared).then((result) => {
-            assert.deepEqual(result.phrase["arnold he is"], ["arnold", "he", "is"]);
-            assert.deepEqual(result.phrase["an experienced surgeon"], ["an", "experienced", "surgeon"]);
-            assert.deepEqual(result.nonPhrase.source, ["this", "is"]);
-            assert.deepEqual(result.nonPhrase.compared, ["named", "very", "good", "surgeon"]);
+            assert.equal(result.phrase["arnold he is"].phrase.text, "arnold he is");
+            assert.equal(result.phrase["arnold he is"].sourcePos.length, 1);
+            assert.equal(result.phrase["arnold he is"].sourcePos[0].start, 2);
+            assert.equal(result.phrase["arnold he is"].sourcePos[0].end, 4);
+            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0].list, [2, 3, 4]);
+            assert.deepEqual(result.phrase["arnold he is"].phrase.array, ["arnold", "he", "is"]);
+
+            assert.deepEqual(result.phrase["an experienced surgeon"].phrase.array, ["an", "experienced", "surgeon"]);
+            assert.deepEqual(result.nonPhrase.source.word, ["this", "is", "and"]);
+            assert.deepEqual(result.nonPhrase.source.pos, [0, 1, 8]);
             done();
         });
     });
     it('should find possible phrases in two sentence pt2', function(done) {
         let source = 'an experienced surgeon named arnold he is very good surgeon';
-        let compared = 'this is arnold he is an experienced surgeon';
+        let compared = 'this is arnold he is an experienced surgeon and very good';
     
         findPhrase(source, compared).then((result) => {
-            assert.deepEqual(result.phrase["arnold he is"], ["arnold", "he", "is"]);
-            assert.deepEqual(result.phrase["an experienced surgeon"], ["an", "experienced", "surgeon"]);
-            assert.deepEqual(result.nonPhrase.source, ["named", "very", "good", "surgeon"]);
-            assert.deepEqual(result.nonPhrase.compared, ["this", "is"]);
+            assert.deepEqual(result.phrase["arnold he is"].phrase.text, "arnold he is");
+            assert.deepEqual(result.phrase["arnold he is"].phrase.array, ["arnold", "he", "is"]);
+            assert.deepEqual(result.phrase["arnold he is"].sourcePos.length, 1);
+            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0].start, 4);
+            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0].end, 6);
+            assert.deepEqual(result.phrase["arnold he is"].sourcePos[0].list, [4, 5, 6]);
+            assert.deepEqual(result.phrase["an experienced surgeon"].phrase.array, ["an", "experienced", "surgeon"]);
+            assert.deepEqual(result.nonPhrase.source.word, ["named", "surgeon"]);
+            assert.deepEqual(result.nonPhrase.source.pos, [3, 9]);
+            assert.deepEqual(result.nonPhrase.compared.word, ["this", "is", "and"]);
             done();
         });
     });
 });
+// describe('wordSwap', function() {
+//     let wordSwap = require('../src/Text/wordSwap.js');
+//     it('should find possible swaps in two sentence', function(done) {
+//         let source = 'this is arnold he is an experienced surgeon';
+//         let compared = 'an experienced surgeon named arnold he is very good surgeon';
+    
+//         wordSwap(source, compared).then((result) => {
+//             done();
+//         });
+//     });
+// });

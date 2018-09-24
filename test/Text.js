@@ -25,7 +25,7 @@ const util = require('util');
 //     });
 // });
 describe('FindPhrase', function() {
-    let findPhrase = require('../src/Text/findPhrase.js');
+    let findPhrase = require('../dist/Text/findPhrase.js');
     it('should find possible phrases in two sentence', function(done) {
         let source = 'this is arnold he is an experienced surgeon and very good';
         let compared = 'an experienced surgeon named arnold he is very good surgeon';

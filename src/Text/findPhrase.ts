@@ -1,8 +1,10 @@
+export {};
+
 let lo = require('lodash');
 let util = require('util');
-let dataSet = require('../DataSet/index.js');
+let dataSet = require('../DataSet/index');
 
-let Service = (source, compared) => {
+let Service:any = (source, compared) => {
     return fromArray(source.split(" "), compared.split(" ")).then(result => {
         return Promise.resolve({
             ...result,

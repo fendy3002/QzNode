@@ -1,11 +1,14 @@
-let moment = require('moment');
+export {};
+
+import * as moment from 'moment';
+
 /**
  * 
  * @param {moment} time time to compare
  * @param {*} from HH:mm time format, marking the start time
  * @param {*} to HH:mm time format, marking the end time
  */
-let isBetween = (time, from, to) => {
+let isBetween = function(time: moment.Moment, from: string, to: string): boolean{
     let momentFrom = moment.utc("2001-01-02 " + from + ":00", "YYYY-MM-DD HH:mm:ss");
     let momentTo = moment.utc("2001-01-02 " + to + ":00", "YYYY-MM-DD HH:mm:ss");
     let timeOnly = moment.utc("2001-01-02 " + time.format("HH:mm") + ":00", "YYYY-MM-DD HH:mm:ss");
@@ -19,4 +22,4 @@ let isBetween = (time, from, to) => {
         return timeOnly >= realmomentFrom && timeOnly <= momentTo;
     }
 };
-export default isBetween;
+module.exports = isBetween;

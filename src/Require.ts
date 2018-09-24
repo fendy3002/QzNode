@@ -1,8 +1,10 @@
-var path = require("path");
-var fs = require("fs");
+export {};
 
-var service = (dirpath, ignore = ["index.js"]) => {
-    var load = (obj, dirpath, prefixPath = "") => {
+let path = require("path");
+let fs = require("fs");
+
+let service = (dirpath: string, ignore: string[] = ["index.js"]) : object => {
+    let load = (obj: object, dirpath: string, prefixPath: string = "") => {
         fs.readdirSync(dirpath).forEach(function(file) {
             if(!prefixPath){
                 if(ignore.indexOf(file) > -1){ return; }
@@ -10,7 +12,7 @@ var service = (dirpath, ignore = ["index.js"]) => {
             else{
                 if(ignore.indexOf(path.join(prefixPath, file)) > -1){ return; }
             }
-            let fullpath = path.join(dirpath, file);
+            let fullpath: string = path.join(dirpath, file);
             if(fs.lstatSync(fullpath).isDirectory()){
                 var subObj = {};
                 obj[file] = subObj;
@@ -22,7 +24,7 @@ var service = (dirpath, ignore = ["index.js"]) => {
             }
         });
     };
-    let result = {};
+    let result:object = {};
     load(result, dirpath);
     return result;
 }

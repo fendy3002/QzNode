@@ -1,6 +1,6 @@
 let assert = require('assert');
 let moment = require('moment');
-let qz = require('../src/index.js').default();
+let qz = require('../dist/index.js').default();
 let lo = require('lodash');
 let path = require('path');
 

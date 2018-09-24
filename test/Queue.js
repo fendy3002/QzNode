@@ -1,7 +1,7 @@
 let assert = require('assert');
 let mysql = require('mysql');
-let dispatcher = require('../src/Queue/dispatcher.js').default;
-let runner = require('../src/Queue/runner.js').default;
+let dispatcher = require('../dist/Queue/dispatcher.js').default;
+let runner = require('../dist/Queue/runner.js').default;
 let path = require('path');
 let lo = require('lodash');
 

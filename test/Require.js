@@ -1,5 +1,5 @@
 var assert = require('assert');
-var qz = require('../src/index.js').default();
+var qz = require('../dist/index.js').default();
 var path = require("path");
 
 describe('Require', function() {

@@ -1,7 +1,7 @@
 let assert = require('assert');
 let path = require('path');
-let fileLister = require('../src/index.js').default().fileLister;
-let qz = require("../src/index.js").default;
+let qz = require("../dist/index.js").default;
+let fileLister = qz().fileLister;
 let fs = require('fs');
 
 describe('FileLister', function() {

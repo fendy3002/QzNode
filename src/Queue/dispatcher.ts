@@ -1,10 +1,12 @@
+export {};
+
+import * as moment from 'moment';
 let mysql = require('mysql');
-let moment = require('moment');
 let momentTz = require('moment');
 let openDbConnection = require('./helper/openDbConnection.js');
-let uuidGen = require('../Uuid/index.js').default;
+let uuidGen = require('../Uuid/index');
 
-let dispatcher = (param = {}) => {
+let dispatcher = (param:object = {}): object => {
     let {driver,
         connection,
         tableName,
@@ -27,19 +29,19 @@ let dispatcher = (param = {}) => {
         ...connection
     };
 
-    let dispatch = (scriptPath, param = {}, {
+    let dispatch = (scriptPath: string, param:object = {}, {
         tag = "default",
         priority = 3,
         when = null,
         key = null
-    } = {}) => {
-        let utcInsert = moment.utc().format("YYYY-MM-DDTHH:mm:ss");
+    } = {}): Promise<any> => {
+        let utcInsert:string = moment.utc().format("YYYY-MM-DDTHH:mm:ss");
         if(when){
             utcInsert = momentTz(when, timezone).utc().format("YYYY-MM-DDTHH:mm:ss");
         }
 
-        let escTableName = tableName;
-        return new Promise(openDbConnection(usedConnection)).then((db) => {
+        let escTableName: string = tableName;
+        return new Promise(openDbConnection(usedConnection)).then((db:any) => {
             return new Promise((resolve, reject) => {
                 let queueUuid = uuidGen();
                 let query = db.query(`INSERT INTO ${escTableName} SET ?`, {

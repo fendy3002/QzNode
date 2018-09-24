@@ -1,6 +1,5 @@
 let lo = require('lodash');
 
-let dataSet = require('../DataSet/index.js');
 let findPhrase = require('./findPhrase.js');
 
 let Service = (source, compared) => {

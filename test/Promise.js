@@ -1,5 +1,5 @@
 let assert = require('assert');
-let qz = require('../src/index.js').default();
+let qz = require('../dist/index.js').default();
 let lo = require('lodash');
 
 describe('QzPromise', function() {

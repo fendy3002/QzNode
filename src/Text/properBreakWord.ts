@@ -1,6 +1,8 @@
-let dataSet = require('../DataSet/index.js');
+export {};
 
-let Service = (source, compared) => {
+let dataSet = require('../DataSet/index');
+
+let Service:any = (source, compared) => {
     return fromArray(source.split(" "), compared.split(" ")).then(result => {
         return Promise.resolve({
             ...result,

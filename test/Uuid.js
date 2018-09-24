@@ -1,5 +1,5 @@
 var assert = require('assert');
-var qz = require('../src/index.js').default();
+var qz = require('../dist/index.js').default();
 
 describe('UUID', function() {
     describe('_', function() {

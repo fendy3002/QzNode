@@ -1,5 +1,5 @@
-import fs from "fs";
-import paths from "path";
+let fs = require("fs");
+let paths = require("path");
 
 var deleteFolderRecursive = function(path) {
     if (fs.existsSync(path)) {
@@ -15,4 +15,4 @@ var deleteFolderRecursive = function(path) {
     }
 };
 
-export default deleteFolderRecursive;
+module.exports = deleteFolderRecursive;

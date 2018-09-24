@@ -1,9 +1,9 @@
-import dispatcher from './dispatcher';
-import runner from './runner.js';
+let dispatcher = require('./dispatcher');
+let runner = require('./runner.js');
 
 var Service = {
     dispatcher: dispatcher,
     runner: runner
 };
 
-export default Service;
+module.exports = Service;

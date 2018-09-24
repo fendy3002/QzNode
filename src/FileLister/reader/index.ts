@@ -1,9 +1,12 @@
-import fs from 'fs';
-import lo from 'lodash';
-import path from 'path';
-import qz from '../../index.js';
+export {};
 
-let Service = ({log} = {}) => {
+let fs = require('fs');
+let lo = require('lodash');
+let path = require('path');
+import qz = require('../../index');
+
+let Service = ({log}: any = {}) => {
+    console.log(qz);
     if(!log){
         log = qz().logs.empty();
     }
@@ -69,4 +72,4 @@ let Service = ({log} = {}) => {
     };
 }
 
-export default Service;
+module.exports = Service;

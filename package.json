@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --require babel-core/register --require babel-polyfill --trace-warnings",
+    "test": "TS_NODE_PROJECT=./tsconfig.json mocha --require ts-node/register --trace-warnings test/**/*.ts",
     "compile": "./node_modules/.bin/babel src --out-dir dist",
     "compileWatch": "./node_modules/.bin/babel src --out-dir dist --watch",
     "prepublish": "npm run compile"
@@ -34,6 +34,7 @@
     "babel-watch": "^2.0.6",
     "gulp": "^3.8.8",
     "mocha": "^5.2.0",
+    "ts-node": "^7.0.1",
     "typescript": "^3.0.3"
   },
   "dependencies": {

@@ -71,4 +71,4 @@ let dispatcher = (param:object = {}): object => {
     };
 };
 
-export default dispatcher;
+module.exports = dispatcher;

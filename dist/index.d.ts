@@ -1,12 +1,10 @@
+export {};
 declare var Service: () => {
     dataSet: any;
     exec: any;
     promise: any;
     logs: any;
-    date: {
-        dateRangeToArray: (from: string | import("moment").Moment, to: string | import("moment").Moment) => any[];
-        dateDurationToArray: (from: import("moment").Moment, duration: number) => any[];
-    };
+    date: any;
     io: any;
     uuid: any;
     require: any;

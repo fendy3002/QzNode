@@ -1,9 +1,8 @@
-import fs from 'fs';
-
-import commandLineArgs from 'command-line-args';
-import reader from './reader/index.js';
-import readerOutput from './reader/output.js';
-import qz from '../index.js';
+let fs = require('fs');
+let commandLineArgs = require('command-line-args');
+let reader = require('./reader/index.js');
+let readerOutput = require('./reader/output.js');
+let qz = require('../index.js');
 
 const optionDefinitions = [
     { name: 'path', type: String, alias: 'p',multiple: false, defaultOption: true},

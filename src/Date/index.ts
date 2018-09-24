@@ -1,3 +1,4 @@
+export {};
 import * as moment from 'moment';
 
 let dateRangeToArray = (
@@ -32,4 +33,4 @@ let Service = {
     dateDurationToArray
 };
 
-export default Service;
+module.exports = Service;

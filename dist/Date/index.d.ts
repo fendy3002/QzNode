@@ -1,3 +1,4 @@
+export {};
 import * as moment from 'moment';
 declare let Service: {
     dateRangeToArray: (from: string | moment.Moment, to: string | moment.Moment) => any[];

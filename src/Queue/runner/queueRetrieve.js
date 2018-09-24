@@ -1,4 +1,4 @@
-import mysql from 'mysql';
+let mysql = require('mysql');
 
 let queueRetrieve = ({
     openDb,
@@ -100,4 +100,4 @@ let queueRetrieve = ({
     });
 };
 
-export default queueRetrieve;
+module.exports = queueRetrieve;

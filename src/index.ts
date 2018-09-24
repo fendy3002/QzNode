@@ -1,16 +1,18 @@
-let dataSet = require('./DataSet');
-import promise from "./Promise/index.js";
-import logs from "./Logs/index.js";
-import io from "./IO/index.js";
-import execService from "./Exec/index.js";
-let uuid = require("./Uuid/index");
-import date from "./Date/index.js";
-let requireService = require("./Require");
-import queue from "./Queue/index.js";
-import fileLister from "./FileLister/index.js";
-import time from "./Time/index.js";
+export {};
 
-var Service = function() {
+let dataSet = require('./DataSet');
+let promise = require("./Promise/index");
+let logs = require("./Logs/index.js");
+let io = require("./IO/index.js");
+let execService = require("./Exec/index.js");
+let uuid = require("./Uuid/index");
+let date = require("./Date/index");
+let requireService = require("./Require");
+let queue = require("./Queue/index.js");
+let fileLister = require("./FileLister/index");
+let time = require("./Time/index.js");
+
+let Service = function() {
     return {
         dataSet: dataSet,
         exec: execService,
@@ -25,5 +27,4 @@ var Service = function() {
         time: time
     };
 };
-
-export default Service;
+module.exports = Service;

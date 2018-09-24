@@ -33,4 +33,4 @@ var Service = function(callback = ()=>{} ) {
     };
 };
 
-export default Service;
+module.exports = Service;

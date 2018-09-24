@@ -1,5 +1,5 @@
-import fs from 'fs';
-import lo from 'lodash';
+let fs = require('fs');
+let lo = require('lodash');
 
 var Service = function(filepath, callback = ()=>{} ) {
     var _ = {
@@ -60,4 +60,4 @@ var Service = function(filepath, callback = ()=>{} ) {
     };
 };
 
-export default Service;
+module.exports = Service;

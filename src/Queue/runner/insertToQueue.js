@@ -1,5 +1,5 @@
-import moment from 'moment';
-import mysql from 'mysql';
+let moment = require('moment');
+let mysql = require('mysql');
 
 let insertToQueue = (context) => (running) => (resolve, reject) => {
     let {
@@ -61,4 +61,4 @@ let insertToQueue = (context) => (running) => (resolve, reject) => {
     })
 };
 
-export default insertToQueue;
+module.exports = insertToQueue;

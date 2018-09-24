@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _dispatcher = require('./dispatcher.js');
+var _dispatcher = require('./dispatcher');
 
 var _dispatcher2 = _interopRequireDefault(_dispatcher);
 

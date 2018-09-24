@@ -1,7 +1,7 @@
-import deleteContentSync from './deleteContentSync.js';
+let deleteContentSync = require('./deleteContentSync.js');
 
 var Service = {
     deleteContentSync: deleteContentSync
 };
 
-export default Service;
+module.exports = Service;

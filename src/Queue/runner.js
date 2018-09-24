@@ -1,15 +1,15 @@
-import { setInterval } from 'timers';
-import mysql from 'mysql';
-import moment from 'moment';
-import { runInContext } from 'vm';
+let { setInterval } = require('timers');
+let mysql = require('mysql');
+let moment = require('moment');
+let { runInContext } = require('vm');
 
-import openDbConnection from './helper/openDbConnection.js';
-import uuid from '../Uuid/index.js';
-import emptyLog from '../Logs/emptyLog.js';
-import queueRetrieve from './runner/queueRetrieve.js';
-import errorHandlerRaw from './runner/errorHandler.js';
-import jobCountManagerRaw from './runner/jobCountManager.js';
-import jobRunManagerRaw from './runner/jobRunManager.js';
+let openDbConnection = require('./helper/openDbConnection.js');
+let uuid = require('../Uuid/index');
+let emptyLog = require('../Logs/emptyLog.js');
+let queueRetrieve = require('./runner/queueRetrieve.js');
+let errorHandlerRaw = require('./runner/errorHandler.js');
+let jobCountManagerRaw = require('./runner/jobCountManager.js');
+let jobRunManagerRaw = require('./runner/jobRunManager.js');
 
 let runner = (param = {}) => {
     let {
@@ -118,4 +118,4 @@ let runner = (param = {}) => {
     }
 };
 
-export default runner;
+module.exports = runner;

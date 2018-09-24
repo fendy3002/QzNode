@@ -1,4 +1,4 @@
-import moment from 'moment';
+let moment = require('moment');
 
 let jobCountManager = ({
     workerLimit
@@ -42,4 +42,4 @@ let jobCountManager = ({
         isJobOverLimit
     };
 };
-export default jobCountManager;
+module.exports = jobCountManager;

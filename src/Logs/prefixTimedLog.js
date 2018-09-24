@@ -1,4 +1,4 @@
-import moment from 'moment';
+let moment = require('moment');
 
 var Service = function(log, options) {
     var _ = {
@@ -34,4 +34,4 @@ var Service = function(log, options) {
     };
 };
 
-export default Service;
+module.exports = Service;

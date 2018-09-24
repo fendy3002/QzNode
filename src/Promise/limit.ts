@@ -1,5 +1,6 @@
+export {};
 
-let Service = function({
+let Service:any = function({
     limit = 5
 }) {
     let qzPromiseToPromise = (qzPromise) => {
@@ -43,4 +44,4 @@ let Service = function({
     };
 };
 
-export default Service;
+module.exports = Service;

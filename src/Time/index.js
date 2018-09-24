@@ -1,7 +1,7 @@
-import isBetween from './isBetween.js';
+let isBetween  = require('./isBetween');
 
 var Service = {
     isBetween: isBetween
 };
 
-export default Service;
+module.exports = Service;

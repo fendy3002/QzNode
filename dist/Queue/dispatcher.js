@@ -71,4 +71,4 @@ var dispatcher = function (param) {
         dispatch: dispatch
     };
 };
-exports.default = dispatcher;
+module.exports = dispatcher;

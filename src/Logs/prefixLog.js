@@ -30,4 +30,4 @@ var Service = function(log, options) {
     };
 };
 
-export default Service;
+module.exports = Service;

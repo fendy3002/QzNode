@@ -1,5 +1,5 @@
-import runJobScript from './runJobScript.js';
-import insertToQueue from './insertToQueue.js';
+let runJobScript = require('./runJobScript.js');
+let insertToQueue = require('./insertToQueue.js');
 
 let jobRunManager = (context, jobCountManager, errorHandler) => (jobUuid, job) => (resolve, reject) => {
     let {logLevel, workerLimit, log} = context;

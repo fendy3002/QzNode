@@ -1,7 +1,7 @@
-import chalk from 'chalk';
-import commandLineArgs from 'command-line-args';
+let chalk = require('chalk');
+let commandLineArgs = require('command-line-args');
 
-import uuid from '../Uuid/index.js';
+let uuid = require('../Uuid/index');
 
 let helpLine = "\n" +
         chalk.bold.underline("QzNode-cli") + " \n" +
@@ -28,4 +28,4 @@ let execService = (param = {}) => {
     }
 };
 
-export default execService;
+module.exports = execService;

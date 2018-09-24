@@ -1,4 +1,4 @@
-import fs from 'fs';
+let fs = require('fs');
 
 var Service = (options) => {
     if(!options.out){
@@ -32,4 +32,4 @@ var Service = (options) => {
     }
 };
 
-export default Service;
+module.exports = Service;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "TS_NODE_PROJECT=./tsconfig.json mocha --require ts-node/register --trace-warnings test/**/*.ts",
+    "test": "./node_modules/.bin/mocha --require ts-node/register --trace-warnings test/**/*.ts",
     "compile": "./node_modules/.bin/babel src --out-dir dist",
     "compileWatch": "./node_modules/.bin/babel src --out-dir dist --watch",
     "prepublish": "npm run compile"

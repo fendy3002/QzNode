@@ -5,4 +5,4 @@ let Service = {
     findPhrase
 };
 
-export default Service;
+export = Service;

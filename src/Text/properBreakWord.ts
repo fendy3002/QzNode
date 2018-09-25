@@ -1,6 +1,7 @@
 let dataSet = require('../DataSet/index');
+import * as thisTypes from './types';
 
-let Service:any = (source, compared) => {
+let Service = <thisTypes.BreakWordService> function(source, compared) {
     return fromArray(source.split(" "), compared.split(" ")).then(result => {
         return Promise.resolve({
             ...result,
@@ -10,17 +11,26 @@ let Service:any = (source, compared) => {
     });
 };
 
-let fromArray = (sourceArray, comparedArray) => {
-    let spacedSourceObj = dataSet.arrToSet(sourceArray);
-    let spacedComparedObj = dataSet.arrToSet(comparedArray);
+let fromArray = (
+    sourceArray: string[], 
+    comparedArray: string[]
+): Promise<thisTypes.BreakWordResult> => {
+    let spacedSourceObj: {[key: string]: boolean} = dataSet.arrToSet(sourceArray);
+    let spacedComparedObj: {[key: string]: boolean} = dataSet.arrToSet(comparedArray);
     return new Promise((resolve, reject) => {
-        let sourceResult = [];
-        let sourceBreakList = [];
-        let comparedResult = [];
-        let comparedBreakList = [];
+        let sourceResult: string[] = [];
+        let sourceBreakList: Array<{
+            word: string,
+            to: string[]
+        }> = [];
+        let comparedResult: string[] = [];
+        let comparedBreakList: Array<{
+            word: string,
+            to: string[]
+        }> = [];
 
         sourceArray.forEach(sourceWord => {
-            let breakResult = breakWordArray(sourceWord, spacedComparedObj);
+            let breakResult: string[] = breakWordArray(sourceWord, spacedComparedObj);
             if(!breakResult || breakResult.length <= 1){
                 sourceResult.push(sourceWord);
             } else {
@@ -62,7 +72,10 @@ let fromArray = (sourceArray, comparedArray) => {
 };
 Service.fromArray = fromArray;
 
-let breakWordArray = (word, compareObj) => {
+let breakWordArray = (
+    word: string, 
+    compareObj: {[key: string]: boolean}
+): string[] => {
     if(compareObj[word]){
         return [ word ];
     }

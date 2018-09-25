@@ -3,29 +3,29 @@ import * as mocha from 'mocha';
 var assert = require('assert');
 const util = require('util');
 
-// mocha.describe('ProperBreakWord', function() {
-//     let properBreakWord = require('../src/Text/properBreakWord');
-//     it('should break word in source properly', function(done) {
-//         let source = 'that mycaris verybig';
-//         let compared = 'that is my car which is very big';
+mocha.describe('ProperBreakWord', function() {
+    let properBreakWord = require('../src/Text/properBreakWord');
+    mocha.it('should break word in source properly', function(done) {
+        let source = 'that mycaris verybig';
+        let compared = 'that is my car which is very big';
     
-//         properBreakWord(source, compared).then((result) => {
-//             assert.equal(result.break.source.match.length, 2);
-//             assert.equal(result.break.source.match[0].word, "mycaris");
-//             done();
-//         });
-//     });
-//     it('should break word in compared properly', function(done) {
-//         let source = 'that is my car which is very big';
-//         let compared = 'that mycaris verybig';
+        properBreakWord(source, compared).then((result) => {
+            assert.equal(result.break.source.match.length, 2);
+            assert.equal(result.break.source.match[0].word, "mycaris");
+            done();
+        });
+    });
+    mocha.it('should break word in compared properly', function(done) {
+        let source = 'that is my car which is very big';
+        let compared = 'that mycaris verybig';
     
-//         properBreakWord(source, compared).then((result) => {
-//             assert.equal(result.break.compared.match.length, 2);
-//             assert.equal(result.break.compared.match[0].word, "mycaris");
-//             done();
-//         });
-//     });
-// });
+        properBreakWord(source, compared).then((result) => {
+            assert.equal(result.break.compared.match.length, 2);
+            assert.equal(result.break.compared.match[0].word, "mycaris");
+            done();
+        });
+    });
+});
 mocha.describe('FindPhrase', function() {
     let findPhrase = require('../src/Text/findPhrase');
     mocha.it('should find possible phrases in two sentence', function(done) {

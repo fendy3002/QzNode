@@ -3,8 +3,8 @@
  * Phrase
  */
 export interface FindPhraseService {
-    (source: string, compared: string): any,
-    fromArray: (source: string[], compared: string[]) => any
+    (source: string, compared: string): Promise<PharseResult>,
+    fromArray: (source: string[], compared: string[]) => Promise<PharseResult>
 };
 
 export interface PharseResult {
@@ -56,3 +56,33 @@ export interface SourcePosInfo{
         to: number
     }
 }
+
+
+/**
+ * BreakWord
+ */
+export interface BreakWordService {
+    (source: string, compared: string): Promise<BreakWordResult>,
+    fromArray: (sourceArray: string[], comparedArray: string[]) => Promise<BreakWordResult>
+}
+
+export interface BreakWordResult {
+    source: string[] | string,
+    compared: string[] | string,
+    break: {
+        source: {
+            match: Array<{
+                word: string,
+                to: string[]
+            }>,
+            text: string
+        },
+        compared: {
+            match: Array<{
+                word: string,
+                to: string[]
+            }>,
+            text: string
+        }
+    }
+};

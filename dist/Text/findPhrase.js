@@ -13,11 +13,6 @@ var __assign = (this && this.__assign) || function () {
 var lo = require('lodash');
 var util = require('util');
 var dataSet = require('../DataSet/index');
-var Service = function (source, compared) {
-    return fromArray(source.split(" "), compared.split(" ")).then(function (result) {
-        return Promise.resolve(__assign({}, result, { source: source, compared: compared }));
-    });
-};
 var fromArray = function (sourceArray, comparedArray) {
     var comparedObj = dataSet.arrToSet(comparedArray, function (val, index) {
         return [index];
@@ -64,7 +59,7 @@ var fromArray = function (sourceArray, comparedArray) {
                 });
             }
             else {
-                sourcePosObj[sourceIndex] = false;
+                sourcePosObj[sourceIndex] = null;
             }
         };
         for (var sourceIndex = 0; sourceIndex < sourceArray.length; sourceIndex++) {
@@ -200,6 +195,11 @@ var getNonPhrase = function (arr, phrasePosList, getHandler) {
         pos: nonPhraseArr,
         word: nonPhraseArr.map(function (k) { return arr[k]; })
     };
+};
+var Service = function (source, compared) {
+    return fromArray(source.split(" "), compared.split(" ")).then(function (result) {
+        return Promise.resolve(__assign({}, result, { source: source, compared: compared }));
+    });
 };
 Service.fromArray = fromArray;
 module.exports = Service;

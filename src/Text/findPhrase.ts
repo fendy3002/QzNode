@@ -1,25 +1,21 @@
 let lo = require('lodash');
 let util = require('util');
+
 let dataSet = require('../DataSet/index');
+import * as thisTypes from './types';
 
-let Service:any = (source, compared) => {
-    return fromArray(source.split(" "), compared.split(" ")).then(result => {
-        return Promise.resolve({
-            ...result,
-            source: source,
-            compared: compared,
-        });
-    });
-};
-
-let fromArray = (sourceArray, comparedArray) => {
-    let comparedObj = dataSet.arrToSet(comparedArray, (val, index) => {
+let fromArray = (
+    sourceArray: string[], 
+    comparedArray: string[]
+    ): Promise<thisTypes.PharseResult> => 
+{
+    let comparedObj: {[key: string]: number[]} = dataSet.arrToSet(comparedArray, (val, index) => {
         return [index];
     });
 
     return new Promise((resolve, reject) => {
-        let sourcePosObj = {};
-        let phrasesList = [];
+        let sourcePosObj: thisTypes.SourcePosInfo = {};
+        let phrasesList: thisTypes.PhrasePosInfo[] = [];
 
         for(let sourceIndex = 0; sourceIndex < sourceArray.length; sourceIndex++){
             let sourceWord = sourceArray[sourceIndex];
@@ -34,7 +30,7 @@ let fromArray = (sourceArray, comparedArray) => {
                     {
                         return;
                     }
-                    let phrasePosInfo = populatePhrasePosInfo(sourceArray, comparedArray, sourceIndex, compareIndex);
+                    let phrasePosInfo: thisTypes.PhrasePosInfo = populatePhrasePosInfo(sourceArray, comparedArray, sourceIndex, compareIndex);
 
                     if(phrasePosInfo.num > 1){
                         phrasesList.push(phrasePosInfo);
@@ -66,12 +62,12 @@ let fromArray = (sourceArray, comparedArray) => {
                 });
             }
             else{
-                sourcePosObj[sourceIndex] = false;
+                sourcePosObj[sourceIndex] = null;
             }
         }
 
-        let distinctPhraseList = distinctPhrase(phrasesList);
-        let transformedPhrases = populatePhrase(sourceArray, distinctPhraseList);
+        let distinctPhraseList: thisTypes.PhrasePosInfo[] = distinctPhrase(phrasesList);
+        let transformedPhrases: thisTypes.PhraseDict = populatePhrase(sourceArray, distinctPhraseList);
         resolve({
             phrase: transformedPhrases,
             nonPhrase: {
@@ -84,8 +80,14 @@ let fromArray = (sourceArray, comparedArray) => {
     });
 };
 
-let populatePhrasePosInfo = (sourceArray, comparedArray, sourceIndex, compareIndex) => {
-    let posIndexInfo = {
+let populatePhrasePosInfo = (
+    sourceArray: string[], 
+    comparedArray: string[], 
+    sourceIndex: number, 
+    compareIndex: number
+    ): thisTypes.PhrasePosInfo => 
+{
+    let posIndexInfo: thisTypes.PhrasePosInfo = {
         num: 1,
         source: {
             arrFrom: [sourceIndex],
@@ -116,8 +118,11 @@ let populatePhrasePosInfo = (sourceArray, comparedArray, sourceIndex, compareInd
     }
     return posIndexInfo;
 };
-let populatePhrase = (sourceArray, phrasePosInfoList) => {
-    let result = {};
+let populatePhrase = (
+    sourceArray: string[], 
+    phrasePosInfoList: thisTypes.PhrasePosInfo[]
+): thisTypes.PhraseDict => {
+    let result:thisTypes.PhraseDict = {};
     phrasePosInfoList.forEach(phrasePosInfo => {
         let phraseArr = phrasePosInfo.source.arrFrom.map(k=> {
             return sourceArray[k]
@@ -127,13 +132,13 @@ let populatePhrase = (sourceArray, phrasePosInfoList) => {
         let comparedPos = phrasePosInfo.source.arrWith;
         if(!result[phraseText]){ 
             result[phraseText] = {
-                sourcePos : [],
+                sourcePos: [],
                 comparedPos: [],
                 phrase: {
                     text: phraseText,
                     array: phraseArr
                 }
-            }; 
+            };
         }
         result[phraseText].sourcePos.push(sourcePos);
         result[phraseText].comparedPos.push(comparedPos);
@@ -141,7 +146,9 @@ let populatePhrase = (sourceArray, phrasePosInfoList) => {
 
     return result;
 };
-let distinctPhrase = (phrasePosList) => {
+let distinctPhrase = (
+    phrasePosList: thisTypes.PhrasePosInfo[]
+): thisTypes.PhrasePosInfo[] => {
     let distinctResult = [];
     phrasePosList.forEach((phrasePos, index) => {
         let exists = compareExistingPhrasePos(phrasePos, phrasePosList.filter((k, l) => {
@@ -211,6 +218,16 @@ let getNonPhrase = (arr, phrasePosList, getHandler) => {
     };
 };
 
+let Service = <thisTypes.FindPhraseService>function (source: string, compared: string) {
+    return fromArray(source.split(" "), compared.split(" ")).then(result => {
+        return Promise.resolve({
+            ...result,
+            source: source,
+            compared: compared,
+        });
+    });
+};
 Service.fromArray = fromArray;
+
 
 export = Service;

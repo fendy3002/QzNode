@@ -3,7 +3,7 @@ import * as mocha from 'mocha';
 var assert = require('assert');
 const util = require('util');
 
-// describe('ProperBreakWord', function() {
+// mocha.describe('ProperBreakWord', function() {
 //     let properBreakWord = require('../src/Text/properBreakWord');
 //     it('should break word in source properly', function(done) {
 //         let source = 'that mycaris verybig';

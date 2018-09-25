@@ -71,18 +71,17 @@ export interface BreakWordResult {
     compared: string[] | string,
     break: {
         source: {
-            match: Array<{
-                word: string,
-                to: string[]
-            }>,
+            match: BreakWordMatch[],
             text: string
         },
         compared: {
-            match: Array<{
-                word: string,
-                to: string[]
-            }>,
+            match: BreakWordMatch[],
             text: string
         }
     }
-};
+}
+
+export interface BreakWordMatch {
+    word: string,
+    to: string[]
+}

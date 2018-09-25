@@ -19,15 +19,9 @@ let fromArray = (
     let spacedComparedObj: {[key: string]: boolean} = dataSet.arrToSet(comparedArray);
     return new Promise((resolve, reject) => {
         let sourceResult: string[] = [];
-        let sourceBreakList: Array<{
-            word: string,
-            to: string[]
-        }> = [];
+        let sourceBreakList: thisTypes.BreakWordMatch[] = [];
         let comparedResult: string[] = [];
-        let comparedBreakList: Array<{
-            word: string,
-            to: string[]
-        }> = [];
+        let comparedBreakList: thisTypes.BreakWordMatch[] = [];
 
         sourceArray.forEach(sourceWord => {
             let breakResult: string[] = breakWordArray(sourceWord, spacedComparedObj);

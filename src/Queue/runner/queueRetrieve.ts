@@ -100,4 +100,4 @@ let queueRetrieve = ({
     });
 };
 
-module.exports = queueRetrieve;
+export = queueRetrieve;

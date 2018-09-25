@@ -22,4 +22,4 @@ let Service = (dbConfig) => (resolve, reject) => {
     // });
 };
 
-module.exports = Service;
+export = Service;

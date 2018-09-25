@@ -1,7 +1,7 @@
 let mysql = require('mysql');
 let moment = require('moment');
 let momentTz = require('moment');
-let insertToQueueRaw = require('./insertToQueue.js');
+let insertToQueueRaw = require('./insertToQueue');
 
 let errorHandler = ({
     openDb,
@@ -100,4 +100,4 @@ let errorHandler = ({
     return handle;
 };
 
-module.exports = errorHandler;
+export = errorHandler;

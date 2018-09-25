@@ -42,4 +42,4 @@ let jobCountManager = ({
         isJobOverLimit
     };
 };
-module.exports = jobCountManager;
+export = jobCountManager;

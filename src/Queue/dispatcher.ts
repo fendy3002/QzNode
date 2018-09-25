@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 let mysql = require('mysql');
 let momentTz = require('moment');
-let openDbConnection = require('./helper/openDbConnection.js');
+let openDbConnection = require('./helper/openDbConnection');
 let uuidGen = require('../Uuid/index');
 
 import * as thisTypes from './types';

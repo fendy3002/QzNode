@@ -229,5 +229,4 @@ let Service = <thisTypes.FindPhraseService>function (source: string, compared: s
 };
 Service.fromArray = fromArray;
 
-
 export = Service;

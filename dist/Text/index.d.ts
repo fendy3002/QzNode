@@ -1,5 +1,6 @@
+import * as thisTypes from './types';
 declare let Service: {
-    properBreakWord: any;
-    findPhrase: any;
+    properBreakWord: thisTypes.BreakWordService;
+    findPhrase: thisTypes.FindPhraseService;
 };
 export = Service;

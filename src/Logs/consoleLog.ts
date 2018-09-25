@@ -1,4 +1,8 @@
-var Service = function(callback = ()=>{}) {
+var Service = function(
+    callback: (err:any, message:any) => void
+        = (err, message) => {}
+    )
+{
     var _ = {
         stdout: process.stdout
     };
@@ -30,4 +34,4 @@ var Service = function(callback = ()=>{}) {
     };
 };
 
-module.exports = Service;
+export = Service;

@@ -1,39 +1,32 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _extends2 = require("babel-runtime/helpers/extends");
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Service = function Service(log, options) {
-    var _ = (0, _extends3.default)({
-        prefix: ''
-    }, options);
-
-    var prefix = function prefix() {
-        return _.prefix;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
     };
-
-    var message = function message(_message) {
-        log.message(prefix() + " " + _message);
+    return __assign.apply(this, arguments);
+};
+var Service = function (log, options) {
+    var _ = __assign({ prefix: '' }, options);
+    var prefix = function () { return _.prefix; };
+    var message = function (message) {
+        log.message(prefix() + " " + message);
     };
-    var messageln = function messageln(message) {
+    var messageln = function (message) {
         log.messageln(prefix() + " " + message);
     };
-    var object = function object(obj) {
+    var object = function (obj) {
         log.message(prefix() + " ");
         log.object(obj);
     };
-    var exception = function exception(ex) {
+    var exception = function (ex) {
         log.message(prefix() + " ");
         log.exception(ex);
     };
-
     return {
         _: _,
         message: message,
@@ -42,5 +35,4 @@ var Service = function Service(log, options) {
         exception: exception
     };
 };
-
-exports.default = Service;
+module.exports = Service;

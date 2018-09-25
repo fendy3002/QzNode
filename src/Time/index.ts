@@ -4,4 +4,4 @@ var Service = {
     isBetween: isBetween
 };
 
-module.exports = Service;
+export = Service;

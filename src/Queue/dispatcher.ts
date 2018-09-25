@@ -1,32 +1,37 @@
-export {};
-
 import * as moment from 'moment';
 let mysql = require('mysql');
 let momentTz = require('moment');
 let openDbConnection = require('./helper/openDbConnection.js');
 let uuidGen = require('../Uuid/index');
 
-let dispatcher = (param:object = {}): object => {
+import * as thisTypes from './types';
+
+interface DispatcherParam {
+    driver: string,
+    connection: thisTypes.Connection,
+    tableName: string,
+    timezone: string
+};
+
+let dispatcher = (param:DispatcherParam): object => {
     let {driver,
-        connection,
         tableName,
         timezone} = {
             ...{
                 driver: "mysql",
-                connection: {},
                 tableName: "qz_queue",
                 timezone: "Etc/GMT"
             },
             ...param
         };
-    let usedConnection = {
+    let connection = {
         ...{
             host: "localhost",
             database: "my_database",
             port: "3306",
             user: "root"
         },
-        ...connection
+        ...param.connection
     };
 
     let dispatch = (scriptPath: string, param:object = {}, {
@@ -41,7 +46,7 @@ let dispatcher = (param:object = {}): object => {
         }
 
         let escTableName: string = tableName;
-        return new Promise(openDbConnection(usedConnection)).then((db:any) => {
+        return new Promise(openDbConnection(connection)).then((db:any) => {
             return new Promise((resolve, reject) => {
                 let queueUuid = uuidGen();
                 let query = db.query(`INSERT INTO ${escTableName} SET ?`, {
@@ -71,4 +76,4 @@ let dispatcher = (param:object = {}): object => {
     };
 };
 
-module.exports = dispatcher;
+export = dispatcher;

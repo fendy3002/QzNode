@@ -1,10 +1,12 @@
+import * as mocha from 'mocha';
+
 let assert = require('assert');
-let qz = require('../dist/index.js').default();
+let qz = require('../src/index');
 let lo = require('lodash');
 
-describe('QzPromise', function() {
-    it('should have 3 consecutive callbacks', function(done) {
-        let promise = qz.promise((resolve, reject) => resolve(1))
+mocha.describe('QzPromise', function() {
+    mocha.it('should have 3 consecutive callbacks', function(done) {
+        let promise = qz().promise((resolve, reject) => resolve(1))
             .then((result) => (resolve, reject) => resolve(result + 1))
             .then((result) => (resolve, reject) => resolve(result + 1));
         
@@ -22,18 +24,18 @@ describe('QzPromise', function() {
             });
     });
 });
-describe('Limit', function() {
-    it('should execute 5 promises simultaneously', function(done) {
+mocha.describe('Limit', function() {
+    mocha.it('should execute 5 promises simultaneously', function(done) {
         var promises = [];
         for(var i = 0; i < 100; i++){
             promises.push(
-                qz.promise(resolve => resolve(i))
+                qz().promise(resolve => resolve(i))
             );
         }
         var context = {
             loop: 0
         };
-        var promiseLimit = qz.promise.limit({
+        var promiseLimit = qz().promise.limit({
             limit: 5
         });
 
@@ -45,11 +47,11 @@ describe('Limit', function() {
             done();
         });
     });
-    it('should execute 3 consecutive promises simultaneously', function(done) {
+    mocha.it('should execute 3 consecutive promises simultaneously', function(done) {
         let promises = [];
         for(let i = 0; i < 100; i++){
             promises.push(
-                qz.promise((resolve, reject) => resolve(i))
+                qz().promise((resolve, reject) => resolve(i))
                     .then((result) => (resolve, reject) => resolve(result + 1))
                     .then((result) => (resolve, reject) => resolve(result + 1))
             );
@@ -57,7 +59,7 @@ describe('Limit', function() {
         let context = {
             loop: 0
         };
-        let promiseLimit = qz.promise.limit({
+        let promiseLimit = qz().promise.limit({
             limit: 5
         });
 
@@ -74,9 +76,9 @@ describe('Limit', function() {
         });
     });
 });
-describe('Retry', function() {
-    it('should retry 3 times', function(done) {
-        let retry = qz.promise.retry;
+mocha.describe('Retry', function() {
+    mocha.it('should retry 3 times', function(done) {
+        let retry = qz().promise.retry;
         let token = 0;
         let promise = retry((resolve, reject) => {
             if(token == 2){ resolve(token); }
@@ -88,8 +90,8 @@ describe('Retry', function() {
             done();
         });
     });
-    it('should retry 3 times and failed', function(done) {
-        let retry = qz.promise.retry;
+    mocha.it('should retry 3 times and failed', function(done) {
+        let retry = qz().promise.retry;
         let token = 0;
         let promise = retry((resolve, reject) => {
             token++;

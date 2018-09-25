@@ -10,7 +10,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 var dataSet = require('../DataSet/index');
 var Service = function (source, compared) {
     return fromArray(source.split(" "), compared.split(" ")).then(function (result) {

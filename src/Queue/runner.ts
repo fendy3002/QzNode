@@ -3,52 +3,53 @@ let mysql = require('mysql');
 let moment = require('moment');
 let { runInContext } = require('vm');
 
-let openDbConnection = require('./helper/openDbConnection.js');
+let openDbConnection = require('./helper/openDbConnection');
 let uuid = require('../Uuid/index');
-let emptyLog = require('../Logs/emptyLog.js');
-let queueRetrieve = require('./runner/queueRetrieve.js');
-let errorHandlerRaw = require('./runner/errorHandler.js');
-let jobCountManagerRaw = require('./runner/jobCountManager.js');
-let jobRunManagerRaw = require('./runner/jobRunManager.js');
+let emptyLog = require('../Logs/emptyLog');
+let queueRetrieve = require('./runner/queueRetrieve');
+let errorHandlerRaw = require('./runner/errorHandler');
+let jobCountManagerRaw = require('./runner/jobCountManager');
+let jobRunManagerRaw = require('./runner/jobRunManager');
 
-let runner = (param = {}) => {
+import * as thisTypes from './types';
+
+interface RunnerParam {
+    driver: string,
+    connection: thisTypes.Connection,
+    tableName: string,
+    runningTableName: string,
+    failedTableName: string,
+    tag: string,
+    retry: number,
+    log: any,
+    workerLimit: any,
+    logLevel: thisTypes.LogLevel
+};
+
+let runner = (param: RunnerParam) => {
     let {
         driver,
-        connection,
         tableName,
         runningTableName,
         failedTableName,
         tag,
         retry,
         log,
-        logLevel,
         workerLimit
     } = {
         ...{
             driver: "mysql",
-            connection: {},
             tableName: "qz_queue",
             runningTableName: "qz_queue_running",
             failedTableName: "qz_queue_failed",
             tag: "default",
             retry: 0,
             log: emptyLog(),
-            workerLimit: {},
-            logLevel: {}
+            workerLimit: {}
         },
         ...param
     };
-
-    let usedConnection = {
-        ...{
-            host: "localhost",
-            database: "my_database",
-            port: "3306",
-            user: "root"
-        },
-        ...connection,
-    };
-    logLevel = {
+    let logLevel: thisTypes.LogLevel = {
         start: false,
         error: true,
         done: true,
@@ -56,12 +57,22 @@ let runner = (param = {}) => {
         workerLimit: false,
         noJob: false,
 
-        ...logLevel
+        ...param.logLevel
+    };
+
+    let connection = {
+        ...{
+            host: "localhost",
+            database: "my_database",
+            port: "3306",
+            user: "root"
+        },
+        ...param.connection,
     };
 
     let context = {
         openDb: () => {
-            return new Promise(openDbConnection(usedConnection));
+            return new Promise(openDbConnection(connection));
         },
         tableName: tableName,
         runningTableName: runningTableName,
@@ -78,7 +89,7 @@ let runner = (param = {}) => {
         runningTableName: runningTableName,
         retry: retry,
         log: log,
-        logLevel, logLevel
+        logLevel: logLevel
     });
     let jobCountManager = jobCountManagerRaw({workerLimit});
     let jobRunManager = jobRunManagerRaw(context, jobCountManager, errorHandler);
@@ -86,9 +97,9 @@ let runner = (param = {}) => {
     let once = () => {
         let jobUuid = uuid();
         return new Promise(queueRetrieve(context)(jobUuid))
-            .then((selectStatement) => {
+            .then((selectStatement: any[]) => {
                 if(selectStatement && selectStatement.length > 0){
-                    let job = {
+                    let job: thisTypes.Job = {
                         ...selectStatement[0],
                         uuid: jobUuid
                     };
@@ -96,7 +107,7 @@ let runner = (param = {}) => {
                 }
                 else{
                     if(logLevel.noJob){
-                        log.messageln(`WORKER LIMIT: ${job.run_script}`);
+                        log.messageln(`NO JOB`);
                     }
                     return Promise.resolve({
                         run: false,
@@ -118,4 +129,4 @@ let runner = (param = {}) => {
     }
 };
 
-module.exports = runner;
+export = runner;

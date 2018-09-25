@@ -1,14 +1,6 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var moment = require('moment');
 
 var jobCountManager = function jobCountManager(_ref) {
     var workerLimit = _ref.workerLimit;
@@ -24,7 +16,7 @@ var jobCountManager = function jobCountManager(_ref) {
             });
             var runningScriptProcess = runningProcesses[job.run_script] || (runningProcesses[job.run_script] = {});
             runningScriptProcess[uuid] = {
-                at: _moment2.default.utc(),
+                at: moment.utc(),
                 promise: promise
             };
             resolve();
@@ -57,4 +49,4 @@ var jobCountManager = function jobCountManager(_ref) {
         isJobOverLimit: isJobOverLimit
     };
 };
-exports.default = jobCountManager;
+module.exports = jobCountManager;

@@ -1,4 +1,8 @@
-var Service = function(callback = ()=>{} ) {
+var Service = function(
+    callback: (err:any, message:any) => void
+        = (err, message)=> {}
+    )
+{
     let _data = "";
     var message = function(message){
         _data += message;
@@ -33,4 +37,4 @@ var Service = function(callback = ()=>{} ) {
     };
 };
 
-module.exports = Service;
+export = Service;

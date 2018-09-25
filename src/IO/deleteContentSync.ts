@@ -15,4 +15,4 @@ var deleteFolderRecursive = function(path) {
     }
 };
 
-module.exports = deleteFolderRecursive;
+export = deleteFolderRecursive;

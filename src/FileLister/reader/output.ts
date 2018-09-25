@@ -32,4 +32,4 @@ var Service = (options) => {
     }
 };
 
-module.exports = Service;
+export = Service;

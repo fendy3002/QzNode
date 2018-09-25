@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var QzPromise = /** @class */ (function () {
     function QzPromise(callback, before) {
         if (before === void 0) { before = null; }

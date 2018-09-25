@@ -1,16 +1,16 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var dataSet = require('./DataSet');
 var promise = require("./Promise/index");
-var logs = require("./Logs/index.js");
-var io = require("./IO/index.js");
-var execService = require("./Exec/index.js");
+var logs = require("./Logs/index");
+var io = require("./IO/index");
+var execService = require("./Exec/index");
 var uuid = require("./Uuid/index");
 var date = require("./Date/index");
 var requireService = require("./Require");
-var queue = require("./Queue/index.js");
-var fileLister = require("./FileLister/index.js");
-var time = require("./Time/index.js");
+var queue = require("./Queue/index");
+var fileLister = require("./FileLister/index");
+var time = require("./Time/index");
+;
 var Service = function () {
     return {
         dataSet: dataSet,
@@ -26,4 +26,4 @@ var Service = function () {
         time: time
     };
 };
-exports.default = Service;
+module.exports = Service;

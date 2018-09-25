@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var QzPromise = require('./QzPromise');
 var limit = require('./limit');
 var retry = require('./retry');

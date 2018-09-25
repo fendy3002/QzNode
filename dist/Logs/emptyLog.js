@@ -1,24 +1,18 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var Service = function Service() {
-    var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : function () {};
-
-    var message = function message(_message) {
-        callback(null, _message);
-    };
-    var messageln = function messageln(message) {
+var Service = function (callback) {
+    if (callback === void 0) { callback = function (err, message) { }; }
+    var message = function (message) {
         callback(null, message);
     };
-    var object = function object(obj) {
+    var messageln = function (message) {
+        callback(null, message);
+    };
+    var object = function (obj) {
         callback(null, obj);
     };
-    var exception = function exception(ex) {
+    var exception = function (ex) {
         callback(null, ex);
     };
-
     return {
         message: message,
         messageln: messageln,
@@ -26,5 +20,4 @@ var Service = function Service() {
         exception: exception
     };
 };
-
-exports.default = Service;
+module.exports = Service;

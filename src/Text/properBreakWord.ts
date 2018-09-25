@@ -1,5 +1,3 @@
-export {};
-
 let dataSet = require('../DataSet/index');
 
 let Service:any = (source, compared) => {
@@ -82,4 +80,4 @@ let breakWordArray = (word, compareObj) => {
         return [];
     }
 };
-module.exports = Service;
+export = Service;

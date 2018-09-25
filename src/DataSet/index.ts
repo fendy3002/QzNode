@@ -1,5 +1,3 @@
-export {};
-
 let lo = require('lodash');
 
 let arrToSet = function<T>(
@@ -38,4 +36,4 @@ let Service = {
     setToArr
 };
 
-module.exports = Service;
+export = Service;

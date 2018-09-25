@@ -1,7 +1,9 @@
+import * as mocha from 'mocha';
+
 let assert = require('assert');
 let mysql = require('mysql');
-let dispatcher = require('../dist/Queue/dispatcher.js').default;
-let runner = require('../dist/Queue/runner.js').default;
+let dispatcher = require('../dist/Queue/dispatcher');
+let runner = require('../dist/Queue/runner');
 let path = require('path');
 let lo = require('lodash');
 
@@ -12,8 +14,8 @@ let connection = {
     user: "root",
     password: "password"
 };
-describe('QzQueue', function() {
-    it('should insert to database', function(done) {
+mocha.describe('QzQueue', function() {
+    mocha.it('should insert to database', function(done) {
         clearTable().then(() => {
             dispatcher({
                 connection: connection
@@ -30,7 +32,7 @@ describe('QzQueue', function() {
             });
         });
     });
-    it('should get from database', function(done) {
+    mocha.it('should get from database', function(done) {
         runner({
             connection: connection,
         }).once().then((result) => {
@@ -38,7 +40,7 @@ describe('QzQueue', function() {
             done();
         });
     });
-    it('should handle error', function(done) {
+    mocha.it('should handle error', function(done) {
         dispatcher({
             connection: connection
         }).dispatch(path.resolve(__dirname, '..', 'testHelper', 'runError.js'), {
@@ -65,7 +67,7 @@ describe('QzQueue', function() {
             });
         });
     });
-    it('should throw error if execute twice', function(done) {
+    mocha.it('should throw error if execute twice', function(done) {
         let scriptName = path.resolve(__dirname, '..', 'testHelper', 'runLonger.js');
         let dispatcherObj = dispatcher({
             connection: connection
@@ -109,7 +111,7 @@ describe('QzQueue', function() {
                 }, 35);
             });
     });
-    it('should throw error if over than timeout', (done) => {
+    mocha.it('should throw error if over than timeout', (done) => {
         let scriptName = path.resolve(__dirname, '..', 'testHelper', 'runEternity.js');
         let dispatcherObj = dispatcher({
             connection: connection

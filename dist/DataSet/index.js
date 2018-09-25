@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var lo = require('lodash');
 var arrToSet = function (arr, handler) {
     if (handler === void 0) { handler = function (val, index) { return true; }; }

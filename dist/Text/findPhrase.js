@@ -10,7 +10,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
 var lo = require('lodash');
 var util = require('util');
 var dataSet = require('../DataSet/index');

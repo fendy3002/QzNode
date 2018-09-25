@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var Service = function (_a) {
     var _b = _a.limit, limit = _b === void 0 ? 5 : _b;
     var qzPromiseToPromise = function (qzPromise) {

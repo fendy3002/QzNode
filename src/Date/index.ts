@@ -1,4 +1,3 @@
-export {};
 import * as moment from 'moment';
 
 let dateRangeToArray = (

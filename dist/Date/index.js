@@ -25,4 +25,4 @@ var Service = {
     dateRangeToArray: dateRangeToArray,
     dateDurationToArray: dateDurationToArray
 };
-exports.default = Service;
+module.exports = Service;

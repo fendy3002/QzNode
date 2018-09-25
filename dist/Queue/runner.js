@@ -1,104 +1,48 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
-
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-var _extends2 = require('babel-runtime/helpers/extends');
-
-var _extends3 = _interopRequireDefault(_extends2);
-
-var _timers = require('timers');
-
-var _mysql = require('mysql');
-
-var _mysql2 = _interopRequireDefault(_mysql);
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _vm = require('vm');
-
-var _openDbConnection = require('./helper/openDbConnection.js');
-
-var _openDbConnection2 = _interopRequireDefault(_openDbConnection);
-
-var _index = require('../Uuid/index.js');
-
-var _index2 = _interopRequireDefault(_index);
-
-var _emptyLog = require('../Logs/emptyLog.js');
-
-var _emptyLog2 = _interopRequireDefault(_emptyLog);
-
-var _queueRetrieve = require('./runner/queueRetrieve.js');
-
-var _queueRetrieve2 = _interopRequireDefault(_queueRetrieve);
-
-var _errorHandler = require('./runner/errorHandler.js');
-
-var _errorHandler2 = _interopRequireDefault(_errorHandler);
-
-var _jobCountManager = require('./runner/jobCountManager.js');
-
-var _jobCountManager2 = _interopRequireDefault(_jobCountManager);
-
-var _jobRunManager = require('./runner/jobRunManager.js');
-
-var _jobRunManager2 = _interopRequireDefault(_jobRunManager);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var runner = function runner() {
-    var param = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    var _driver$connection$ta = (0, _extends3.default)({
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var setInterval = require('timers').setInterval;
+var mysql = require('mysql');
+var moment = require('moment');
+var runInContext = require('vm').runInContext;
+var openDbConnection = require('./helper/openDbConnection');
+var uuid = require('../Uuid/index');
+var emptyLog = require('../Logs/emptyLog');
+var queueRetrieve = require('./runner/queueRetrieve');
+var errorHandlerRaw = require('./runner/errorHandler');
+var jobCountManagerRaw = require('./runner/jobCountManager');
+var jobRunManagerRaw = require('./runner/jobRunManager');
+;
+var runner = function (param) {
+    var _a = __assign({
         driver: "mysql",
-        connection: {},
         tableName: "qz_queue",
         runningTableName: "qz_queue_running",
         failedTableName: "qz_queue_failed",
         tag: "default",
         retry: 0,
-        log: (0, _emptyLog2.default)(),
-        workerLimit: {},
-        logLevel: {}
-    }, param),
-        driver = _driver$connection$ta.driver,
-        connection = _driver$connection$ta.connection,
-        tableName = _driver$connection$ta.tableName,
-        runningTableName = _driver$connection$ta.runningTableName,
-        failedTableName = _driver$connection$ta.failedTableName,
-        tag = _driver$connection$ta.tag,
-        retry = _driver$connection$ta.retry,
-        log = _driver$connection$ta.log,
-        logLevel = _driver$connection$ta.logLevel,
-        workerLimit = _driver$connection$ta.workerLimit;
-
-    var usedConnection = (0, _extends3.default)({
+        log: emptyLog(),
+        workerLimit: {}
+    }, param), driver = _a.driver, tableName = _a.tableName, runningTableName = _a.runningTableName, failedTableName = _a.failedTableName, tag = _a.tag, retry = _a.retry, log = _a.log, workerLimit = _a.workerLimit;
+    var logLevel = __assign({ start: false, error: true, done: true, scriptNotFound: true, workerLimit: false, noJob: false }, param.logLevel);
+    var connection = __assign({
         host: "localhost",
         database: "my_database",
         port: "3306",
         user: "root"
-    }, connection);
-    logLevel = (0, _extends3.default)({
-        start: false,
-        error: true,
-        done: true,
-        scriptNotFound: true,
-        workerLimit: false,
-        noJob: false
-
-    }, logLevel);
-
+    }, param.connection);
     var context = {
-        openDb: function openDb() {
-            return new Promise((0, _openDbConnection2.default)(usedConnection));
+        openDb: function () {
+            return new Promise(openDbConnection(connection));
         },
         tableName: tableName,
         runningTableName: runningTableName,
@@ -108,28 +52,27 @@ var runner = function runner() {
         logLevel: logLevel,
         workerLimit: workerLimit
     };
-
-    var errorHandler = (0, _errorHandler2.default)((0, _defineProperty3.default)({
+    var errorHandler = errorHandlerRaw({
         openDb: context.openDb,
         tableName: tableName,
         runningTableName: runningTableName,
         retry: retry,
         log: log,
-        logLevel: logLevel }, 'logLevel', logLevel));
-    var jobCountManager = (0, _jobCountManager2.default)({ workerLimit: workerLimit });
-    var jobRunManager = (0, _jobRunManager2.default)(context, jobCountManager, errorHandler);
-
-    var once = function once() {
-        var jobUuid = (0, _index2.default)();
-        return new Promise((0, _queueRetrieve2.default)(context)(jobUuid)).then(function (selectStatement) {
+        logLevel: logLevel
+    });
+    var jobCountManager = jobCountManagerRaw({ workerLimit: workerLimit });
+    var jobRunManager = jobRunManagerRaw(context, jobCountManager, errorHandler);
+    var once = function () {
+        var jobUuid = uuid();
+        return new Promise(queueRetrieve(context)(jobUuid))
+            .then(function (selectStatement) {
             if (selectStatement && selectStatement.length > 0) {
-                var _job = (0, _extends3.default)({}, selectStatement[0], {
-                    uuid: jobUuid
-                });
-                return new Promise(jobRunManager(jobUuid, _job));
-            } else {
+                var job = __assign({}, selectStatement[0], { uuid: jobUuid });
+                return new Promise(jobRunManager(jobUuid, job));
+            }
+            else {
                 if (logLevel.noJob) {
-                    log.messageln('WORKER LIMIT: ' + job.run_script);
+                    log.messageln("NO JOB");
                 }
                 return Promise.resolve({
                     run: false,
@@ -139,19 +82,14 @@ var runner = function runner() {
             }
         });
     };
-
-    var listen = function listen(_ref) {
-        var _ref$interval = _ref.interval,
-            interval = _ref$interval === undefined ? 5000 : _ref$interval;
-
+    var listen = function (_a) {
+        var _b = _a.interval, interval = _b === void 0 ? 5000 : _b;
         once();
-        (0, _timers.setInterval)(once, interval);
+        setInterval(once, interval);
     };
-
     return {
         once: once,
         listen: listen
     };
 };
-
-exports.default = runner;
+module.exports = runner;

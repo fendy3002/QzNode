@@ -1,32 +1,23 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Service = function Service(options) {
+"use strict";
+var fs = require('fs');
+var Service = function (options) {
     if (!options.out) {
         return function (result, callback) {
             if (options.pretty) {
                 console.log(JSON.stringify(result, null, 2));
-            } else {
+            }
+            else {
                 console.log(JSON.stringify(result));
             }
         };
-    } else {
+    }
+    else {
         return function (result, callback) {
             var fsOption = {
                 encoding: "utf8",
                 mode: 438,
                 flag: 'w'
             };
-
             if (options.mode) {
                 fsOption.mode = options.mode;
             }
@@ -37,12 +28,12 @@ var Service = function Service(options) {
                 fsOption.flag = options.flag;
             }
             if (options.pretty) {
-                _fs2.default.writeFile(options.out, JSON.stringify(result, null, 2), fsOption, callback);
-            } else {
-                _fs2.default.writeFile(options.out, JSON.stringify(result), fsOption, callback);
+                fs.writeFile(options.out, JSON.stringify(result, null, 2), fsOption, callback);
+            }
+            else {
+                fs.writeFile(options.out, JSON.stringify(result), fsOption, callback);
             }
         };
     }
 };
-
-exports.default = Service;
+module.exports = Service;

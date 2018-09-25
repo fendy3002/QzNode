@@ -1,9 +1,8 @@
-export {};
 let reader = require('./reader/index');
-let readerOutput = require('./reader/output.js');
+let readerOutput = require('./reader/output');
 
 var Service = () => ({
     reader: reader,
     readerOutput: readerOutput
 });
-module.exports = Service;
+export = Service;

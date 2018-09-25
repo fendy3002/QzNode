@@ -1,5 +1,3 @@
-export {};
-
 class QzPromise {
     constructor(callback, before = null){
         this.callback = callback;
@@ -13,4 +11,4 @@ class QzPromise {
     then: any;
 };
 
-module.exports = QzPromise;
+export = QzPromise;

@@ -1,5 +1,3 @@
-export {};
-
 let QzPromise = require('./QzPromise');
 let retryService = (callback, opt = { retry : 1 }) => {
     return new QzPromise((resolve, reject) => {
@@ -18,4 +16,4 @@ let retryService = (callback, opt = { retry : 1 }) => {
         execute(0);
     });
 };
-module.exports = retryService;
+export = retryService;

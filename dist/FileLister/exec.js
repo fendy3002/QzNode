@@ -1,29 +1,13 @@
 'use strict';
 
-var _fs = require('fs');
-
-var _fs2 = _interopRequireDefault(_fs);
-
-var _commandLineArgs = require('command-line-args');
-
-var _commandLineArgs2 = _interopRequireDefault(_commandLineArgs);
-
-var _index = require('./reader/index.js');
-
-var _index2 = _interopRequireDefault(_index);
-
-var _output = require('./reader/output.js');
-
-var _output2 = _interopRequireDefault(_output);
-
-var _index3 = require('../index.js');
-
-var _index4 = _interopRequireDefault(_index3);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var fs = require('fs');
+var commandLineArgs = require('command-line-args');
+var reader = require('./reader/index.js');
+var readerOutput = require('./reader/output.js');
+var qz = require('../index.js');
 
 var optionDefinitions = [{ name: 'path', type: String, alias: 'p', multiple: false, defaultOption: true }, { name: 'pretty', type: Boolean, multiple: false }, { name: 'out', type: String, alias: 'o', multiple: false }, { name: 'log', type: String, multiple: false }];
-var options = (0, _commandLineArgs2.default)(optionDefinitions);
+var options = commandLineArgs(optionDefinitions);
 
 if (!options.path) {
     console.log("Usage: node exec.js <path-to-list>");
@@ -31,14 +15,14 @@ if (!options.path) {
     var path = options.path;
     var log = null;
     if (options.log) {
-        log = (0, _index4.default)().logs.file(options.log);
+        log = qz().logs.file(options.log);
     } else {
-        log = (0, _index4.default)().logs.console();
+        log = qz().logs.console();
     }
-    new Promise((0, _index2.default)({
+    new Promise(reader({
         log: log
     })(path)).then(function (result) {
-        (0, _output2.default)(options)(result, function (err) {
+        readerOutput(options)(result, function (err) {
             if (err) {
                 log.messageln(err);
             }

@@ -1,7 +1,12 @@
 let fs = require('fs');
 let lo = require('lodash');
 
-var Service = function(filepath, callback = ()=>{} ) {
+var Service = function(
+    filepath,
+    callback: (err:any, message:any) => void
+        = (err, message)=> {}
+    )
+{
     var _ = {
         fs: fs,
         encoding: "utf8",
@@ -60,4 +65,4 @@ var Service = function(filepath, callback = ()=>{} ) {
     };
 };
 
-module.exports = Service;
+export = Service;

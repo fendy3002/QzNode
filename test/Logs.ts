@@ -1,9 +1,11 @@
+import * as mocha from 'mocha';
+
 var assert = require('assert');
-var qz = require('../dist/index.js').default();
+var qz = require('../src/index');
 var lo = require('lodash');
 var path = require('path');
 
-describe('Logs', function() {
+mocha.describe('Logs', function() {
     var testLog = function(log) {
         log.message("message");
         log.messageln("messageln");
@@ -11,12 +13,12 @@ describe('Logs', function() {
         log.exception(new Error("message"));
     };
 
-    describe('EmptyLog', function() {
-        it('should not write anything to console', function(done) {
+    mocha.describe('EmptyLog', function() {
+        mocha.it('should not write anything to console', function(done) {
             var context = {
                 call: 0
             };
-            var log = qz.logs.empty(() => { context.call++; });
+            var log = qz().logs.empty(() => { context.call++; });
             testLog(log);
 
             assert.equal(context.call, 4);
@@ -24,13 +26,13 @@ describe('Logs', function() {
         });
     });
 
-    describe('ConsoleLog', function() {
-        it('should write to console', function(done) {
+    mocha.describe('ConsoleLog', function() {
+        mocha.it('should write to console', function(done) {
             var context = {
                 call: 0,
                 text: ""
             };
-            var log = qz.logs.console(() => { context.call++; });
+            var log = qz().logs.console(() => { context.call++; });
             log._.stdout = {
                 write: (text) => { context.text += text; }
             };
@@ -42,14 +44,14 @@ describe('Logs', function() {
         });
     });
     
-    describe('FileLog', function() {
-        it('should write to file', function(done) {
+    mocha.describe('FileLog', function() {
+        mocha.it('should write to file', function(done) {
             var context = {
                 call: 0,
                 text: ""
             };
             var filepath = path.join(__dirname, "..", "storage", "test.log");
-            var log = qz.logs.file(filepath, () => { context.call++; });
+            var log = qz().logs.file(filepath, () => { context.call++; });
             log._.fs = {
                 appendFile: (appendPath, text, encoding, callback) => {
                     setTimeout(() => {
@@ -69,16 +71,16 @@ describe('Logs', function() {
         });
     });
     
-    describe('Prefix and Time Log', function() {
-        it('should write to console', function(done) {
+    mocha.describe('Prefix and Time Log', function() {
+        mocha.it('should write to console', function(done) {
             var context = {
                 call: 0,
                 text: ""
             };
             
-            var consoleLog = qz.logs.console(() => { context.call++; });
-            var log = qz.logs.prefix(
-                qz.logs.timed(
+            var consoleLog = qz().logs.console(() => { context.call++; });
+            var log = qz().logs.prefix(
+                qz().logs.timed(
                     consoleLog
                 ), {
                     "prefix": "TEST"
@@ -94,15 +96,15 @@ describe('Logs', function() {
         });
     });
     
-    describe('PrefixTimed Log', function() {
-        it('should write to console', function(done) {
+    mocha.describe('PrefixTimed Log', function() {
+        mocha.it('should write to console', function(done) {
             var context = {
                 call: 0,
                 text: ""
             };
             
-            var consoleLog = qz.logs.console(() => { context.call++; });
-            var log = qz.logs.prefixTimed(consoleLog, {
+            var consoleLog = qz().logs.console(() => { context.call++; });
+            var log = qz().logs.prefixTimed(consoleLog, {
                     "prefix": "TEST"
                 });
             consoleLog._.stdout = {

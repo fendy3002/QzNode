@@ -1,22 +1,8 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _dispatcher = require('./dispatcher');
-
-var _dispatcher2 = _interopRequireDefault(_dispatcher);
-
-var _runner = require('./runner.js');
-
-var _runner2 = _interopRequireDefault(_runner);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+"use strict";
+var dispatcher = require('./dispatcher');
+var runner = require('./runner');
 var Service = {
-    dispatcher: _dispatcher2.default,
-    runner: _runner2.default
+    dispatcher: dispatcher,
+    runner: runner
 };
-
-exports.default = Service;
+module.exports = Service;

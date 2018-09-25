@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var QzPromise = require('./QzPromise');
 var retryService = function (callback, opt) {
     if (opt === void 0) { opt = { retry: 1 }; }

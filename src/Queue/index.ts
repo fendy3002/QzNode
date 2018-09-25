@@ -1,9 +1,9 @@
 let dispatcher = require('./dispatcher');
-let runner = require('./runner.js');
+let runner = require('./runner');
 
 var Service = {
     dispatcher: dispatcher,
     runner: runner
 };
 
-module.exports = Service;
+export = Service;

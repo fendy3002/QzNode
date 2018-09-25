@@ -1,5 +1,3 @@
-export {};
-
 let QzPromise = require('./QzPromise');
 let limit = require('./limit');
 let retry = require('./retry');
@@ -11,4 +9,4 @@ var Service:any = function(callback) {
 Service.limit = limit;
 Service.retry = retry;
 
-module.exports = Service;
+export = Service;

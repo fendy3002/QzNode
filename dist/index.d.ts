@@ -1,5 +1,4 @@
-export {};
-declare var Service: () => {
+interface QzService {
     dataSet: any;
     exec: any;
     promise: any;
@@ -11,5 +10,6 @@ declare var Service: () => {
     queue: any;
     fileLister: any;
     time: any;
-};
-export default Service;
+}
+declare let Service: () => QzService;
+export = Service;

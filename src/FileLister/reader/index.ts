@@ -1,12 +1,9 @@
-export {};
-
 let fs = require('fs');
 let lo = require('lodash');
 let path = require('path');
-import qz = require('../../index');
 
 let Service = ({log}: any = {}) => {
-    console.log(qz);
+    let qz = require('../../index');
     if(!log){
         log = qz().logs.empty();
     }
@@ -72,4 +69,4 @@ let Service = ({log}: any = {}) => {
     };
 }
 
-module.exports = Service;
+export = Service;

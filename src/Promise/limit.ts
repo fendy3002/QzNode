@@ -1,5 +1,3 @@
-export {};
-
 let Service:any = function({
     limit = 5
 }) {
@@ -44,4 +42,4 @@ let Service:any = function({
     };
 };
 
-module.exports = Service;
+export = Service;

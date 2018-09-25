@@ -1,8 +1,10 @@
+import * as mocha from 'mocha';
+
 var assert = require('assert');
 const util = require('util');
 
 // describe('ProperBreakWord', function() {
-//     let properBreakWord = require('../src/Text/properBreakWord.js');
+//     let properBreakWord = require('../src/Text/properBreakWord');
 //     it('should break word in source properly', function(done) {
 //         let source = 'that mycaris verybig';
 //         let compared = 'that is my car which is very big';
@@ -24,9 +26,9 @@ const util = require('util');
 //         });
 //     });
 // });
-describe('FindPhrase', function() {
-    let findPhrase = require('../dist/Text/findPhrase.js');
-    it('should find possible phrases in two sentence', function(done) {
+mocha.describe('FindPhrase', function() {
+    let findPhrase = require('../src/Text/findPhrase');
+    mocha.it('should find possible phrases in two sentence', function(done) {
         let source = 'this is arnold he is an experienced surgeon and very good';
         let compared = 'an experienced surgeon named arnold he is very good surgeon';
     
@@ -43,7 +45,7 @@ describe('FindPhrase', function() {
             done();
         });
     });
-    it('should find possible phrases in two sentence pt2', function(done) {
+    mocha.it('should find possible phrases in two sentence pt2', function(done) {
         let source = 'an experienced surgeon named arnold he is very good surgeon';
         let compared = 'this is arnold he is an experienced surgeon and very good';
     
@@ -59,7 +61,7 @@ describe('FindPhrase', function() {
             done();
         });
     });
-    it('should find more complex possible phrases in two sentence pt1', function(done) {
+    mocha.it('should find more complex possible phrases in two sentence pt1', function(done) {
         let source = 'an experienced surgeon named arnold he is very good and experienced surgeon';
         let compared = 'this is arnold he is an experienced surgeon and very good and experienced surgeon';
     
@@ -74,7 +76,7 @@ describe('FindPhrase', function() {
             done();
         });
     });
-    it('should find more complex possible phrases in two sentence pt2', function(done) {
+    mocha.it('should find more complex possible phrases in two sentence pt2', function(done) {
         let source = 'an experienced surgeon named arnold he is very good and experienced';
         let compared = 'this is arnold he is an experienced surgeon and very good and experienced surgeon';
     

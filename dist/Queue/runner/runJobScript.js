@@ -1,9 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var runJobScript = function runJobScript(_ref) {
     var workerLimit = _ref.workerLimit,
         log = _ref.log,
@@ -52,4 +48,4 @@ var runJobScript = function runJobScript(_ref) {
         };
     };
 };
-exports.default = runJobScript;
+module.exports = runJobScript;

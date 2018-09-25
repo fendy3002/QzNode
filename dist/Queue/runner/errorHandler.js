@@ -1,23 +1,15 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
 var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
-
-var _insertToQueue = require('./insertToQueue.js');
-
-var _insertToQueue2 = _interopRequireDefault(_insertToQueue);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var mysql = require('mysql');
 var moment = require('moment');
 var momentTz = require('moment');
-
+var insertToQueueRaw = require('./insertToQueue.js');
 
 var errorHandler = function errorHandler(_ref) {
     var openDb = _ref.openDb,
@@ -54,7 +46,7 @@ var errorHandler = function errorHandler(_ref) {
 
             var escRunUuid = mysql.escape(runUuid);
             openDb().then(function (db) {
-                var insertToQueue = (0, _insertToQueue2.default)({
+                var insertToQueue = insertToQueueRaw({
                     openDb: openDb,
                     tableName: tableName,
                     runningTableName: runningTableName
@@ -99,4 +91,4 @@ var errorHandler = function errorHandler(_ref) {
     return handle;
 };
 
-exports.default = errorHandler;
+module.exports = errorHandler;

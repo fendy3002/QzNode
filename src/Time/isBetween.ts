@@ -1,5 +1,3 @@
-export {};
-
 import * as moment from 'moment';
 
 /**

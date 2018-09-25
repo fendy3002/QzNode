@@ -1,5 +1,3 @@
-export {};
-
 let lo = require('lodash');
 let util = require('util');
 let dataSet = require('../DataSet/index');
@@ -215,4 +213,4 @@ let getNonPhrase = (arr, phrasePosList, getHandler) => {
 
 Service.fromArray = fromArray;
 
-module.exports = Service;
+export = Service;

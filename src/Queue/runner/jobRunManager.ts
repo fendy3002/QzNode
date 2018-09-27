@@ -1,5 +1,5 @@
-let runJobScript = require('./runJobScript.js');
-let insertToQueue = require('./insertToQueue.js');
+let runJobScript = require('./runJobScript');
+let insertToQueue = require('./insertToQueue');
 
 let jobRunManager = (context, jobCountManager, errorHandler) => (jobUuid, job) => (resolve, reject) => {
     let {logLevel, workerLimit, log} = context;
@@ -37,4 +37,4 @@ let jobRunManager = (context, jobCountManager, errorHandler) => (jobUuid, job) =
     });
 };
 
-module.exports = jobRunManager;
+export = jobRunManager;

@@ -13,7 +13,7 @@ var __assign = (this && this.__assign) || function () {
 var moment = require("moment");
 var mysql = require('mysql');
 var momentTz = require('moment');
-var openDbConnection = require('./helper/openDbConnection.js');
+var openDbConnection = require('./helper/openDbConnection');
 var uuidGen = require('../Uuid/index');
 ;
 var dispatcher = function (param) {

@@ -61,4 +61,4 @@ let insertToQueue = (context) => (running) => (resolve, reject) => {
     })
 };
 
-module.exports = insertToQueue;
+export = insertToQueue;

@@ -41,4 +41,4 @@ let runJobScript = ({workerLimit, log, logLevel}) => (job) => (resolve, reject) 
         return scriptPromise.then(onDone);
     }
 };
-module.exports = runJobScript;
+export = runJobScript;

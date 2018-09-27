@@ -2,7 +2,7 @@ import * as mocha from 'mocha';
 
 var assert = require('assert');
 const util = require('util');
-
+/*
 mocha.describe('ProperBreakWord', function() {
     let properBreakWord = require('../src/Text/properBreakWord');
     mocha.it('should break word in source properly', function(done) {
@@ -93,15 +93,15 @@ mocha.describe('FindPhrase', function() {
             done();
         });
     });
-});
-// describe('wordSwap', function() {
-//     let wordSwap = require('../src/Text/wordSwap.js');
-//     it('should find possible swaps in two sentence', function(done) {
-//         let source = 'this is arnold he is an experienced surgeon and very good';
-//         let compared = 'an experienced surgeon named arnold he is very good surgeon';
+});*/
+mocha.describe('wordSwap', function() {
+    let wordSwap = require('../src/Text/wordSwap');
+    mocha.it('should find possible swaps in two sentence', function(done) {
+        let source = 'an experienced surgeon this is arnold';
+        let compared = 'this is arnold an experienced surgeon';
     
-//         wordSwap(source, compared).then((result) => {
-//             done();
-//         });
-//     });
-// });
+        wordSwap(source, compared).then((result) => {
+            done();
+        });
+    });
+});

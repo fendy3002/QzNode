@@ -1,14 +1,22 @@
 "use strict";
 var lo = require('lodash');
-var arrToSet = function (arr, handler) {
-    if (handler === void 0) { handler = function (val, index) { return true; }; }
+var arrToSet = function (arr, valHandler, keyHandler) {
+    if (!valHandler) {
+        valHandler = function (val, index) { return true; };
+    }
+    if (!keyHandler) {
+        keyHandler = function (val, index) {
+            return val;
+        };
+    }
     var result = {};
     arr.forEach(function (ele, index) {
-        if (!result[ele]) {
-            result[ele] = handler(ele, index);
+        var key = keyHandler(ele, index);
+        if (!result[key]) {
+            result[key] = valHandler(ele, index);
         }
-        else if (result[ele] && Array.isArray(result[ele])) {
-            result[ele] = result[ele].concat(handler(ele, index));
+        else if (result[key] && Array.isArray(result[key])) {
+            result[key] = result[key].concat(valHandler(ele, index));
         }
     });
     return result;

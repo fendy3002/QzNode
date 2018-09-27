@@ -1,26 +1,28 @@
-let lo = require('lodash');
+const lo = require('lodash');
+import dataSet = require('../DataSet/index');
+const findPhrase = require('./findPhrase');
 
-let findPhrase = require('./findPhrase.js');
-
-let Service = (source, compared) => {
-    return fromArray(source.split(" "), compared.split(" ")).then(result => {
+let Service:any = (source, compared) => {
+    return fromArray(source.split(" "), compared.split(" "));
+    /*return fromArray(source.split(" "), compared.split(" ")).then(result => {
         return Promise.resolve({
             ...result,
             source: source,
             compared: compared,
         });
-    });
+    });*/
 };
 
 let fromArray = (sourceArray, comparedArray) => {
-    return findPhrase.fromArray(sourceArray, comparedArray).then((phraseResult) => {
-        let sourcePhrasePos = getPosInfo(phraseResult, (nonPhrase) => nonPhrase.source, (phraseObj) => phraseObj.sourcePos);
-        let comparedPhrasePos = getPosInfo(phraseResult, (nonPhrase) => nonPhrase.compared, (phraseObj) => phraseObj.comparedPos);
-        let splitSource = splitArray(sourceArray, sourcePhrasePos);
-        let splitCompared = splitArray(comparedArray, comparedPhrasePos);
+    let sourcePos = dataSet.arrToSet(sourceArray, 
+        (val, index) => true,
+        (val, index) => { return val + "_" + index; });
+    let comparedPos = dataSet.arrToSet(comparedArray, 
+        (val, index) => true,
+        (val, index) => { return val + "_" + index; });
 
-        
-    });
+    console.log({sourcePos,
+        comparedPos});
 };
 let splitArray = (arr, arrPos) => {
     let resultSplit = [];
@@ -56,4 +58,4 @@ let getPosInfo = (phraseResult, nonPhraseHandler, posHandler) =>{
 }
 Service.fromArray = fromArray;
 
-module.exports = Service;
+export = Service;

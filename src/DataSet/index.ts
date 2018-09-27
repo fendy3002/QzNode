@@ -1,18 +1,30 @@
 let lo = require('lodash');
 
-let arrToSet = function<T>(
-    arr: any[], 
-    handler: 
-        (val: T, index: number) => any
-        = (val, index) => true): object
+let arrToSet = function(
+    arr: any[],
+    valHandler?: 
+        (val: any | string, index: number) => any,
+    keyHandler?: 
+        (val: any, index: number) => string
+)
 {
+    if(!valHandler){
+        valHandler = (val, index) => true;
+    }
+    if(!keyHandler){
+        keyHandler = (val, index) => {
+            return val as string;
+        };
+    }
+
     let result: object = {};
-    arr.forEach((ele, index) => {
-        if(!result[ele]){
-            result[ele] = handler(ele, index);
+    arr.forEach((ele, index: number) => {
+        let key = keyHandler(ele, index);
+        if(!result[key]){
+            result[key] = valHandler(ele, index);
         }
-        else if(result[ele] && Array.isArray(result[ele])){
-            result[ele] = result[ele].concat(handler(ele, index));
+        else if(result[key] && Array.isArray(result[key])){
+            result[key] = result[key].concat(valHandler(ele, index));
         }
     });
     return result;

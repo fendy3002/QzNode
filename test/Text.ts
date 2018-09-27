@@ -2,7 +2,7 @@ import * as mocha from 'mocha';
 
 var assert = require('assert');
 const util = require('util');
-/*
+
 mocha.describe('ProperBreakWord', function() {
     let properBreakWord = require('../src/Text/properBreakWord');
     mocha.it('should break word in source properly', function(done) {
@@ -93,14 +93,42 @@ mocha.describe('FindPhrase', function() {
             done();
         });
     });
-});*/
+});
 mocha.describe('wordSwap', function() {
     let wordSwap = require('../src/Text/wordSwap');
-    mocha.it('should find possible swaps in two sentence', function(done) {
-        let source = 'an experienced surgeon this is arnold';
-        let compared = 'this is arnold an experienced surgeon';
+    mocha.it('should find possible swaps in two sentence pt 1', function(done) {
+        let source = 'this is arnold an experienced surgeon';
+        let compared = 'an experienced surgeon this is arnold';
     
         wordSwap(source, compared).then((result) => {
+            assert.equal(result.result, "an experienced surgeon this is arnold");
+            done();
+        });
+    });
+    mocha.it('should find possible swaps in two sentence pt 2', function(done) {
+        let source = 'this is arnold he is an experienced surgeon';
+        let compared = 'an experienced surgeon this is arnold';
+    
+        wordSwap(source, compared).then((result) => {
+            assert.equal(result.result, "an experienced surgeon this is arnold he is");
+            done();
+        });
+    });
+    mocha.it('should find possible swaps in two sentence pt 3', function(done) {
+        let source = 'an experienced surgeon this is arnold';
+        let compared = 'this is arnold he is an experienced surgeon';
+    
+        wordSwap(source, compared).then((result) => {
+            assert.equal(result.result, 'this is arnold an experienced surgeon');
+            done();
+        });
+    });
+    mocha.it('should find possible swaps in two sentence pt 4', function(done) {
+        let source = 'arnold is an experienced surgeon he is very experienced and good';
+        let compared = 'this is arnold he is an experienced surgeon not only he is good he is also very experienced';
+    
+        wordSwap(source, compared).then((result) => {
+            assert.equal(result.result, "and is arnold he is an experienced surgeon good very experienced")
             done();
         });
     });

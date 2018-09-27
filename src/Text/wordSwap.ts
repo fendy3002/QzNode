@@ -3,59 +3,71 @@ import dataSet = require('../DataSet/index');
 const findPhrase = require('./findPhrase');
 
 let Service:any = (source, compared) => {
-    return fromArray(source.split(" "), compared.split(" "));
-    /*return fromArray(source.split(" "), compared.split(" ")).then(result => {
+    return fromArray(source.split(" "), compared.split(" ")).then(result => {
         return Promise.resolve({
             ...result,
             source: source,
             compared: compared,
         });
-    });*/
+    });
 };
 
 let fromArray = (sourceArray, comparedArray) => {
-    let sourcePos = dataSet.arrToSet(sourceArray, 
-        (val, index) => true,
-        (val, index) => { return val + "_" + index; });
-    let comparedPos = dataSet.arrToSet(comparedArray, 
-        (val, index) => true,
-        (val, index) => { return val + "_" + index; });
+    let sourcePos = dataSet.arrToSet(sourceArray,
+        (val, index) => false,
+        (val, index) => index.toString()
+    );
+    let newSourcePos = dataSet.arrToSet(sourceArray,
+        (val, index) => false,
+        (val, index) => index.toString()
+    );
+    let swappedSource = '';
+    let comparedPos = dataSet.arrToSet(comparedArray,
+        (val, index) => false,
+        (val, index) => index.toString()
+    );
 
-    console.log({sourcePos,
-        comparedPos});
-};
-let splitArray = (arr, arrPos) => {
-    let resultSplit = [];
-    arr.forEach((word, pos) => {
-        if(arrPos[pos] === false){
-            resultSplit.push(word);
-        }
-        else if(typeof arrPos[pos] === "string"){
-            resultSplit.push(arrPos[pos]);
-        }
-    });
-    return resultSplit;
-};
-let getPosInfo = (phraseResult, nonPhraseHandler, posHandler) =>{
-    let phrasePos = {};
-    nonPhraseHandler(phraseResult.nonPhrase).pos.forEach((k) => {
-        phrasePos[k] = false;
-    });
-
-    lo.forOwn(phraseResult.phrase, (phraseObj, key) => {
-        posHandler(phraseObj).forEach((pos, posIndex) => {
-            pos.list.forEach((eachPos, index) => {
-                if(eachPos == pos.start){
-                    phrasePos[eachPos] = key;
+    let earliestIndex = null;
+    comparedArray.forEach((comparedWord, comparedIndex) => {
+        sourceArray.forEach((sourceWord, sourceIndex) => {
+            if(comparedWord == sourceWord){
+                if(!sourcePos[sourceIndex] && !comparedPos[comparedIndex]){
+                    sourcePos[sourceIndex] = comparedIndex;
+                    comparedPos[comparedIndex] = sourceIndex;
+                    if(earliestIndex == null){
+                        earliestIndex = sourceIndex;
+                    }
+                    else if(sourceIndex < earliestIndex){
+                        earliestIndex = sourceIndex;
+                    }
                 }
-                else{
-                    phrasePos[eachPos] = pos.start;
-                }
-            });
+            }
         });
     });
-    return phrasePos;
-}
+    for(let i = earliestIndex; i < Object.keys(comparedPos).length; i++){
+        newSourcePos[i] = comparedPos[i];
+    }
+    
+    lo.forOwn(newSourcePos, (newVal, newKey) => {
+        if(!newVal && newVal !== 0){
+            lo.forOwn(sourcePos, (val, key) => {
+                if(!val && val !== 0 && !newSourcePos[newKey] && newSourcePos[newKey] !== 0){
+                    sourcePos[key] = newKey;
+                    newSourcePos[newKey] = key;
+                }
+            });
+        }
+    });
+    swappedSource = dataSet.setToArr(newSourcePos, (val, key) => {
+        return sourceArray[val];
+    }).filter(k => k).join(" ");
+    
+    return Promise.resolve({
+        source: sourceArray,
+        compared: comparedArray,
+        result: swappedSource
+    });
+};
 Service.fromArray = fromArray;
 
 export = Service;

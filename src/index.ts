@@ -9,7 +9,6 @@ import requireService = require("./Require");
 import queue = require("./Queue/index");
 import fileLister = require("./FileLister/index");
 import time = require("./Time/index");
-import * as qzTypes from './types';
 
 interface QzService {
     dataSet: any;
@@ -23,7 +22,6 @@ interface QzService {
     queue: any;
     fileLister: any;
     time: any;
-    types: any;
 };
 
 let Service = function() : QzService {
@@ -38,8 +36,7 @@ let Service = function() : QzService {
         require: requireService,
         queue: queue,
         fileLister: fileLister,
-        time: time,
-        types: qzTypes
+        time: time
     };
 };
 export = Service;

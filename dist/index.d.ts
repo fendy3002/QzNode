@@ -10,7 +10,6 @@ interface QzService {
     queue: any;
     fileLister: any;
     time: any;
-    types: any;
 }
 declare let Service: () => QzService;
 export = Service;

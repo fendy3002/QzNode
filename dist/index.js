@@ -10,7 +10,6 @@ var requireService = require("./Require");
 var queue = require("./Queue/index");
 var fileLister = require("./FileLister/index");
 var time = require("./Time/index");
-var qzTypes = require("./types");
 ;
 var Service = function () {
     return {
@@ -24,8 +23,7 @@ var Service = function () {
         require: requireService,
         queue: queue,
         fileLister: fileLister,
-        time: time,
-        types: qzTypes
+        time: time
     };
 };
 module.exports = Service;

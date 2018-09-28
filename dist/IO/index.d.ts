@@ -1,4 +1,7 @@
 declare var Service: {
-    deleteContentSync: any;
+    deleteContentSync: (path: any) => void;
+    mkdirRecursive: (targetDir: string, { isRelativeToScript }?: {
+        isRelativeToScript?: boolean;
+    }) => any;
 };
 export = Service;

@@ -1,6 +1,8 @@
 "use strict";
-var deleteContentSync = require('./deleteContentSync');
+var deleteContentSync = require("./deleteContentSync");
+var mkdirRecursive = require("./mkdirRecursive");
 var Service = {
-    deleteContentSync: deleteContentSync
+    deleteContentSync: deleteContentSync,
+    mkdirRecursive: mkdirRecursive
 };
 module.exports = Service;

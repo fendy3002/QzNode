@@ -1,14 +1,15 @@
-let dataSet = require('./DataSet');
-let promise = require("./Promise/index");
-let logs = require("./Logs/index");
-let io = require("./IO/index");
-let execService = require("./Exec/index");
-let uuid = require("./Uuid/index");
-let date = require("./Date/index");
-let requireService = require("./Require");
-let queue = require("./Queue/index");
-let fileLister = require("./FileLister/index");
-let time = require("./Time/index");
+import dataSet = require('./DataSet');
+import promise = require("./Promise/index");
+import logs = require("./Logs/index");
+import io = require("./IO/index");
+import execService = require("./Exec/index");
+import uuid = require("./Uuid/index");
+import date = require("./Date/index");
+import requireService = require("./Require");
+import queue = require("./Queue/index");
+import fileLister = require("./FileLister/index");
+import time = require("./Time/index");
+import * as qzTypes from './types';
 
 interface QzService {
     dataSet: any;
@@ -22,6 +23,7 @@ interface QzService {
     queue: any;
     fileLister: any;
     time: any;
+    types: any;
 };
 
 let Service = function() : QzService {
@@ -36,7 +38,8 @@ let Service = function() : QzService {
         require: requireService,
         queue: queue,
         fileLister: fileLister,
-        time: time
+        time: time,
+        types: qzTypes
     };
 };
 export = Service;

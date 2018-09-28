@@ -1,5 +1,5 @@
-let path = require("path");
-let fs = require("fs");
+const path = require("path");
+const fs = require("fs");
 
 let service = (dirpath: string, ignore: string[] = ["index.js"]) : object => {
     let load = (obj: object, dirpath: string, prefixPath: string = "") => {
@@ -27,4 +27,4 @@ let service = (dirpath: string, ignore: string[] = ["index.js"]) : object => {
     return result;
 }
 
-module.exports = service;
+export = service;

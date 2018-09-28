@@ -1,5 +1,5 @@
 "use strict";
-var dataSet = require('./DataSet');
+var dataSet = require("./DataSet");
 var promise = require("./Promise/index");
 var logs = require("./Logs/index");
 var io = require("./IO/index");
@@ -10,6 +10,7 @@ var requireService = require("./Require");
 var queue = require("./Queue/index");
 var fileLister = require("./FileLister/index");
 var time = require("./Time/index");
+var qzTypes = require("./types");
 ;
 var Service = function () {
     return {
@@ -23,7 +24,8 @@ var Service = function () {
         require: requireService,
         queue: queue,
         fileLister: fileLister,
-        time: time
+        time: time,
+        types: qzTypes
     };
 };
 module.exports = Service;

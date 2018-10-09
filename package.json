@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/qz-node",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -25,7 +25,6 @@
   "homepage": "https://github.com/fendy3002/QzNode#readme",
   "devDependencies": {
     "@types/node": "^10.10.3",
-    "gulp": "^3.9.1",
     "mocha": "^5.2.0",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.3"

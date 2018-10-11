@@ -10,7 +10,6 @@ var requireService = require("./Require");
 var queue = require("./Queue/index");
 var fileLister = require("./FileLister/index");
 var time = require("./Time/index");
-;
 var Service = function () {
     return {
         dataSet: dataSet,

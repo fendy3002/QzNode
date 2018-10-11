@@ -1,3 +1,4 @@
+import * as types from '../types';
 let consoleLog = require('./consoleLog');
 let emptyLog = require('./emptyLog');
 let prefixLog = require('./prefixLog');

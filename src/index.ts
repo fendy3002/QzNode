@@ -10,21 +10,9 @@ import queue = require("./Queue/index");
 import fileLister = require("./FileLister/index");
 import time = require("./Time/index");
 
-interface QzService {
-    dataSet: any;
-    exec: any;
-    promise: any;
-    logs: any;
-    date: any;
-    io: any;
-    uuid: any;
-    require: any;
-    queue: any;
-    fileLister: any;
-    time: any;
-};
+import * as types from './types';
 
-let Service = function() : QzService {
+let Service: types.QzService = function() {
     return {
         dataSet: dataSet,
         exec: execService,

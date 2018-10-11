@@ -1,7 +1,3 @@
-declare var Service: (callback?: (err: any, message: any) => void) => {
-    message: (message: any) => void;
-    messageln: (message: any) => void;
-    object: (obj: any) => void;
-    exception: (ex: any) => void;
-};
+import * as types from '../types';
+declare var Service: types.Logs.EmptyLogService;
 export = Service;

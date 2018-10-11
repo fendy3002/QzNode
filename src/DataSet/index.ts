@@ -1,11 +1,10 @@
 let lo = require('lodash');
+import * as types from '../types'
 
-let arrToSet = function(
-    arr: any[],
-    valHandler?: 
-        (val: any | string, index: number) => any,
-    keyHandler?: 
-        (val: any, index: number) => string
+let arrToSet: types.DataSet.ArrToSet = function(
+    arr,
+    valHandler?,
+    keyHandler?
 )
 {
     if(!valHandler){
@@ -30,11 +29,10 @@ let arrToSet = function(
     return result;
 };
 
-let setToArr = function<T>(
-    data: object,
-    handler:
-        (val: any, key: string) => T
-        = (val, key) => val): T[]
+let setToArr: types.DataSet.SetToArr = function<T>(
+    data,
+    handler = (val, key) => val
+)
 {
     let result: T[] = [];
     lo.forOwn(data, (value, key) => {
@@ -43,7 +41,7 @@ let setToArr = function<T>(
     return result;
 };
 
-let Service = {
+let Service: types.DataSet.Service = {
     arrToSet,
     setToArr
 };

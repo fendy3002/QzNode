@@ -22,11 +22,11 @@ var Service = function (callback) {
         callback(null, ex);
     };
     return {
+        _: _,
         message: message,
         messageln: messageln,
         object: object,
         exception: exception,
-        _: _
     };
 };
 module.exports = Service;

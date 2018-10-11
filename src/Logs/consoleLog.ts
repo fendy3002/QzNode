@@ -1,7 +1,8 @@
-var Service = function(
-    callback: (err:any, message:any) => void
-        = (err, message) => {}
-    )
+import * as types from '../types';
+
+var Service: types.Logs.ConsoleLogService = function(
+    callback = (err, message) => {}
+)
 {
     var _ = {
         stdout: process.stdout
@@ -26,11 +27,11 @@ var Service = function(
     };
 
     return {
+        _,
         message,
         messageln,
         object,
         exception,
-        _
     };
 };
 

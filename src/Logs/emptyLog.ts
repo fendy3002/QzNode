@@ -1,8 +1,8 @@
+import * as types from '../types';
 
-var Service = function(
-    callback: (err:any, message:any) => void
-        = (err, message)=> {}
-    )
+var Service: types.Logs.EmptyLogService = function(
+    callback = (err, message)=> {}
+)
 {
     var message = function(message){
         callback(null, message);

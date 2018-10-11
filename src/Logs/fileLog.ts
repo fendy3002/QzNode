@@ -1,11 +1,12 @@
-let fs = require('fs');
-let lo = require('lodash');
+import * as types from '../types';
+const fs = require('fs');
+const lo = require('lodash');
 
-var Service = function(
+
+var Service: types.Logs.FileLogService = function(
     filepath,
-    callback: (err:any, message:any) => void
-        = (err, message)=> {}
-    )
+    callback = (err, message)=> {}
+)
 {
     var _ = {
         fs: fs,
@@ -35,18 +36,16 @@ var Service = function(
     };
 
     var onProcess = function(callback){
-        var process = { done: false };
+        let process = { done: false };
         _.pendings.push(process);
 
-        ((process) => {
-            var onDone = () => {
-                process.done = true;
-                if(lo.filter(_.pendings, (process) => !process.done).length == 0){
-                    _.done();
-                }
-            };
-            callback(onDone);
-        })(process);
+        let onDone = () => {
+            process.done = true;
+            if(lo.filter(_.pendings, (process) => !process.done).length == 0){
+                _.done();
+            }
+        };
+        callback(onDone);
     };
 
     var onDone = function(cb){

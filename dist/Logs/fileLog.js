@@ -35,15 +35,13 @@ var Service = function (filepath, callback) {
     var onProcess = function (callback) {
         var process = { done: false };
         _.pendings.push(process);
-        (function (process) {
-            var onDone = function () {
-                process.done = true;
-                if (lo.filter(_.pendings, function (process) { return !process.done; }).length == 0) {
-                    _.done();
-                }
-            };
-            callback(onDone);
-        })(process);
+        var onDone = function () {
+            process.done = true;
+            if (lo.filter(_.pendings, function (process) { return !process.done; }).length == 0) {
+                _.done();
+            }
+        };
+        callback(onDone);
     };
     var onDone = function (cb) {
         _.done = cb;

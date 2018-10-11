@@ -1,15 +1,3 @@
-interface QzService {
-    dataSet: any;
-    exec: any;
-    promise: any;
-    logs: any;
-    date: any;
-    io: any;
-    uuid: any;
-    require: any;
-    queue: any;
-    fileLister: any;
-    time: any;
-}
-declare let Service: () => QzService;
+import * as types from './types';
+declare let Service: types.QzService;
 export = Service;

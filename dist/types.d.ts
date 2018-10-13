@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 declare namespace qz {
     interface MySqlDbConnection {
         host: string;
@@ -15,8 +16,8 @@ declare namespace qz {
             exec: any;
             promise: any;
             logs: Logs.LogService;
-            date: any;
-            io: any;
+            date: Date.Service;
+            io: IO.Service;
             uuid: any;
             require: any;
             queue: any;
@@ -76,6 +77,36 @@ declare namespace qz.Logs {
     }
     interface FileLogService {
         (filepath: string, callback: (err: any, message: any) => void): FileLog;
+    }
+}
+declare namespace qz.Date {
+    interface DateRangeToArray {
+        (from: moment.Moment | string, to: moment.Moment | string): moment.Moment[];
+    }
+    interface DateDurationToArray {
+        (from: moment.Moment, duration: number): moment.Moment[];
+    }
+    interface IsBetween {
+        (time: moment.Moment, from: moment.Moment | string, to: moment.Moment | string): boolean;
+    }
+    interface Service {
+        isBetween: IsBetween;
+        dateRangeToArray: DateRangeToArray;
+        dateDurationToArray: DateDurationToArray;
+    }
+}
+declare namespace qz.IO {
+    interface MkdirRecursive {
+        (targetDir: string, option?: {
+            isRelativeToScript: boolean;
+        }): string;
+    }
+    interface DeleteContentSync {
+        (path: string): void;
+    }
+    interface Service {
+        deleteContentSync: DeleteContentSync;
+        mkdirRecursive: MkdirRecursive;
     }
 }
 export = qz;

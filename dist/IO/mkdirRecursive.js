@@ -2,8 +2,11 @@
 var path = require('path');
 var fs = require('fs');
 // https://stackoverflow.com/a/40686853/2155396
-var mkdirRecursive = function (targetDir, _a) {
-    var _b = (_a === void 0 ? {} : _a).isRelativeToScript, isRelativeToScript = _b === void 0 ? false : _b;
+var mkdirRecursive = function (targetDir, option) {
+    var isRelativeToScript = false;
+    if (option) {
+        isRelativeToScript = option.isRelativeToScript;
+    }
     var sep = path.sep;
     var initDir = path.isAbsolute(targetDir) ? sep : '';
     var baseDir = isRelativeToScript ? __dirname : '.';

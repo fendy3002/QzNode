@@ -1,12 +1,13 @@
-let fs = require("fs");
-let paths = require("path");
+import * as qz from '../types';
+const fs = require("fs");
+const paths = require("path");
 
-var deleteFolderRecursive = function(path) {
+let deleteContentSync: qz.IO.DeleteContentSync = function(path) {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach(function(file, index){
-            var curPath = path + "/" + file;
+            let curPath = path + "/" + file;
             if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                deleteFolderRecursive(curPath);
+                deleteContentSync(curPath);
                 fs.rmdirSync(curPath);
             } else { // delete file
                 fs.unlinkSync(curPath);
@@ -15,4 +16,4 @@ var deleteFolderRecursive = function(path) {
     }
 };
 
-export = deleteFolderRecursive;
+export = deleteContentSync;

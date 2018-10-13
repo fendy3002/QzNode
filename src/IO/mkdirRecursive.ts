@@ -1,8 +1,16 @@
+import * as qz from '../types';
 const path = require('path');
 const fs = require('fs');
 
 // https://stackoverflow.com/a/40686853/2155396
-let mkdirRecursive = (targetDir: string, { isRelativeToScript = false } = {}) => {
+let mkdirRecursive: qz.IO.MkdirRecursive = (
+    targetDir, 
+    option?
+) => {
+    let isRelativeToScript = false;
+    if(option){
+        isRelativeToScript = option.isRelativeToScript;
+    }
     const sep = path.sep;
     const initDir = path.isAbsolute(targetDir) ? sep : '';
     const baseDir = isRelativeToScript ? __dirname : '.';

@@ -1,7 +1,3 @@
-declare var Service: {
-    deleteContentSync: (path: any) => void;
-    mkdirRecursive: (targetDir: string, { isRelativeToScript }?: {
-        isRelativeToScript?: boolean;
-    }) => any;
-};
+import * as qz from '../types';
+declare var Service: qz.IO.Service;
 export = Service;

@@ -1,5 +1,5 @@
 {
-  "name": "@fendy3002/qz-node",
+  "name": "@fendy3002/nunjucks-ext",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -24,19 +24,17 @@
   },
   "homepage": "https://github.com/fendy3002/QzNode#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.121",
     "@types/node": "^10.10.3",
+    "@types/nunjucks": "^3.1.1",
     "mocha": "^5.2.0",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.3"
   },
   "dependencies": {
-    "chalk": "^2.3.1",
-    "command-line-args": "^5.0.2",
-    "json5": "^2.1.0",
     "lodash": "^4.17.5",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.14",
-    "mysql": "^2.15.0",
-    "uuid": "^3.2.1"
+    "nunjucks": "^3.1.3"
   }
 }

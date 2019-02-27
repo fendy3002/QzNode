@@ -1,6 +1,7 @@
 const nunjucks = require('nunjucks');
 export interface elem {
-    elemType: string
+    elemType: string,
+    [key: string]: any
 };
 
 export interface twoColOption {
@@ -65,7 +66,7 @@ export interface textarea extends elem {
     option?: textareaOption
 };
 export interface custom extends elem {
-    content: (data :any) => string,
+    content: () => string,
     data: any
 };
 
@@ -163,7 +164,7 @@ export const renderSelect = function(elem: select){
 };
 
 export const renderCustom = function(elem: custom){
-    return nunjucks.renderString(elem.content(elem.data));
+    return nunjucks.renderString(elem.content(), elem.data);
 };
 
 export const render = function(elems: elem[]) {

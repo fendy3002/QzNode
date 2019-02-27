@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
-  "access": "public",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "./node_modules/.bin/mocha --require ts-node/register --trace-warnings test/**/*.ts",
     "compile": "tsc",

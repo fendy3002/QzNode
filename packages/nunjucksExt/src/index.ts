@@ -12,7 +12,8 @@ export = {
         queryString: require('./filter/queryString')
     },
     global: {
-        render: require('./global/render')
+        render: require('./global/render'),
+        make: require('./global/make')
     },
     lib: {
         render: libRender

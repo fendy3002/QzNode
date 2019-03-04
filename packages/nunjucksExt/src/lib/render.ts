@@ -1,6 +1,6 @@
 const nunjucks = require('nunjucks');
 export interface elem {
-    elemType: string,
+    elemType?: string,
     [key: string]: any
 };
 
@@ -49,10 +49,10 @@ export interface select extends elem {
     name: string,
     value: any,
     empty ?: string,
-    options: [{
+    options: {
         label: string,
         value: string
-    }];
+    }[];
     option?: inputOption
 };
 export interface textareaOption {

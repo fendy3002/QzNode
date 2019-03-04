@@ -1,5 +1,6 @@
 import * as mocha from 'mocha';
 import * as render from '../../src/lib/render';
+import * as make from '../../src/lib/make';
 const { use, expect } = require('chai');
 const chaiHtml  = require('chai-html');
 
@@ -8,25 +9,20 @@ mocha.describe('Lib/Render', function() {
     mocha.it('should render elements', function(done) {
         use(chaiHtml);
         const content = render.render([
-            {
-                elemType: "twoCol",
-                first: {
-                    elemType: "input",
+            make.twoCol({
+                first: make.input({
                     name: "name",
                     value: "Luke Skywalker"
-                },
-                second: {
-                    elemType: "checkbox",
+                }),
+                second: make.checkbox({
                     name: "active",
                     label: "Active",
                     checked: false,
                     value: "true"
-                }
-            },
-            {
-                elemType: "twoCol",
-                first: {
-                    elemType: "select",
+                })
+            }),
+            make.twoCol({
+                first: make.select({
                     name: "nationality",
                     value: "",
                     empty: "-- SELECT ONE --",
@@ -34,18 +30,16 @@ mocha.describe('Lib/Render', function() {
                         { label: "Tatooine", value: "tatooine" },
                         { label: "Alderaan", value: "alderaan" }
                     ]
-                },
-                second: {
-                    elemType: "textarea",
+                }),
+                second: make.textarea({
                     name: "description",
                     options: {
                         rows: 5,
                     },
                     value: "My name is what?"
-                }
-            },
-            {
-                elemType: "custom",
+                })
+            }),
+            make.custom({
                 content: () => {
                     return `<div class="row">
                         My father name is: {{ name }}
@@ -54,7 +48,7 @@ mocha.describe('Lib/Render', function() {
                 data: {
                     name: "Anakin Skywalker"
                 }
-            }
+            })
         ]);
         const exptected = `<div class="row">
                 <div class="col-sm-6">

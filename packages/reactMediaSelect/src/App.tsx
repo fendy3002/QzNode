@@ -2,12 +2,12 @@ const React = require('react');
 const mobx = require('mobx');
 const mobxReact = require('mobx-react');
 const lo = require('lodash');
-const Browser = require('./components/Browser.tsx');
-const Toolbar = require('./components/Toolbar.tsx');
-const Breadcrumb = require('./components/Breadcrumb.tsx');
-const Preview = require("./components/Preview.tsx");
-const NewFolderForm = require('./components/NewFolderForm.tsx');
-const Upload = require('./components/Upload.tsx');
+const Browser = require('./components/Browser.tsx').Browser;
+const Toolbar = require('./components/Toolbar.tsx').Toolbar;
+const Breadcrumb = require('./components/Breadcrumb.tsx').Breadcrumb;
+const Preview = require("./components/Preview.tsx").Preview;
+const NewFolderForm = require('./components/NewFolderForm.tsx').NewFolderForm;
+const Upload = require('./components/Upload.tsx').Upload;
 let {observer, inject} = mobxReact;
 
 import "toastr/build/toastr.min.css";

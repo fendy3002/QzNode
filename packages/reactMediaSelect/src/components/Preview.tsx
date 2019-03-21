@@ -3,6 +3,7 @@ const path = require('path');
 const mobx = require('mobx');
 const mobxReact = require('mobx-react');
 const lo = require('lodash');
+import fileIcon from '../../asset/file.png';
 
 let {observer, inject} = mobxReact;
 
@@ -31,7 +32,7 @@ export class Preview extends React.Component {
                         <img src={store.contentPath(store.selected)} className="img-fluid" style={{ "maxHeight": "360px" }}/>
                     }
                     { !store.selectedFile.isImage &&
-                        <img src={"/images/file.png"} className="img-fluid" style={{ "maxHeight": "360px" }}/>
+                        <img src={fileIcon} className="img-fluid" style={{ "maxHeight": "360px" }}/>
                     }
                 </div>
             </div>

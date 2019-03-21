@@ -4,7 +4,7 @@ const path = require('path');
 const sa = require('superagent');
 const {observable, computed} = mobx;
 const toastr = require('toastr');
-const newFolderStore = require('./newFolderStore.tsx');
+const newFolderStore = require('./newFolderStore.tsx').newFolderStore;
 
 export class store {
     constructor(context) {

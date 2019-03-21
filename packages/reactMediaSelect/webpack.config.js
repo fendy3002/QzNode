@@ -4,8 +4,9 @@ module.exports = [{
         reactMediaSelect: path.resolve(__dirname, "src/index.tsx")
     },
     output: {
-        path: path.resolve(__dirname, 'dist', 'index.js'),
-        filename: "[name].js"
+        path: path.resolve(__dirname, 'dist'),
+        filename: "index.js",
+        library: "reactMediaSelect"
     },
     module: {
         rules: [
@@ -45,7 +46,7 @@ module.exports = [{
             },
             {
                 test: /\.(jpg|gif|png|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                loader: "url-loader"
+                loader: "file-loader"
             }
         ]
     }

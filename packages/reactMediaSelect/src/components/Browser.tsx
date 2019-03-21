@@ -3,6 +3,8 @@ const path = require('path');
 const mobx = require('mobx');
 const mobxReact = require('mobx-react');
 const lo = require('lodash');
+import folderIcon from '../../asset/folder.svg';
+import fileIcon from '../../asset/file.png';
 
 let {observer, inject} = mobxReact;
 
@@ -47,7 +49,7 @@ export class Browser extends React.Component {
                             <div className="card-block" style={{ ...fileStyle }}>
                                 <div className="card-block-smallpadding">
                                     {file.directory &&
-                                        <img className="img-fluid" src="/images/folder.svg" />
+                                        <img className="img-fluid" src={folderIcon} />
                                     }
                                     {!file.directory &&
                                         <>
@@ -56,7 +58,7 @@ export class Browser extends React.Component {
                                                 style={{"overflow": "hidden", "maxHeight":"140px"}}/>
                                         }
                                         {!file.isImage &&
-                                            <img className="img-fluid" src="/images/file.png"/>
+                                            <img className="img-fluid" src={fileIcon}/>
                                         }
                                         </>
                                     }

@@ -4,7 +4,7 @@ const sa = require('superagent');
 const MobxReact = require('mobx-react');
 
 const App = require('./App.tsx').default;
-const store = require('./store/store.tsx');
+const store = require('./store/store.tsx').store;
 const toastr = require('toastr');
 export const reactMediaSelect = function(elem, option) {
     toastr.options.positionClass = "toast-bottom-right";

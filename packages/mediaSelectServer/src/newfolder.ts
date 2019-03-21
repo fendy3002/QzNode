@@ -4,10 +4,10 @@ const lo = require('lodash');
 
 const getFilepath = (url) => decodeURIComponent(url.replace("/media-asset/newfolder", ""));
 
-let newfolder = {
-    _post: (req, res, next) => {
+let newfolder = (appConfig) => {
+    return (req, res, next) => {
         const filePath = getFilepath(req.url);
-        const absFilePath = path.join(req.appConfig.path.media, filePath);
+        const absFilePath = path.join(appConfig.path.media, filePath);
         const folderName = req.body.folderName;
         const newFolderPath = path.join(absFilePath, folderName);
         return fs.exists(newFolderPath, (exists) =>{

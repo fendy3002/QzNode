@@ -48,10 +48,10 @@ const listDirectory = (filePath) => new Promise((resolve, reject) => {
         });
     });
 });
-let browse = {
-    _get: (req, res, next) => {
+let browse = (appConfig) => {
+    return (req, res, next) => {
         const filePath = getFilepath(req.url);
-        const absFilePath = path.join(req.appConfig.path.media, filePath);
+        const absFilePath = path.join(appConfig.path.media, filePath);
         return fs.lstat(absFilePath, (err, stat) => {
             if(err){ return res.status(404).send(); }
             else{
@@ -64,6 +64,6 @@ let browse = {
                     });
             }
         });
-    }
-};
+    };
+}
 export = browse;

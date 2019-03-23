@@ -48,11 +48,11 @@ module.exports = [...outputs.map(
                 {
                     // Capture eot, ttf, woff, and woff2
                     test: /\.(eot|ttf|woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-                    loader: "file-loader"
+                    loader: "url-loader"
                 },
                 {
                     test: /\.(jpg|gif|png|svg)(\?v=\d+\.\d+\.\d+)?$/,
-                    loader: "file-loader"
+                    loader: "url-loader"
                 }
             ]
         }

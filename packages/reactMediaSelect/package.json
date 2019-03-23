@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/react-media-select",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/index.js",
   "publishConfig": {
@@ -50,6 +50,7 @@
     "react-dropzone": "^10.0.4",
     "style-loader": "^0.23.1",
     "typescript": "^3.3.4000",
+    "url-loader": "^1.1.2",
     "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2"
   },

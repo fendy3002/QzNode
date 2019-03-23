@@ -23,6 +23,14 @@ export const reactMediaSelect = function(elem, option) {
         headers: {
             authorization: null
         },
+        fieldName: {
+            upload: {
+                fileInput: "files"
+            },
+            newFolder: {
+                folderNameInput: "folderName"
+            }
+        },
         ...option
     };
     let storeInstance = new store({

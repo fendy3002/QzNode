@@ -75,6 +75,7 @@ export class store {
         }
         this.files = [];
         this.currentPath = newPath;
+        this.mode = "browse";
         return this.initializeBrowse();
     }
     selectFile(fileName){
@@ -125,15 +126,16 @@ export class store {
     }
     upload(acceptedFiles){
         const self = this;
-        let urlPath = path.join(this.context.config.apiPath.upload, this.currentPath);
+        const config = self.context.config;
+        let urlPath = path.join(config.apiPath.upload, this.currentPath);
         this.loading((done) => {
             const req = sa.post(urlPath)
                 //.set('Content-Type', 'multipart/form-data')
-                .set('Authorization', self.context.config.headers.authorization);
+                .set('Authorization', config.headers.authorization);
             req.field("overwrite", self.uploadOverwrite ? "true" : "");
             //req.attach("files", acceptedFiles);
             acceptedFiles.forEach(file => {
-                req.attach("files", file);
+                req.attach(config.fieldName.upload.fileInput, file);
             })
             req.end((err, res) => {
                 if(err){

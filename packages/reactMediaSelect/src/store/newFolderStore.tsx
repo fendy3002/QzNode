@@ -23,13 +23,14 @@ export class newFolderStore {
     }
     submit(){
         const self = this;
-        const apiPath = path.join(self.store.context.config.apiPath.newFolder, 
+        const config = self.store.context.config;
+        const apiPath = path.join(config.apiPath.newFolder, 
             self.store.currentPath);
         self.store.loading((done) => {
             sa.post(apiPath)
-                .set('Authorization', self.store.context.config.headers.authorization)
+                .set('Authorization', config.headers.authorization)
                 .send({
-                    folderName: this.newFolderName
+                    [config.fieldName.newFolder.folderNameInput]: this.newFolderName
                 })
                 .end((err, res) => {
                     done();

@@ -3,19 +3,17 @@ const fs = require('fs');
 const path = require('path');
 const multer  = require('multer');
 
-const getFilepath = (url) => decodeURIComponent(url.replace("/media-asset/upload", ""));
+const getFilepath = (url) => decodeURIComponent(url.replace("/api/media-asset/upload", ""));
 
 let uploadSvc = (appConfig) => {
     const upload = multer({ 
         storage: multer.diskStorage({
             destination: (req, file, callback) => {
-                const getFilepath = (url) => decodeURIComponent(url.replace("/media-asset/upload", ""));
                 const filePath = getFilepath(req.url);
                 const absFilePath = path.join(appConfig.path.media, filePath);
                 callback(null, absFilePath);
             },
             filename: (req, file, callback) => {
-                const getFilepath = (url) => decodeURIComponent(url.replace("/media-asset/upload", ""));
                 const filePath = getFilepath(req.url);
                 const absFilePath = path.join(appConfig.path.media, filePath, file.originalname);
                 if(!req.body.overwrite || req.body.overwrite != "true"){

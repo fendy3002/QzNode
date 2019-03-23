@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const lo = require('lodash');
 
-const getFilepath = (url) => decodeURIComponent(url.replace("/media-asset/browse", ""));
+const getFilepath = (url) => decodeURIComponent(url.replace("/api/media-asset/browse", ""));
 
 const getFileInfo = (fileName, filePath) => new Promise((resolve, reject) => {
     fs.lstat(filePath, (err, stat) => {

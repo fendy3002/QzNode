@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const lo = require('lodash');
 
-const getFilepath = (url) => decodeURIComponent(url.replace("/media-asset/newfolder", ""));
+const getFilepath = (url) => decodeURIComponent(url.replace("/api/media-asset/newfolder", ""));
 
 let newfolder = (appConfig) => {
     return (req, res, next) => {

@@ -3,10 +3,17 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const mediaSelectServer = require('@fendy3002/media-select-server');
+const bodyParser = require('body-parser');
 
 const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+}));
+
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
-app.use("/api", mediaSelectServer({
+app.use(express.static(path.resolve(__dirname, "..")));
+app.use(mediaSelectServer({
     path: {
         media: path.resolve(__dirname, "..")
     }

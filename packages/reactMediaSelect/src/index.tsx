@@ -34,7 +34,6 @@ export const reactMediaSelect = function(elem, option) {
             }
         }
     }, option);
-    console.log(useOption);
     let storeInstance = new store({
         config: useOption,
     });

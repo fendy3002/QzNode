@@ -1,3 +1,4 @@
+const http = require('http');
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -18,6 +19,8 @@ app.get('/', (req, res, next) => {
     res.end();
 })
 
-app.listen(3000, () => {
-    console.log("APP run at port 3000");
+const server = http.createServer(app);
+const port = process.argv[2] || 3000;
+const listener = server.listen(port, () => {
+    console.log("server running on: http://127.0.0.1:" + listener.address().port);
 });

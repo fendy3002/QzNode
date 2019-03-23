@@ -1,15 +1,17 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const sa = require('superagent');
+const lo = require('lodash');
 const MobxReact = require('mobx-react');
 
 const App = require('./App.tsx').default;
 const store = require('./store/store.tsx').store;
 const toastr = require('toastr');
+
 export const reactMediaSelect = function(elem, option) {
     toastr.options.positionClass = "toast-bottom-right";
 
-    const useOption = {
+    const useOption = lo.merge({
         onChoose: function(fileInfo){
 
         },
@@ -30,9 +32,9 @@ export const reactMediaSelect = function(elem, option) {
             newFolder: {
                 folderNameInput: "folderName"
             }
-        },
-        ...option
-    };
+        }
+    }, option);
+    console.log(useOption);
     let storeInstance = new store({
         config: useOption,
     });

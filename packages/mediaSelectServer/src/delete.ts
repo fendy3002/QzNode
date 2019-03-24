@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 let lo = require('lodash');
+const debug = require('debug')('QzNode:mediaSelectServer:delete');
 
 const getFilepath = (url) => decodeURIComponent(url.replace("/api/media-asset/delete", ""));
 const deleteFolderRecursive = function(folderPath) {
@@ -20,11 +21,18 @@ const deleteFolderRecursive = function(folderPath) {
 let deleteSvc = (appConfig) => {
     return (req, res, next) => {
         const withContent = req.body.withContent;
-        const physicalPath = path.join(appConfig.path.media, getFilepath(req.url));
+        const relativePath = getFilepath(req.url);
+        const physicalPath = path.join(appConfig.path.media, relativePath);
+        debug("withContent %s", withContent);
+        debug("relative path %s", relativePath);
+        debug("physical abs path %s", physicalPath);
+
         //return res.sendFile(filePath);
         fs.lstat(physicalPath, (err, stats) => {
             if(err){ return res.status(404).send(); }
             else{
+                debug("isDirectory %s", stats.isDirectory());
+
                 if(stats.isDirectory()){
                     fs.readdir(physicalPath, (err, files) => {
                         if(files && files.length > 0){

@@ -22,7 +22,9 @@ export class store {
             'toggleNewFolder',
             'toggleUpload',
             'toggleDeleteFolder',
-            'submitDeleteFolder'
+            'toggleDeleteFile',
+            'submitDeleteFolder',
+            'submitDeleteFile'
         ].forEach((x) => {
             this[x] = this[x].bind(this);
         });
@@ -148,6 +150,14 @@ export class store {
             this.mode = "browse";
         }
     }
+    toggleDeleteFile(){
+        if(this.mode != "deleteFile"){
+            this.mode = "deleteFile";
+        }
+        else{
+            this.mode = "browse";
+        }
+    }
     upload(acceptedFiles){
         const self = this;
         const config = self.context.config;
@@ -209,6 +219,32 @@ export class store {
                     fileParts = fileParts.slice(0, fileParts.length - 1);
                     const navigateTo = path.join("/", fileParts.join("/"));
                     self.navigate(navigateTo);
+                }
+            });
+        });
+    }
+    submitDeleteFile(){
+        const self = this;
+        const config = self.context.config;
+        let urlPath = path.join(config.apiPath.delete, this.currentPath, this.selected);
+        this.loading((done) => {
+            const req = sa.delete(urlPath)
+                //.set('Content-Type', 'multipart/form-data')
+                .set('Authorization', config.headers.authorization)
+                .end((err, res) => {
+                if(err){
+                    if(res.body.message){
+                        toastr.error(res.body.message);
+                    }
+                    else{
+                        toastr.error(res.body.toString());
+                    }
+                    done();
+                }
+                else{
+                    toastr.success("Delete folder done");
+                    done();
+                    self.navigate(self.currentPath);
                 }
             });
         });

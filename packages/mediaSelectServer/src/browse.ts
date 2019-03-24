@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const lo = require('lodash');
+const debug = require('debug')('QzNode:mediaSelectServer:browse');
 
 const getFilepath = (url) => decodeURIComponent(url.replace("/api/media-asset/browse", ""));
 
@@ -51,7 +52,9 @@ const listDirectory = (filePath) => new Promise((resolve, reject) => {
 let browse = (appConfig) => {
     return (req, res, next) => {
         const filePath = getFilepath(req.url);
+        debug("relative path %s", filePath);
         const absFilePath = path.join(appConfig.path.media, filePath);
+        debug("physical abs path %s", absFilePath);
         return fs.lstat(absFilePath, (err, stat) => {
             if(err){ return res.status(404).send(); }
             else{

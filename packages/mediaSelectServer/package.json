@@ -29,6 +29,7 @@
     "typescript": "^3.3.4000"
   },
   "dependencies": {
+    "debug": "^4.1.1",
     "express": "^4.16.4",
     "lodash": "^4.17.5",
     "moment": "^2.22.2",

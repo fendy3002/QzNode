@@ -14,6 +14,11 @@ export class Preview extends React.Component {
         super(props);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDeleteFile = this.handleDeleteFile.bind(this);
+    }
+    handleDeleteFile(){
+        const store = this.props.store;
+        store.toggleDeleteFile();
     }
     handleCancel(){
         const store = this.props.store;
@@ -30,7 +35,6 @@ export class Preview extends React.Component {
     render() {
         const store = this.props.store;
         const config = store.context.config;
-        console.log(config);
         if(!store.selected){
             return <></>;
         }
@@ -55,7 +59,7 @@ export class Preview extends React.Component {
             <div className="card-footer">
                 <div className="card-footer-smallpadding text-right">
                     {config.access.deleteFile && <>
-                        <button type="button" className="btn btn-danger">
+                        <button type="button" className="btn btn-danger" onClick={this.handleDeleteFile}>
                             Delete
                         </button>&nbsp;
                     </>}

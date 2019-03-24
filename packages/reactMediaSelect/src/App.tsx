@@ -65,6 +65,11 @@ export default class App extends React.Component {
                                         <DeleteForm />
                                     </div>
                                 }
+                                {store.mode == "deleteFile" &&
+                                    <div className="row">
+                                        <DeleteForm file={true}/>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>

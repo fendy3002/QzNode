@@ -18,6 +18,9 @@ export interface context {
             },
             newFolder: {
                 folderNameInput: string
+            },
+            delete: {
+                withContent: string
             }
         },
         access: {

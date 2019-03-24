@@ -33,6 +33,9 @@ export const reactMediaSelect = function(elem, option) {
             },
             newFolder: {
                 folderNameInput: "folderName"
+            },
+            delete: {
+                withContent: "withContent"
             }
         },
         access: {

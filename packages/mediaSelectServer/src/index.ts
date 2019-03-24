@@ -12,7 +12,8 @@ interface option {
         fileInfo: string | string[],
         media: string | string[],
         newFolder: string | string[],
-        upload: string | string[]
+        upload: string | string[],
+        delete: string | string[]
     }
 };
 const svc = (appConfig: appConfig, option ?: option) => {
@@ -22,7 +23,8 @@ const svc = (appConfig: appConfig, option ?: option) => {
             fileInfo: '/api/media-asset/fileInfo/*',
             media: ['/media', '/media/*'],
             newFolder: ['/api/media-asset/newfolder', '/api/media-asset/newfolder/*'],
-            upload: ['/api/media-asset/upload', '/api/media-asset/upload/*']
+            upload: ['/api/media-asset/upload', '/api/media-asset/upload/*'],
+            delete: ['/api/media-asset/delete', '/api/media-asset/delete/*']
         },
         ...option
     };
@@ -31,6 +33,7 @@ const svc = (appConfig: appConfig, option ?: option) => {
     routes.get(useOption.path.media, require('./file')(appConfig));
     routes.post(useOption.path.newFolder, require('./newfolder')(appConfig));
     routes.post(useOption.path.upload, require('./upload')(appConfig));
+    routes.delete(useOption.path.delete, require('./delete')(appConfig));
     return routes;
 }
 export = svc;

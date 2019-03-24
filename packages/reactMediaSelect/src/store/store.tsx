@@ -180,16 +180,17 @@ export class store {
             });
         });
     }
-    submitDeleteFolder(withContents){
+    submitDeleteFolder(){
         const self = this;
         const config = self.context.config;
         let urlPath = path.join(config.apiPath.delete, this.currentPath);
+        const withContent = self.files.length > 0;
         this.loading((done) => {
             const req = sa.delete(urlPath)
                 //.set('Content-Type', 'multipart/form-data')
                 .set('Authorization', config.headers.authorization)
                 .send({
-                    "withContents": withContents
+                    [config.fieldName.delete.withContent]: withContent
                 }).end((err, res) => {
                 if(err){
                     if(res.body.message){

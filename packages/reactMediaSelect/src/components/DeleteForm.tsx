@@ -21,7 +21,7 @@ export class DeleteForm extends React.Component {
     handleSubmit(evt){
         evt.preventDefault();
         const store = this.props.store;
-        store.newFolderStore.submit();
+        store.submitDeleteFolder();
     }
     handleChange(evt){
         evt.preventDefault();

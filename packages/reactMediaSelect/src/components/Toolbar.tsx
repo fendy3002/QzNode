@@ -34,13 +34,13 @@ export class Toolbar extends React.Component {
             </button>&nbsp;
             <button className="btn btn-secondary" type="button" onClick={this.handleNewFolder}>
                 <i className="fa fa-folder"></i> New Folder
-            </button>
+            </button>&nbsp;
             {
                 store.canDeleteFolder &&
                 <>
                     <button className="btn btn-danger" type="button" onClick={this.handleDelete}>
                         <i className="fa fa-remove"></i> Delete
-                    </button>
+                    </button>&nbsp;
                 </>
             }
         </div>;

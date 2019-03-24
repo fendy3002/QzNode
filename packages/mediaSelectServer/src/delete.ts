@@ -2,7 +2,7 @@ const path = require('path');
 const fs = require('fs');
 let lo = require('lodash');
 
-const getFilepath = (url) => decodeURIComponent(url.replace("/media-asset/delete/", ""));
+const getFilepath = (url) => decodeURIComponent(url.replace("/api/media-asset/delete", ""));
 const deleteFolderRecursive = function(folderPath) {
     if (fs.existsSync(folderPath)) {
       fs.readdirSync(folderPath).forEach(function(file, index){
@@ -21,8 +21,10 @@ let deleteSvc = (appConfig) => {
     return (req, res, next) => {
         const withContent = req.body.withContent;
         const physicalPath = path.join(appConfig.path.media, getFilepath(req.url));
+        console.log(physicalPath);
         //return res.sendFile(filePath);
         fs.lstat(physicalPath, (err, stats) => {
+            console.log(err);
             if(err){ return res.status(404).send(); }
             else{
                 if(stats.isDirectory()){
@@ -58,7 +60,19 @@ let deleteSvc = (appConfig) => {
                     });
                 }
                 else{
-                    
+                    fs.unlink(physicalPath, (err) => {
+                        if(err){
+                            return res.status(500).json({
+                                code: "SERVER_ERROR",
+                                message: err
+                            });
+                        }
+                        else{
+                            return res.status(200).json({
+                                message: "OK"
+                            });
+                        }
+                    });
                 }
             }
         })

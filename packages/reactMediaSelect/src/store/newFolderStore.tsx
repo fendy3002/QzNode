@@ -15,7 +15,7 @@ export class newFolderStore {
     @observable newFolderName = "";
     @computed get existingPath(){
         const pathParts = this.store.currentPath.split("/").filter(k => k);
-        return "/" + pathParts.join("/") + "/";
+        return path.join("/", pathParts.join("/"), "/");
     }
 
     changeNewFolderName(newName){

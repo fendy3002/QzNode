@@ -1,6 +1,15 @@
 export interface context {
     config: {
-        onChoose: (fileInfo: string) => any,
+        fileAction: {
+            submit ?: {
+                label: string,
+                handler: (fileInfo: string) => any
+            },
+            cancel ?: {
+                label: string,
+                handler: () => any
+            }
+        },
         apiPath: {
             browse: string,
             fileInfo: string,

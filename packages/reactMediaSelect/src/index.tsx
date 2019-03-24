@@ -13,8 +13,9 @@ export const reactMediaSelect = function(elem, option) {
     toastr.options.positionClass = "toast-bottom-right";
 
     const useOption = lo.merge({
-        onChoose: function(fileInfo){
-
+        fileAction: {
+            submit: null,
+            cancel: null
         },
         apiPath: {
             browse: "/api/media-asset/browse",

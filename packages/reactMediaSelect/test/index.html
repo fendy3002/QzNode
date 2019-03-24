@@ -22,7 +22,12 @@
     <script src="/reactMediaSelect.js"></script>
     <script>
         reactMediaSelect.reactMediaSelect(document.getElementById("react"), {
-            
+            fileAction: {
+                submit: {
+                    label: "Choose",
+                    handler: (filePath) => { console.log(filePath); }
+                }
+            }
         });
         // requirejs(["../dist/index.js"], function(reactMediaSelect) {
         //     reactMediaSelect(document.getElementById("react"), {});

@@ -21,10 +21,8 @@ let deleteSvc = (appConfig) => {
     return (req, res, next) => {
         const withContent = req.body.withContent;
         const physicalPath = path.join(appConfig.path.media, getFilepath(req.url));
-        console.log(physicalPath);
         //return res.sendFile(filePath);
         fs.lstat(physicalPath, (err, stats) => {
-            console.log(err);
             if(err){ return res.status(404).send(); }
             else{
                 if(stats.isDirectory()){

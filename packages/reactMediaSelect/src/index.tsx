@@ -7,6 +7,7 @@ const MobxReact = require('mobx-react');
 const App = require('./App.tsx').default;
 const store = require('./store/store.tsx').store;
 const toastr = require('toastr');
+import * as types from './types';
 
 export const reactMediaSelect = function(elem, option) {
     toastr.options.positionClass = "toast-bottom-right";
@@ -20,7 +21,8 @@ export const reactMediaSelect = function(elem, option) {
             fileInfo: "/api/media-asset/fileInfo",
             content: "/media",
             newFolder: "/api/media-asset/newfolder",
-            upload: "/api/media-asset/upload"
+            upload: "/api/media-asset/upload",
+            delete: "/api/media-asset/delete"
         },
         headers: {
             authorization: null
@@ -39,9 +41,10 @@ export const reactMediaSelect = function(elem, option) {
             deleteEmptyFolder: true
         }
     }, option);
-    let storeInstance = new store({
+    const context: types.context = {
         config: useOption,
-    });
+    };
+    let storeInstance = new store(context);
     ReactDOM.render(
         <MobxReact.Provider store={storeInstance}>
             <App/>

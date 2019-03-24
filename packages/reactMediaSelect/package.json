@@ -1,8 +1,12 @@
 {
   "name": "@fendy3002/react-media-select",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "main": "dist/index.js",
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
   "publishConfig": {
     "access": "public"
   },

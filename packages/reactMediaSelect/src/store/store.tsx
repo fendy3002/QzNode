@@ -5,12 +5,12 @@ const sa = require('superagent');
 const {observable, computed} = mobx;
 const toastr = require('toastr');
 const newFolderStore = require('./newFolderStore.tsx').newFolderStore;
+import * as types from '../types';
 
 export class store {
-    constructor(context) {
+    constructor(context: types.context) {
         this.context = context;
         this.newFolderStore = new newFolderStore(this);
-        const self = this;
         [
             'loading',
             'initializeBrowse',
@@ -22,11 +22,12 @@ export class store {
             'toggleNewFolder',
             'toggleUpload',
             'toggleDeleteFolder',
+            'submitDeleteFolder'
         ].forEach((x) => {
             this[x] = this[x].bind(this);
         });
     }
-    context;
+    context : types.context;
     @observable isLoading = false;
     @observable files = [];
     @observable currentPath = "";
@@ -175,6 +176,38 @@ export class store {
                     done();
                     self.mode = "browse";
                     self.initializeBrowse();
+                }
+            });
+        });
+    }
+    submitDeleteFolder(withContents){
+        const self = this;
+        const config = self.context.config;
+        let urlPath = path.join(config.apiPath.delete, this.currentPath);
+        this.loading((done) => {
+            const req = sa.delete(urlPath)
+                //.set('Content-Type', 'multipart/form-data')
+                .set('Authorization', config.headers.authorization)
+                .send({
+                    "withContents": withContents
+                }).end((err, res) => {
+                if(err){
+                    if(res.body.message){
+                        toastr.error(res.body.message);
+                    }
+                    else{
+                        toastr.error(res.body.toString());
+                    }
+                    done();
+                }
+                else{
+                    toastr.success("Delete folder done");
+                    done();
+                    self.mode = "browse";
+                    let fileParts = self.currentPath.split("/");
+                    fileParts = fileParts.slice(0, fileParts.length - 1);
+                    const navigateTo = path.join("/", fileParts.join("/"));
+                    self.navigate(navigateTo);
                 }
             });
         });

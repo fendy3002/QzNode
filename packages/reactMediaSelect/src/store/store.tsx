@@ -10,16 +10,21 @@ export class store {
     constructor(context) {
         this.context = context;
         this.newFolderStore = new newFolderStore(this);
-
-        this.loading = this.loading.bind(this);
-        this.initializeBrowse = this.initializeBrowse.bind(this);
-        this.contentPath = this.contentPath.bind(this);
-        this.navigate = this.navigate.bind(this);
-        this.selectFile = this.selectFile.bind(this);
-        this.clearSelection = this.clearSelection.bind(this);
-        this.upload = this.upload.bind(this);
-        this.toggleNewFolder = this.toggleNewFolder.bind(this);
-        this.toggleUpload = this.toggleUpload.bind(this);
+        const self = this;
+        [
+            'loading',
+            'initializeBrowse',
+            'contentPath',
+            'navigate',
+            'selectFile',
+            'clearSelection',
+            'upload',
+            'toggleNewFolder',
+            'toggleUpload',
+            'toggleDeleteFolder',
+        ].forEach((x) => {
+            this[x] = this[x].bind(this);
+        });
     }
     context;
     @observable isLoading = false;
@@ -54,6 +59,16 @@ export class store {
                     });
             })
         });
+    }
+    @computed get canDeleteFolder(){
+        if(!this.currentPath || this.currentPath == "/"){
+            return false;
+        }
+        else if(this.files.length > 0){
+            return this.context.config.access.deleteFolder;
+        } else{
+            return this.context.config.access.deleteFolder || this.context.config.access.deleteEmptyFolder;
+        }
     }
     @computed get breadcrumb () {
         const filePathParts = this.currentPath.split("/").filter(k => k);
@@ -119,6 +134,14 @@ export class store {
     toggleUpload(){
         if(this.mode != "upload"){
             this.mode = "upload";
+        }
+        else{
+            this.mode = "browse";
+        }
+    }
+    toggleDeleteFolder(){
+        if(this.mode != "deleteFolder"){
+            this.mode = "deleteFolder";
         }
         else{
             this.mode = "browse";

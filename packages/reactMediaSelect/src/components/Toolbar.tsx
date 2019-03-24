@@ -12,6 +12,7 @@ export class Toolbar extends React.Component {
         super(props);
         this.handleNewFolder = this.handleNewFolder.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
     handleNewFolder(){
         const store = this.props.store;
@@ -20,6 +21,10 @@ export class Toolbar extends React.Component {
     handleUpload(){
         const store = this.props.store;
         store.toggleUpload();
+    }
+    handleDelete(){
+        const store = this.props.store;
+        store.toggleDeleteFolder();
     }
     render() {
         let store = this.props.store;
@@ -30,6 +35,14 @@ export class Toolbar extends React.Component {
             <button className="btn btn-secondary" type="button" onClick={this.handleNewFolder}>
                 <i className="fa fa-folder"></i> New Folder
             </button>
+            {
+                store.canDeleteFolder &&
+                <>
+                    <button className="btn btn-danger" type="button" onClick={this.handleDelete}>
+                        <i className="fa fa-remove"></i> Delete
+                    </button>
+                </>
+            }
         </div>;
     }
 };

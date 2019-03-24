@@ -12,10 +12,10 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
-app.use(express.static(path.resolve(__dirname, "..")));
+app.use(express.static(path.resolve(__dirname, "public")));
 app.use(mediaSelectServer({
     path: {
-        media: path.resolve(__dirname, "..")
+        media: path.resolve(__dirname, "storage")
     }
 }));
 app.get('/', (req, res, next) => {

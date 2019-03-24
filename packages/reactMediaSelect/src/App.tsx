@@ -6,6 +6,7 @@ const Browser = require('./components/Browser.tsx').Browser;
 const Toolbar = require('./components/Toolbar.tsx').Toolbar;
 const Breadcrumb = require('./components/Breadcrumb.tsx').Breadcrumb;
 const Preview = require("./components/Preview.tsx").Preview;
+const DeleteForm = require("./components/DeleteForm.tsx").DeleteForm;
 const NewFolderForm = require('./components/NewFolderForm.tsx').NewFolderForm;
 const Upload = require('./components/Upload.tsx').Upload;
 let {observer, inject} = mobxReact;
@@ -57,6 +58,11 @@ export default class App extends React.Component {
                                         style={{ "height": "60vh", "overflowY": "scroll" }}
                                         onClick={this.handleBrowserClick}>
                                         <Browser />
+                                    </div>
+                                }
+                                {store.mode == "deleteFolder" &&
+                                    <div className="row">
+                                        <DeleteForm />
                                     </div>
                                 }
                             </div>

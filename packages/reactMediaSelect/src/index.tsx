@@ -32,6 +32,11 @@ export const reactMediaSelect = function(elem, option) {
             newFolder: {
                 folderNameInput: "folderName"
             }
+        },
+        access: {
+            deleteFile: true,
+            deleteFolder: true,
+            deleteEmptyFolder: true
         }
     }, option);
     let storeInstance = new store({

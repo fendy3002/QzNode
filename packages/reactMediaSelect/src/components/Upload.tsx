@@ -49,15 +49,19 @@ export class Upload extends React.Component {
     }
     render() {
         let store = this.props.store;
+        let config = store.context.config;
         return <div className="col">
-            <div className="row">
-                <div className="col">
-                    <label>
-                        <input className="checkbox" type="checkbox" id="uploadOverwrite" checked={store.uploadOverwrite} onChange={this.handleChangeOverwrite} />
-                        <span>Overwrite File</span>
-                    </label>
-                </div>
-            </div>
+            {
+                config.access.deleteFile &&
+                    <div className="row">
+                        <div className="col">
+                            <label>
+                                <input className="checkbox" type="checkbox" id="uploadOverwrite" checked={store.uploadOverwrite} onChange={this.handleChangeOverwrite} />
+                                <span>Overwrite File</span>
+                            </label>
+                        </div>
+                    </div>
+            }
             <div className="row" style={{marginBottom: "8px"}}>
                 <Dropzone onDrop={this.handleDrop }>
                     {({getRootProps, getInputProps}) => (

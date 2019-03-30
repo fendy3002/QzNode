@@ -75,6 +75,24 @@ export const reactMediaSelect = function(elem, option) {
                     storeInstance.selectFile(fileParts[fileParts.length - 1]);
                 });
             }
+        },
+        onSubmit: function(handler){
+            if(!useOption.fileAction.submit){
+                useOption.fileAction.submit = {
+                    label: "Submit",
+                    handler: () => {}
+                }
+            }
+            useOption.fileAction.submit.handler = handler;
+        },
+        onCancel: function(handler){
+            if(!useOption.fileAction.cancel){
+                useOption.fileAction.cancel = {
+                    label: "Cancel",
+                    handler: () => {}
+                }
+            }
+            useOption.fileAction.cancel.handler = handler;
         }
     };
 };

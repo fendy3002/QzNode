@@ -1,5 +1,5 @@
 const React = require('react');
-const onClickOutside = require('react-onclickoutside');
+const onClickOutside = require('react-onclickoutside').default;
 
 const submitHandler = function(confirmButton){
     let result :any = {

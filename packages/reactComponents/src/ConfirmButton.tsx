@@ -1,13 +1,51 @@
+import { checkPropTypes } from "prop-types";
+
 const React = require('react');
 const onClickOutside = require('react-onclickoutside').default;
 
-const submitHandler = function(confirmButton){
-    let result :any = {
-        isAsync: () => false,
-        done: () => confirmButton.onChangeMode("submit")
-    };
+let ButtonContext = React.createContext(null);
+let ConfirmContext = React.createContext(null);
 
-    return result;
+class ConfirmButtonTemplate extends React.Component{
+    render(){
+        if(this.props.children){
+            return <ButtonContext.Consumer>
+                {this.props.children}
+            </ButtonContext.Consumer>;
+        }
+        return null;
+    }
+}
+class ConfirmButtonConfirmTemplate extends React.Component{
+    render(){
+        if(this.props.children){
+            return <ConfirmContext.Consumer>
+                {this.props.children}
+            </ConfirmContext.Consumer>;
+        }
+        return null;
+    }
+}
+
+class ConfirmButtonLoadingTemplate extends React.Component{
+    render(){
+        if(this.props.children){
+            return this.props.children;
+        }
+        return null;
+    }
+}
+class ConfirmButtonSubmittedTemplate extends React.Component{
+    render(){
+        if(this.props.children){
+            return this.props.children;
+        }
+        return null;
+    }
+}
+
+interface clientSubmitType{
+    (evt: any): Promise<void>
 };
 
 class Confirm extends React.Component<any, any> {
@@ -26,127 +64,119 @@ class Confirm extends React.Component<any, any> {
     }
 
     onChangeMode(mode){
-        if(mode == "confirm" || mode == "confirming" || mode == "confirmation"){
-            this.setState({mode: "confirm"});
-        }
-        else if(mode == "submit" || mode == "submitted"){
-            this.setState({mode: "submit"});
-        }
-        else if(mode == "submitting"){
-            this.setState({mode: "submitting"});
-        }
-        else if(mode == "delay" || mode == "delayed"){
-            this.setState({mode: "delay"});
-        }
-        else{
-            if(this.state.mode != "submit" && this.state.mode != "submitting"){
-                this.setState({mode: ""});
-            }
-        }
+        this.setState((prev) => {
+            return {
+                ...prev,
+                mode: mode
+            };
+        });
     }
 
     onSubmitting(evt){
-        const handleClick = this.props.onClick;
-        const eventHandler = submitHandler(this);
+        const onClientSubmit: clientSubmitType = this.props.onSubmit;
+        this.onChangeMode("loading");
 
-        this.onChangeMode("submitting");
-        const result = handleClick(evt, eventHandler);
-        if(result !== false){
+        onClientSubmit(evt).then(() => {
             this.onChangeMode("submit");
-        }
+        }).catch((err) => {
+            this.props.catchSubmit(evt, err);
+            this.onChangeMode("");
+        });
     }
 
-    onConfirming(k){
-        const delay = this.props.delay || {};
-        const delayTime = delay.time || 0;
-        if(delayTime === 0 || delayTime < 50){
-            this.onChangeMode("confirm");
-        }
-        else{
-            const onChangeMode = this.onChangeMode;
-            onChangeMode("delay");
-
-            const handler = setTimeout(function(){
+    onConfirming(evt){
+        const onChangeMode = this.onChangeMode;
+        const onClientValidate = this.props.onValidate;
+        if(onClientValidate){
+            onChangeMode("loading");
+            onClientValidate(evt).then(() => {
                 onChangeMode("confirm");
-            }, delayTime);
-
-            this.setState({delayHandler: handler});
+            }).catch((err) => {
+                onChangeMode("");
+            });
+        } else{
+            const delay = this.props.delay || {};
+            const delayTime = delay.time || 0;
+            
+            if(delayTime === 0 || delayTime < 50){
+                onChangeMode("confirm");
+            }
+            else{
+                onChangeMode("loading");
+                const handler = setTimeout(function(){
+                    this.setState((prev) => {
+                        return {
+                            ...prev,
+                            delayHandler: null
+                        };
+                    });
+                    onChangeMode("confirm");
+                }.bind(this), delayTime);
+                this.setState((prev) => {
+                    return {
+                        ...prev,
+                        delayHandler: handler
+                    };
+                });
+            }
         }
     }
 
     handleClickOutside(evt) {
-        if(this.state.delayHandler){
-            clearTimeout(this.state.delayHandler);
+        if(this.state.mode == "confirm"){
+            this.onChangeMode("");
         }
-        this.onChangeMode("");
+        else if(this.state.delayHandler){
+            clearTimeout(this.state.delayHandler);
+            this.onChangeMode("");
+        }
     }
 
     render() {
         const {mode} = this.state;
-        if(mode == "confirm"){
-            const confirmation = this.props.confirmation || {};
-            const className = confirmation.className || this.props.className;
-            const style = confirmation.style || this.props.style;
-
-            let content = confirmation.content || "Confirm ?";
-            if (typeof content === "function") {
-                content = content();
-            }
-            const onSubmitting = this.onSubmitting;
-            return <button type="button" className={className}
-                style={style} onClick={(k)=> onSubmitting(k)}>
-                {content}
-                </button>;
+        let children = this.props.children;
+        if(!Array.isArray(children)){
+            children = [children];
         }
-        else if(mode == "submit"){
-            const submitted = this.props.submitted || {};
-            const willDisable = submitted.willDisable || false;
-
-            const className = submitted.className || this.props.className;
-            const style = submitted.style || this.props.style;
-            let content = submitted.content || this.state.content;
-
-            if (typeof content === "function") {
-                content = content();
+        let buttonTemplate = null;
+        let confirmTemplate = null;
+        let loadingTemplate = null;
+        let submittedTemplate = null;
+        children.forEach((elem) => {
+            if(elem.type && elem.type.name == "ConfirmButtonTemplate"){
+                buttonTemplate = <ButtonContext.Provider value={this.onConfirming}>
+                    {elem}
+                </ButtonContext.Provider>;
             }
+            if(elem.type && elem.type.name == "ConfirmButtonConfirmTemplate"){
+                confirmTemplate = <ConfirmContext.Provider value={this.onSubmitting}>
+                    {elem}
+                </ConfirmContext.Provider>;
+            }
+            if(elem.type && elem.type.name == "ConfirmButtonLoadingTemplate"){
+                loadingTemplate = elem;
+            }
+            if(elem.type && elem.type.name == "ConfirmButtonSubmittedTemplate"){
+                submittedTemplate = elem;
+            }
+        });
 
-            if(this.props.submitted && this.props.submitted.content){
-                return content;
+        return <div className={this.props.className} style={this.props.style || { display: "inline" }}>
+            {!mode && buttonTemplate}
+            {mode == "confirm" && confirmTemplate}
+            {["loading", "delay", "submitting"].indexOf(mode) > -1 &&
+                loadingTemplate
             }
-            else{
-                const onConfirming = this.onConfirming;
-                return <button type="button" className={this.props.className}
-                    style={this.props.style} disabled={willDisable}
-                    onClick={k => onConfirming(k)}>
-                        {content}
-                    </button>;
+            {["submit", "submitted"].indexOf(mode) > -1 &&
+                submittedTemplate
             }
-        }
-        else if(mode == "delay" || mode == "submitting"){
-            const delay = this.props.delay || {};
-            const delayContent = delay.content;
-            let content = delayContent || "Loading...";
-
-            if(typeof content === "function"){
-                content = content();
-            }
-
-            return <button type="button" className={this.props.className}
-                style={this.props.style} disabled>
-                    {content}
-                </button>;
-        }
-        else{
-            let content = this.state.content;
-            if(typeof content === "function"){
-                content = content();
-            }
-            const onConfirming = this.onConfirming;
-            return <button type="button" className={this.props.className}
-                style={this.props.style} onClick={k => onConfirming(k)}>
-                    {content}
-                </button>;
-        }
+        </div>;
     }
 };
-export const ConfirmButton = onClickOutside(Confirm);
+const ConfirmButton = onClickOutside(Confirm);
+ConfirmButton.Button = ConfirmButtonTemplate;
+ConfirmButton.Confirm = ConfirmButtonConfirmTemplate;
+ConfirmButton.Loading = ConfirmButtonLoadingTemplate;
+ConfirmButton.Submitted = ConfirmButtonSubmittedTemplate;
+
+export { ConfirmButton };

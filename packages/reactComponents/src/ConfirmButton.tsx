@@ -16,6 +16,10 @@ class ConfirmButtonTemplate extends React.Component{
         return null;
     }
 }
+ConfirmButtonTemplate.defaultProps = {
+    type: "ConfirmButtonTemplate"
+};
+
 class ConfirmButtonConfirmTemplate extends React.Component{
     render(){
         if(this.props.children){
@@ -26,6 +30,9 @@ class ConfirmButtonConfirmTemplate extends React.Component{
         return null;
     }
 }
+ConfirmButtonConfirmTemplate.defaultProps = {
+    type: "ConfirmButtonConfirmTemplate"
+};
 
 class ConfirmButtonLoadingTemplate extends React.Component{
     render(){
@@ -35,6 +42,9 @@ class ConfirmButtonLoadingTemplate extends React.Component{
         return null;
     }
 }
+ConfirmButtonLoadingTemplate.defaultProps = {
+    type: "ConfirmButtonLoadingTemplate"
+};
 class ConfirmButtonSubmittedTemplate extends React.Component{
     render(){
         if(this.props.children){
@@ -43,6 +53,9 @@ class ConfirmButtonSubmittedTemplate extends React.Component{
         return null;
     }
 }
+ConfirmButtonSubmittedTemplate.defaultProps = {
+    type: "ConfirmButtonSubmittedTemplate"
+};
 
 interface clientSubmitType{
     (evt: any): Promise<void>
@@ -143,24 +156,23 @@ class Confirm extends React.Component<any, any> {
         let loadingTemplate = null;
         let submittedTemplate = null;
         children.forEach((elem) => {
-            if(elem.type && elem.type.name == "ConfirmButtonTemplate"){
+            if(elem.props.type == "ConfirmButtonTemplate"){
                 buttonTemplate = <ButtonContext.Provider value={this.onConfirming}>
                     {elem}
                 </ButtonContext.Provider>;
             }
-            if(elem.type && elem.type.name == "ConfirmButtonConfirmTemplate"){
+            else if(elem.props.type == "ConfirmButtonConfirmTemplate"){
                 confirmTemplate = <ConfirmContext.Provider value={this.onSubmitting}>
                     {elem}
                 </ConfirmContext.Provider>;
             }
-            if(elem.type && elem.type.name == "ConfirmButtonLoadingTemplate"){
+            else if(elem.props.type == "ConfirmButtonLoadingTemplate"){
                 loadingTemplate = elem;
             }
-            if(elem.type && elem.type.name == "ConfirmButtonSubmittedTemplate"){
+            else if(elem.props.type == "ConfirmButtonSubmittedTemplate"){
                 submittedTemplate = elem;
             }
         });
-
         return <div className={this.props.className} style={this.props.style || { display: "inline" }}>
             {!mode && buttonTemplate}
             {mode == "confirm" && confirmTemplate}

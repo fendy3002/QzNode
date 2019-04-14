@@ -4,7 +4,17 @@ let TextContext = React.createContext({
     text: ""
 });
 
-export class EditableLabel extends React.Component<any, any> {
+interface EditableLabelState{
+    editing: boolean,
+    text: string
+}
+interface EditableLabelProps{
+    value: string,
+    onChange: (val: string) => void,
+    [key: string]: any
+}
+
+export class EditableLabel extends React.Component<EditableLabelProps, EditableLabelState> {
     constructor(props) {
         super(props);
         this.state = {

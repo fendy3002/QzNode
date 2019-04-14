@@ -32,7 +32,7 @@ ReactDOM.render(
             </ConfirmButton.Submitted>
         </ConfirmButton><br/>
 
-        With Delay&nbsp;
+        With Delay:&nbsp;
         <ConfirmButton onSubmit={() => {
             return new Promise((resolve) => {
                 setTimeout(() => {
@@ -59,7 +59,7 @@ ReactDOM.render(
             </ConfirmButton.Submitted>
         </ConfirmButton><br/>
 
-        With Validation&nbsp;
+        With Validation:&nbsp;
         <ConfirmButton onSubmit={() => {
             return new Promise((resolve) => {
                 setTimeout(() => {

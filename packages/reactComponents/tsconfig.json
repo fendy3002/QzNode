@@ -2,11 +2,11 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "es5",
-        "allowJs": true,
+        "allowJs": false,
+        "declaration": true,
         "lib": ["es5", "es6", "dom"],
         "jsx": "react",
-        "experimentalDecorators": true,
-        "noEmit": true
+        "experimentalDecorators": true
     },
     "include": [
         "src/**/*"

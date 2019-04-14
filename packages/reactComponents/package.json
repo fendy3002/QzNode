@@ -11,9 +11,9 @@
     "access": "public"
   },
   "scripts": {
-    "check-types": "tsc",
-    "compile": "webpack --mode production",
-    "compileWatch": "webpack --watch --mode development",
+    "check-types": "tsc --noEmit",
+    "compile": "tsc --outDir dist",
+    "compileWatch": "tsc --watch --outDir dist",
     "prepublish": "npm run compile",
     "testServer": "node test/app.js"
   },

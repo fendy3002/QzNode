@@ -129,16 +129,22 @@ ReactDOM.render(
 );
 
 const EditableLabelPage = () => {
-    const [myText, setMyText] = React.useState("Editable Label");
+    const [myText1, setMyText1] = React.useState("Just Text");
+    const [myText2, setMyText2] = React.useState("As link");
     return <div>
-        <EditableLabel value={myText} onChange={(newText) => {
-            setMyText(newText);
+        <EditableLabel value={myText1} onChange={(newText) => {
+            setMyText1(newText);
         }}>
-            <button>
+            <EditableLabel.Value />
+        </EditableLabel><br/>
+        <EditableLabel value={myText2} onChange={(newText) => {
+            setMyText2(newText);
+        }}>
+            <a href="javascript:void(0)">
                 <EditableLabel.Value />
-            </button>
+            </a>
         </EditableLabel>
-    </div>
+    </div>;
 };
 ReactDOM.render(
     <EditableLabelPage />,

@@ -12,9 +12,11 @@ export interface storeContext{
 };
 export interface store{
     context: storeContext,
+    initialize: () => Promise<void>,
     loading: (callback: (done: () => void) => void) => void,
     setPage: (page: string) => void
 };
 export interface listStore {
     store : store,
+    loadUsers: () => Promise<any>
 };

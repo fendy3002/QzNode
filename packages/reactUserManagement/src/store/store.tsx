@@ -1,16 +1,29 @@
 let mobx = require('mobx');
 let {observable} = mobx;
+let listStore = require('./listStore.tsx');
 import * as typeDefinition from './typeDefinition';
 
 export class store implements typeDefinition.store {
     constructor(context) {
         this.context = context;
-        this.loading = this.loading.bind(this);
-        this.setPage = this.setPage.bind(this);
+        [
+            'loading',
+            'setPage',
+            'initialize'
+        ].forEach((handler) => {
+            this[handler] = this[handler].bind(this);
+        });
+        this.listStore = new listStore(this);
     }
     context: typeDefinition.storeContext;
+    listStore: typeDefinition.listStore;
     @observable isLoading = false;
     @observable page = "list";
+
+    async initialize(){
+        return await this.listStore.loadUsers();
+    }
+
     setPage(page){
         this.page = page;
     }

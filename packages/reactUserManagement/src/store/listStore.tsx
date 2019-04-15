@@ -16,14 +16,17 @@ export class listStore implements typeDefinition.listStore {
     loadUsers() {
         const self = this;
         const config = this.store.context.config;
-        this.store.loading((done) => {
-            self.users.length = 0;
-            sa.get(config.apiPath.getUsers)
-                .set(config.headers)
-                .end((err, res) => {
-                    self.users = res.body;
-                    done();
-                });
+        return new Promise((resolve, reject) => {
+            this.store.loading((done) => {
+                self.users.length = 0;
+                sa.get(config.apiPath.getUsers)
+                    .set(config.headers)
+                    .end((err, res) => {
+                        self.users = res.body;
+                        done();
+                        resolve();
+                    });
+            });
         });
     }
     changeEmail(userid, newEmail){

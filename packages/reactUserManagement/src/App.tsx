@@ -8,7 +8,7 @@ let {observer, inject} = mobxReact;
 
 @inject("store")
 @observer
-export class App extends React.Component {
+export class App extends React.Component<any, any> {
     componentDidMount(){
         let store = this.props.store;
         store.loadUsers();

@@ -1,4 +1,6 @@
 let mobx = require('mobx');
+const sa = require('superagent');
+const toastr = require('toastr');
 let {observable} = mobx;
 let {listStore} = require('./listStore.tsx');
 import * as typeDefinition from './typeDefinition';
@@ -17,11 +19,35 @@ export class store implements typeDefinition.store {
     }
     context: typeDefinition.storeContext;
     listStore: typeDefinition.listStore;
+
     @observable isLoading = false;
     @observable page = "list";
+    @observable currentUser = {};
 
     initialize(){
-        return this.listStore.loadUsers();
+        return this.loadCurrentUser().then(() => {
+            return this.listStore.loadUsers()
+        });
+    }
+
+    loadCurrentUser(){
+        const config = this.context.config;
+        return new Promise((resolve, reject) => {
+            sa.get(config.apiPath.getCurrentUser)
+                .set(config.headers)
+                .end((err, res) => {
+                    if(err){
+                        return config.handle.resError(err, res).then((r) => {
+                            toastr.error("Error", r.message);
+                            return resolve();
+                        });
+                    }
+                    else{
+                        this.currentUser = res.body;
+                        return resolve();
+                    }
+                });
+        });
     }
 
     setPage(page){

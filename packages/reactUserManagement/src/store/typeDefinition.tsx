@@ -4,10 +4,16 @@ export interface storeContextConfig{
         getUsers: string,
         getUser: string,
         changeEmail: string,
-        register: string
+        register: string,
+        getCurrentUser: string
     },
     headers: {
         [key: string]: any
+    },
+    handle: {
+        resError: (err, res) => Promise<{
+            message: string
+        }>
     }
 };
 export interface storeContext{

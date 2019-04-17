@@ -9,10 +9,6 @@ let {observer, inject} = mobxReact;
 @inject("store")
 @observer
 export class UserList extends React.Component<any, any> {
-    componentDidMount(){
-        let store = this.props.store;
-        store.listStore.loadUsers();
-    }
     render() {
         let store = this.props.store;
 

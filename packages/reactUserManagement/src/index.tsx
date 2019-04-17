@@ -15,7 +15,15 @@ export const reactUserManagement = (elem, option) => {
             changeEmail: "/api/user-management/{id}/change-email",
             getUsers: "/api/user-management",
             getUser: "/api/user-management/{id}",
+            getCurrentUser: "/api/user-management/current",
             register: "/api/user-management",
+        },
+        handle: {
+            resError: (err, res) => {
+                return Promise.resolve({
+                    message: res.body.message
+                });
+            }
         },
         headers: {
 

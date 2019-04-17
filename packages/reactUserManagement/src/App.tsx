@@ -11,6 +11,7 @@ let {observer, inject} = mobxReact;
 export class App extends React.Component<any, any> {
     componentDidMount(){
         let store = this.props.store;
+        store.initialize();
     }
     render() {
         let store = this.props.store;

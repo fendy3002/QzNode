@@ -2,7 +2,7 @@ let React = require('react');
 let mobx = require('mobx');
 let mobxReact = require('mobx-react');
 
-let UserList = require('./components/UserList.js');
+let {UserList} = require('./components/list/index.tsx');
 
 let {observer, inject} = mobxReact;
 
@@ -11,16 +11,15 @@ let {observer, inject} = mobxReact;
 export class App extends React.Component<any, any> {
     componentDidMount(){
         let store = this.props.store;
-        store.loadUsers();
     }
     render() {
         let store = this.props.store;
         let renderDom = [];
         
-        if(store.mode == "list"){
+        if(store.page == "list"){
             renderDom.push(<UserList key="list"/>)
         }
-        if(store.request.loading){
+        if(store.isLoading){
             renderDom = [
                 <div className="loading" key="loading">
                     <div className="spinner">

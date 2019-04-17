@@ -2,7 +2,7 @@ let React = require('react');
 let mobx = require('mobx');
 let mobxReact = require('mobx-react');
 
-let EditableLabel = require('./EditableLabel.js');
+let EditableLabel = require('@fendy3002/react-components').EditableLabel;
 
 let {observer, inject} = mobxReact;
 
@@ -42,7 +42,7 @@ export class UserTable extends React.Component<any, any> {
         let store = this.props.store;
         let {users} = store;
         if(!users){
-            return;
+            return null;
         }
         let userDoms = users.map((user, index) => {
             let availableActions = (user) => {

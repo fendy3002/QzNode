@@ -1,6 +1,6 @@
 let mobx = require('mobx');
 let {observable} = mobx;
-let listStore = require('./listStore.tsx');
+let {listStore} = require('./listStore.tsx');
 import * as typeDefinition from './typeDefinition';
 
 export class store implements typeDefinition.store {
@@ -20,8 +20,8 @@ export class store implements typeDefinition.store {
     @observable isLoading = false;
     @observable page = "list";
 
-    async initialize(){
-        return await this.listStore.loadUsers();
+    initialize(){
+        return this.listStore.loadUsers();
     }
 
     setPage(page){

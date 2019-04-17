@@ -2,7 +2,7 @@ let React = require('react');
 let mobx = require('mobx');
 let mobxReact = require('mobx-react');
 
-let UserTable = require('./UserTable.js');
+let {UserTable} = require('./UserTable.tsx');
 
 let {observer, inject} = mobxReact;
 
@@ -11,7 +11,7 @@ let {observer, inject} = mobxReact;
 export class UserList extends React.Component<any, any> {
     componentDidMount(){
         let store = this.props.store;
-        store.loadUsers();
+        store.listStore.loadUsers();
     }
     render() {
         let store = this.props.store;

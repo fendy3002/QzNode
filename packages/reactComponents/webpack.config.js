@@ -1,6 +1,18 @@
 const path = require('path');
 const configs = [{
     entry: {
+        index: path.resolve(__dirname, "src/index.tsx"),
+        ConfirmButton: path.resolve(__dirname, "src/ConfirmButton.tsx"),
+        EditableLabel: path.resolve(__dirname, "src/EditableLabel.tsx"),
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: "[name].js",
+        libraryTarget: "commonjs2"
+    }
+},
+{
+    entry: {
         reactComponents: path.resolve(__dirname, "test/jsSrc/index.tsx")
     },
     output: {

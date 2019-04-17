@@ -12,8 +12,8 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "compile": "tsc --outDir dist",
-    "compileWatch": "tsc --watch --outDir dist",
+    "compile": "webpack --mode=production",
+    "compileWatch": "webpack --watch --mode=development",
     "prepublish": "npm run compile",
     "testServer": "node test/app.js"
   },
@@ -48,24 +48,23 @@
     "css-loader": "^1.0.0",
     "express": "^4.16.4",
     "file-loader": "^2.0.0",
+    "lodash": "^4.17.5",
     "mobx": "^5.0.4",
     "mobx-react": "^5.2.5",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.14",
+    "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-onclickoutside": "^6.8.0",
     "style-loader": "^0.23.1",
+    "superagent": "^3.8.3",
+    "toastr": "^2.1.4",
     "typescript": "^3.3.4000",
     "url-loader": "^1.1.2",
     "webpack": "^4.25.1",
-    "webpack-cli": "^3.1.2",
-    "lodash": "^4.17.5",
-    "moment": "^2.22.2",
-    "moment-timezone": "^0.5.14",
-    "superagent": "^3.8.3",
-    "toastr": "^2.1.4"
+    "webpack-cli": "^3.1.2"
   },
   "dependencies": {
   },
-  "peerDependencies": {
-    "react": "^16.8.4",
-    "react-onclickoutside": "^6.8.0"
-  }
+  "peerDependencies": {}
 }

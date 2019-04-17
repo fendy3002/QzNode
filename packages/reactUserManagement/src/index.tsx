@@ -4,8 +4,8 @@ let sa = require('superagent');
 let lo = require('lodash');
 let MobxReact = require('mobx-react');
 
-let App = require('./App.tsx');
-let store = require('./store/store.tsx');
+let {App} = require('./App.tsx');
+let {store} = require('./store/store.tsx');
 
 export const reactUserManagement = (elem, option) => {
     const useOption = lo.merge({

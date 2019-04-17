@@ -1,14 +1,17 @@
 
-export interface storeContext{
-    config: {
-        apiPath: {
-            getUsers: string,
-            changeEmail: string
-        },
-        headers: {
-            [key: string]: any
-        }
+export interface storeContextConfig{
+    apiPath: {
+        getUsers: string,
+        getUser: string,
+        changeEmail: string,
+        register: string
+    },
+    headers: {
+        [key: string]: any
     }
+};
+export interface storeContext{
+    config: storeContextConfig
 };
 export interface store{
     context: storeContext,

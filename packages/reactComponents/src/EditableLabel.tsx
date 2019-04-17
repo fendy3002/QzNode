@@ -1,4 +1,5 @@
 const React = require('react');
+const lo = require('lodash');
 
 let TextContext = React.createContext({
     text: ""
@@ -39,7 +40,11 @@ export class EditableLabel extends React.Component<EditableLabelProps, EditableL
             if(process && this.props.value != this.state.text){
                 if(confirm(this.props.confirmMessage || "Are you sure?")){
                     if(this.props.onChange){
-                        this.props.onChange(this.state.text);
+                        this.props.onChange({
+                            target: evt.target,
+                            currentTarget: evt.currentTarget,
+                            value: this.state.text
+                        });
                     }
                 }
             }
@@ -71,8 +76,15 @@ export class EditableLabel extends React.Component<EditableLabelProps, EditableL
 
     render() {
         if(this.state.editing){
+            let dataProps = {};
+            lo.forOwn(this.props, (val, key) => {
+                if(key.startsWith("data")){
+                    dataProps[key] = val;
+                }
+            });
             return <input 
                 type='text'
+                {...dataProps}
                 className={this.props.inputClassName}
                 style={this.props.inputStyle || {}}
                 onChange={this.textChanged}

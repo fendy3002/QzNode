@@ -22,6 +22,8 @@ app.get('/', (req, res, next) => {
     res.end();
 })
 
+app.use(require('./routes'));
+
 const server = http.createServer(app);
 const port = process.argv[2] || 3000;
 const listener = server.listen(port, () => {

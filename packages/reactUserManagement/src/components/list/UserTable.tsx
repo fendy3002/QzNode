@@ -30,17 +30,16 @@ export class UserTable extends React.Component<any, any> {
 
         }
     }
-    handleChangeEmail(userid){
-        return (newEmail) => {
-            let store = this.props.store;
-            store.changeEmail(userid, newEmail).then(() => {
-                window.location.reload();
-            });
-        };
+    handleChangeEmail(evt){
+        const target = evt.currentTarget;
+        let store = this.props.store;
+        store.changeEmail(target.dataset.id, evt.value).then(() => {
+            window.location.reload();
+        });
     }
     render() {
         let store = this.props.store;
-        let {users} = store;
+        let {users} = store.listStore;
         if(!users){
             return null;
         }
@@ -57,8 +56,8 @@ export class UserTable extends React.Component<any, any> {
                         </a>
                     ];
                 }
-                if(user.isConfirmed){
-                    if(user.isSuperAdmin){
+                if(user.is_confirmed){
+                    if(user.is_super_admin){
                         actions.push(<button className="btn btn-secondary" onClick={this.handleAction}
                             type="submit" name="action" value="grant" key="grant">
                             Revoke admin
@@ -72,7 +71,7 @@ export class UserTable extends React.Component<any, any> {
                     }
                     actions.push(" ");
 
-                    if(user.isActive){
+                    if(user.is_active){
                         actions.push(
                             <button className="btn btn-secondary" onClick={this.handleAction}
                                 type="submit" name="action" value="activate" key="activate">
@@ -121,14 +120,18 @@ export class UserTable extends React.Component<any, any> {
                 </td>
                 <td>
                     <EditableLabel value={user.email} inputClassName="form-control underlined"
-                        onChange={this.handleChangeEmail(user.id)}>
+                        data-id={user.id}
+                        onChange={this.handleChangeEmail}>
                         <a href="javascript:void(0)">
                             <EditableLabel.Value /> <i className="fa fa-pencil"></i>
                         </a>
                     </EditableLabel>
                 </td>
                 <td>
-                    {user.isActive ? "Yes" : "No"}
+                    {user.is_active ? "Yes" : "No"}
+                </td>
+                <td>
+                    {user.is_super_admin ? "Yes" : "No"}
                 </td>
                 <td>
                     <form method="post">
@@ -154,6 +157,7 @@ export class UserTable extends React.Component<any, any> {
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Active</th>
+                                    <th>Super Admin</th>
                                     <th></th>
                                 </tr>
                             </thead>

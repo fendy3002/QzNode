@@ -13,6 +13,9 @@ export const reactUserManagement = (elem, option) => {
     const defaultOption : storeTypes.storeContextConfig = {
         apiPath: {
             changeEmail: "/api/user-management/{id}/change-email",
+            changeSuperAdmin: "/api/user-management/{id}/change-super-admin",
+            changeActive: "/api/user-management/{id}/active",
+            resetPassword: "/api/user-management/{id}/reset-password",
             getUsers: "/api/user-management",
             getUser: "/api/user-management/{id}",
             getCurrentUser: "/api/user-management/current",

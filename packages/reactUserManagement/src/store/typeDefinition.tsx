@@ -4,6 +4,9 @@ export interface storeContextConfig{
         getUsers: string,
         getUser: string,
         changeEmail: string,
+        changeSuperAdmin: string,
+        changeActive: string,
+        resetPassword: string,
         register: string,
         getCurrentUser: string
     },

@@ -17,7 +17,7 @@ export class UserList extends React.Component<any, any> {
     }
     handlePage(evt){
         const store = this.props.store;
-        const page = evt.currentTarget.dataset.page;
+        const page = evt.value;
         const currentPage = store.listStore.page();
 
         if(page != currentPage){
@@ -36,7 +36,7 @@ export class UserList extends React.Component<any, any> {
             </div>
             <UserTable/>
             <div className="text-right">
-                <Pagination count={userCount} page={page()} limit={limit()} onClick={this.handlePage} />
+                <Pagination count={userCount} page={page()} limit={limit()} onChange={this.handlePage} />
             </div>
         </>;
     }

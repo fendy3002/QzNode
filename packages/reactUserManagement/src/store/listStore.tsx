@@ -1,7 +1,7 @@
 let mobx = require('mobx');
 const toastr = require('toastr');
 const sa = require('superagent');
-let {observable} = mobx;
+let {observable, computed} = mobx;
 import * as typeDefinition from './typeDefinition';
 
 export class listStore implements typeDefinition.listStore {
@@ -20,6 +20,15 @@ export class listStore implements typeDefinition.listStore {
     store: typeDefinition.store;
     @observable users = [];
     @observable userCount = 0;
+
+    @computed get page(){
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("page") || 1;
+    }
+    @computed get limit(){
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get("limit") || 20;
+    }
 
     resetPassword(userid){
         
@@ -116,7 +125,7 @@ export class listStore implements typeDefinition.listStore {
         const config = this.store.context.config;
 
         const urlParams = new URLSearchParams(window.location.search);
-        const page = urlParams.get("page") || 0;
+        const page = urlParams.get("page") || 1;
         const limit = urlParams.get("limit") || 20;
 
         return new Promise((resolve, reject) => {
@@ -145,7 +154,7 @@ export class listStore implements typeDefinition.listStore {
                         }
                         else{
                             self.users = res.body;
-                            self.userCount = res.headers["x-total-count"];
+                            self.userCount = parseInt(res.headers["x-total-count"]);
                             return resolve();
                         }
                     });

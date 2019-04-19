@@ -19,6 +19,11 @@ export class listStore implements typeDefinition.listStore {
     }
     store: typeDefinition.store;
     @observable users = [];
+    @observable userCount = 0;
+
+    resetPassword(userid){
+        
+    }
 
     changeSuperAdmin(userid, isSuperAdmin){
         const self = this;
@@ -132,8 +137,15 @@ export class listStore implements typeDefinition.listStore {
                                 return resolve();
                             });
                         }
+                        else if(!res.headers["x-total-count"] && res.headers["x-total-count"] != 0){
+                            return config.handle.resError(err, res).then((r) => {
+                                toastr.error("Error", 'X-Total-Count header is required in response.');
+                                return resolve();
+                            });
+                        }
                         else{
                             self.users = res.body;
+                            self.userCount = res.headers["x-total-count"];
                             return resolve();
                         }
                     });

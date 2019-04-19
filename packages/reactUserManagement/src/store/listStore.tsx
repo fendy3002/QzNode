@@ -21,11 +21,11 @@ export class listStore implements typeDefinition.listStore {
     @observable users = [];
     @observable userCount = 0;
 
-    @computed get page(){
+    page(){
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get("page") || 1;
     }
-    @computed get limit(){
+    limit(){
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get("limit") || 20;
     }
@@ -117,6 +117,7 @@ export class listStore implements typeDefinition.listStore {
     setPage(page){
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set("page", page);
+        window.history.replaceState({}, '', '/?' + urlParams);
         return this.loadUsers();
     }
 

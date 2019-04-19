@@ -89,7 +89,7 @@ export class UserTable extends React.Component<any, any> {
                     actions.push(" ");
 
                     actions.push(
-                        <button className="btn btn-primary" onClick={this.handleAction}
+                        <button className="btn btn-warning" onClick={this.handleAction}
                             type="submit" name="action" value="reset" key="reset">
                             Reset Password
                         </button>
@@ -144,7 +144,7 @@ export class UserTable extends React.Component<any, any> {
         return <section className="section">
             <div className="card">
                 <div className="card-header bordered">
-                    <div className="header-block">
+                    <div className="header-block" style={{ padding: "0px" }}>
                         <a href="/userManagement/register" className="btn btn-primary">Add User</a>
                     </div>
                 </div>

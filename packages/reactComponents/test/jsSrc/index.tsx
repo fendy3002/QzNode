@@ -2,6 +2,8 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const { ConfirmButton } = require('../../src/ConfirmButton.tsx');
 const { EditableLabel } = require('../../src/EditableLabel.tsx');
+const { Pagination } = require('../../src/Pagination.tsx');
+const { PageLimit } = require('../../src/PageLimit.tsx');
 
 ReactDOM.render(
     <div>
@@ -149,4 +151,40 @@ const EditableLabelPage = () => {
 ReactDOM.render(
     <EditableLabelPage />,
     document.getElementById("react-editable-label")
+);
+
+const PageLimitPage = () => {
+    const [myVal1, setMyVal1] = React.useState(7);
+    
+    return <div>
+        <PageLimit className="form-control" options={[20, 50, 100, 150]} value={myVal1} onChange={(evt) => {
+            setMyVal1(evt.target.value);
+        }} />
+    </div>;
+};
+ReactDOM.render(
+    <PageLimitPage />,
+    document.getElementById("react-page-limit")
+);
+
+const PaginationPage = () => {
+    const [myVal1, setMyVal1] = React.useState(5);
+    const [myVal2, setMyVal2] = React.useState(10);
+    
+    return <div>
+        <div>
+            <Pagination page={myVal1} count={565} limit={20} onChange={(evt) => {
+                setMyVal1(evt.value);
+            }}/>
+        </div>
+        <div>
+            <Pagination page={myVal2} count={565} limit={20} display={10} onChange={(evt) => {
+                setMyVal2(evt.value);
+            }}/>
+        </div>
+    </div>;
+};
+ReactDOM.render(
+    <PaginationPage />,
+    document.getElementById("react-pagination")
 );

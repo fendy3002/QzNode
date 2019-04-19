@@ -23,11 +23,11 @@ export class listStore implements typeDefinition.listStore {
 
     page(){
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get("page") || 1;
+        return parseInt(urlParams.get("page")) || 1;
     }
     limit(){
         const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get("limit") || 20;
+        return parseInt(urlParams.get("limit")) || 20;
     }
 
     resetPassword(userid){
@@ -117,6 +117,12 @@ export class listStore implements typeDefinition.listStore {
     setPage(page){
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set("page", page);
+        window.history.replaceState({}, '', '/?' + urlParams);
+        return this.loadUsers();
+    }
+    setLimit(limit){
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set("limit", limit);
         window.history.replaceState({}, '', '/?' + urlParams);
         return this.loadUsers();
     }

@@ -15,7 +15,7 @@ export class PageLimit extends React.Component<any, any> {
         });
     }
     render() {
-        let {options, value, onChange} = this.props;
+        let {options, value} = this.props;
         let useOptions = [...lo.sortBy(options)];
 
         if(!useOptions || useOptions.length == 0){
@@ -51,7 +51,7 @@ export class PageLimit extends React.Component<any, any> {
                 selectProps[key] = val;
             }
         })
-        return <select value={value} onChange={onChange} {...selectProps}>
+        return <select value={value} onChange={this.handleOnChange} {...selectProps}>
             {useOptions.map((opt) => (
                 <option value={opt} key={opt}>{opt}</option>
             ))}

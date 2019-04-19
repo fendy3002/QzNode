@@ -4,6 +4,7 @@ let mobxReact = require('mobx-react');
 
 let {UserTable} = require('./UserTable.tsx');
 let {Pagination} = require('@fendy3002/react-components');
+let {PageLimit} = require('@fendy3002/react-components');
 
 let {observer, inject} = mobxReact;
 
@@ -13,9 +14,10 @@ export class UserList extends React.Component<any, any> {
     constructor(props) {
         super(props);
         
-        this.handlePage = this.handlePage.bind(this);
+        this.handleChangePage = this.handleChangePage.bind(this);
+        this.handleChangeLimit = this.handleChangeLimit.bind(this);
     }
-    handlePage(evt){
+    handleChangePage(evt){
         const store = this.props.store;
         const page = evt.value;
         const currentPage = store.listStore.page();
@@ -25,6 +27,18 @@ export class UserList extends React.Component<any, any> {
                 this.forceUpdate((evt) => {});
             });
         }
+    }
+    handleChangeLimit(evt){
+        const store = this.props.store;
+        const limit = evt.value;
+        const currentLimit = store.listStore.page();
+
+        if(limit != currentLimit){
+            store.listStore.setLimit(limit).then(() => {
+                this.forceUpdate((evt) => {});
+            });
+        }
+
     }
     render() {
         let store = this.props.store;
@@ -36,7 +50,11 @@ export class UserList extends React.Component<any, any> {
             </div>
             <UserTable/>
             <div className="text-right">
-                <Pagination count={userCount} page={page()} limit={limit()} onChange={this.handlePage} />
+                <Pagination count={userCount} page={page()} limit={limit()} onChange={this.handleChangePage} />&nbsp;
+                <span>Per page:</span>&nbsp;
+                <PageLimit className="form-control inline" 
+                    style={{ "display": "inline", "width": "auto" }}
+                    value={limit()} options={[ 20, 50, 100 ]} onChange={this.handleChangeLimit} />
             </div>
         </>;
     }

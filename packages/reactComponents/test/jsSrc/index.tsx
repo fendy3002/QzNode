@@ -158,7 +158,7 @@ const PageLimitPage = () => {
     
     return <div>
         <PageLimit className="form-control" options={[20, 50, 100, 150]} value={myVal1} onChange={(evt) => {
-            setMyVal1(evt.target.value);
+            setMyVal1(evt.value);
         }} />
     </div>;
 };

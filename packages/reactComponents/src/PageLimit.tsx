@@ -3,6 +3,17 @@ const lo = require('lodash');
 const PropTypes = require('prop-types');
 
 export class PageLimit extends React.Component<any, any> {
+    constructor(props) {
+        super(props);
+        this.handleOnChange = this.handleOnChange.bind(this);
+    }
+    handleOnChange(evt){
+        let {onChange} = this.props;
+        onChange({
+            ...evt,
+            value: parseInt(evt.target.value)
+        });
+    }
     render() {
         let {options, value, onChange} = this.props;
         let useOptions = [...lo.sortBy(options)];
@@ -29,6 +40,7 @@ export class PageLimit extends React.Component<any, any> {
                 for(let i = 0; i < useOptions.length; i ++){
                     if(useOptions[i] > value){
                         useOptions.splice(i - 1, 0, value);
+                        break;
                     }
                 }
             }

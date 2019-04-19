@@ -148,7 +148,7 @@ export class UserTable extends React.Component<any, any> {
                         <a href="/userManagement/register" className="btn btn-primary">Add User</a>
                     </div>
                 </div>
-                <div className="card-block">
+                <div className="card-block" style={{ padding: "0px" }}>
                     <div className="table-responsive">
                         <table className="table table-striped table-bordered table-hover">
                             <thead>

@@ -20,8 +20,10 @@ router.get('/api/user-management/:id', (req, res, next) => {
 
     }]);
 });
-router.post('/api/user-management', (req, res, next) => {
-    res.json(userData.filter(k => k.id == req.params.id));
+router.put('/api/user-management', (req, res, next) => {
+    res.json({
+        message: "ok"
+    });
 });
 router.post('/api/user-management/:id/change-email', (req, res, next) => {
     res.json({

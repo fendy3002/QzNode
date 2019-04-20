@@ -28,23 +28,40 @@ export class createStore implements typeDefinition.createStore {
     };
 
     changeUser(user){
-        this.user = user;
+        this.user = {
+            ...this.user,
+            ...user
+        };
     }
 
     submit(){
         const self = this;
         const config = this.store.context.config;
-        return new Promise((resolve, reject) => {
-            this.store.loading((done) => {
-                sa.post(config.apiPath.register)
-                .send(this.user)
-                .then((err, res) => {
-                    done();
-
-                    self.user = self.defaultUser;
-                    resolve();
+        if(!this.user.email || !this.user.name || !this.user.username){
+            toastr.error("Username, name and email are required", "Input");
+            return Promise.resolve();
+        }
+        else if(confirm("Are you sure to submit?")){
+            return new Promise((resolve, reject) => {
+                this.store.loading((done) => {
+                    sa.put(config.apiPath.register)
+                    .send(this.user)
+                    .end((err, res) => {
+                        done();
+                        if(err){
+                            return config.handle.resError(err, res).then((r) => {
+                                toastr.error(r.message, "Error");
+                                return resolve();
+                            });
+                        }
+                        else{
+                            toastr.success("User registered successfully", "Success");
+                            self.user = self.defaultUser;
+                            resolve();
+                        }
+                    });
                 });
-            });
-        })
+            })
+        }
     }
 };

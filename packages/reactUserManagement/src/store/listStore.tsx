@@ -48,9 +48,9 @@ export class listStore implements typeDefinition.listStore {
                         done();
                         if(err){
                             return config.handle.resError(err, res).then((r) => {
-                                toastr.error("Error", r.message);
+                                toastr.error(r.message, "Error");
                                 return resolve();
-                            })
+                            });
                         }
                         else{
                             toastr.success("Super admin changed successfully");
@@ -75,9 +75,9 @@ export class listStore implements typeDefinition.listStore {
                         done();
                         if(err){
                             return config.handle.resError(err, res).then((r) => {
-                                toastr.error("Error", r.message);
+                                toastr.error(r.message, "Error");
                                 return resolve();
-                            })
+                            });
                         }
                         else{
                             toastr.success("Active changed successfully");
@@ -102,7 +102,7 @@ export class listStore implements typeDefinition.listStore {
                         done();
                         if(err){
                             return config.handle.resError(err, res).then((r) => {
-                                toastr.error("Error", r.message);
+                                toastr.error(r.message, "Error");
                                 return resolve();
                             })
                         }
@@ -149,13 +149,13 @@ export class listStore implements typeDefinition.listStore {
                         done();
                         if(err){
                             return config.handle.resError(err, res).then((r) => {
-                                toastr.error("Error", r.message);
+                                toastr.error(r.message, "Error");
                                 return resolve();
                             });
                         }
                         else if(!res.headers["x-total-count"] && res.headers["x-total-count"] != 0){
                             return config.handle.resError(err, res).then((r) => {
-                                toastr.error("Error", 'X-Total-Count header is required in response.');
+                                toastr.error('X-Total-Count header is required in response.', "Error");
                                 return resolve();
                             });
                         }

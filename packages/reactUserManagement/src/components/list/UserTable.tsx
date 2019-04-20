@@ -15,6 +15,7 @@ export class UserTable extends React.Component<any, any> {
         this.handleAction = this.handleAction.bind(this);
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangeActive = this.handleChangeActive.bind(this);
+        this.handleChangeSuperAdmin = this.handleChangeSuperAdmin.bind(this);
     }
     handleAction(evt){
         evt.preventDefault();
@@ -39,7 +40,14 @@ export class UserTable extends React.Component<any, any> {
 
     }
     handleChangeSuperAdmin(evt){
+        if(confirm("Are you sure?")){
+            let store = this.props.store;
+            let changeSuperAdmin = store.listStore.changeSuperAdmin;
+            let id = evt.target.dataset.id;
+            let value = evt.target.value == "1" ? true : false;
 
+            return changeSuperAdmin(id, value);
+        }
     }
     handleChangeActive(evt){
         if(confirm("Are you sure?")){
@@ -73,16 +81,20 @@ export class UserTable extends React.Component<any, any> {
                 }
                 if(user.is_confirmed){
                     if(user.is_super_admin){
-                        actions.push(<button className="btn btn-secondary" onClick={this.handleAction}
-                            type="submit" name="action" value="grant" key="grant">
-                            Revoke admin
-                        </button>);
+                        actions.push(
+                            <button className="btn btn-secondary" onClick={this.handleChangeSuperAdmin}
+                                value="0" key="grant">
+                                Revoke admin
+                            </button>
+                        );
                     }
                     else{
-                        actions.push(<button className="btn btn-primary" onClick={this.handleAction}
-                            type="submit" name="action" value="grant" key="grant">
-                            Grant admin
-                        </button>);
+                        actions.push(
+                            <button className="btn btn-primary" onClick={this.handleChangeSuperAdmin}
+                                value="1" key="grant">
+                                Grant admin
+                            </button>
+                        );
                     }
                     actions.push(" ");
 

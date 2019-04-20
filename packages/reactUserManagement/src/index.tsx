@@ -23,9 +23,15 @@ export const reactUserManagement = (elem, option) => {
         },
         handle: {
             resError: (err, res) => {
-                return Promise.resolve({
-                    message: res.body.message
-                });
+                if(res.body){
+                    return Promise.resolve({
+                        message: res.body.message
+                    });
+                } else {
+                    return Promise.resolve({
+                        message: err
+                    });
+                }
             }
         },
         headers: {

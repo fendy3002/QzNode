@@ -170,8 +170,14 @@ ReactDOM.render(
 const PaginationPage = () => {
     const [myVal1, setMyVal1] = React.useState(5);
     const [myVal2, setMyVal2] = React.useState(10);
+    const [myVal3, setMyVal3] = React.useState(2);
     
     return <div>
+        <div>
+            <Pagination page={myVal3} count={120} limit={20} display={10} onChange={(evt) => {
+                setMyVal3(evt.value);
+            }}/>
+        </div>
         <div>
             <Pagination page={myVal1} count={565} limit={20} onChange={(evt) => {
                 setMyVal1(evt.value);

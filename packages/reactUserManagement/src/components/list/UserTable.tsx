@@ -14,6 +14,7 @@ export class UserTable extends React.Component<any, any> {
         
         this.handleAction = this.handleAction.bind(this);
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
+        this.handleChangeActive = this.handleChangeActive.bind(this);
     }
     handleAction(evt){
         evt.preventDefault();
@@ -26,9 +27,6 @@ export class UserTable extends React.Component<any, any> {
             evt.target.form.appendChild(action);
             evt.target.form.submit();
         }
-        else{
-
-        }
     }
     handleChangeEmail(evt){
         const target = evt.currentTarget;
@@ -37,6 +35,23 @@ export class UserTable extends React.Component<any, any> {
             window.location.reload();
         });
     }
+    handleResetPassword(evt){
+
+    }
+    handleChangeSuperAdmin(evt){
+
+    }
+    handleChangeActive(evt){
+        if(confirm("Are you sure?")){
+            let store = this.props.store;
+            let changeActive = store.listStore.changeActive;
+            let id = evt.target.dataset.id;
+            let value = evt.target.value == "1" ? true : false;
+
+            return changeActive(id, value);
+        }
+    }
+
     render() {
         let store = this.props.store;
         let {users} = store.listStore;
@@ -73,16 +88,16 @@ export class UserTable extends React.Component<any, any> {
 
                     if(user.is_active){
                         actions.push(
-                            <button className="btn btn-secondary" onClick={this.handleAction}
-                                type="submit" name="action" value="activate" key="activate">
+                            <button className="btn btn-secondary" onClick={this.handleChangeActive}
+                                value="0" key="activate" data-id={user.id}>
                                 Make Inactive
                             </button>
                         );
                     }
                     else{
                         actions.push(
-                            <button className="btn btn-primary" onClick={this.handleAction}
-                                type="submit" name="action" value="activate" key="activate">
+                            <button className="btn btn-primary" onClick={this.handleChangeActive}
+                                value="1" key="activate" data-id={user.id}>
                                 Set Active
                             </button>);
                     }
@@ -134,10 +149,7 @@ export class UserTable extends React.Component<any, any> {
                     {user.is_super_admin ? "Yes" : "No"}
                 </td>
                 <td>
-                    <form method="post">
-                        {availableActions(user)}
-                        <input type="hidden" name="id" value={user.id}/>
-                    </form>
+                    {availableActions(user)}
                 </td>
             </tr>
         });

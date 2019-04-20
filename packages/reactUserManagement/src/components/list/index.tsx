@@ -38,7 +38,6 @@ export class UserList extends React.Component<any, any> {
                 this.forceUpdate((evt) => {});
             });
         }
-
     }
     render() {
         let store = this.props.store;

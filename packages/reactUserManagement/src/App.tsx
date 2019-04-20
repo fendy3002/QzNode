@@ -6,6 +6,8 @@ let {UserList} = require('./components/list/index.tsx');
 
 let {observer, inject} = mobxReact;
 
+import 'toastr/build/toastr.css';
+
 @inject("store")
 @observer
 export class App extends React.Component<any, any> {

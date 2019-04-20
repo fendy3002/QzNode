@@ -32,6 +32,24 @@ export const reactUserManagement = (elem, option) => {
 
         }
     };
+    require('toastr').options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000",
+        "extendedTimeOut": "100",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
     const useOption : storeTypes.storeContextConfig = lo.merge(defaultOption, option);
     let storeInstance = new store({
         config: useOption

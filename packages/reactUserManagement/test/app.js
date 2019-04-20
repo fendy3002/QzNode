@@ -14,15 +14,15 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
 }));
 app.use(express.static(path.resolve(__dirname, "public")));
 
-app.get('/', (req, res, next) => {
+app.use(require('./routes'));
+
+app.get(['/', '/*'], (req, res, next) => {
     res.contentType("text/html");
     res.write(
         fs.readFileSync(path.resolve(__dirname, "index.html"))
     );
     res.end();
 })
-
-app.use(require('./routes'));
 
 const server = http.createServer(app);
 const port = process.argv[2] || 3000;

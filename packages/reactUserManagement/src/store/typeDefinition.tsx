@@ -18,7 +18,8 @@ export interface storeContextConfig{
         resError: (err, res) => Promise<{
             message: string
         }>
-    }
+    },
+    root: string
 };
 export interface storeContext{
     config: storeContextConfig
@@ -32,4 +33,10 @@ export interface store{
 export interface listStore {
     store : store,
     loadUsers: () => Promise<any>
+};
+export interface createStore {
+    store : store
+};
+export interface roleStore {
+    store : store
 };

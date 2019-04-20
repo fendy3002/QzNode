@@ -162,13 +162,13 @@ export class listStore implements typeDefinition.listStore {
     setPage(page){
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set("page", page);
-        window.history.replaceState({}, '', '/?' + urlParams);
+        window.history.replaceState({}, '', '?' + urlParams);
         return this.loadUsers();
     }
     setLimit(limit){
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set("limit", limit);
-        window.history.replaceState({}, '', '/?' + urlParams);
+        window.history.replaceState({}, '', '?' + urlParams);
         return this.loadUsers();
     }
 

@@ -37,7 +37,8 @@ export const reactUserManagement = (elem, option) => {
         },
         headers: {
 
-        }
+        },
+        root: "/"
     };
     require('toastr').options = {
         "closeButton": true,

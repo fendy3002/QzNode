@@ -83,11 +83,15 @@ export class store implements typeDefinition.store {
     detectPage(){
         let currentUrl = currentPath(this.context.config.root);
         const rolePattern = /\/(\w)\/role\//gi;
-        if(currentUrl == "/"){ this.page = "list" }
+        if(currentUrl == "/"){ 
+            this.page = "list";
+            return this.listStore.loadUsers();
+        }
         else if(currentUrl == "/create/"){ this.page = "create" }
         else if(rolePattern.test(currentUrl)){ this.page = "role" }
         else {
             this.page = "list";
+            return this.listStore.loadUsers();
         }
     }
     setPage(path){

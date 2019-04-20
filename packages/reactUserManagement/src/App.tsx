@@ -4,6 +4,7 @@ let mobxReact = require('mobx-react');
 
 let {UserList} = require('./components/list/index.tsx');
 let {UserCreate} = require('./components/create/index.tsx');
+let {UserRole} = require('./components/role/index.tsx');
 
 let {observer, inject} = mobxReact;
 
@@ -29,6 +30,9 @@ export class App extends React.Component<any, any> {
         }
         if(store.page == "create"){
             renderDom.push(<UserCreate key="create"/>)
+        }
+        if(store.page == "role"){
+            renderDom.push(<UserRole key="role"/>)
         }
         if(store.isLoading){
             renderDom = [

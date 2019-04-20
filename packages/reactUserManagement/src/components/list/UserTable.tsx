@@ -12,12 +12,20 @@ export class UserTable extends React.Component<any, any> {
     constructor(props) {
         super(props);
         
+        this.redirectToRole = this.redirectToRole.bind(this);
         this.handleCreateUser = this.handleCreateUser.bind(this);
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangeActive = this.handleChangeActive.bind(this);
         this.handleChangeSuperAdmin = this.handleChangeSuperAdmin.bind(this);
         this.handleResetPassword = this.handleResetPassword.bind(this);
         this.handleResendConfirmation = this.handleResendConfirmation.bind(this);
+        this.redirectToRole = this.redirectToRole.bind(this);
+        
+    }
+    redirectToRole(evt){
+        let store = this.props.store;
+        const id = evt.currentTarget.dataset.id;
+        return store.setPage("/" + id + "/role");
     }
     handleCreateUser(evt){
         let store = this.props.store;
@@ -81,8 +89,8 @@ export class UserTable extends React.Component<any, any> {
                     return [
                         <i className="fa fa-user" title="Current User" key="icon"></i>,
                         " ",
-                        <a href="javascript:void" className="btn btn-secondary"
-                            key="access">
+                        <a href="javascript:void(0)" className="btn btn-secondary" onClick={this.redirectToRole}
+                            key="access" data-id={user.id}>
                                 <i className="fa fa-key"></i> Access
                         </a>
                     ];
@@ -91,7 +99,7 @@ export class UserTable extends React.Component<any, any> {
                     if(user.is_super_admin){
                         actions.push(
                             <button className="btn btn-secondary" onClick={this.handleChangeSuperAdmin}
-                                value="0" key="grant">
+                                value="0" key="grant" data-id={user.id}>
                                 Revoke admin
                             </button>
                         );
@@ -99,7 +107,7 @@ export class UserTable extends React.Component<any, any> {
                     else{
                         actions.push(
                             <button className="btn btn-primary" onClick={this.handleChangeSuperAdmin}
-                                value="1" key="grant">
+                                value="1" key="grant" data-id={user.id}>
                                 Grant admin
                             </button>
                         );
@@ -130,7 +138,7 @@ export class UserTable extends React.Component<any, any> {
                         </button>
                     );
                     actions.push(
-                        <a href={"./userAccessModule/" + user.id} className="btn btn-secondary"
+                        <a href="javascript:void(0)" className="btn btn-secondary" onClick={this.redirectToRole}
                             key="access" data-id={user.id}>
                             <i className="fa fa-key"></i> Access
                         </a>

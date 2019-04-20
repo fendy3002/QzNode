@@ -12,24 +12,16 @@ export class UserTable extends React.Component<any, any> {
     constructor(props) {
         super(props);
         
-        this.handleAction = this.handleAction.bind(this);
+        this.handleCreateUser = this.handleCreateUser.bind(this);
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangeActive = this.handleChangeActive.bind(this);
         this.handleChangeSuperAdmin = this.handleChangeSuperAdmin.bind(this);
         this.handleResetPassword = this.handleResetPassword.bind(this);
         this.handleResendConfirmation = this.handleResendConfirmation.bind(this);
     }
-    handleAction(evt){
-        evt.preventDefault();
-        if(confirm("Are you sure to continue?") == true){
-            let action = document.createElement("input");
-            action.setAttribute("name", "action");
-            action.setAttribute("type", "hidden");
-            action.value = evt.target.value;
-            
-            evt.target.form.appendChild(action);
-            evt.target.form.submit();
-        }
+    handleCreateUser(evt){
+        let store = this.props.store;
+        return store.setPage("/create");
     }
     handleChangeEmail(evt){
         let store = this.props.store;
@@ -89,7 +81,7 @@ export class UserTable extends React.Component<any, any> {
                     return [
                         <i className="fa fa-user" title="Current User" key="icon"></i>,
                         " ",
-                        <a href={"./userAccessModule/" + user.id} className="btn btn-secondary"
+                        <a href="javascript:void" className="btn btn-secondary"
                             key="access">
                                 <i className="fa fa-key"></i> Access
                         </a>
@@ -185,7 +177,7 @@ export class UserTable extends React.Component<any, any> {
             <div className="card">
                 <div className="card-header bordered">
                     <div className="header-block" style={{ padding: "0px" }}>
-                        <a href="/userManagement/register" className="btn btn-primary">Add User</a>
+                        <a href="javascript:void(0)" onClick={this.handleCreateUser} className="btn btn-primary">Add User</a>
                     </div>
                 </div>
                 <div className="card-block" style={{ padding: "0px" }}>

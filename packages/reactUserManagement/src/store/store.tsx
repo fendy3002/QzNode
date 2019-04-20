@@ -5,6 +5,8 @@ let {observable} = mobx;
 let {listStore} = require('./listStore.tsx');
 let {createStore} = require('./createStore.tsx');
 let {roleStore} = require('./roleStore.tsx');
+const { createBrowserHistory } = require('history');
+
 import * as typeDefinition from './typeDefinition';
 
 const currentPath = (root) => {
@@ -20,29 +22,42 @@ export class store implements typeDefinition.store {
         this.context = context;
         [
             'loading',
-            'setPage',
-            'initialize'
+            'detectPage',
+            'initialize',
+            'uninitialize',
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
         this.listStore = new listStore(this);
         this.createStore = new createStore(this);
         this.roleStore = new roleStore(this);
-        this.setPage();
+        this.detectPage();
     }
     context: typeDefinition.storeContext;
     listStore: typeDefinition.listStore;
     createStore: typeDefinition.createStore;
     roleStore: typeDefinition.roleStore;
     
+    history = null;
+    historyUnlistener = null;
+
     @observable isLoading = false;
     @observable page = "list";
     @observable currentUser = {};
 
     initialize(){
+        this.history = createBrowserHistory({
+            basename: this.context.config.root
+        });
+        this.historyUnlistener = this.history.listen((location, action) => {
+            this.detectPage();
+        });
         return this.loadCurrentUser().then(() => {
             return this.listStore.loadUsers()
         });
+    }
+    uninitialize(){
+        this.historyUnlistener();
     }
 
     loadCurrentUser(){
@@ -65,7 +80,7 @@ export class store implements typeDefinition.store {
         });
     }
 
-    setPage(){
+    detectPage(){
         let currentUrl = currentPath(this.context.config.root);
         const rolePattern = /\/(\w)\/role\//gi;
         if(currentUrl == "/"){ this.page = "list" }
@@ -74,6 +89,13 @@ export class store implements typeDefinition.store {
         else {
             this.page = "list";
         }
+    }
+    setPage(path){
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const redirectTo = (this.context.config.root + "/" + path).replace(/\/\//gi, "/");
+        window.history.pushState({}, '', redirectTo + '?' + urlParams);
+        return this.detectPage();
     }
 
     loading(callback){

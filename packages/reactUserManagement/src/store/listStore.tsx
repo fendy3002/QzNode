@@ -12,6 +12,7 @@ export class listStore implements typeDefinition.listStore {
             'changeActive',
             'changeEmail',
             'resetPassword',
+            'resendConfirmation',
             'setPage',
             'loadUsers'
         ].forEach((handler) => {
@@ -54,7 +55,30 @@ export class listStore implements typeDefinition.listStore {
             });
         });
     }
-
+    resendConfirmation(userid){
+        const self = this;
+        const config = this.store.context.config;
+        return new Promise((resolve, reject) => {
+            this.store.loading((done) => {
+                sa.post(config.apiPath.resendConfirmation.replace(/\{id\}/gi, userid))
+                    .set(config.headers)
+                    .end((err, res) => {
+                        done();
+                        if(err){
+                            return config.handle.resError(err, res).then((r) => {
+                                toastr.error(r.message, "Error");
+                                return resolve();
+                            });
+                        }
+                        else{
+                            toastr.success("Confirmation resent successfully");
+                            return self.loadUsers().then(resolve).catch(reject);
+                        }
+                    });
+            });
+        });
+    }
+    
     changeSuperAdmin(userid, isSuperAdmin){
         const self = this;
         const config = this.store.context.config;

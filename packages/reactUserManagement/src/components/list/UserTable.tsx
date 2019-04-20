@@ -17,6 +17,7 @@ export class UserTable extends React.Component<any, any> {
         this.handleChangeActive = this.handleChangeActive.bind(this);
         this.handleChangeSuperAdmin = this.handleChangeSuperAdmin.bind(this);
         this.handleResetPassword = this.handleResetPassword.bind(this);
+        this.handleResendConfirmation = this.handleResendConfirmation.bind(this);
     }
     handleAction(evt){
         evt.preventDefault();
@@ -42,9 +43,8 @@ export class UserTable extends React.Component<any, any> {
             let store = this.props.store;
             let resetPassword = store.listStore.resetPassword;
             let id = evt.target.dataset.id;
-            let value = evt.target.value == "1" ? true : false;
 
-            return resetPassword(id, value);
+            return resetPassword(id);
         }
     }
     handleChangeSuperAdmin(evt){
@@ -65,6 +65,15 @@ export class UserTable extends React.Component<any, any> {
             let value = evt.target.value == "1" ? true : false;
 
             return changeActive(id, value);
+        }
+    }
+    handleResendConfirmation(evt){
+        if(confirm("Are you sure?")){
+            let store = this.props.store;
+            let resendConfirmation = store.listStore.resendConfirmation;
+            let id = evt.target.dataset.id;
+
+            return resendConfirmation(id);
         }
     }
 
@@ -125,21 +134,21 @@ export class UserTable extends React.Component<any, any> {
 
                     actions.push(
                         <button className="btn btn-warning" onClick={this.handleResetPassword}
-                            key="reset">
+                            key="reset" data-id={user.id}>
                             Reset Password
                         </button>
                     );
                     actions.push(
                         <a href={"./userAccessModule/" + user.id} className="btn btn-secondary"
-                            key="access">
+                            key="access" data-id={user.id}>
                             <i className="fa fa-key"></i> Access
                         </a>
                     );
                 }
                 else{
                     actions.push(
-                        <button className="btn btn-primary" onClick={this.handleAction}
-                            type="submit" name="action" value="confirmation" key="confirmation">
+                        <button className="btn btn-primary" onClick={this.handleResendConfirmation}
+                            key="confirmation" data-id={user.id}>
                             <i className="fa fa-send"></i> Resend confirmation
                         </button>
                     );

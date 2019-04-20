@@ -7,6 +7,7 @@ export interface storeContextConfig{
         changeSuperAdmin: string,
         changeActive: string,
         resetPassword: string,
+        resendConfirmation: string,
         register: string,
         getCurrentUser: string
     },

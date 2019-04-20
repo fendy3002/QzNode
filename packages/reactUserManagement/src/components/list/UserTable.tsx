@@ -16,6 +16,7 @@ export class UserTable extends React.Component<any, any> {
         this.handleChangeEmail = this.handleChangeEmail.bind(this);
         this.handleChangeActive = this.handleChangeActive.bind(this);
         this.handleChangeSuperAdmin = this.handleChangeSuperAdmin.bind(this);
+        this.handleResetPassword = this.handleResetPassword.bind(this);
     }
     handleAction(evt){
         evt.preventDefault();
@@ -37,7 +38,14 @@ export class UserTable extends React.Component<any, any> {
         });
     }
     handleResetPassword(evt){
+        if(confirm("Are you sure?")){
+            let store = this.props.store;
+            let resetPassword = store.listStore.resetPassword;
+            let id = evt.target.dataset.id;
+            let value = evt.target.value == "1" ? true : false;
 
+            return resetPassword(id, value);
+        }
     }
     handleChangeSuperAdmin(evt){
         if(confirm("Are you sure?")){
@@ -116,8 +124,8 @@ export class UserTable extends React.Component<any, any> {
                     actions.push(" ");
 
                     actions.push(
-                        <button className="btn btn-warning" onClick={this.handleAction}
-                            type="submit" name="action" value="reset" key="reset">
+                        <button className="btn btn-warning" onClick={this.handleResetPassword}
+                            key="reset">
                             Reset Password
                         </button>
                     );

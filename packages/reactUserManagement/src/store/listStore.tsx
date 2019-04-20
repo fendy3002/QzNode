@@ -11,6 +11,7 @@ export class listStore implements typeDefinition.listStore {
             'changeSuperAdmin',
             'changeActive',
             'changeEmail',
+            'resetPassword',
             'setPage',
             'loadUsers'
         ].forEach((handler) => {
@@ -31,7 +32,27 @@ export class listStore implements typeDefinition.listStore {
     }
 
     resetPassword(userid){
-        
+        const self = this;
+        const config = this.store.context.config;
+        return new Promise((resolve, reject) => {
+            this.store.loading((done) => {
+                sa.post(config.apiPath.resetPassword.replace(/\{id\}/gi, userid))
+                    .set(config.headers)
+                    .end((err, res) => {
+                        done();
+                        if(err){
+                            return config.handle.resError(err, res).then((r) => {
+                                toastr.error(r.message, "Error");
+                                return resolve();
+                            });
+                        }
+                        else{
+                            toastr.success("Password reset successfully");
+                            return self.loadUsers().then(resolve).catch(reject);
+                        }
+                    });
+            });
+        });
     }
 
     changeSuperAdmin(userid, isSuperAdmin){

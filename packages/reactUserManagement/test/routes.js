@@ -38,5 +38,10 @@ router.post('/api/user-management/:id/active', (req, res, next) => {
         message: "ok"
     });
 });
+router.post('/api/user-management/:id/reset-password', (req, res, next) => {
+    res.json({
+        message: "ok"
+    });
+});
 
 module.exports = router;

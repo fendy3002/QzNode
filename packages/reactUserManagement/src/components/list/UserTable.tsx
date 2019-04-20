@@ -32,11 +32,10 @@ export class UserTable extends React.Component<any, any> {
         }
     }
     handleChangeEmail(evt){
-        const target = evt.currentTarget;
         let store = this.props.store;
-        store.changeEmail(target.dataset.id, evt.value).then(() => {
-            window.location.reload();
-        });
+        const newEmail = evt.currentTarget.value;
+        const id = evt.currentTarget.dataset.id;
+        return store.listStore.changeEmail(id, evt.value);
     }
     handleResetPassword(evt){
         if(confirm("Are you sure?")){

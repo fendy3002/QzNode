@@ -48,7 +48,7 @@ export class listStore implements typeDefinition.listStore {
                             });
                         }
                         else{
-                            toastr.success("Password reset successfully");
+                            toastr.success(res.body.message, "Success");
                             return self.loadUsers().then(resolve).catch(reject);
                         }
                     });
@@ -71,7 +71,7 @@ export class listStore implements typeDefinition.listStore {
                             });
                         }
                         else{
-                            toastr.success("Confirmation resent successfully");
+                            toastr.success(res.body.message, "Success");
                             return self.loadUsers().then(resolve).catch(reject);
                         }
                     });
@@ -98,7 +98,7 @@ export class listStore implements typeDefinition.listStore {
                             });
                         }
                         else{
-                            toastr.success("Super admin changed successfully");
+                            toastr.success(res.body.message, "Success");
                             return self.loadUsers().then(resolve).catch(reject);
                         }
                     });
@@ -125,7 +125,7 @@ export class listStore implements typeDefinition.listStore {
                             });
                         }
                         else{
-                            toastr.success("Active changed successfully");
+                            toastr.success(res.body.message, "Success");
                             return self.loadUsers().then(resolve).catch(reject);
                         }
                     });
@@ -152,7 +152,7 @@ export class listStore implements typeDefinition.listStore {
                             })
                         }
                         else{
-                            toastr.success("Email changed successfully");
+                            toastr.success(res.body.message, "Success");
                             return self.loadUsers().then(resolve).catch(reject);
                         }
                     });

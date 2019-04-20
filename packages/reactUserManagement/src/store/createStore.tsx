@@ -55,7 +55,7 @@ export class createStore implements typeDefinition.createStore {
                             });
                         }
                         else{
-                            toastr.success("User registered successfully", "Success");
+                            toastr.success(res.body.message, "Success");
                             self.user = self.defaultUser;
                             resolve();
                         }

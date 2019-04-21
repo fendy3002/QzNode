@@ -12,15 +12,15 @@ import * as storeTypes from './store/typeDefinition';
 export const reactUserManagement = (elem, option) => {
     const defaultOption : storeTypes.storeContextConfig = {
         apiPath: {
-            changeEmail: "/api/user-management/{id}/change-email",
-            changeSuperAdmin: "/api/user-management/{id}/change-super-admin",
-            changeActive: "/api/user-management/{id}/active",
-            resetPassword: "/api/user-management/{id}/reset-password",
-            resendConfirmation:  "/api/user-management/{id}/confirmation",
-            getUsers: "/api/user-management",
-            getUser: "/api/user-management/{id}",
-            getCurrentUser: "/api/user-management/current",
-            register: "/api/user-management",
+            changeEmail: "/api/user-management/user/{id}/change-email",
+            changeSuperAdmin: "/api/user-management/user/{id}/change-super-admin",
+            changeActive: "/api/user-management/user/{id}/active",
+            resetPassword: "/api/user-management/user/{id}/reset-password",
+            resendConfirmation:  "/api/user-management/user/{id}/confirmation",
+            getUsers: "/api/user-management/user",
+            getUser: "/api/user-management/user/{id}",
+            getCurrentUser: "/api/user-management/user/current",
+            register: "/api/user-management/user",
         },
         handle: {
             resError: (err, res) => {

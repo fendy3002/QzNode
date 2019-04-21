@@ -3,6 +3,7 @@ const router = express.Router();
 
 const testData = require('./testData');
 const userData = testData.user;
+const roleData = testData.role;
 router.get('/api/user-management/user', (req, res, next) => {
     res.set({
         'X-Total-Count': userData.length
@@ -52,4 +53,10 @@ router.post('/api/user-management/user/:id/confirmation', (req, res, next) => {
     });
 });
 
+router.get('/api/user-management/role', (req, res, next) => {
+    res.set({
+        'X-Total-Count': roleData.length
+    });
+    return res.json(roleData);
+});
 module.exports = router;

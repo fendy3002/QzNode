@@ -67,6 +67,10 @@ module.exports = {
         }
     ],
     role: [
-        
+        { id: "1", name: "Content Creator", accesses: [
+            { module: "blog", access: "can_add" },
+            { module: "blog", access: "can_edit" },
+            { module: "blog", access: "can_delete" },
+        ] }
     ]
 }

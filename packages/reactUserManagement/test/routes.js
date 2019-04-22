@@ -22,7 +22,7 @@ router.get('/api/user-management/user/:id', (req, res, next) => {
 
     }]);
 });
-router.put('/api/user-management/user', (req, res, next) => {
+router.post('/api/user-management/user', (req, res, next) => {
     res.json({
         message: "ok"
     });

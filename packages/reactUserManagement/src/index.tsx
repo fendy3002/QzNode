@@ -20,6 +20,7 @@ export const reactUserManagement = (elem, option) => {
             getUsers: "/api/user-management/user",
             getUser: "/api/user-management/user/{id}",
             getCurrentUser: "/api/user-management/user/current",
+            getRoles: "/api/user-management/role",
             register: "/api/user-management/user",
         },
         handle: {

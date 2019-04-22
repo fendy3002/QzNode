@@ -52,9 +52,7 @@ export class store implements typeDefinition.store {
         this.historyUnlistener = this.history.listen((location, action) => {
             this.detectPage();
         });
-        return this.loadCurrentUser().then(() => {
-            return this.listStore.loadUsers()
-        });
+        return this.loadCurrentUser();
     }
     uninitialize(){
         this.historyUnlistener();
@@ -88,7 +86,15 @@ export class store implements typeDefinition.store {
             return this.listStore.loadUsers();
         }
         else if(currentUrl == "/create/"){ this.page = "create" }
-        else if(rolePattern.test(currentUrl)){ this.page = "role" }
+        else if(rolePattern.test(currentUrl)){
+            const matchPattern = /\/(\w)\/role\//gi;
+            let match = matchPattern.exec(currentUrl);
+            this.page = "role";
+            this.roleStore.userId = match[1];
+            return this.roleStore.loadRoles().then(() => {
+                return this.roleStore.loadUser();
+            });
+        }
         else {
             this.page = "list";
             return this.listStore.loadUsers();

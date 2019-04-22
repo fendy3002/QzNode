@@ -44,7 +44,7 @@ export class createStore implements typeDefinition.createStore {
         else if(confirm("Are you sure to submit?")){
             return new Promise((resolve, reject) => {
                 this.store.loading((done) => {
-                    sa.put(config.apiPath.register)
+                    sa.post(config.apiPath.register)
                     .send(this.user)
                     .end((err, res) => {
                         done();

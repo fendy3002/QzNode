@@ -71,6 +71,12 @@ module.exports = {
             { module: "blog", access: "can_add" },
             { module: "blog", access: "can_edit" },
             { module: "blog", access: "can_delete" },
+        ] },
+        { id: "2", name: "Content Reviewer", accesses: [
+            { module: "blog", access: "can_add" },
+            { module: "blog", access: "can_edit" },
+            { module: "blog", access: "can_delete" },
+            { module: "blog", access: "can_publish" },
         ] }
     ]
 }

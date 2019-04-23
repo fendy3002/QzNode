@@ -1,0 +1,4 @@
+.react-user-management .role_item:hover{
+    filter: brightness(80%);
+    cursor: pointer;
+}

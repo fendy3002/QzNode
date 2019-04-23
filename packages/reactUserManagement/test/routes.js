@@ -18,9 +18,10 @@ router.get('/api/user-management/user/current', (req, res, next) => {
     });
 });
 router.get('/api/user-management/user/:id', (req, res, next) => {
-    res.json([{
-
-    }]);
+    res.json({
+        ...userData.filter(u => u.id == req.params.id)[0],
+        roles: ['1','3'].map(i => roleData.filter(r => r.id == i)[0])
+    });
 });
 router.post('/api/user-management/user', (req, res, next) => {
     res.json({

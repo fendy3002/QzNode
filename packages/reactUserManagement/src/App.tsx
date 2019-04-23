@@ -9,6 +9,7 @@ let {UserRole} = require('./components/role/index.tsx');
 let {observer, inject} = mobxReact;
 
 import 'toastr/build/toastr.css';
+import './css.css';
 
 @inject("store")
 @observer
@@ -43,6 +44,8 @@ export class App extends React.Component<any, any> {
             ].concat(renderDom);
         }
 
-        return renderDom;
+        return <div className="react-user-management">
+            {renderDom}
+        </div>;
     }
 };

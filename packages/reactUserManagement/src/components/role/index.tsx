@@ -1,6 +1,8 @@
 let React = require('react');
 let mobx = require('mobx');
 let mobxReact = require('mobx-react');
+let {SelectedRoles} = require('./SelectedRoles.tsx');
+let {RoleSelector} = require('./RoleSelector.tsx');
 
 let {observer, inject} = mobxReact;
 
@@ -28,8 +30,9 @@ export class UserRole extends React.Component<any, any> {
     }
     render() {
         let store = this.props.store;
-        //const {user} = store.roleStore;
-        return <>
+        const {user, roles} = store.roleStore;
+
+        const pageHeader = <>
             <div className="title-block">
                 <h3 className="title"> User Management </h3>
                 <p className="title-description"> User role </p>
@@ -40,18 +43,30 @@ export class UserRole extends React.Component<any, any> {
                     <li className="breadcrumb-item active" aria-current="page">Role</li>
                 </ol>
             </nav>
-            <div className="card">
-                <div className="card-block">
-                    <form onSubmit={this.handleSubmit}>
+        </>;
+        if(!user){
+            return pageHeader;
+        }
+        return <>
+            {pageHeader}
+            <form onSubmit={this.handleSubmit}>
+                <div className="card">
+                    <div className="card-block">
+                        <SelectedRoles user={user}/>
+                    </div>
+                </div>
+                <RoleSelector user={user} roles={roles}/>
+                <div className="card">
+                    <div className="card-block">
                         <div className="row">
                             <div className="col-sm-12 text-right">
                                 <a href="javascript:void(0)" onClick={this.redirectToRoot} className="btn btn-secondary">Cancel</a>
                                 <button type="submit" className="btn btn-primary">Submit</button>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+            </form>
         </>;
     }
 };

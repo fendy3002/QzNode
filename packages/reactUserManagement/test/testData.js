@@ -77,6 +77,18 @@ module.exports = {
             { module: "blog", access: "can_edit" },
             { module: "blog", access: "can_delete" },
             { module: "blog", access: "can_publish" },
+        ] },
+        { id: "3", name: "Maintainer", accesses: [
+            { module: "page", access: "can_add" },
+            { module: "page", access: "can_edit" },
+            { module: "page", access: "can_delete" },
+            { module: "page", access: "can_publish" },
+        ] },
+        { id: "4", name: "Reporter", accesses: [
+            { module: "bug", access: "can_add" },
+            { module: "bug", access: "can_edit" },
+            { module: "bug", access: "can_delete" },
+            { module: "bug", access: "can_publish" },
         ] }
     ]
 }

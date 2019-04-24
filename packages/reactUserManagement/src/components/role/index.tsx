@@ -1,10 +1,12 @@
-let React = require('react');
-let mobx = require('mobx');
-let mobxReact = require('mobx-react');
-let {SelectedRoles} = require('./SelectedRoles.tsx');
-let {RoleSelector} = require('./RoleSelector.tsx');
+const React = require('react');
+const mobx = require('mobx');
+const lo = require('lodash');
+const mobxReact = require('mobx-react');
+const {SelectedRoles} = require('./SelectedRoles.tsx');
+const {RoleSelector} = require('./RoleSelector.tsx');
 
-let {observer, inject} = mobxReact;
+const {toJS} = mobx;
+const {observer, inject} = mobxReact;
 
 @inject("store")
 @observer
@@ -14,7 +16,9 @@ export class UserRole extends React.Component<any, any> {
 
         this.redirectToRoot = this.redirectToRoot.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
+        
     }
     redirectToRoot(evt){
         this.props.store.setPage("/");
@@ -23,15 +27,22 @@ export class UserRole extends React.Component<any, any> {
         evt.preventDefault();
         this.props.store.roleStore.submit();
     }
-    handleInputChange(evt){
-        this.props.store.roleStore.changeUser({
-            [evt.target.name]: evt.target.value
-        });
+    handleAdd(evt){
+        const store = this.props.store;
+        const roleId = evt.currentTarget.dataset.id;
+        const selectedRole = lo.find(store.roleStore.roles, (r) => r.id == roleId);
+        if(selectedRole){
+            store.roleStore.addRole(selectedRole);
+        }
+    }
+    handleRemove(evt){
+        const store = this.props.store;
+        const roleId = evt.currentTarget.dataset.id;
+        store.roleStore.removeRoleById(roleId);
     }
     render() {
         let store = this.props.store;
-        const {user, roles} = store.roleStore;
-
+        const {user, roles, selectedRoles} = store.roleStore;
         const pageHeader = <>
             <div className="title-block">
                 <h3 className="title"> User Management </h3>
@@ -52,10 +63,11 @@ export class UserRole extends React.Component<any, any> {
             <form onSubmit={this.handleSubmit}>
                 <div className="card">
                     <div className="card-block">
-                        <SelectedRoles user={user}/>
+                        <SelectedRoles user={user} selectedRoles={selectedRoles} onClick={this.handleRemove}/>
                     </div>
                 </div>
-                <RoleSelector user={user} roles={roles}/>
+                <RoleSelector user={user} selectedRoles={selectedRoles} roles={roles} 
+                    onClick={this.handleAdd}/>
                 <div className="card">
                     <div className="card-block">
                         <div className="row">

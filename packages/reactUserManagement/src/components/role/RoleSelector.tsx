@@ -1,9 +1,9 @@
 const React = require('react');
 
-export function RoleSelector ({user, roles}) {
+export function RoleSelector ({user, selectedRoles, roles, onClick}) {
     return <div className="row">
         {roles.filter(r1=> {
-            if(user.roles.filter(r2 => r2.id == r1.id).length > 0){
+            if(selectedRoles.filter(r2 => r2.id == r1.id).length > 0){
                 return false;
             }
             else{
@@ -11,11 +11,13 @@ export function RoleSelector ({user, roles}) {
             }
         }).map((r, index) => {
             return <div className="col-md-4" key={index}>
-                <div className="card role_item">
-                    <div className="card-block">
-                        {r.name}
+                <a onClick={onClick} data-id={r.id}>
+                    <div className="card role_item">
+                        <div className="card-block">
+                            {r.name}
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>;
         })}
     </div>;

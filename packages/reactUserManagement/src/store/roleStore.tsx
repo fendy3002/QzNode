@@ -8,7 +8,12 @@ export class roleStore implements typeDefinition.roleStore {
     constructor(originalStore){
         this.store = originalStore;
         [
-            'submit'
+            'submit',
+            'addRole',
+            'removeRoleById',
+            'removeRoleByIndex',
+            'loadRoles',
+            'loadUser'
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -19,7 +24,17 @@ export class roleStore implements typeDefinition.roleStore {
     @observable roles = [];
     @observable user;
     @observable userId;
+    @observable selectedRoles = [];
 
+    addRole(role){
+        this.selectedRoles = this.selectedRoles.concat([role]);
+    }
+    removeRoleById(id){
+        this.selectedRoles = this.selectedRoles.filter((r, i) => r.id != id);
+    }
+    removeRoleByIndex(index){
+        this.selectedRoles = this.selectedRoles.filter((k, i) => i != index);
+    }
     loadRoles(){
         const self = this;
         const config = this.store.context.config;
@@ -71,6 +86,7 @@ export class roleStore implements typeDefinition.roleStore {
                         }
                         else{
                             self.user = res.body;
+                            self.selectedRoles = [...self.user.roles];
                             return resolve();
                         }
                     });

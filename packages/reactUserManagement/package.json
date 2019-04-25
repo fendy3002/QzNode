@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/react-user-management",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/index.js",
   "files": [
@@ -12,8 +12,8 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "compile": "tsc --outDir dist",
-    "compileWatch": "tsc --watch --outDir dist",
+    "compile": "webpack --mode=production",
+    "compileWatch": "webpack --watch --mode=development",
     "prepublish": "npm run compile",
     "testServer": "node test/app.js"
   },

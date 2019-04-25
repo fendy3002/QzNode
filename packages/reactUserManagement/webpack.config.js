@@ -7,6 +7,16 @@ const configs = [{
         path: path.resolve(__dirname, 'test/public/js/bin'),
         filename: "index.js",
     }
+},
+{
+    entry: {
+        index: path.resolve(__dirname, "src/index.tsx"),
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: "[name].js",
+        libraryTarget: "commonjs2"
+    }
 }];
 module.exports = [...configs.map(
     (config) => ({

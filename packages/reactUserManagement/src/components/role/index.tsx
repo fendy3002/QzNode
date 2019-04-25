@@ -62,8 +62,21 @@ export class UserRole extends React.Component<any, any> {
             {pageHeader}
             <form onSubmit={this.handleSubmit}>
                 <div className="card">
+                    <div className="card-header">
+                        <div className="header-block">
+                            <h2 className="title">Selected Roles</h2>
+                        </div>
+                    </div>
                     <div className="card-block">
                         <SelectedRoles user={user} selectedRoles={selectedRoles} onClick={this.handleRemove}/>
+                    </div>
+                </div>
+
+                <div className="card">
+                    <div className="card-header">
+                        <div className="header-block">
+                            <h2 className="title">Add Roles</h2>
+                        </div>
                     </div>
                 </div>
                 <RoleSelector user={user} selectedRoles={selectedRoles} roles={roles} 

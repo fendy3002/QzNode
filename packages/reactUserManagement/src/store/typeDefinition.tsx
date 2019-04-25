@@ -7,6 +7,7 @@ export interface storeContextConfig{
         changeEmail: string,
         changeSuperAdmin: string,
         changeActive: string,
+        changeRole: string,
         resetPassword: string,
         resendConfirmation: string,
         register: string,
@@ -29,7 +30,7 @@ export interface store{
     context: storeContext,
     initialize: () => Promise<any>,
     loading: (callback: (done: () => void) => void) => void,
-    setPage: (page: string) => void
+    setPage: (page: string) => Promise<any>
 };
 export interface listStore {
     store : store,

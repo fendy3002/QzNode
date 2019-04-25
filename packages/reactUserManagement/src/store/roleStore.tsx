@@ -97,16 +97,29 @@ export class roleStore implements typeDefinition.roleStore {
     submit(){
         const self = this;
         const config = this.store.context.config;
-        return new Promise((resolve, reject) => {
-            this.store.loading((done) => {
-                sa.post(config.apiPath.register)
-                    .set(config.headers)
-                    .end((err, res) => {
-                        done();
-
-                        resolve();
-                    });
-            });
-        })
+        if(confirm("Are you sure to submit?")){
+            return new Promise((resolve, reject) => {
+                this.store.loading((done) => {
+                    sa.post(config.apiPath.changeRole.replace("{id}", self.userId))
+                        .send({
+                            roles: self.selectedRoles
+                        })
+                        .set(config.headers)
+                        .end((err, res) => {
+                            done();
+                            if(err){
+                                return config.handle.resError(err, res).then((r) => {
+                                    toastr.error(r.message, "Error");
+                                    return resolve();
+                                });
+                            }
+                            else{
+                                toastr.success(res.body.message, "Success");
+                                return self.store.setPage("/").then(resolve);
+                            }
+                        });
+                });
+            })
+        }
     }
 };

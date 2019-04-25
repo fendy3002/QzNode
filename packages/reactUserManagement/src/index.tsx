@@ -15,6 +15,7 @@ export const reactUserManagement = (elem, option) => {
             changeEmail: "/api/user-management/user/{id}/change-email",
             changeSuperAdmin: "/api/user-management/user/{id}/change-super-admin",
             changeActive: "/api/user-management/user/{id}/active",
+            changeRole: "/api/user-management/user/{id}/role",
             resetPassword: "/api/user-management/user/{id}/reset-password",
             resendConfirmation:  "/api/user-management/user/{id}/confirmation",
             getUsers: "/api/user-management/user",

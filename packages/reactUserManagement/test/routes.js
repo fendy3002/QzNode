@@ -53,6 +53,11 @@ router.post('/api/user-management/user/:id/confirmation', (req, res, next) => {
         message: "ok"
     });
 });
+router.post('/api/user-management/user/:id/role', (req, res, next) => {
+    res.json({
+        message: "ok"
+    });
+});
 
 router.get('/api/user-management/role', (req, res, next) => {
     res.set({

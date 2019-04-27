@@ -78,6 +78,7 @@ export class UserTable extends React.Component<any, any> {
 
     render() {
         let store = this.props.store;
+        let {currentUser} = store;
         let {users} = store.listStore;
         if(!users){
             return null;
@@ -85,7 +86,7 @@ export class UserTable extends React.Component<any, any> {
         let userDoms = users.map((user, index) => {
             let availableActions = (user) => {
                 let actions = [];
-                if(user.currentUser){
+                if(user.id == currentUser.id){
                     return [
                         <i className="fa fa-user" title="Current User" key="icon"></i>,
                         " ",

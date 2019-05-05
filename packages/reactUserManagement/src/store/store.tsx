@@ -92,6 +92,7 @@ export class store implements typeDefinition.store {
             this.page = "role";
             this.roleStore.userId = match[1];
             return this.roleStore.loadRoles().then(() => {
+                this.roleStore.selectedRoles = [];
                 return this.roleStore.loadUser();
             });
         }

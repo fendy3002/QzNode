@@ -21,6 +21,8 @@ export class UserRole extends React.Component<any, any> {
         
     }
     redirectToRoot(evt){
+        this.props.store.roleStore.user = null;
+        this.props.store.roleStore.selectedRoles = [];
         this.props.store.setPage("/");
     }
     handleSubmit(evt){
@@ -60,6 +62,32 @@ export class UserRole extends React.Component<any, any> {
         }
         return <>
             {pageHeader}
+
+            <div className="card">
+                <div className="card-header">
+                    <div className="header-block">
+                        <h2 className="title">User</h2>
+                    </div>
+                </div>
+                <div className="card-block">
+                    <div className="row form-group">
+                        <label className="col-sm-4">Username</label>
+                        <div className="col-sm-8">
+                            <input type="text" className="form-control underlined" 
+                                value={ user.username }
+                                readOnly={true} />
+                        </div>
+                    </div>
+                    <div className="row form-group">
+                        <label className="col-sm-4">Name</label>
+                        <div className="col-sm-8">
+                            <input type="text" className="form-control underlined" 
+                                value={ user.name }
+                                readOnly={true} />
+                        </div>
+                    </div>
+                </div>
+            </div>
             <form onSubmit={this.handleSubmit}>
                 <div className="card">
                     <div className="card-header">

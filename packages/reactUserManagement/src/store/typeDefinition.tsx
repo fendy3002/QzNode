@@ -43,6 +43,7 @@ export interface roleStore {
     store : store,
     userId: string,
     selectedRoles: any[],
+    user: any,
     loadRoles: () => Promise<any>,
     loadUser: () => Promise<any>,
 };

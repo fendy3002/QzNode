@@ -91,8 +91,8 @@ export class store implements typeDefinition.store {
             let match = matchPattern.exec(currentUrl);
             this.page = "role";
             this.roleStore.userId = match[1];
+            this.roleStore.selectedRoles = [];
             return this.roleStore.loadRoles().then(() => {
-                this.roleStore.selectedRoles = [];
                 return this.roleStore.loadUser();
             });
         }

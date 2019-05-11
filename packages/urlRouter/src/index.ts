@@ -5,8 +5,8 @@ const router = routington();
 
 interface route {
     label: string,
-    path: string,
-    data: any,
+    path: string | string[],
+    data ?: any,
     callback ?: (data: changePayload) => Promise<any>
 };
 
@@ -35,7 +35,7 @@ const urlSearchParamsToJSON = (urlParam) => {
     return result;
 };
 const getUrl = (location, root) => {
-    return ("/" + location.replace(root, "") + "/").replace(/\/\//gi, "");
+    return ("/" + location.replace(root, "")).replace(/\/\//gi, "/").padEnd(0, "/");
 }
 const defaultOption = {
     root: "",
@@ -48,8 +48,11 @@ const urlRouter = (init: initPayload) => {
     const useOption = lo.merge(defaultOption, option);
 
     for(let eachRoute of routes){
-        let definedRoute = router.define(eachRoute.path);
-        definedRoute[0].label = eachRoute.label;
+        const paths = Array.isArray(eachRoute.path) ? eachRoute.path : [eachRoute.path];
+        for(let eachPath of paths){
+            let definedRoute = router.define(eachPath.padEnd(0, "/"));
+            definedRoute[0].label = eachRoute.label;
+        }
     }
 
     const browserHistory = createBrowserHistory({
@@ -59,7 +62,7 @@ const urlRouter = (init: initPayload) => {
     const onChange = (location) => {
         const changePayload: changePayload = {
             location: location,
-            queryParam: urlSearchParamsToJSON(location.search),
+            queryParam: urlSearchParamsToJSON(new URLSearchParams(location.search)),
             hash: location.hash
         };
 
@@ -69,6 +72,9 @@ const urlRouter = (init: initPayload) => {
             changePayload.route = routes.find(k => k.label == label);
             changePayload.routeParam = routeMatch.param;
         }
+        if(changePayload.route && changePayload.route.callback){
+            changePayload.route.callback(changePayload)
+        }
         if(defaultOption.event.historyChange){
             defaultOption.event.historyChange();
         }
@@ -76,7 +82,7 @@ const urlRouter = (init: initPayload) => {
     const historyUnlistener = browserHistory.listen((location, action) => {
         onChange(location);
     });
-    const innerSetPage = (path, queryParams, hash) => {
+    const innerSetPath = (path, queryParams, hash) => {
         const urlParams = new URLSearchParams();
         lo.forOwn(queryParams, (val, key) => {
             urlParams.set(key, val);
@@ -94,29 +100,29 @@ const urlRouter = (init: initPayload) => {
         return onChange(window.location);
     };
 
-    const setPage = (path, queryParams, hash) => {
-        let redirectTo = (this.context.config.root + "/" + path).replace(/\/\//gi, "/");
-        return innerSetPage(redirectTo, queryParams, hash);
+    const setPath = (path, queryParams, hash) => {
+        let redirectTo = ("/" + useOption.root + "/" + path).replace(/\/\//gi, "/");
+        return innerSetPath(redirectTo, queryParams, hash);
     };
     
     const changePath = (path) => {
         const queryParam = urlSearchParamsToJSON(new URLSearchParams(window.location.search));
-        return setPage(path, queryParam, window.location.hash );
+        return setPath(path, queryParam, window.location.hash );
     };
     const changeQueryParam = (queryParams) => {
         let loc = window.location;
         let redirectTo = `${loc.pathname}`;
-        return innerSetPage(redirectTo, queryParams, window.location.hash)
+        return innerSetPath(redirectTo, queryParams, window.location.hash)
     };
     const changeHash = (hash) => {
         const queryParam = urlSearchParamsToJSON(new URLSearchParams(window.location.search));
         let loc = window.location;
         let redirectTo = `${loc.pathname}`;
-        return innerSetPage(redirectTo, queryParam, hash );
+        return innerSetPath(redirectTo, queryParam, hash );
     };
 
     return {
-        setPage: setPage,
+        setPath: setPath,
 
         changePath: changePath,
         changeQueryParam: changeQueryParam,

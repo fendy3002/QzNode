@@ -1,0 +1,69 @@
+<!DOCTYPE <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Url Learn</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div>
+        <button type="button" id="btn">Next</button>
+    </div>
+    <script src="/js/bin/index.js"></script>
+    <script>
+        let myUrlRouter = window.urlRouter({
+            routes: [
+                {
+                    label: 'root',
+                    path: '/',
+                    data: null,
+                    callback : (data) => {
+                        console.log(data);
+                    }
+                },
+                {
+                    label: 'order',
+                    path: '/order/:id',
+                    data: { foo: "bar" },
+                    callback : (data) => {
+                        console.log(data);
+                    }
+                },
+                
+            ],
+            option: {
+                root: "/my-path",
+                event: {
+                    historyChange: (data) => {
+                        
+                    }
+                }
+            }
+        });
+
+        myUrlRouter.setPath("/", {}, null);
+        let phase = 0;
+        const action = [
+            (evt) => {
+                myUrlRouter.changeQueryParam({
+                    page: "32"
+                });
+            },
+            (evt) => {
+                myUrlRouter.changePath("/order/32");
+            },
+            (evt) => {
+                myUrlRouter.changeHash("332131");
+            },
+        ];
+
+        document.getElementById("btn").onclick = (evt) => {
+            if(action[phase]){
+                console.log("ACTION")
+                action[phase++](evt);
+            }
+        };
+    </script>
+</body>
+</html>

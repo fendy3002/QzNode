@@ -72,12 +72,14 @@ const urlRouter = (init: initPayload) => {
             changePayload.route = routes.find(k => k.label == label);
             changePayload.routeParam = routeMatch.param;
         }
+        let process = Promise.resolve();
         if(changePayload.route && changePayload.route.callback){
-            changePayload.route.callback(changePayload)
+            process = process.then(() => changePayload.route.callback(changePayload));
         }
         if(defaultOption.event.historyChange){
-            defaultOption.event.historyChange();
+            process = process.then(() => defaultOption.event.historyChange());
         }
+        return process;
     };
     const historyUnlistener = browserHistory.listen((location, action) => {
         onChange(location);
@@ -109,10 +111,19 @@ const urlRouter = (init: initPayload) => {
         const queryParam = urlSearchParamsToJSON(new URLSearchParams(window.location.search));
         return setPath(path, queryParam, window.location.hash );
     };
-    const changeQueryParam = (queryParams) => {
+    const setQueryParam = (queryParams) => {
         let loc = window.location;
         let redirectTo = `${loc.pathname}`;
         return innerSetPath(redirectTo, queryParams, window.location.hash)
+    };
+    const changeQueryParam = (queryParams) => {
+        const oldQueryParam = urlSearchParamsToJSON(new URLSearchParams(window.location.search));
+        let loc = window.location;
+        let redirectTo = `${loc.pathname}`;
+        return innerSetPath(redirectTo, {
+            ...oldQueryParam,
+            ...queryParams
+        }, window.location.hash)
     };
     const changeHash = (hash) => {
         const queryParam = urlSearchParamsToJSON(new URLSearchParams(window.location.search));
@@ -123,6 +134,8 @@ const urlRouter = (init: initPayload) => {
 
     return {
         setPath: setPath,
+        setQueryParam: setQueryParam,
+        refresh: () => onChange(window.location),
 
         changePath: changePath,
         changeQueryParam: changeQueryParam,

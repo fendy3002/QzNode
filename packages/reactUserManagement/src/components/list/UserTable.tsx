@@ -35,12 +35,12 @@ export class UserTable extends React.Component<any, any> {
         let store = this.props.store;
         const newEmail = evt.currentTarget.value;
         const id = evt.currentTarget.dataset.id;
-        return store.listStore.changeEmail(id, evt.value);
+        return store.mode.store.changeEmail(id, evt.value);
     }
     handleResetPassword(evt){
         if(confirm("Are you sure?")){
             let store = this.props.store;
-            let resetPassword = store.listStore.resetPassword;
+            let resetPassword = store.mode.store.resetPassword;
             let id = evt.target.dataset.id;
 
             return resetPassword(id);
@@ -49,7 +49,7 @@ export class UserTable extends React.Component<any, any> {
     handleChangeSuperAdmin(evt){
         if(confirm("Are you sure?")){
             let store = this.props.store;
-            let changeSuperAdmin = store.listStore.changeSuperAdmin;
+            let changeSuperAdmin = store.mode.store.changeSuperAdmin;
             let id = evt.target.dataset.id;
             let value = evt.target.value == "1" ? true : false;
 
@@ -59,7 +59,7 @@ export class UserTable extends React.Component<any, any> {
     handleChangeActive(evt){
         if(confirm("Are you sure?")){
             let store = this.props.store;
-            let changeActive = store.listStore.changeActive;
+            let changeActive = store.mode.store.changeActive;
             let id = evt.target.dataset.id;
             let value = evt.target.value == "1" ? true : false;
 
@@ -69,7 +69,7 @@ export class UserTable extends React.Component<any, any> {
     handleResendConfirmation(evt){
         if(confirm("Are you sure?")){
             let store = this.props.store;
-            let resendConfirmation = store.listStore.resendConfirmation;
+            let resendConfirmation = store.mode.store.resendConfirmation;
             let id = evt.target.dataset.id;
 
             return resendConfirmation(id);
@@ -79,7 +79,7 @@ export class UserTable extends React.Component<any, any> {
     render() {
         let store = this.props.store;
         let {currentUser} = store;
-        let {users} = store.listStore;
+        let {users} = store.mode.store;
         if(!users){
             return null;
         }

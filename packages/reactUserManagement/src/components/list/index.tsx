@@ -20,10 +20,10 @@ export class UserList extends React.Component<any, any> {
     handleChangePage(evt){
         const store = this.props.store;
         const page = evt.value;
-        const currentPage = store.listStore.page();
+        const currentPage = store.mode.store.page();
 
         if(page != currentPage){
-            store.listStore.setPage(page).then(() => {
+            store.mode.store.setPage(page).then(() => {
                 this.forceUpdate((evt) => {});
             });
         }
@@ -31,17 +31,17 @@ export class UserList extends React.Component<any, any> {
     handleChangeLimit(evt){
         const store = this.props.store;
         const limit = evt.value;
-        const currentLimit = store.listStore.page();
+        const currentLimit = store.mode.store.page();
 
         if(limit != currentLimit){
-            store.listStore.setLimit(limit).then(() => {
+            store.mode.store.setLimit(limit).then(() => {
                 this.forceUpdate((evt) => {});
             });
         }
     }
     render() {
         let store = this.props.store;
-        const {page, limit, userCount} = store.listStore;
+        const {page, limit, userCount} = store.mode.store;
         return <>
             <div className="title-block">
                 <h3 className="title"> User Management </h3>

@@ -5,24 +5,16 @@ let {observable} = mobx;
 let {listStore} = require('./listStore.tsx');
 let {createStore} = require('./createStore.tsx');
 let {roleStore} = require('./roleStore.tsx');
-const { createBrowserHistory } = require('history');
+const urlRouter = require('@fendy3002/url-router').default;
 
 import * as typeDefinition from './typeDefinition';
-
-const currentPath = (root) => {
-    let currentUrl = window.location.pathname;
-    root = ("/" + root + "/").replace(/\/\//gi, "/");
-    currentUrl = ("/" + currentUrl + "/").replace(/\/\//gi, "/");
-
-    return ("/" + currentUrl.replace(root, "") + "/").replace(/\/\//gi, "/");
-}
 
 export class store implements typeDefinition.store {
     constructor(context) {
         this.context = context;
         [
             'loading',
-            'detectPage',
+            'setPage',
             'initialize',
             'uninitialize',
         ].forEach((handler) => {
@@ -31,31 +23,79 @@ export class store implements typeDefinition.store {
         this.listStore = new listStore(this);
         this.createStore = new createStore(this);
         this.roleStore = new roleStore(this);
-        this.detectPage();
+
+        const self = this;
+        this.urlRouter = urlRouter({
+            routes: [
+                {
+                    label: 'list',
+                    path: '/',
+                    data: self.listStore,
+                    callback : (data) => {
+                        const activeStore = data.route.data;
+                        self.mode = {
+                            name: data.route.label,
+                            store: activeStore
+                        };
+                        return data.route.data.loadUsers();
+                    }
+                },
+                {
+                    label: 'create',
+                    path: '/create',
+                    data: self.createStore,
+                    callback : (data) => {
+                        const activeStore = data.route.data;
+                        self.mode = {
+                            name: data.route.label,
+                            store: activeStore
+                        };
+                    }
+                },
+                {
+                    label: 'role',
+                    path: '/:id/role',
+                    data: self.roleStore,
+                    callback : (data) => {
+                        const activeStore = data.route.data;
+                        self.mode = {
+                            name: data.route.label,
+                            store: activeStore
+                        };
+
+                        activeStore.userId = data.routeParam.id;
+                        activeStore.user = null;
+                        activeStore.selectedRoles = [];
+                        return activeStore.loadRoles().then(() => {
+                            return activeStore.loadUser();
+                        });
+                    }
+                },
+            ],
+            option: {
+                root: context.config.root
+            }
+        });
+        this.urlRouter.refresh();
     }
     context: typeDefinition.storeContext;
     listStore: typeDefinition.listStore;
     createStore: typeDefinition.createStore;
     roleStore: typeDefinition.roleStore;
+    urlRouter: any;
     
-    history = null;
-    historyUnlistener = null;
-
     @observable isLoading = false;
-    @observable page = "list";
+    @observable mode = {
+        name: "list",
+        store: null
+    };
     @observable currentUser = {};
 
     initialize(){
-        this.history = createBrowserHistory({
-            basename: this.context.config.root
-        });
-        this.historyUnlistener = this.history.listen((location, action) => {
-            this.detectPage();
-        });
-        return this.loadCurrentUser();
+        return this.urlRouter.refresh();
     }
     uninitialize(){
-        this.historyUnlistener();
+        this.urlRouter.historyUnlistener();
     }
 
     loadCurrentUser(){
@@ -78,36 +118,8 @@ export class store implements typeDefinition.store {
         });
     }
 
-    detectPage(){
-        let currentUrl = currentPath(this.context.config.root);
-        const rolePattern = /\/(\w)\/role\//gi;
-        if(currentUrl == "/"){ 
-            this.page = "list";
-            return this.listStore.loadUsers();
-        }
-        else if(currentUrl == "/create/"){ this.page = "create" }
-        else if(rolePattern.test(currentUrl)){
-            const matchPattern = /\/(\w)\/role\//gi;
-            let match = matchPattern.exec(currentUrl);
-            this.page = "role";
-            this.roleStore.userId = match[1];
-            this.roleStore.user = null;
-            this.roleStore.selectedRoles = [];
-            return this.roleStore.loadRoles().then(() => {
-                return this.roleStore.loadUser();
-            });
-        }
-        else {
-            this.page = "list";
-            return this.listStore.loadUsers();
-        }
-    }
     setPage(path){
-        const urlParams = new URLSearchParams(window.location.search);
-
-        const redirectTo = (this.context.config.root + "/" + path).replace(/\/\//gi, "/");
-        window.history.pushState({}, '', redirectTo + '?' + urlParams);
-        return this.detectPage();
+        return this.urlRouter.changePath(path);
     }
 
     loading(callback){

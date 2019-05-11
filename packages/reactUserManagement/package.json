@@ -41,6 +41,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
     "@fendy3002/react-components": "^0.0.1",
+    "@fendy3002/url-router": "^0.0.1",
     "@types/lodash": "^4.14.121",
     "@types/node": "^10.10.3",
     "@types/react": "^16.8.13",

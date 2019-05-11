@@ -19,16 +19,16 @@ export class UserCreate extends React.Component<any, any> {
     }
     handleSubmit(evt){
         evt.preventDefault();
-        this.props.store.createStore.submit();
+        this.props.store.mode.store.submit();
     }
     handleInputChange(evt){
-        this.props.store.createStore.changeUser({
+        this.props.store.mode.store.changeUser({
             [evt.target.name]: evt.target.value
         });
     }
     render() {
         let store = this.props.store;
-        const {user} = store.createStore;
+        const {user} = store.mode.store;
         return <>
             <div className="title-block">
                 <h3 className="title"> User Management </h3>

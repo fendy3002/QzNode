@@ -21,30 +21,30 @@ export class UserRole extends React.Component<any, any> {
         
     }
     redirectToRoot(evt){
-        this.props.store.roleStore.user = null;
-        this.props.store.roleStore.selectedRoles = [];
+        this.props.store.mode.store.user = null;
+        this.props.store.mode.store.selectedRoles = [];
         this.props.store.setPage("/");
     }
     handleSubmit(evt){
         evt.preventDefault();
-        this.props.store.roleStore.submit();
+        this.props.store.mode.store.submit();
     }
     handleAdd(evt){
         const store = this.props.store;
         const roleId = evt.currentTarget.dataset.id;
-        const selectedRole = lo.find(store.roleStore.roles, (r) => r.id == roleId);
+        const selectedRole = lo.find(store.mode.store.roles, (r) => r.id == roleId);
         if(selectedRole){
-            store.roleStore.addRole(selectedRole);
+            store.mode.store.addRole(selectedRole);
         }
     }
     handleRemove(evt){
         const store = this.props.store;
         const roleId = evt.currentTarget.dataset.id;
-        store.roleStore.removeRoleById(roleId);
+        store.mode.store.removeRoleById(roleId);
     }
     render() {
         let store = this.props.store;
-        const {user, roles, selectedRoles} = store.roleStore;
+        const {user, roles, selectedRoles} = store.mode.store;
         const pageHeader = <>
             <div className="title-block">
                 <h3 className="title"> User Management </h3>

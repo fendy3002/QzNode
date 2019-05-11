@@ -25,14 +25,16 @@ export class App extends React.Component<any, any> {
     render() {
         let store = this.props.store;
         let renderDom = [];
-        
-        if(store.page == "list"){
+        if(!store.mode.store){
+            return null;
+        }
+        if(store.mode.name == "list"){
             renderDom.push(<UserList key="list"/>)
         }
-        if(store.page == "create"){
+        if(store.mode.name == "create"){
             renderDom.push(<UserCreate key="create"/>)
         }
-        if(store.page == "role"){
+        if(store.mode.name == "role"){
             renderDom.push(<UserRole key="role"/>)
         }
         if(store.isLoading){

@@ -28,6 +28,12 @@ export interface storeContext{
 };
 export interface store{
     context: storeContext,
+    urlRouter: any,
+
+    mode: {
+        name: string,
+        store ?: any,
+    },
     initialize: () => Promise<any>,
     loading: (callback: (done: () => void) => void) => void,
     setPage: (page: string) => Promise<any>

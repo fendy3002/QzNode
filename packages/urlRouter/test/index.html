@@ -47,6 +47,17 @@
         const action = [
             (evt) => {
                 myUrlRouter.changeQueryParam({
+                    page: "32",
+                    limit: 100
+                });
+            },
+            (evt) => {
+                myUrlRouter.changeQueryParam({
+                    page: "55"
+                });
+            },
+            (evt) => {
+                myUrlRouter.setQueryParam({
                     page: "32"
                 });
             },

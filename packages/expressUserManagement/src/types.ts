@@ -6,6 +6,15 @@ export interface lang {
     auth: {
         login: {
             notMatch: string
+        },
+        register: {
+            confirmError: string,
+            exists: string,
+            usernameFormat: string,
+            emailFormat: string,
+            registerSuccess: string,
+            registerNoConfirmation: string,
+            registerEmailFail: string,
         }
     }
 }
@@ -19,5 +28,18 @@ export namespace service{
     }
     export interface login{
         (context: context): (user: loginUserPayload, rememberMe: boolean) => Promise<any>
+    }
+    export interface registerUserPayload{
+        name: string, 
+        username: string, 
+        email: string, 
+        password: string, 
+        confirm: string, 
+        superAdmin: boolean
+    }
+    export interface register{
+        (context: context, option ?: {
+            needEmailConfirmation: boolean
+        }): (user: registerUserPayload) => Promise<any>
     }
 }

@@ -3,15 +3,25 @@ const sequelize = require('sequelize');
 const moment = require('moment');
 const random = require("random-js")();
 const uuid = require('uuid/v4');
+const lo = require('lodash');
 import userModelRaw from '../model/user';
 import userRememberTokenModelRaw from '../model/userRememberToken';
+import userRoleModelRaw from '../model/userRole';
+import roleAccessModelRaw from '../model/roleAccess';
+
 import * as crypto from "crypto";
 import * as myType from '../types';
 
-const loginService: myType.service.login = (context) => async (user, rememberMe = false) => {
+const loginService: myType.service.login = (context, option) => async (user, rememberMe = false) => {
     let {username, password} = user;
+
+    let useOption = lo.merge(option, {
+        accessModule: {}
+    });
     let userModel = userModelRaw.associate(context.db, userModelRaw(context.db));
     let userRememberTokenModel = userRememberTokenModelRaw(context.db);
+    let userRoleModel = userRoleModelRaw(context.db);
+    let roleAccessModel = roleAccessModelRaw(context.db);
 
     let getSelectorNumber = async () => {
         let selector: number = random.integer(0, 100000);
@@ -22,6 +32,36 @@ const loginService: myType.service.login = (context) => async (user, rememberMe 
         });
         if(rememberToken) { return await getSelectorNumber(); }
         else{ return selector; }
+    };
+    let getPermission = async (user) => {
+        let roles = await userRoleModel.findAll({
+            where: {
+                userid: user.id
+            },
+            raw: true
+        });
+        let roleAccess = await roleAccessModel.findAll({
+            where: {
+                role_id: {
+                    [sequelize.Op.in]: roles.map(k => k.role_id)
+                }
+            },
+            raw: true
+        });
+        let reducedRoleAccess = {};
+        for(let each of roleAccess){
+            reducedRoleAccess[each.module] = reducedRoleAccess[each.module] || {};
+            reducedRoleAccess[each.module][each.access] = true;
+        }
+
+        let reducedAppRoleAccess = {};
+        lo.forOwn(useOption.accessModule, (access, moduleName) => {
+            reducedAppRoleAccess[moduleName] = reducedAppRoleAccess[moduleName] || {};
+            Object.keys(access).forEach(k => {
+                reducedAppRoleAccess[moduleName][k] = false;
+            });
+        });
+        return lo.merge(reducedAppRoleAccess, reducedRoleAccess);
     };
 
     let userWhere = {
@@ -41,10 +81,15 @@ const loginService: myType.service.login = (context) => async (user, rememberMe 
             });
         });
         if(compareSame){
+            let permissions = await getPermission(loginUser);
+
             let selector = await getSelectorNumber();
             if(!rememberMe){
                 return {
-                    user: loginUser
+                    user: {
+                        ...loginUser,
+                        accessModule: permissions
+                    }
                 };
             }
             else{
@@ -60,7 +105,10 @@ const loginService: myType.service.login = (context) => async (user, rememberMe 
                     expires: expire
                 })
                 return {
-                    user: loginUser,
+                    user: {
+                        ...loginUser,
+                        accessModule: permissions
+                    },
                     publicKey: publicKey,
                     selector: selector
                 };

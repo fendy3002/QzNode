@@ -2,26 +2,33 @@ import * as myTypes from '../types';
 let sequelize = require('sequelize');
 
 let modelService: myTypes.modelType = Object.assign((db) => {
-    let userAccess = db.define('user_access', {
+    let userRole = db.define('user_role', {
+        role_id: {type: sequelize.STRING(36), primaryKey: true},
         userid: {type: sequelize.STRING(36), primaryKey: true},
-        module: {type: sequelize.STRING, primaryKey: true},
-        access: {type: sequelize.STRING, primaryKey: true}
     }, {
-        tableName: "user_access",
+        tableName: "user_role",
         timestamps: false,
     });
 
-    return userAccess;
+    return userRole;
 }, {
     // used when defining association
     associate: (db, model) => {
         model.belongsTo(
-            require('./user.js')(db), 
-            { 
+            require('./user')(db), 
+            {
                 as: 'user',
                 foreignKey: 'userid',
                 targetKey: "id"
             });
+        model.belongsTo(
+            require('./role')(db), 
+            { 
+                as: 'role',
+                foreignKey: 'role_id',
+                targetKey: "id"
+            });
+
         return model;
     }
 });

@@ -24,14 +24,14 @@ let modelService: myTypes.modelType = Object.assign((db) => {
     // used when defining association
     associate: (db, model) => {
         model.hasMany(
-            require('./userRememberToken.js')(db), 
+            require('./userRememberToken')(db), 
             { 
                 as: 'rememberTokens',
                 foreignKey: 'userid',
                 sourceKey: "id"
             });
         model.hasMany(
-            require('./userAccess.js')(db), 
+            require('./userAccess')(db), 
             { 
                 as: 'accessModules',
                 foreignKey: 'userid',

@@ -27,7 +27,9 @@ export namespace service{
         username: string, password: string
     }
     export interface login{
-        (context: context): (user: loginUserPayload, rememberMe: boolean) => Promise<any>
+        (context: context, option ?: {
+            accessModule: any
+        }): (user: loginUserPayload, rememberMe: boolean) => Promise<any>
     }
     export interface registerUserPayload{
         name: string, 

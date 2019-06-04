@@ -17,7 +17,7 @@ let modelService: myTypes.modelType = Object.assign((db) => {
     // used when defining association
     associate: (db, model) => {
         model.belongsTo(
-            require('./user.js')(db),
+            require('./user')(db),
             {
                 as: "user",
                 foreignKey: "userid",

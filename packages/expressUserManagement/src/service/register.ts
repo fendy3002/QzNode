@@ -45,7 +45,9 @@ const registerService : myType.service.register = (context, option) => async (us
             return resolve(hashed);
         });
     });
+    let userid = uuid();
     await userModel.create({
+        id: userid,
         name: name,
         username: username,
         email: email,
@@ -59,6 +61,7 @@ const registerService : myType.service.register = (context, option) => async (us
     });
     
     return {
+        userid: userid,
         needConfirmation: useOption.needEmailConfirmation,
         confirmation: confirmation
     };

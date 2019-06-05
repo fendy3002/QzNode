@@ -30,8 +30,25 @@ export interface lang {
 }
 export interface context{
     db: any,
-    lang: lang
+    lang: lang,
+    redirect: {
+        signedIn: string,
+        signedOut: string
+    },
+    render: {
+        login: string
+    },
+    appKey: string,
+    rememberTokenName: string
 };
+export namespace controller{
+    export interface login{
+        (context: context): {
+            _get: (req: any, res: any, next ?: any) => any,
+            _post: (req: any, res: any, next ?: any) => any
+        }
+    }
+}
 export namespace service{
     export interface loginUserPayload{
         username: string, password: string

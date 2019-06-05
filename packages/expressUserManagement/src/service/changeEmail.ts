@@ -24,7 +24,7 @@ let changeEmail: myType.service.changeEmail = (context) => async ({userId, email
         };
     }
     else{
-        throw new Error(context.lang.auth.changeEmail.notFound);
+        throw new Error(context.lang.auth.general.notFound);
     }
 };
 

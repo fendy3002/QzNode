@@ -45,7 +45,7 @@ let changePassword: myType.service.changePassword = (context) => async ({userid,
             }
         }
         else{
-            throw new Error(context.lang.auth.changePassword.notFound);
+            throw new Error(context.lang.auth.general.notFound);
         }
     }
 };

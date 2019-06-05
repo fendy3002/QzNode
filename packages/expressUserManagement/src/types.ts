@@ -17,13 +17,14 @@ export interface lang {
             registerEmailFail: string,
         },
         changeEmail: {
-            notFound: string,
             emailFormatInvalid: string
         },
         changePassword: {
             oldPasswordNotMatch: string,
-            notFound: string,
             confirmError: string
+        },
+        general: {
+            notFound: string,
         }
     }
 }
@@ -65,6 +66,11 @@ export namespace service{
             oldPassword: string, 
             newPassword: string, 
             confirmPassword: string
+        }) => Promise<any>
+    }
+    export interface resetPassword{
+        (context: context): (payload: {
+            email: string
         }) => Promise<any>
     }
 }

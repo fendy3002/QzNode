@@ -6,7 +6,7 @@
         "declaration": true,
         "lib": ["es5", "es6", "dom"],
         "jsx": "react",
-        "outDir": "dest",
+        "outDir": "dist",
         "experimentalDecorators": true
     },
     "include": [

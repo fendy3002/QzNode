@@ -30,8 +30,7 @@ let hasAccessModule = function(){
         } else{
             if(options && options.excludeSuperAdmin){
                 if(!user.accessModule[accessModule]){
-                    res.status(401);
-                    res.end();
+                    return next(httpError(401, "UNAUTHORIZED"))
                 }
                 
                 if(accessSubModule && user.accessModule[accessModule][accessSubModule]){

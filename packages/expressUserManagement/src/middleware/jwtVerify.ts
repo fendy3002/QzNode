@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const httpError = require('http-errors');
+import * as myType from '../types';
 
-let jwtVerify = (option) => (req, res, next) => {
+let jwtVerify: myType.middleware.jwtVerify = (option) => (req, res, next) => {
     let authorizationHeader = req.get('Authorization');
     if(authorizationHeader && authorizationHeader.substring(0, 7) == "Bearer "){
         let authorizationToken = authorizationHeader.substring(7);

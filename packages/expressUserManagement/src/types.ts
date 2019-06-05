@@ -15,6 +15,15 @@ export interface lang {
             registerSuccess: string,
             registerNoConfirmation: string,
             registerEmailFail: string,
+        },
+        changeEmail: {
+            notFound: string,
+            emailFormatInvalid: string
+        },
+        changePassword: {
+            oldPasswordNotMatch: string,
+            notFound: string,
+            confirmError: string
         }
     }
 }
@@ -43,5 +52,27 @@ export namespace service{
         (context: context, option ?: {
             needEmailConfirmation: boolean
         }): (user: registerUserPayload) => Promise<any>
+    }
+    export interface changeEmail{
+        (context: context): (payload: {
+            userId: string,
+            email: string
+        }) => Promise<any>
+    }
+    export interface changePassword{
+        (context: context): (payload: {
+            userid: string, 
+            oldPassword: string, 
+            newPassword: string, 
+            confirmPassword: string
+        }) => Promise<any>
+    }
+}
+export namespace middleware{
+    export interface jwtVerify{
+        (option: {
+            sessionStore: any,
+            appKey: string
+        }): (req: any, res: any, next ?: any) => any
     }
 }

@@ -98,4 +98,10 @@ export namespace middleware{
             appKey: string
         }): (req: any, res: any, next ?: any) => any
     }
+    export interface signedIn{
+        (context: context): 
+            (option: {
+                mustSignedIn: boolean
+            }) => (req: any, res: any, next ?: any) => any
+    }
 }

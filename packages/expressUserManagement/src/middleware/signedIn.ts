@@ -1,7 +1,9 @@
-const validateToken = require('../../services/auth/validateToken.js');
 const jwt = require('jsonwebtoken');
+import validateToken from '../service/validateToken';
+import * as myType from '../types';
 
-const signedIn = ({ rememberTokenName, appKey, db }) => ({mustSignedIn, redirectTo}) => (req, res, next) => {
+const signedIn: myType.middleware.signedIn = (context) => ({mustSignedIn}) => (req, res, next) => {
+    let { rememberTokenName, appKey, db } = context;
     if(mustSignedIn){
         return (async () => {
             if(req.session && req.session.user && req.session.user.id){
@@ -13,7 +15,7 @@ const signedIn = ({ rememberTokenName, appKey, db }) => ({mustSignedIn, redirect
                     let publicKey = req.cookies[rememberTokenName + "_key"];
                     const validateResult = await validateToken({db})({selector, publicKey});
                     if(!validateResult){
-                        return res.redirect(redirectTo);
+                        return res.redirect(context.redirect.signedIn);
                     }
                     else{
                         let {user, selector, publicKey} = validateResult;
@@ -32,16 +34,16 @@ const signedIn = ({ rememberTokenName, appKey, db }) => ({mustSignedIn, redirect
                     }
                 }
                 else{
-                    return res.redirect(redirectTo);
+                    return res.redirect(context.redirect.signedIn);
                 }
             }
         })();
     } else{
         if(!req.session || !req.session.user || !req.session.user.id){
-            next();
+            return next();
         }
         else{
-            res.redirect(redirectTo);
+            return res.redirect(context.redirect.signedOut);
         }
     }
 };

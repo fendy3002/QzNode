@@ -36,7 +36,8 @@ export interface context{
         signedOut: string
     },
     render: {
-        login: string
+        login: string,
+        changePassword: string
     },
     appKey: string,
     rememberTokenName: string
@@ -46,6 +47,17 @@ export namespace controller{
         (context: context): {
             _get: (req: any, res: any, next ?: any) => any,
             _post: (req: any, res: any, next ?: any) => any
+        }
+    }
+    export interface logout{
+        (context: context): {
+            _get: (req: any, res: any, next ?: any) => any,
+        }
+    }
+    export interface changePassword{
+        (context: context): {
+            _get: (req: any, res: any, next ?: any) => any,
+            _post: (req: any, res: any, next ?: any) => any,
         }
     }
 }

@@ -17,7 +17,7 @@ let changePassword: myType.controller.changePassword = (context) => {
                 });
                 return res.redirect(context.redirect.signedIn);
             } catch(ex){
-                res.render(context.render.changePassword, {err: ex.message, email: req.body.email});
+                return res.render(context.render.changePassword, {err: ex.message, email: req.body.email});
             }
         }
     };

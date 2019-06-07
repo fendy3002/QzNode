@@ -43,7 +43,7 @@ const login: myType.controller.login = (context) => {
                 }
                 return res.redirect(context.redirect.signedIn);
             } catch(ex) {
-                res.render(context.render.login, {err: ex.message, username: req.body.username});
+                return res.render(context.render.login, {err: ex.message, username: req.body.username});
             }
         }
     }

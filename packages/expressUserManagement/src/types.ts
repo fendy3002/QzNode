@@ -61,6 +61,13 @@ export namespace controller{
         }
     }
 }
+export namespace api{
+    export interface confirmation{
+        (context: context): {
+            _get: (req: any, res: any, next ?: any) => any,
+        }
+    }
+}
 export namespace service{
     export interface loginUserPayload{
         username: string, password: string

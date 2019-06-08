@@ -6,11 +6,8 @@ const uuid = require('uuid/v4');
 import userModelRaw from '../model/user';
 import * as myType from '../types';
 
-const registerService : myType.service.register = (context, option) => async (user) => {
-    let useOption = lo.merge(option, {
-        needEmailConfirmation: true
-    });
-    let {name, username, email, password, confirm, superAdmin = false} = user;
+const registerService : myType.service.register = (context) => async (user) => {
+    let {name, username, email, password, superAdmin = false} = user;
     let userModel = userModelRaw(context.db);
     
     let usernameRegex = /^[a-zA-Z0-9]+$/;
@@ -20,9 +17,6 @@ const registerService : myType.service.register = (context, option) => async (us
     }
     if(email.indexOf("@") < 0){
         throw new Error(lang.auth.register.emailFormat);
-    }
-    if(password !== confirm){
-        throw new Error(lang.auth.register.confirmError);
     }
 
     let userWhere = {
@@ -52,7 +46,7 @@ const registerService : myType.service.register = (context, option) => async (us
         username: username,
         email: email,
         password: hashed,
-        isConfirmed: !useOption.needEmailConfirmation,
+        isConfirmed: !context.registerNeedConfirmation,
         isActive: false,
         isSuperAdmin: superAdmin,
         confirmation: confirmation,
@@ -62,7 +56,7 @@ const registerService : myType.service.register = (context, option) => async (us
     
     return {
         userid: userid,
-        needConfirmation: useOption.needEmailConfirmation,
+        needConfirmation: context.registerNeedConfirmation,
         confirmation: confirmation
     };
 };

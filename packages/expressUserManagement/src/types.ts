@@ -13,7 +13,6 @@ export interface lang {
             usernameFormat: string,
             emailFormat: string,
             registerSuccess: string,
-            registerNoConfirmation: string,
             registerEmailFail: string,
         },
         changeEmail: {
@@ -39,8 +38,30 @@ export interface context{
         login: string,
         changePassword: string
     },
+    mail: {
+        adminResetPassword: (payload: {
+            password: string
+        }) => Promise<any>,
+        resetPasswordRequest: (payload: {
+            email: string,
+            username: string
+        }) => Promise<any>,
+        adminRegister: (payload: {
+            username: string,
+            password: string,
+            confirmation: string,
+            name: string
+        }) => Promise<any>,
+        userRegister: (payload: {
+            username: string,
+            password: string,
+            confirmation: string,
+            name: string
+        }) => Promise<any>
+    },
     appKey: string,
-    rememberTokenName: string
+    rememberTokenName: string,
+    registerNeedConfirmation: string
 };
 export namespace controller{
     export interface login{
@@ -67,6 +88,16 @@ export namespace api{
             _get: (req: any, res: any, next ?: any) => any,
         }
     }
+    export interface adminResetPassword{
+        (context: context): {
+            _post: (req: any, res: any, next ?: any) => any,
+        }
+    }
+    export interface adminRegister{
+        (context: context): {
+            _post: (req: any, res: any, next ?: any) => any,
+        }
+    }
 }
 export namespace service{
     export interface loginUserPayload{
@@ -81,14 +112,11 @@ export namespace service{
         name: string, 
         username: string, 
         email: string, 
-        password: string, 
-        confirm: string, 
+        password: string,
         superAdmin: boolean
     }
     export interface register{
-        (context: context, option ?: {
-            needEmailConfirmation: boolean
-        }): (user: registerUserPayload) => Promise<any>
+        (context: context): (user: registerUserPayload) => Promise<any>
     }
     export interface changeEmail{
         (context: context): (payload: {

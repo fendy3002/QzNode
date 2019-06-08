@@ -3,7 +3,7 @@ const uuid = require('uuid/v4');
 import registerServiceRaw from '../service/register';
 import * as myType from '../types';
 
-let register: myType.api.adminRegister = (context) => {
+let adminRegister: myType.api.adminRegister = (context) => {
     const registerService = registerServiceRaw(context);
     return {
         _post: async (req, res, next) => {
@@ -45,4 +45,4 @@ let register: myType.api.adminRegister = (context) => {
         }
     };
 };
-export default register;
+export default adminRegister;

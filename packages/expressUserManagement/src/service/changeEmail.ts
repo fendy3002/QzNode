@@ -20,6 +20,7 @@ let changeEmail: myType.service.changeEmail = (context) => async ({userId, email
         user.confirmation = uuid();
         await user.save();
         return {
+            username: user.username,
             confirmation: user.confirmation
         };
     }

@@ -16,7 +16,8 @@ export interface lang {
             registerEmailFail: string,
         },
         changeEmail: {
-            emailFormatInvalid: string
+            emailFormatInvalid: string,
+            success: string,
         },
         changePassword: {
             oldPasswordNotMatch: string,
@@ -57,6 +58,10 @@ export interface context{
             password: string,
             confirmation: string,
             name: string
+        }) => Promise<any>,
+        changeEmail: (payload: {
+            username: string,
+            confirmation: string
         }) => Promise<any>
     },
     appKey: string,
@@ -94,6 +99,11 @@ export namespace api{
         }
     }
     export interface adminRegister{
+        (context: context): {
+            _post: (req: any, res: any, next ?: any) => any,
+        }
+    }
+    export interface adminChangeEmail{
         (context: context): {
             _post: (req: any, res: any, next ?: any) => any,
         }

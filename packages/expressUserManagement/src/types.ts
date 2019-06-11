@@ -29,6 +29,9 @@ export interface lang {
         changeSuperAdmin: {
             success: string
         },
+        resendConfirmation: {
+            success: string
+        }
         general: {
             notFound: string,
         }
@@ -67,6 +70,11 @@ export interface context{
         }) => Promise<any>,
         changeEmail: (payload: {
             username: string,
+            confirmation: string
+        }) => Promise<any>,
+        resendConfirmation: (payload: {
+            username: string,
+            name: string,
             confirmation: string
         }) => Promise<any>
     },

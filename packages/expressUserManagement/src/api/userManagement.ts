@@ -17,7 +17,9 @@ let userManagement: myType.api.userManagement = (context) => {
                 let userId = req.params.id;
                 let is_active = req.body.is_active;
                 let user = await userModel.findOne({
-                    id: userId
+                    where: {
+                        id: userId
+                    },
                 });
                 user.isActive = is_active;
                 await user.save();
@@ -30,21 +32,59 @@ let userManagement: myType.api.userManagement = (context) => {
             }
         },
         confirmation: async (req, res, next) => {
+            let userId = req.params.id;
+            let user = await userModel.findOne({
+                where: {
+                    id: userId
+                },
+                raw: true
+            });
+            if(user){
+                await context.mail.resendConfirmation({
+                    username: user.username,
+                    name: user.name,
+                    confirmation: user.confirmation
+                });
+                return res.json({
+                    message: context.lang.auth.resendConfirmation.success
+                });
+            }
+            else{
+                return res.status(404).end();
+            }
         },
         current: async (req, res, next) => {
+
         },
         get: async (req, res, next) => {
+            let userId = req.params.id;
+            let user = await userModel.findOne({
+                where: {
+                    id: userId
+                },
+                raw: true
+            });
+            if(user){
+                return res.json(user);
+            }
+            else{
+                return res.status(404).end();
+            }
         },
         list: async (req, res, next) => {
+
         },
         setRole: async (req, res, next) => {
+            
         },
         superAdmin: async (req, res, next) => {
             try{
                 let userId = req.params.id;
                 let is_super_admin = req.body.is_super_admin;
                 let user = await userModel.findOne({
-                    id: userId
+                    where: {
+                        id: userId
+                    },
                 });
                 user.isSuperAdmin = is_super_admin;
                 await user.save();

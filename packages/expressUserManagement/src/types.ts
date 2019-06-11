@@ -23,6 +23,12 @@ export interface lang {
             oldPasswordNotMatch: string,
             confirmError: string
         },
+        changeActive: {
+            success: string,
+        },
+        changeSuperAdmin: {
+            success: string
+        },
         general: {
             notFound: string,
         }
@@ -93,19 +99,18 @@ export namespace api{
             _get: (req: any, res: any, next ?: any) => any,
         }
     }
-    export interface adminResetPassword{
+    export interface userManagement{
         (context: context): {
-            _post: (req: any, res: any, next ?: any) => any,
-        }
-    }
-    export interface adminRegister{
-        (context: context): {
-            _post: (req: any, res: any, next ?: any) => any,
-        }
-    }
-    export interface adminChangeEmail{
-        (context: context): {
-            _post: (req: any, res: any, next ?: any) => any,
+            get: (req: any, res: any, next ?: any) => any,
+            current: (req: any, res: any, next ?: any) => any,
+            list: (req: any, res: any, next ?: any) => any,
+            changeEmail: (req: any, res: any, next ?: any) => any,
+            register: (req: any, res: any, next ?: any) => any,
+            resetPassword: (req: any, res: any, next ?: any) => any,
+            active: (req: any, res: any, next ?: any) => any,
+            superAdmin: (req: any, res: any, next ?: any) => any,
+            confirmation: (req: any, res: any, next ?: any) => any,
+            setRole: (req: any, res: any, next ?: any) => any,
         }
     }
 }

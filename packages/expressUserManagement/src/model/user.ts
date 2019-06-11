@@ -4,11 +4,11 @@ const sequelize = require('sequelize');
 let modelService: myTypes.modelType = Object.assign((db) => {
     let user = db.define('user', {
         id: {type: sequelize.STRING(36), primaryKey: true},
-        name: sequelize.STRING(255),
-        username: sequelize.STRING(255),
-        email: sequelize.STRING(100),
-        password: sequelize.STRING(255),
-        confirmation: sequelize.STRING(36),
+        name: {type: sequelize.STRING(255) },
+        username: {type: sequelize.STRING(255) },
+        email: {type: sequelize.STRING(100) },
+        password: {type: sequelize.STRING(255) },
+        confirmation: {type: sequelize.STRING(36) },
         isConfirmed: {type: sequelize.BOOLEAN, field: "is_confirmed"},
         isActive: {type: sequelize.BOOLEAN, field: "is_active"},
         isSuperAdmin: {type: sequelize.BOOLEAN, field: "is_super_admin"},

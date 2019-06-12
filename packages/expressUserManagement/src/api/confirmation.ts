@@ -12,9 +12,9 @@ let confirmation: myType.api.confirmation = (context) => {
                     confirmation: req.params.confirmation
                 }
             });
-            if(user && !user.isConfirmed){
-                user.isConfirmed = true;
-                user.isActive = true;
+            if(user && !user.is_confirmed){
+                user.is_confirmed = true;
+                user.is_active = true;
                 await user.save();
                 return res.json({
                     message: "ok"

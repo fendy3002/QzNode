@@ -1,9 +1,13 @@
 const httpError = require('http-errors');
 const uuid = require('uuid/v4');
+const Sequelize = require('sequelize');
 import registerServiceRaw from '../service/register';
 import changeEmailServiceRaw from '../service/changeEmail';
 import resetPasswordServiceRaw from '../service/resetPassword';
 import userModelRaw from '../model/user';
+import roleAccessModelRaw from '../model/roleAccess';
+import roleModelRaw from '../model/role';
+import userRoleModelRaw from '../model/userRole';
 import * as myType from '../types';
 
 let userManagement: myType.api.userManagement = (context) => {
@@ -11,6 +15,53 @@ let userManagement: myType.api.userManagement = (context) => {
     const changeEmailService = changeEmailServiceRaw(context);
     const resetPasswordService = resetPasswordServiceRaw(context);
     const userModel = userModelRaw(context);
+    const roleAccessModel = roleAccessModelRaw(context);
+    const roleModel = roleModelRaw(context);
+    const userRoleModel = userRoleModelRaw(context);
+
+    const getRoleByUserIdArray = async (userIds: string[]) => {
+        const userRoles = await userRoleModel.findAll({
+            where: {
+                user_id: {
+                    [Sequelize.Op.in]: userIds
+                }
+            },
+            raw: true
+        });
+        const roleAccesses = await roleAccessModel.findAll({
+            where: {
+                role_id: {
+                    [Sequelize.Op.in]: userRoles.map(k => k.role_id)
+                }
+            },
+            raw: true
+        });
+        const roles = await roleModel.findAll({
+            where: {
+                role_id: {
+                    [Sequelize.Op.in]: userRoles.map(k => k.role_id)
+                }
+            },
+            raw: true
+        });
+
+        let result = {};
+        for(let userId of userIds){
+            result[userId] = userRoles.filter(k => k.user_id == userId)
+                .map(userRole => {
+                    return {
+                        ...roles.filter(k => k.id == userRole.role_id)[0],
+                        accesses: roleAccesses.map(roleAccess => {
+                            return {
+                                module: roleAccess.module,
+                                access: roleAccess.access
+                            };
+                        })
+                    };
+                });
+        }
+    };
+
     return {
         active: async (req, res, next) => {
             try{
@@ -21,7 +72,7 @@ let userManagement: myType.api.userManagement = (context) => {
                         id: userId
                     },
                 });
-                user.isActive = is_active;
+                user.is_active = is_active;
                 await user.save();
 
                 return res.json({
@@ -54,7 +105,23 @@ let userManagement: myType.api.userManagement = (context) => {
             }
         },
         current: async (req, res, next) => {
-
+            let userId = (await context.auth(req)).id;
+            if(userId){
+                let user = userModel.findOne({
+                    where: {
+                        id: userId
+                    },
+                    raw: true
+                });
+                let roles = await getRoleByUserIdArray([userId]);
+                return res.json({
+                    ...user,
+                    roles: roles[userId]
+                });
+            }
+            else{
+                return res.status(404).end();
+            }
         },
         get: async (req, res, next) => {
             let userId = req.params.id;
@@ -65,17 +132,23 @@ let userManagement: myType.api.userManagement = (context) => {
                 raw: true
             });
             if(user){
-                return res.json(user);
+                let roles = await getRoleByUserIdArray([userId]);
+                return res.json({
+                    ...user,
+                    roles: roles[userId]
+                });
             }
             else{
                 return res.status(404).end();
             }
         },
         list: async (req, res, next) => {
-
+            // res.set({
+            //     'X-Total-Count': userData.length
+            // });
         },
         setRole: async (req, res, next) => {
-            
+
         },
         superAdmin: async (req, res, next) => {
             try{
@@ -86,7 +159,7 @@ let userManagement: myType.api.userManagement = (context) => {
                         id: userId
                     },
                 });
-                user.isSuperAdmin = is_super_admin;
+                user.is_super_admin = is_super_admin;
                 await user.save();
 
                 return res.json({

@@ -46,12 +46,12 @@ const registerService : myType.service.register = (context) => async (user) => {
         username: username,
         email: email,
         password: hashed,
-        isConfirmed: !context.registerNeedConfirmation,
-        isActive: false,
-        isSuperAdmin: superAdmin,
+        is_confirmed: !context.registerNeedConfirmation,
+        is_active: false,
+        is_super_admin: superAdmin,
         confirmation: confirmation,
-        utcCreated: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
-        utcUpdated: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
+        utc_created: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
+        utc_updated: moment.utc().format("YYYY-MM-DD HH:mm:ss"),
     });
     
     return {

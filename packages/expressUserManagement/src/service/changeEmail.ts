@@ -16,7 +16,7 @@ let changeEmail: myType.service.changeEmail = (context) => async ({userId, email
 
     if(user){
         user.email = email;
-        user.isConfirmed = false;
+        user.is_confirmed = false;
         user.confirmation = uuid();
         await user.save();
         return {

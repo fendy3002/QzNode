@@ -36,10 +36,14 @@ export interface lang {
             notFound: string,
         }
     }
-}
+};
+export interface authPayload{
+    id: string,
+};
 export interface context{
     db: any,
     lang: lang,
+    auth: (req: any) => Promise<authPayload|null>,
     redirect: {
         signedIn: string,
         signedOut: string

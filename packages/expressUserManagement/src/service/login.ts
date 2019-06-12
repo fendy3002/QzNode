@@ -65,7 +65,7 @@ const loginService: myType.service.login = (context, option) => async (user, rem
     };
 
     let userWhere = {
-        isActive: true,
+        is_active: true,
         [sequelize.Op.or]: {
             username: username,
             email: username

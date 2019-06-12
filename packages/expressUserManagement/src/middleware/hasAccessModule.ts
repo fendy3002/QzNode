@@ -48,7 +48,7 @@ let hasAccessModule = function(){
                     }
                 }
             }
-            else if(user.isSuperAdmin){
+            else if(user.is_super_admin){
                 return next();
             }
         }

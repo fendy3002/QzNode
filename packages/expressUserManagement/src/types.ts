@@ -32,6 +32,10 @@ export interface lang {
         resendConfirmation: {
             success: string
         },
+        resetPassword: {
+            success: string,
+            mailFailSend: string
+        },
         setRole: {
             success: string
         },

@@ -79,7 +79,7 @@ let userManagement: myType.api.userManagement = (context) => {
                     message: context.lang.auth.changeActive.success
                 });
             } catch (ex){
-                return next(new httpError(500, ex));
+                return next(new httpError(500, ex.message));
             }
         },
         confirmation: async (req, res, next) => {
@@ -194,7 +194,7 @@ let userManagement: myType.api.userManagement = (context) => {
                     message: context.lang.auth.setRole.success
                 });
             } catch(ex){
-                return next(new httpError(500, ex));
+                return next(new httpError(500, ex.message));
             }
         },
         superAdmin: async (req, res, next) => {
@@ -213,7 +213,7 @@ let userManagement: myType.api.userManagement = (context) => {
                     message: context.lang.auth.changeSuperAdmin.success
                 });
             } catch (ex){
-                return next(new httpError(500, ex));
+                return next(new httpError(500, ex.message));
             }
         },
         changeEmail: async (req, res, next) => {
@@ -233,7 +233,7 @@ let userManagement: myType.api.userManagement = (context) => {
                     message: context.lang.auth.changeEmail.success
                 })
             } catch (ex){
-                return next(new httpError(500, ex));
+                return next(new httpError(500, ex.message));
             }
         },
         register: async (req, res, next) => {
@@ -274,20 +274,31 @@ let userManagement: myType.api.userManagement = (context) => {
             });
         },
         resetPassword: async (req, res, next) => {
+            let password = null;
+
             try{
-                let {password} = await resetPasswordService({
+                password = (await resetPasswordService({
                     email: req.body.email
-                });
+                })).password;
+            } catch (ex){
+                return next(new httpError(500, ex.message, ex));
+            }
+            try{
                 await context.mail.adminResetPassword({
                     password: password
                 });
-                
-                return res.json({
-                    message: "ok"
-                });
             } catch (ex){
-                return next(new httpError(500, ex));
+                return next(
+                    new httpError(
+                        500, 
+                        context.lang.auth.resetPassword.mailFailSend.replace("{err}", ex.message),
+                        ex
+                    )
+                );
             }
+            return res.json({
+                message: context.lang.auth.resetPassword.success.replace("{password}", password)
+            });
         },
     }
 };

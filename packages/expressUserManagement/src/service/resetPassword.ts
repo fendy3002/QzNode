@@ -1,6 +1,7 @@
 let bcrypt = require('bcrypt');
 let sequelize = require('sequelize');
 const uuid = require('uuid/v4');
+const debug = require('debug')("QzNode:expressUserManagement:service:resetPassword");
 import userModelRaw from '../model/user';
 import userRememberTokenModelRaw from '../model/userRememberToken';
 import * as myType from '../types';

@@ -3,6 +3,7 @@ let moment = require('moment');
 let Sequelize = require('sequelize');
 let random = require("random-js")();
 let uuid = require('uuid/v4');
+const debug = require('debug')("QzNode:expressUserManagement:service:validateToken");
 import userModelRaw from '../model/user';
 import userRememberTokenModelRaw from '../model/userRememberToken';
 

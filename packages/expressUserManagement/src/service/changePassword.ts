@@ -1,4 +1,5 @@
 let bcrypt = require('bcrypt');
+const debug = require('debug')("QzNode:expressUserManagement:service:changePassword");
 let sequelize = require('sequelize');
 import userModelRaw from '../model/user';
 import userRememberTokenModelRaw from '../model/userRememberToken';

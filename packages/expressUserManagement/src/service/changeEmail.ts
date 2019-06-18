@@ -1,4 +1,5 @@
 const uuid = require('uuid/v4');
+const debug = require('debug')("QzNode:expressUserManagement:service:changeEmail");
 import userModelRaw from '../model/user';
 import * as myType from '../types';
 

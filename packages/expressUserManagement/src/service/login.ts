@@ -4,6 +4,7 @@ const moment = require('moment');
 const random = require("random-js")();
 const uuid = require('uuid/v4');
 const lo = require('lodash');
+const debug = require('debug')("QzNode:expressUserManagement:service:login");
 import userModelRaw from '../model/user';
 import userRememberTokenModelRaw from '../model/userRememberToken';
 import userRoleModelRaw from '../model/userRole';

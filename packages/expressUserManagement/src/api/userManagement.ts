@@ -1,6 +1,7 @@
 const httpError = require('http-errors');
 const uuid = require('uuid/v4');
 const Sequelize = require('sequelize');
+const debug = require('debug')("QzNode:expressUserManagement:api:userManagement");
 import registerServiceRaw from '../service/register';
 import changeEmailServiceRaw from '../service/changeEmail';
 import resetPasswordServiceRaw from '../service/resetPassword';

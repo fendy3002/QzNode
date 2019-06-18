@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 const sequelize = require('sequelize');
 const moment = require('moment');
+const debug = require('debug')("QzNode:expressUserManagement:service:debug");
 const lo = require('lodash');
 const uuid = require('uuid/v4');
 import userModelRaw from '../model/user';

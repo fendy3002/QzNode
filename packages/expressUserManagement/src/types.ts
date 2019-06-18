@@ -31,7 +31,10 @@ export interface lang {
         },
         resendConfirmation: {
             success: string
-        }
+        },
+        setRole: {
+            success: string
+        },
         general: {
             notFound: string,
         }

@@ -139,10 +139,10 @@ export class listStore implements typeDefinition.listStore {
         return new Promise((resolve, reject) => {
             this.store.loading((done) => {
                 sa.post(config.apiPath.changeEmail.replace(/\{id\}/gi, userid))
-                    .set(config.headers)
                     .send({
                         email: newEmail
                     })
+                    .set(config.headers)
                     .end((err, res) => {
                         done();
                         if(err){
@@ -183,7 +183,6 @@ export class listStore implements typeDefinition.listStore {
                         page: page,
                         limit: limit
                     })
-                    .set(config.headers)
                     .end((err, res) => {
                         done();
                         if(err){

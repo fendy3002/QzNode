@@ -143,12 +143,59 @@ let userManagement: myType.api.userManagement = (context) => {
             }
         },
         list: async (req, res, next) => {
-            // res.set({
-            //     'X-Total-Count': userData.length
-            // });
+            let page = req.query.page || 1;
+            let limit = req.query.limit || 20;
+            let userResult = await userModel.findAndCountAll({
+                limit: limit,
+                offset: (page - 1) * limit,
+                raw: true
+            });
+            let users = userResult.rows;
+            let userCount = userResult.count;
+            let roles = await getRoleByUserIdArray(users.map(k => k.id));
+
+            res.set({
+                'X-Total-Count': userCount.length
+            });
+            return res.json(users.map(k => {
+                return {
+                    ...k,
+                    roles: roles[k.id]
+                };
+            }));
         },
         setRole: async (req, res, next) => {
-
+            let userId = req.params.id;
+            let roleIdList = req.body.roles.map(k => k.id);
+            let userRoles = roleIdList.map(k => {
+                return {
+                    role_id: k,
+                    userid: userId
+                };
+            })
+            try{
+                await new Promise((resolve) => {
+                    context.db.transaction(t => {
+                        userRoleModel.destroy({
+                            where: {
+                                id: {
+                                    $in: roleIdList
+                                }
+                            },
+                            transaction: t
+                        }).then(() => {
+                            userRoleModel.bulkCreate(userRoles, {
+                                transaction: t
+                            })
+                        });
+                    }).then(() => {resolve()});
+                });
+                return res.json({
+                    message: context.lang.auth.setRole.success
+                });
+            } catch(ex){
+                return next(new httpError(500, ex));
+            }
         },
         superAdmin: async (req, res, next) => {
             try{

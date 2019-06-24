@@ -45,6 +45,7 @@ export class createStore implements typeDefinition.createStore {
             return new Promise((resolve, reject) => {
                 this.store.loading((done) => {
                     sa.post(config.apiPath.register)
+                    .set(config.headers)
                     .send(this.user)
                     .end((err, res) => {
                         done();

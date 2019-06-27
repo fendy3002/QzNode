@@ -3,6 +3,13 @@
   "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "check-types": "tsc --noEmit",
     "compile": "webpack --mode=production",

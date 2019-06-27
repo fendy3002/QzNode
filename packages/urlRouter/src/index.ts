@@ -131,6 +131,9 @@ const urlRouter = (init: initPayload) => {
         let redirectTo = `${loc.pathname}`;
         return innerSetPath(redirectTo, queryParam, hash );
     };
+    const generatePath = (path) => {
+        return ("/" + useOption.root + "/" + path).replace(/\/\//gi, "/");
+    };
 
     return {
         setPath: setPath,
@@ -140,6 +143,7 @@ const urlRouter = (init: initPayload) => {
         changePath: changePath,
         changeQueryParam: changeQueryParam,
         changeHash: changeHash,
+        generatePath: generatePath,
 
         historyUnlistener: historyUnlistener
     }

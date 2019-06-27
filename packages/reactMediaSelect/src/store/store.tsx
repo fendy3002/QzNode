@@ -10,6 +10,7 @@ import * as types from '../types';
 export class store {
     constructor(context: types.context) {
         this.context = context;
+        this.uploadOverwrite = context.config.defaultOverwrite;
         this.newFolderStore = new newFolderStore(this);
         [
             'loading',

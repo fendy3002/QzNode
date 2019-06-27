@@ -43,7 +43,8 @@ export const reactMediaSelect = function(elem, option) {
             deleteFile: true,
             deleteFolder: true,
             deleteEmptyFolder: true
-        }
+        },
+        defaultOverwrite: false
     }, option);
     const context: types.context = {
         config: useOption,

@@ -36,6 +36,7 @@ export interface context {
             deleteFile: boolean,
             deleteFolder: boolean,
             deleteEmptyFolder: boolean
-        }
+        },
+        defaultOverwrite: boolean
     }
 };

@@ -51,6 +51,10 @@ export interface context{
     db: any,
     lang: lang,
     auth: (req: any) => Promise<authPayload|null>,
+    path: {
+        userApi: string,
+        userConfirmApi: string
+    },
     redirect: {
         signedIn: string,
         signedOut: string
@@ -91,7 +95,57 @@ export interface context{
     },
     appKey: string,
     rememberTokenName: string,
-    registerNeedConfirmation: string
+    registerNeedConfirmation: boolean
+};
+export interface initContext{
+    db: any,
+    lang ?: lang,
+    auth: (req: any) => Promise<authPayload|null>,
+    path ?: {
+        userApi: string,
+        userConfirmApi: string
+    },
+    redirect ?: {
+        signedIn: string,
+        signedOut: string
+    },
+    render ?: {
+        login: string,
+        changePassword: string
+    },
+    mail: {
+        adminResetPassword: (payload: {
+            password: string
+        }) => Promise<any>,
+        resetPasswordRequest: (payload: {
+            email: string,
+            username: string
+        }) => Promise<any>,
+        adminRegister: (payload: {
+            username: string,
+            password: string,
+            confirmation: string,
+            name: string
+        }) => Promise<any>,
+        userRegister: (payload: {
+            username: string,
+            password: string,
+            confirmation: string,
+            name: string
+        }) => Promise<any>,
+        changeEmail: (payload: {
+            username: string,
+            confirmation: string
+        }) => Promise<any>,
+        resendConfirmation: (payload: {
+            username: string,
+            name: string,
+            confirmation: string
+        }) => Promise<any>
+    },
+    appKey: string,
+    rememberTokenName ?: string,
+    registerNeedConfirmation ?: boolean
 };
 export namespace controller{
     export interface login{

@@ -3,7 +3,7 @@ import validateToken from '../service/validateToken';
 import * as myType from '../types';
 
 const signedIn: myType.middleware.signedIn = (context) => ({mustSignedIn}) => (req, res, next) => {
-    let { rememberTokenName, appKey, db } = context;
+    let { rememberTokenName, appPrivateKey, db } = context;
     if(mustSignedIn){
         return (async () => {
             if(req.session && req.session.user && req.session.user.id){
@@ -20,7 +20,7 @@ const signedIn: myType.middleware.signedIn = (context) => ({mustSignedIn}) => (r
                     else{
                         let {user, selector, publicKey} = validateResult;
                         req.session.user = user;
-                        req.session.jwtToken = jwt.sign({ id: req.session.id }, appKey);
+                        req.session.jwtToken = jwt.sign({ id: req.session.id }, appPrivateKey, { algorithm: 'RS256'});
                         req.session.save();
                         res.cookie(rememberTokenName + "_selector", selector, {
                             httpOnly: true,

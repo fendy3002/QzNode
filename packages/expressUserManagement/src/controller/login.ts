@@ -27,7 +27,7 @@ const login: myType.controller.login = (context) => {
                 }, rememberMe);
 
                 req.session.user = user;
-                req.session.jwtToken = jwt.sign({ id: req.session.id }, context.appKey);
+                req.session.jwtToken = jwt.sign({ id: req.session.id }, context.appPrivateKey, { algorithm: 'RS256'});
                 req.session.listenerUuid = listenerUuid;
                 await req.session.save();
         

@@ -7,7 +7,7 @@ let jwtVerify: myType.middleware.jwtVerify = (option) => (req, res, next) => {
     if(authorizationHeader && authorizationHeader.substring(0, 7) == "Bearer "){
         let authorizationToken = authorizationHeader.substring(7);
 
-        jwt.verify(authorizationToken, option.appKey, (err, decodedToken) => {
+        jwt.verify(authorizationToken, option.appPublicKey, { algorithms: ['RS256'] }, (err, decodedToken) => {
             if (err || !decodedToken)
             {
                 return next(httpError(401, "UNAUTHORIZED"))

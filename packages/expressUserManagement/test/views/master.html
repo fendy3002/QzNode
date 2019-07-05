@@ -1,0 +1,57 @@
+<!doctype html>
+<html class="no-js" lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        {% block headerBefore %}
+        {% endblock %}
+        <title>{{ title | default() }}</title>
+        <meta name="description" content="{{ appDescription | default() }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <link rel="stylesheet" href="/css/ModularAdmin/vendor.css">
+        <!-- Theme initialization -->
+        <link rel="stylesheet" id="theme-style" href="/css/ModularAdmin/app-blue.css">
+        <link rel="stylesheet" href="/css/main.css">
+
+        {% block headerAfter %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="main-wrapper">
+            <div class="app" id="app">
+                <header class="header">
+                    <div class="header-block header-block-collapse d-lg-none d-xl-none">
+                        <button class="collapse-btn" id="sidebar-collapse-btn">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                    <div class="header-block header-block-search">
+                        
+                    </div>
+                    <div class="header-block header-block-buttons">
+                        
+                    </div>
+                    <div class="header-block header-block-nav">
+                        {% include "template/navProfile.html" %}
+                    </div>
+                </header>
+                
+                {% include "template/sideNav.html" %}
+
+                <article class="content">
+                    {% block content %}
+                    {% endblock %}
+                </article>
+            </div>
+        </div>
+
+        <script src="/js/ModularAdmin/vendor.js"></script>
+        <script src="/js/ModularAdmin/app.js"></script>
+        <script src="/js/bin/main.js"></script>
+
+        {% block script %}
+        {% endblock %}
+    </body>
+</html>

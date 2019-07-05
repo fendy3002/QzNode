@@ -93,7 +93,8 @@ export interface context{
             confirmation: string
         }) => Promise<any>
     },
-    appKey: string,
+    appPublicKey: string,
+    appPrivateKey: string,
     rememberTokenName: string,
     registerNeedConfirmation: boolean
 };
@@ -143,7 +144,8 @@ export interface initContext{
             confirmation: string
         }) => Promise<any>
     },
-    appKey: string,
+    appPublicKey: string,
+    appPrivateKey: string,
     rememberTokenName ?: string,
     registerNeedConfirmation ?: boolean
 };
@@ -230,7 +232,7 @@ export namespace middleware{
     export interface jwtVerify{
         (option: {
             sessionStore: any,
-            appKey: string
+            appPublicKey: string,
         }): (req: any, res: any, next ?: any) => any
     }
     export interface signedIn{

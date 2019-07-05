@@ -2,12 +2,14 @@ process.env.DEBUG = "QzNode:*";
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs = require('fs');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
+
 
 let context = {
     db: null,
@@ -32,9 +34,9 @@ let context = {
             
         }
     },
-    appKey: "",
-    rememberTokenName: "",
-    registerNeedConfirmation: ""
+    appPublicKey: fs.readFileSync(__dirname + "/../testHelper/public.key"),
+    appPrivateKey: fs.readFileSync(__dirname + "/../testHelper/private.key"),
+    registerNeedConfirmation: true
 };
 
 export default app;

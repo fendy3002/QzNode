@@ -50,7 +50,7 @@ export interface authPayload{
 export interface context{
     db: any,
     lang: lang,
-    auth: (req: any) => Promise<authPayload|null>,
+    auth: (req: any, res: any) => Promise<authPayload|null>,
     path: {
         userApi: string,
         userConfirmApi: string
@@ -101,7 +101,7 @@ export interface context{
 export interface initContext{
     db: any,
     lang ?: lang,
-    auth: (req: any) => Promise<authPayload|null>,
+    auth: (req: any, res: any) => Promise<authPayload|null>,
     path ?: {
         userApi: string,
         userConfirmApi: string

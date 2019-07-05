@@ -106,7 +106,7 @@ let userManagement: myType.api.userManagement = (context) => {
             }
         },
         current: async (req, res, next) => {
-            let userId = (await context.auth(req)).id;
+            let userId = (await context.auth(req, res)).id;
             if(userId){
                 let user = userModel.findOne({
                     where: {

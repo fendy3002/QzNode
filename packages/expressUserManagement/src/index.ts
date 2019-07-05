@@ -6,7 +6,7 @@ let combine = (...path: string[]) => {
     return path.join("/").replace(/\/\//gi, "/");
 };
 let index = {
-    init: async (initContext: myType.initContext, app) => {
+    init: async (initContext: myType.initContext, app: any) => {
         const context: myType.context = {
             rememberTokenName: "usermanagement_remember",
             registerNeedConfirmation: true,

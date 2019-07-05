@@ -1,0 +1,30 @@
+version: '2'
+services:
+  app:
+    image: node:lts-jessie
+    links:
+      - db
+      - redis
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./app:/app
+    ports:
+      - ${DOCKER_APP_PORT}:3000
+    working_dir: /app
+    command: ['npm', 'run', 'dev']
+  redis:
+    image: redis:latest
+  db:
+    image: mariadb:10.2
+    volumes:
+      - mydb:/var/lib/mysql
+      - ./db/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - ${DOCKER_MYSQL_PORT}:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+volumes:
+  mydb:

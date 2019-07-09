@@ -1,7 +1,7 @@
 version: '2'
 services:
   app:
-    image: node:lts-jessie
+    image: node:8.12
     links:
       - db
       - redis
@@ -9,11 +9,11 @@ services:
       - db
       - redis
     volumes:
-      - ./app:/app
+      - ..:/app
     ports:
       - ${DOCKER_APP_PORT}:3000
     working_dir: /app
-    command: ['npm', 'run', 'dev']
+    command: ['npm', 'run', 'testServer']
   redis:
     image: redis:latest
   db:

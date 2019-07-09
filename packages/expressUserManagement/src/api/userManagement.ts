@@ -12,13 +12,13 @@ import userRoleModelRaw from '../model/userRole';
 import * as myType from '../types';
 
 let userManagement: myType.api.userManagement = (context) => {
-    const registerService = registerServiceRaw(context);
-    const changeEmailService = changeEmailServiceRaw(context);
-    const resetPasswordService = resetPasswordServiceRaw(context);
-    const userModel = userModelRaw(context);
-    const roleAccessModel = roleAccessModelRaw(context);
-    const roleModel = roleModelRaw(context);
-    const userRoleModel = userRoleModelRaw(context);
+    const registerService = registerServiceRaw(context.db);
+    const changeEmailService = changeEmailServiceRaw(context.db);
+    const resetPasswordService = resetPasswordServiceRaw(context.db);
+    const userModel = userModelRaw(context.db);
+    const roleAccessModel = roleAccessModelRaw(context.db);
+    const roleModel = roleModelRaw(context.db);
+    const userRoleModel = userRoleModelRaw(context.db);
 
     const getRoleByUserIdArray = async (userIds: string[]) => {
         const userRoles = await userRoleModel.findAll({

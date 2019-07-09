@@ -2,7 +2,7 @@ import changePasswordServiceRaw from '../service/changePassword';
 import * as myType from '../types';
 
 let changePassword: myType.controller.changePassword = (context) => {
-    let changePasswordService = changePasswordServiceRaw(context);
+    let changePasswordService = changePasswordServiceRaw(context.db);
     return {
         _get: (req, res, next) => {
             res.render(context.render.changePassword, {});

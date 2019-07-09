@@ -11,8 +11,8 @@ let index = {
             rememberTokenName: "usermanagement_remember",
             registerNeedConfirmation: true,
             render: {
-                login: "auth.login",
-                changePassword: "auth.changePassword",
+                login: "auth/login.html",
+                changePassword: "auth/changePassword.html",
             },
             redirect: {
                 signedIn: "/",

@@ -12,7 +12,7 @@
     "compile": "tsc",
     "compileWatch": "tsc --watch",
     "prepublish": "npm run compile",
-    "testServer": "node test/app.js"
+    "testServer": "ts-node test/app.ts"
   },
   "author": "",
   "license": "ISC",
@@ -24,10 +24,13 @@
     "debug": "^4.1.1",
     "express": "^4.16.4",
     "lodash": "^4.17.11",
+    "ts-node": "^8.3.0",
     "typescript": "^3.3.4000"
   },
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "http-errors": "^1.7.2",
+    "mysql2": "^1.6.5",
     "sequelize": "^5.9.2"
   }
 }

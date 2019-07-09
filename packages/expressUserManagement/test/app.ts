@@ -61,7 +61,7 @@ let setInitialized = () => {
             handler();
         }
     }
-}
+};
 expressUserManagement.init(context, app).then(() => {
     initialized = true;
     setInitialized();

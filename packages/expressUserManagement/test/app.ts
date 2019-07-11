@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const Sequelize = require('sequelize');
 const path = require('path');
+const nunjucks = require('nunjucks');
 import expressUserManagement from "../src/index";
 
 const app = express();
@@ -67,8 +68,16 @@ expressUserManagement.init(context, app).then(() => {
     setInitialized();
 });
 
+app.get('/auth/login', (req, res, next) => {
+    res.render("auth/login.html");
+});
+nunjucks.configure('test/views', {
+    autoescape: true,
+    express: app
+});
+
 export default {
-    app,
+    app: app,
     initialized: async () => {
         if(initialized){
             return initialized;

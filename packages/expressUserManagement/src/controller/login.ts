@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const debug = require('debug')("QzNode:expressUserManagement:controller:login");
 import loginService from '../service/login';
 import * as myType from '../types';
 
@@ -43,6 +44,7 @@ const login: myType.controller.login = (context) => {
                 }
                 return res.redirect(context.redirect.signedIn);
             } catch(ex) {
+                debug(ex);
                 return res.render(context.render.login, {err: ex.message, username: req.body.username});
             }
         }

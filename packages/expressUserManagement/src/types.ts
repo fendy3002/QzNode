@@ -52,6 +52,7 @@ export interface context{
     lang: lang,
     auth: (req: any, res: any) => Promise<authPayload|null>,
     path: {
+        auth: string,
         userApi: string,
         userConfirmApi: string
     },
@@ -103,6 +104,7 @@ export interface initContext{
     lang ?: lang,
     auth: (req: any, res: any) => Promise<authPayload|null>,
     path ?: {
+        auth: string,
         userApi: string,
         userConfirmApi: string
     },

@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const sequelize = require('sequelize');
 const moment = require('moment');
-const random = require("random-js")();
+import {Random} from "random-js";
 const uuid = require('uuid/v4');
 const lo = require('lodash');
 const debug = require('debug')("QzNode:expressUserManagement:service:login");
@@ -12,6 +12,7 @@ import roleAccessModelRaw from '../model/roleAccess';
 
 import * as crypto from "crypto";
 import * as myType from '../types';
+const random = new Random();
 
 const loginService: myType.service.login = (context, option) => async (user, rememberMe = false) => {
     let {username, password} = user;

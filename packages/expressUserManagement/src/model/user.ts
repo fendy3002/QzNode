@@ -1,4 +1,6 @@
 import * as myTypes from '../types';
+import userRememberToken from './userRememberToken';
+import userRole from './userRole';
 const sequelize = require('sequelize');
 
 let modelService: myTypes.modelType = Object.assign((db) => {
@@ -12,6 +14,8 @@ let modelService: myTypes.modelType = Object.assign((db) => {
         is_confirmed: {type: sequelize.BOOLEAN, field: "is_confirmed"},
         is_active: {type: sequelize.BOOLEAN, field: "is_active"},
         is_super_admin: {type: sequelize.BOOLEAN, field: "is_super_admin"},
+        created_by: {type: sequelize.STRING, field: "created_by"},
+        updated_by: {type: sequelize.STRING, field: "updated_by"},
         utc_created: {type: sequelize.DATE, field: "utc_created"},
         utc_updated: {type: sequelize.DATE, field: "utc_updated"},
     }, {
@@ -24,14 +28,14 @@ let modelService: myTypes.modelType = Object.assign((db) => {
     // used when defining association
     associate: (db, model) => {
         model.hasMany(
-            require('./userRememberToken')(db), 
+            userRememberToken(db), 
             { 
                 as: 'rememberTokens',
                 foreignKey: 'userid',
                 sourceKey: "id"
             });
         model.hasMany(
-            require('./userAccess')(db), 
+            userRole(db), 
             { 
                 as: 'accessModules',
                 foreignKey: 'userid',

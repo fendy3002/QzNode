@@ -1,5 +1,5 @@
 import * as myType from '../types';
-const lang = function(context: myType.context): myType.lang {
+const lang = function(context: myType.initContext): myType.lang {
     return {
         auth: {
             login: {

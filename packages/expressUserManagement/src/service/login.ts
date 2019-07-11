@@ -73,7 +73,7 @@ const loginService: myType.service.login = (context, option) => async (user, rem
             email: username
         }
     };
-    let existingUser = await userModel.findAll({ where: userWhere });
+    let existingUser = await userModel.findAll({ where: userWhere, raw: true });
     if(existingUser && existingUser.length > 0){
         let loginUser = existingUser[0];
         let compareSame = await new Promise((resolve, reject) => {

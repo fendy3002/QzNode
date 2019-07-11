@@ -9,6 +9,7 @@ const fs = require('fs');
 const Sequelize = require('sequelize');
 const path = require('path');
 const nunjucks = require('nunjucks');
+const session = require('express-session');
 import * as expressUserManagement from "../src/index";
 
 const app = express();
@@ -16,6 +17,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
+app.use(session({
+    secret: 'myCustomSecret',
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}))
 app.use(express.static(path.resolve(__dirname, "public")));
 
 let db = new Sequelize(process.env.MYSQL_DATABASE, "root", process.env.MYSQL_ROOT_PASSWORD, {

@@ -108,14 +108,27 @@ expressUserManagement.init(context, app).then(async () => {
     setInitialized();
 });
 
-app.get('/auth/login', (req, res, next) => {
-    res.render("auth/login.html");
+app.use((req, res, next) => {
+    res.locals._urlIn = () => false;
+    res.locals._hasAccess = () => true;
+    res.locals._gravatarHash = "";
+    res.locals._req = req;
+    res.locals.default = () => "";
+    next();
 });
-nunjucks.configure('test/views', {
+app.get('/', (req, res, next) => {
+    return res.render("home.html");
+});
+app.get('/auth/login', (req, res, next) => {
+    return res.render("auth/login.html");
+});
+let nunjucksEnv = nunjucks.configure('test/views', {
     autoescape: true,
     express: app
 });
-
+nunjucksEnv.addFilter("bool", (val, ifTrue = "yes", ifFalse = "no") => {
+    return val === true ? ifTrue : ifFalse;
+});
 
 
 export default {

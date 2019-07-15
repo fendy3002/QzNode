@@ -1,0 +1,143 @@
+{% extends "template/master.html" %}
+
+{% block headerAfter%}
+{% endblock %}
+{% block content %}
+    <div class="title-block">
+        <h3 class="title"> {{ appName }} Dashboard </h3>
+    </div>
+    <section class="section">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header bordered">
+                        <div class="header-block">
+                            <h3># of transaction</h3>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <canvas id="salesOrderChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-stats">
+                <div class="card sameheight-item stats">
+                    <div class="card-block">
+                        <div class="row row-sm stats-container">
+                            <div class="col-12 col-sm-6 stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-dollar"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value" data-role="summary-value"> 0 </div>
+                                    <div class="name"> Transaction value (Today) </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 stat-col">
+                                <div class="stat-icon">
+                                    <i class="fa fa-dollar"></i>
+                                </div>
+                                <div class="stat">
+                                    <div class="value" data-role="summary-value-week"> 0 </div>
+                                    <div class="name"> Transaction value (1 week) </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+{% block script %}
+    <script src="/js/chartjs/chartjs.bundle.min.js"></script>
+    <script src="/js/chartjs/chartjs-plugin-labels.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        //let socket = io();
+        let colors = {
+            red: "rgb(255, 99, 132)",
+            blue: "rgb(54, 162, 235)"
+        };
+
+        let salesOrderLineConfig = {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '# of transaction',
+                    backgroundColor: colors.red,
+                    borderColor: colors.red,
+                    data: [],
+                    fill: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: ''
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Number'
+                        },
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        };
+        
+        let salesOrderChartCtx = document.getElementById('salesOrderChart').getContext('2d');
+        window.salesOrderChart = new Chart(salesOrderChartCtx, salesOrderLineConfig);
+
+        let formatValue = function(value) {
+            let parts = (value || 0).toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            return "Rp. " + parts.join(".");
+        };
+        let dashboardSocket = io('/dashboard', { forceNew: true });
+        dashboardSocket.on('data', function(data) {
+            let salesOrderData = data.data.salesOrder;
+            let summaryData = data.data.summary;
+            let metaData = data.data.meta;
+
+            let labels = metaData.dates;
+
+            let salesOrderChartData = [];
+            salesOrderData.forEach(function(salesOrder){
+                salesOrderChartData.push(salesOrder.num);
+            });
+
+            salesOrderLineConfig.data.datasets[0].data = salesOrderChartData;
+            salesOrderLineConfig.data.labels = labels;
+            window.salesOrderChart.update();
+
+            $('[data-role="summary-value"]').html(formatValue(summaryData.today_value));
+            $('[data-role="summary-value-week"]').html(formatValue(summaryData.last_week_value));
+        });
+    </script>
+{% endblock %}

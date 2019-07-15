@@ -1,0 +1,127 @@
+<aside class="sidebar">
+    <div class="sidebar-container">
+        <div class="sidebar-header">
+            <div class="brand">
+                <div class="logo logo-app"></div> 
+                {{ appName | default() }} 
+            </div>
+        </div>
+        <nav class="menu">
+            <ul class="sidebar-menu metismenu" id="sidebar-menu">
+                <li class="{{ _urlIn('/') | bool('active', '') }}">
+                    <a href="/">
+                        <i class="fa fa-home"></i> Home </a>
+                </li>
+                <li class="{{ _urlIn(['products', 'items', 'customers', 'sellers']) | bool('open active', '') }}">
+                    <a href="">
+                        <i class="fa fa-th-large"></i> Master
+                        <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav collapse" aria-expanded="true">
+                        {% if _hasAccess(['products']) %}
+                            <li class="{{ _urlIn('products') | bool('active', '') }}">
+                                <a href="/products"> Products </a>
+                            </li>
+                        {% endif %}
+                        {% if _hasAccess(['items']) %}
+                            <li class="{{ _urlIn('items') | bool('active', '') }}">
+                                <a href="/items"> Items </a>
+                            </li>
+                        {% endif %}
+                        {% if _hasAccess(['customers']) %}
+                            <li class="{{ _urlIn('customers') | bool('active', '') }}">
+                                <a href="/customers"> Customers </a>
+                            </li>
+                        {% endif %}
+                        {% if _hasAccess(['customers']) %}
+                            <li class="{{ _urlIn('sellers') | bool('active', '') }}">
+                                <a href="/sellers"> Sellers </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% if _hasAccess(['userAccessModule']) %}
+                <li class="{{ _urlIn(['userManagement', 'userAccessModule']) | bool('open active', '') }}">
+                    <a href="">
+                        <i class="fa fa-th-large"></i> Administrator
+                        <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav collapse" aria-expanded="true">
+                        {% if _user.isSuperAdmin %}
+                            <li class="{{ _urlIn('userManagement') | bool('active', '') }}">
+                                <a href="/userManagement"> User Management </a>
+                            </li>
+                        {% endif %}
+                        {% if _hasAccess(['userAccessModule']) %}
+                            <li class="{{ _urlIn('userAccessModule') | bool('active', '') }}">
+                                <a href="/userAccessModule"> User Access </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% if _hasAccess(['salesOrder']) %}
+                <li class="{{ _urlIn(['salesOrder']) | bool('open active', '') }}">
+                    <a href="">
+                        <i class="fa fa-list"></i> Sales Order
+                        <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav collapse" aria-expanded="true">
+                        {% if _hasAccess(['salesOrder.view']) %}
+                            <li class="{{ _urlIn('salesOrder', 'list') | bool('active', '') }}">
+                                <a href="/salesOrder/list"> List </a>
+                            </li>
+                        {% endif %}
+
+                        {% if _hasAccess(['salesOrder.create']) %}
+                            <li class="{{ _urlIn('salesOrder', 'create') | bool('active', '') }}">
+                                <a href="/salesOrder/create"> Create </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% if _hasAccess(['payment']) %}
+                <li class="{{ _urlIn('payments') | bool('active', '') }}">
+                    <a href="/payments">
+                        <i class="fa fa-money"></i> Payment
+                    </a>
+                </li>
+                {% endif %}
+                {% if _hasAccess(['report']) %}
+                <li class="{{ _urlIn(['report']) | bool('open active', '') }}">
+                    <a href="">
+                        <i class="fa fa-check-square-o"></i> Report
+                        <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav collapse" aria-expanded="true">
+                        {% if _hasAccess(['report.itemExpense']) %}
+                            <li class="{{ _urlIn('report', 'item-expense') | bool('active', '') }}">
+                                <a href="/report/item-expense"> Item Expense </a>
+                            </li>
+                        {% endif %}
+                        {% if _hasAccess(['report.salesOrder']) %}
+                            <li class="{{ _urlIn('report', 'sales-order') | bool('active', '') }}">
+                                <a href="/report/sales-order"> Sales Order </a>
+                            </li>
+                        {% endif %}
+                        {% if _hasAccess(['report.paymentMutation']) %}
+                        <li class="{{ _urlIn('report', 'payment-mutation') | bool('active', '') }}">
+                            <a href="/report/payment-mutation">Payment Mutation </a>
+                        </li>
+                        {%endif%}
+                        {% if _hasAccess(['report.paymentSummary']) %}
+                        <li class="{{ _urlIn('report', 'payment-summary') | bool('active', '') }}">
+                            <a href="/report/payment-summary">Payment Summary</a>
+                        </li>
+                        {%endif%}
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</aside>
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<div class="sidebar-mobile-menu-handle" id="sidebar-mobile-menu-handle"></div>
+<div class="mobile-menu-handle"></div>

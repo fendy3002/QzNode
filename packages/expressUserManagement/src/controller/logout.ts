@@ -7,13 +7,17 @@ let logout : myType.controller.logout = (context) => {
         _get: async (req, res, next) => {
             const listenerUuid = req.session.listenerUuid;
     
-            req.session.destroy();
             let selector = req.cookies[context.rememberTokenName + "_selector"];
-            await userRememberTokenModel.destroy({
-                where: {
-                    selector: selector
-                }
-            });
+            // without selector means not remember me session
+            if(selector){
+                await userRememberTokenModel.destroy({
+                    where: {
+                        selector: selector
+                    }
+                });
+            }
+
+            await req.session.destroy();
             res.clearCookie(context.rememberTokenName + "_selector");
             res.clearCookie(context.rememberTokenName + "_key");
             let redirectTo = context.redirect.signedOut;

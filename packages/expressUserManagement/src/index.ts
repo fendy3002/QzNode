@@ -6,7 +6,7 @@ import apiConfirmationRaw from './api/confirmation';
 import loginController from './controller/login';
 import logoutController from './controller/logout';
 import changePasswordController from './controller/changePassword';
-import middleware from './middleware/index';
+import {default as middleware} from './middleware/index';
 
 let combine = (...path: string[]) => {
     return path.join("/").replace(/\/\//gi, "/");
@@ -79,4 +79,4 @@ export let models = {
     user,
     userRememberToken,
     userRole,
-}
+};

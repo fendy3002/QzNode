@@ -6,6 +6,7 @@ import apiConfirmationRaw from './api/confirmation';
 import loginController from './controller/login';
 import logoutController from './controller/logout';
 import changePasswordController from './controller/changePassword';
+import middleware from './middleware/index';
 
 let combine = (...path: string[]) => {
     return path.join("/").replace(/\/\//gi, "/");
@@ -33,11 +34,26 @@ export let init = async (initContext: myType.initContext, app: any) => {
     let apiUserManagement = await apiUserManagementRaw(context);
     let apiConfirmation = await apiConfirmationRaw(context);
 
-    app.get(combine(context.path.auth, "/login"), loginController(context)._get);
-    app.post(combine(context.path.auth, "/login"), loginController(context)._post);
-    app.get(combine(context.path.auth, "/logout"), logoutController(context)._get);
-    app.get(combine(context.path.auth, "/change-password"), changePasswordController(context)._get);
-    app.post(combine(context.path.auth, "/change-password"), changePasswordController(context)._post);
+    app.get(
+        combine(context.path.auth, "/login"), 
+        middleware.signedIn(context)({mustSignedIn: false}),
+        loginController(context)._get);
+    app.post(
+        combine(context.path.auth, "/login"), 
+        middleware.signedIn(context)({mustSignedIn: false}),
+        loginController(context)._post);
+    app.get(
+        combine(context.path.auth, "/logout"), 
+        middleware.signedIn(context)({mustSignedIn: true}),
+        logoutController(context)._get);
+    app.get(
+        combine(context.path.auth, "/change-password"), 
+        middleware.signedIn(context)({mustSignedIn: true}),
+        changePasswordController(context)._get);
+    app.post(
+        combine(context.path.auth, "/change-password"), 
+        middleware.signedIn(context)({mustSignedIn: true}),
+        changePasswordController(context)._post);
     
     app.get(context.path.userApi, apiUserManagement.list);
     app.get(combine(context.path.userApi , '/current'), apiUserManagement.current);

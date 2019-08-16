@@ -10,6 +10,7 @@ const Sequelize = require('sequelize');
 const path = require('path');
 const nunjucks = require('nunjucks');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 import * as expressUserManagement from "../src/index";
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
+app.use(cookieParser());
 app.use(session({
     secret: 'myCustomSecret',
     resave: true,

@@ -15,7 +15,7 @@ const signedIn: myType.middleware.signedIn = (context) => ({mustSignedIn}) => (r
                     let publicKey = req.cookies[rememberTokenName + "_key"];
                     const validateResult = await validateToken({db})({selector, publicKey});
                     if(!validateResult){
-                        return res.redirect(context.redirect.signedIn);
+                        return res.redirect(context.redirect.signedOut);
                     }
                     else{
                         let {user, selector, publicKey} = validateResult;
@@ -34,7 +34,7 @@ const signedIn: myType.middleware.signedIn = (context) => ({mustSignedIn}) => (r
                     }
                 }
                 else{
-                    return res.redirect(context.redirect.signedIn);
+                    return res.redirect(context.redirect.signedOut);
                 }
             }
         })();
@@ -43,7 +43,7 @@ const signedIn: myType.middleware.signedIn = (context) => ({mustSignedIn}) => (r
             return next();
         }
         else{
-            return res.redirect(context.redirect.signedOut);
+            return res.redirect(context.redirect.signedIn);
         }
     }
 };

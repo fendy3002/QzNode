@@ -75,7 +75,7 @@ let setInitialized = () => {
         }
     }
 };
-expressUserManagement.init(context, app).then(async () => {
+expressUserManagement.init(context, app).then(async (context) => {
     let userModel = expressUserManagement.models.user(context.db);
     let userRoleModel = expressUserManagement.models.userRole(context.db);
     let roleAccessModel = expressUserManagement.models.roleAccess(context.db);
@@ -106,6 +106,15 @@ expressUserManagement.init(context, app).then(async () => {
         utc_updated: '2019-01-01 00:00:00',
     });
 
+    app.get(
+        '/', 
+        expressUserManagement.middleware.signedIn(context)({
+            mustSignedIn: true
+        }), 
+        (req, res, next) => {
+            return res.render("home.html");
+        });
+
     initialized = true;
     setInitialized();
 });
@@ -118,12 +127,7 @@ app.use((req, res, next) => {
     res.locals.default = () => "";
     next();
 });
-app.get('/', (req, res, next) => {
-    return res.render("home.html");
-});
-app.get('/auth/login', (req, res, next) => {
-    return res.render("auth/login.html");
-});
+
 let nunjucksEnv = nunjucks.configure('test/views', {
     autoescape: true,
     express: app

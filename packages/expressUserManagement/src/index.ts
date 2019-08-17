@@ -6,7 +6,7 @@ import apiConfirmationRaw from './api/confirmation';
 import loginController from './controller/login';
 import logoutController from './controller/logout';
 import changePasswordController from './controller/changePassword';
-import {default as middleware} from './middleware/index';
+import middleware from './middleware/index';
 
 let combine = (...path: string[]) => {
     return path.join("/").replace(/\/\//gi, "/");
@@ -66,6 +66,8 @@ export let init = async (initContext: myType.initContext, app: any) => {
     app.post(combine(context.path.userApi, '/:id/confirmation'), apiUserManagement.confirmation);
     app.post(combine(context.path.userApi, '/:id/role'), apiUserManagement.setRole);
     app.post(context.path.userConfirmApi, apiConfirmation._get);
+
+    return context;
 };
 
 import role from './model/role';
@@ -80,3 +82,4 @@ export let models = {
     userRememberToken,
     userRole,
 };
+export {default as middleware} from './middleware';

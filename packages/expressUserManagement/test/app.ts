@@ -23,7 +23,10 @@ app.use(session({
     secret: 'myCustomSecret',
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: {
+        secure: false,
+        maxAge  : 60 * 30 * 1000
+    }
 }))
 app.use(express.static(path.resolve(__dirname, "public")));
 

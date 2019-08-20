@@ -1,0 +1,15 @@
+{% extends "template/master.html" %}
+{% set __success = _req.flash("success") %}
+{% set __error = _req.flash("error") %}
+
+{% block content %}
+    <div id="reactjs-app"></div>
+    <script>
+        window.request = {
+            "jwtToken": "{{ _req.session.jwtToken }}",
+            "success": "{{__success}}",
+            "error": "{{__error}}"
+        };
+    </script>
+    <script src="/js/bin/userManagement.js"></script>
+{% endblock %}

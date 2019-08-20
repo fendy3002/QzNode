@@ -8,11 +8,6 @@
     "src/**/*"
   ],
   "scripts": {
-    "check-types": "tsc --noEmit",
-    "compile": "webpack --mode=production",
-    "compileWatch": "webpack --watch --mode=development",
-    "prepublish": "npm run compile",
-    "testServer": "node test/app.js"
   },
   "author": "",
   "license": "ISC",

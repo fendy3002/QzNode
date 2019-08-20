@@ -8,19 +8,19 @@ const httpError = require('http-errors');
  * hasAccessModule("userManagement", { excludeSuperAdmin: false })
  * hasAccessModule("userManagement", "view", { excludeSuperAdmin: false })
  */
-let hasAccessModule = function(){
-    let accessModule = arguments[0];
+let hasAccessModule = function(...args: any[]){
+    let accessModule = args[0];
     let accessSubModule = null;
     let options = { excludeSuperAdmin: false };
-    if(arguments.length >= 2){
-        if(typeof arguments[1] == "string"){
-            accessSubModule = arguments[1];
+    if(args.length >= 2){
+        if(typeof args[1] == "string"){
+            accessSubModule = args[1];
         }
         else{
-            options = arguments[1];
+            options = args[1];
         }
-        if(arguments.length == 3){
-            options = arguments[2];
+        if(args.length == 3){
+            options = args[2];
         }
     }
     return (req, res, next) => {

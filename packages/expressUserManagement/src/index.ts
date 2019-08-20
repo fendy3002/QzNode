@@ -1,3 +1,5 @@
+import express = require('express');
+
 import * as myType from './types';
 
 import defaultLang from './lang/en';
@@ -7,6 +9,8 @@ import loginController from './controller/login';
 import logoutController from './controller/logout';
 import changePasswordController from './controller/changePassword';
 import middleware from './middleware/index';
+import jwtVerifyRaw from './middleware/jwtVerify';
+import hasAccessModule from './middleware/hasAccessModule';
 
 let combine = (...path: string[]) => {
     return path.join("/").replace(/\/\//gi, "/");
@@ -33,6 +37,10 @@ export let init = async (initContext: myType.initContext, app: any) => {
     }
     let apiUserManagement = await apiUserManagementRaw(context);
     let apiConfirmation = await apiConfirmationRaw(context);
+    let jwtVerify = jwtVerifyRaw({
+        appPublicKey: context.appPublicKey,
+        sessionStore: context.sessionStore
+    });
 
     app.get(
         combine(context.path.auth, "/login"), 
@@ -55,18 +63,23 @@ export let init = async (initContext: myType.initContext, app: any) => {
         middleware.signedIn(context)({mustSignedIn: true}),
         changePasswordController(context)._post);
     
-    app.get(context.path.userApi, apiUserManagement.list);
-    app.get(combine(context.path.userApi , '/current'), apiUserManagement.current);
-    app.get(combine(context.path.userApi , '/:id'), apiUserManagement.get);
-    app.post(context.path.userApi, apiUserManagement.register);
-    app.post(combine(context.path.userApi, '/:id/change-email'), apiUserManagement.changeEmail);
-    app.post(combine(context.path.userApi, '/:id/change-super-admin'), apiUserManagement.superAdmin);
-    app.post(combine(context.path.userApi, '/:id/active'), apiUserManagement.active);
-    app.post(combine(context.path.userApi, '/:id/reset-password'), apiUserManagement.resetPassword);
-    app.post(combine(context.path.userApi, '/:id/confirmation'), apiUserManagement.confirmation);
-    app.post(combine(context.path.userApi, '/:id/role'), apiUserManagement.setRole);
-    app.post(context.path.userConfirmApi, apiConfirmation._get);
-
+    const userApiRoutes = express.Router();
+    userApiRoutes.use(jwtVerify);
+    
+    userApiRoutes.get('/', hasAccessModule("user", "list"), apiUserManagement.list);
+    userApiRoutes.get('/current', apiUserManagement.current);
+    userApiRoutes.get('/:id', hasAccessModule("user", "view"), apiUserManagement.get);
+    userApiRoutes.post('/', hasAccessModule("user", "add"), apiUserManagement.register);
+    userApiRoutes.post('/:id/change-email', hasAccessModule("user", "edit"), apiUserManagement.changeEmail);
+    userApiRoutes.post('/:id/change-super-admin', hasAccessModule("user", "edit"), apiUserManagement.superAdmin);
+    userApiRoutes.post('/:id/active', hasAccessModule("user", "edit"), apiUserManagement.active);
+    userApiRoutes.post('/:id/reset-password', hasAccessModule("user", "edit"), apiUserManagement.resetPassword);
+    userApiRoutes.post('/:id/confirmation', hasAccessModule("user", "edit"), apiUserManagement.confirmation);
+    userApiRoutes.post('/:id/role', hasAccessModule("user", "edit"), apiUserManagement.setRole);
+    
+    app.use(context.path.userApi, userApiRoutes);
+    app.post(context.path.userConfirmApi, apiConfirmation._post);
+    
     return context;
 };
 
@@ -83,3 +96,4 @@ export let models = {
     userRole,
 };
 export {default as middleware} from './middleware';
+export {myType as type};

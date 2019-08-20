@@ -97,7 +97,8 @@ export interface context{
     appPublicKey: string,
     appPrivateKey: string,
     rememberTokenName: string,
-    registerNeedConfirmation: boolean
+    registerNeedConfirmation: boolean,
+    sessionStore: any
 };
 export interface initContext{
     db: any,
@@ -149,7 +150,8 @@ export interface initContext{
     appPublicKey: string,
     appPrivateKey: string,
     rememberTokenName ?: string,
-    registerNeedConfirmation ?: boolean
+    registerNeedConfirmation ?: boolean,
+    sessionStore: any
 };
 export namespace controller{
     export interface login{
@@ -173,7 +175,7 @@ export namespace controller{
 export namespace api{
     export interface confirmation{
         (context: context): {
-            _get: (req: any, res: any, next ?: any) => any,
+            _post: (req: any, res: any, next ?: any) => any,
         }
     }
     export interface userManagement{

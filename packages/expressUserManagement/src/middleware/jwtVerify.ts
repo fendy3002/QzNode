@@ -8,11 +8,10 @@ let jwtVerify: myType.middleware.jwtVerify = (option) => (req, res, next) => {
         let authorizationToken = authorizationHeader.substring(7);
 
         jwt.verify(authorizationToken, option.appPublicKey, { algorithms: ['RS256'] }, (err, decodedToken) => {
-            if (err || !decodedToken)
-            {
+            if (err || !decodedToken) {
                 return next(httpError(401, "UNAUTHORIZED"))
             }
-            else{
+            else {
                 let sessionKey = decodedToken.id;
                 option.sessionStore.get(sessionKey, (err, reply) => {
                     if(reply){

@@ -10,6 +10,7 @@ const Sequelize = require('sequelize');
 const path = require('path');
 const nunjucks = require('nunjucks');
 const session = require('express-session');
+const memoryStore = require('express-session/session/memory');
 const cookieParser = require('cookie-parser');
 import * as expressUserManagement from "../src/index";
 
@@ -19,15 +20,18 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
     extended: true
 }));
 app.use(cookieParser());
-app.use(session({
+let sessionStore = new memoryStore();
+let expressSession = session({
     secret: 'myCustomSecret',
     resave: true,
     saveUninitialized: true,
     cookie: {
         secure: false,
         maxAge  : 60 * 30 * 1000
-    }
-}))
+    },
+    store: sessionStore
+});
+app.use(expressSession);
 app.use(express.static(path.resolve(__dirname, "public")));
 
 let db = new Sequelize(process.env.MYSQL_DATABASE, "root", process.env.MYSQL_ROOT_PASSWORD, {
@@ -42,7 +46,7 @@ let db = new Sequelize(process.env.MYSQL_DATABASE, "root", process.env.MYSQL_ROO
     },
     timezone: "Asia/Jakarta"
 });
-let context = {
+let context: expressUserManagement.type.initContext = {
     db: db,
     auth: (req: any, res: any) => { return (req.session && req.session.user) || res.locals.user },
     mail: {
@@ -67,7 +71,8 @@ let context = {
     },
     appPublicKey: fs.readFileSync(__dirname + "/../testHelper/public.key"),
     appPrivateKey: fs.readFileSync(__dirname + "/../testHelper/private.key"),
-    registerNeedConfirmation: true
+    registerNeedConfirmation: true,
+    sessionStore: sessionStore
 };
 let initialized = false;
 let initializeHandler = [];

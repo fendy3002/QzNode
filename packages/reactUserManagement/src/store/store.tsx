@@ -92,7 +92,7 @@ export class store implements typeDefinition.store {
     @observable currentUser = {};
 
     initialize(){
-        return this.urlRouter.refresh();
+        return this.loadCurrentUser().then(() => this.urlRouter.refresh());
     }
     uninitialize(){
         this.urlRouter.historyUnlistener();

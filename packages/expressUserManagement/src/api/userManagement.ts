@@ -109,7 +109,7 @@ let userManagement: myType.api.userManagement = (context) => {
         current: async (req, res, next) => {
             let userId = (await context.auth(req, res)).id;
             if(userId){
-                let user = userModel.findOne({
+                let user = await userModel.findOne({
                     where: {
                         id: userId
                     },

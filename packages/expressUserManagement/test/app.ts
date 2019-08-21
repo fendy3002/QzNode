@@ -122,6 +122,17 @@ expressUserManagement.init(context, app).then(async (context) => {
         (req, res, next) => {
             return res.render("home.html");
         });
+    app.get(
+        '/user-management', 
+        [
+            expressUserManagement.middleware.signedIn(context)({
+                mustSignedIn: true
+            }),
+            expressUserManagement.middleware.isSuperAdmin
+        ],
+        (req, res, next) => {
+            return res.render("user-management/index.html");
+        });
 
     initialized = true;
     setInitialized();

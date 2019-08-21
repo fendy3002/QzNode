@@ -48,7 +48,7 @@
                     </a>
                     <ul class="sidebar-nav collapse" aria-expanded="true">
                         {% if _req.session.user.is_super_admin %}
-                            <li class="{{ _urlIn('user-management') | bool('active', '') }}">
+                            <li class="{{ _urlIn(['user-management']) | bool('active', '') }}">
                                 <a href="/user-management"> User Management </a>
                             </li>
                         {% endif %}

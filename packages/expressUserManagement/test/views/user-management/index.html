@@ -1,15 +1,14 @@
 {% extends "template/master.html" %}
-{% set __success = _req.flash("success") %}
-{% set __error = _req.flash("error") %}
 
 {% block content %}
     <div id="reactjs-app"></div>
+    <script src="/js/bin/index.js"></script>
     <script>
-        window.request = {
-            "jwtToken": "{{ _req.session.jwtToken }}",
-            "success": "{{__success}}",
-            "error": "{{__error}}"
-        };
+        window.reactUserManagement(document.getElementById("reactjs-app"), {
+            root: "/user-management",
+            headers: {
+                Authorization: "Bearer {{ _req.session.jwtToken }}"
+            }
+        });
     </script>
-    <script src="/js/bin/userManagement.js"></script>
 {% endblock %}

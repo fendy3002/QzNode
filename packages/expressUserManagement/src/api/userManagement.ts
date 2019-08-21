@@ -23,7 +23,7 @@ let userManagement: myType.api.userManagement = (context) => {
     const getRoleByUserIdArray = async (userIds: string[]) => {
         const userRoles = await userRoleModel.findAll({
             where: {
-                user_id: {
+                userid: {
                     [Sequelize.Op.in]: userIds
                 }
             },
@@ -39,7 +39,7 @@ let userManagement: myType.api.userManagement = (context) => {
         });
         const roles = await roleModel.findAll({
             where: {
-                role_id: {
+                id: {
                     [Sequelize.Op.in]: userRoles.map(k => k.role_id)
                 }
             },
@@ -61,6 +61,7 @@ let userManagement: myType.api.userManagement = (context) => {
                     };
                 });
         }
+        return result;
     };
 
     return {
@@ -147,7 +148,7 @@ let userManagement: myType.api.userManagement = (context) => {
             let page = req.query.page || 1;
             let limit = req.query.limit || 20;
             let userResult = await userModel.findAndCountAll({
-                limit: limit,
+                limit: limit * 1,
                 offset: (page - 1) * limit,
                 raw: true
             });

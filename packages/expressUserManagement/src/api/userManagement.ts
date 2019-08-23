@@ -12,7 +12,7 @@ import userRoleModelRaw from '../model/userRole';
 import * as myType from '../types';
 
 let userManagement: myType.api.userManagement = (context) => {
-    const registerService = registerServiceRaw(context.db);
+    const registerService = registerServiceRaw(context);
     const changeEmailService = changeEmailServiceRaw(context.db);
     const resetPasswordService = resetPasswordServiceRaw(context.db);
     const userModel = userModelRaw(context.db);

@@ -143,7 +143,7 @@ expressUserManagement.init(context, app).then(async (context) => {
             return res.render("home.html");
         });
     app.get(
-        '/user-management', 
+        '/user-management*', 
         [
             expressUserManagement.middleware.signedIn(context)({
                 mustSignedIn: true

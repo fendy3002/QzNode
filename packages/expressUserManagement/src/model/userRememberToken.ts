@@ -1,4 +1,5 @@
 import * as myTypes from '../types';
+import userModel from './user';
 let sequelize = require('sequelize');
 
 let modelService: myTypes.modelType = Object.assign((db) => {
@@ -17,7 +18,7 @@ let modelService: myTypes.modelType = Object.assign((db) => {
     // used when defining association
     associate: (db, model) => {
         model.belongsTo(
-            require('./user')(db),
+            userModel(db),
             {
                 as: "user",
                 foreignKey: "userid",

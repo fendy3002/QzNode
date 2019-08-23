@@ -14,9 +14,11 @@ const registerService : myType.service.register = (context) => async (user) => {
     let usernameRegex = /^[a-zA-Z0-9]+$/;
     const lang = context.lang;
     if(!username.match(usernameRegex)){
+        debug("Username do not match format");
         throw new Error(lang.auth.register.usernameFormat);
     }
     if(email.indexOf("@") < 0){
+        debug("Email do not match format");
         throw new Error(lang.auth.register.emailFormat);
     }
 
@@ -26,8 +28,9 @@ const registerService : myType.service.register = (context) => async (user) => {
             email: email
         }
     };
-    const existingUser = await userModel.findAll({ where: userWhere });
+    const existingUser = await userModel.findAll({ where: userWhere, raw: true });
     if(existingUser && existingUser.length > 0){
+        debug("User exists");
         throw new Error(lang.auth.register.exists
             .replace("{username}", username)
             .replace("{email}", email));
@@ -40,7 +43,9 @@ const registerService : myType.service.register = (context) => async (user) => {
             return resolve(hashed);
         });
     });
+    debug("Hashed password: " + hashed);
     let userid = uuid();
+    debug("Register userid: " + userid);
     await userModel.create({
         id: userid,
         name: name,

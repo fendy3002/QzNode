@@ -98,21 +98,41 @@ expressUserManagement.init(context, app).then(async (context) => {
         where: {},
         truncate: true
     });
-    await userModel.create({
+    let initUsers = [{
         id: 1,
         name: 'admin',
         username: 'admin',
         email: 'admin@example.com',
-        password: '$2a$12$OR/P9EEGIhSEAuQ5HxKkQOMmKgu9jGOyM52Fed9yPq8SkU6WWrqla',
-        confirmation: '086e637c-2915-4db5-84d8-6554520420ad',
-        is_confirmed: 1,
-        is_active: 1,
         is_super_admin: 1,
-        created_by: 'admin',
-        updated_by: 'admin',
-        utc_created: '2019-01-01 00:00:00',
-        utc_updated: '2019-01-01 00:00:00',
-    });
+        confirmation: '086e637c-2915-4db5-84d8-6554520420ad',
+    }, {
+        id: 2,
+        name: 'user1',
+        username: 'user1',
+        email: 'user2@example.com',
+        confirmation: '8af84115-384e-4cb8-a429-49e5b307e562',
+    }, {
+        id: 3,
+        name: 'user2',
+        username: 'user2',
+        email: 'user2@example.com',
+        confirmation: '82d62f13-220e-4ed2-8204-768add32066b',
+        is_confirmed: 0,
+        is_active: 1,
+    }];
+    await userModel.bulkCreate(initUsers.map(k => {
+        return {
+            password: '$2a$12$OR/P9EEGIhSEAuQ5HxKkQOMmKgu9jGOyM52Fed9yPq8SkU6WWrqla',
+            is_super_admin: 0,
+            is_confirmed: 1,
+            is_active: 1,
+            created_by: 'admin',
+            updated_by: 'admin',
+            utc_created: '2019-01-01 00:00:00',
+            utc_updated: '2019-01-01 00:00:00',
+            ...k
+        };
+    }));
 
     app.get(
         '/', 

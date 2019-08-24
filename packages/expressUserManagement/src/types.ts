@@ -54,7 +54,8 @@ export interface context{
     path: {
         auth: string,
         userApi: string,
-        userConfirmApi: string
+        userConfirmApi: string,
+        roleApi: string
     },
     redirect: {
         signedIn: string,
@@ -107,9 +108,10 @@ export interface initContext{
     lang ?: lang,
     auth: (req: any, res: any) => Promise<authPayload|null>,
     path ?: {
-        auth: string,
-        userApi: string,
-        userConfirmApi: string
+        auth? : string,
+        userApi? : string,
+        userConfirmApi? : string,
+        roleApi? : string
     },
     redirect ?: {
         signedIn: string,
@@ -194,6 +196,12 @@ export namespace api{
             superAdmin: (req: any, res: any, next ?: any) => any,
             confirmation: (req: any, res: any, next ?: any) => any,
             setRole: (req: any, res: any, next ?: any) => any,
+        }
+    }
+    export interface role{
+        (context: context): {
+            _get: (req: any, res: any, next ?: any) => any,
+            _post: (req: any, res: any, next ?: any) => any,
         }
     }
 }

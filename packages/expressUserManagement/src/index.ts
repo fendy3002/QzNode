@@ -1,10 +1,12 @@
 import express = require('express');
+import lo = require('lodash');
 
 import * as myType from './types';
 
 import defaultLang from './lang/en';
 import apiUserManagementRaw from './api/userManagement';
 import apiConfirmationRaw from './api/confirmation';
+import apiRoleRaw from './api/role';
 import loginController from './controller/login';
 import logoutController from './controller/logout';
 import changePasswordController from './controller/changePassword';
@@ -16,7 +18,7 @@ let combine = (...path: string[]) => {
     return path.join("/").replace(/\/\//gi, "/");
 };
 export let init = async (initContext: myType.initContext, app: any) => {
-    const context: myType.context = {
+    const context: myType.context = lo.merge({
         rememberTokenName: "usermanagement_remember",
         registerNeedConfirmation: true,
         render: {
@@ -31,12 +33,14 @@ export let init = async (initContext: myType.initContext, app: any) => {
             auth: "/auth",
             userApi: "/api/user-management/user",
             userConfirmApi: "/api/user/confirmation",
+            roleApi: "/api/user-management/role"
         },
-        lang: defaultLang(initContext),
-        ...initContext
-    }
+        lang: defaultLang(initContext)
+    }, initContext);
+
     let apiUserManagement = await apiUserManagementRaw(context);
     let apiConfirmation = await apiConfirmationRaw(context);
+    let apiRole = await apiRoleRaw(context);
     let jwtVerify = jwtVerifyRaw({
         appPublicKey: context.appPublicKey,
         sessionStore: context.sessionStore
@@ -79,7 +83,8 @@ export let init = async (initContext: myType.initContext, app: any) => {
     
     app.use(context.path.userApi, userApiRoutes);
     app.post(context.path.userConfirmApi, apiConfirmation._post);
-    
+    app.get(context.path.roleApi, apiRole._get);
+
     return context;
 };
 

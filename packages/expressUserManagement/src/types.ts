@@ -49,6 +49,7 @@ export interface authPayload{
 };
 export interface accessModule{
     [module: string]: {
+        _: { display: string },
         [access: string]: {
             display: string
         }
@@ -75,7 +76,8 @@ export interface context{
     },
     mail: {
         adminResetPassword: (payload: {
-            password: string
+            password: string,
+            email: string,
         }) => Promise<any>,
         resetPasswordRequest: (payload: {
             email: string,
@@ -132,7 +134,8 @@ export interface initContext{
     },
     mail: {
         adminResetPassword: (payload: {
-            password: string
+            password: string,
+            email: string
         }) => Promise<any>,
         resetPasswordRequest: (payload: {
             email: string,
@@ -248,7 +251,7 @@ export namespace service{
     }
     export interface resetPassword{
         (context: context): (payload: {
-            email: string
+            userid: string
         }) => Promise<any>
     }
 }

@@ -6,13 +6,13 @@ import userModelRaw from '../model/user';
 import userRememberTokenModelRaw from '../model/userRememberToken';
 import * as myType from '../types';
 
-let resetPasswordService: myType.service.resetPassword = (context) => async ({email}) => {
+let resetPasswordService: myType.service.resetPassword = (context) => async ({userid}) => {
     let userModel = userModelRaw.associate(context.db, userModelRaw(context.db));
     let userRememberTokenModel = userRememberTokenModelRaw(context.db);
     
     let userWhere = {
         [sequelize.Op.or]: {
-            email: email
+            id: userid
         }
     };
     let resetUser = await userModel.findOne({ where: userWhere })
@@ -32,7 +32,7 @@ let resetPasswordService: myType.service.resetPassword = (context) => async ({em
                 userid: resetUser.id
             }
         });
-        return {password: newPassword};
+        return {password: newPassword, email: resetUser.email};
     }
     else{
         throw new Error(context.lang.auth.general.notFound);

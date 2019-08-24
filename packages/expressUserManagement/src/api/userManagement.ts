@@ -14,7 +14,7 @@ import * as myType from '../types';
 let userManagement: myType.api.userManagement = (context) => {
     const registerService = registerServiceRaw(context);
     const changeEmailService = changeEmailServiceRaw(context.db);
-    const resetPasswordService = resetPasswordServiceRaw(context.db);
+    const resetPasswordService = resetPasswordServiceRaw(context);
     const userModel = userModelRaw(context.db);
     const roleAccessModel = roleAccessModelRaw(context.db);
     const roleModel = roleModelRaw(context.db);
@@ -278,17 +278,21 @@ let userManagement: myType.api.userManagement = (context) => {
         },
         resetPassword: async (req, res, next) => {
             let password = null;
-
+            let email = null;
+            let userid = req.params.id;
             try{
-                password = (await resetPasswordService({
-                    email: req.body.email
-                })).password;
+                let resetPasswordResult = (await resetPasswordService({
+                    userid: userid
+                }))
+                password = resetPasswordResult.password;
+                email = resetPasswordResult.email;
             } catch (ex){
                 return next(new httpError(500, ex.message, ex));
             }
             try{
                 await context.mail.adminResetPassword({
-                    password: password
+                    password: password,
+                    email: email
                 });
             } catch (ex){
                 return next(

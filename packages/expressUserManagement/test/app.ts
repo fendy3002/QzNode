@@ -28,7 +28,7 @@ let expressSession = session({
     saveUninitialized: true,
     cookie: {
         secure: false,
-        maxAge  : 60 * 30 * 1000
+        maxAge: 60 * 30 * 1000
     },
     store: sessionStore
 });
@@ -62,10 +62,20 @@ let context: expressUserManagement.type.initContext = {
     auth: (req: any, res: any) => { return (req.session && req.session.user) || res.locals.user },
     mail: {
         adminResetPassword: async (payload) => {
-            
+            let info = await new Promise((resolve, reject) => {
+                mailTransport.sendMail({
+                    from: "from@example.com",
+                    to: payload.email,
+                    subject: 'Reset Password',
+                    html: 'Reset password success, password: ' + payload.password
+                }, (err, info) => {
+                    if (err) { reject(err); }
+                    else { resolve(info); }
+                });
+            });
         },
         resetPasswordRequest: async (payload) => {
-            
+
         },
         adminRegister: async (payload) => {
             let info = await new Promise((resolve, reject) => {
@@ -75,19 +85,27 @@ let context: expressUserManagement.type.initContext = {
                     subject: 'Register',
                     html: 'Register success, confirmation: ' + payload.confirmation
                 }, (err, info) => {
-                    if(err){ reject(err); }
-                    else{ resolve(info); }
+                    if (err) { reject(err); }
+                    else { resolve(info); }
                 });
             });
         },
         userRegister: async (payload) => {
-            
+
         },
         changeEmail: async (payload) => {
-            
+
         },
         resendConfirmation: async (payload) => {
-            
+
+        }
+    },
+    accessModule: {
+        "module1": {
+            _: { display: "Module 1" },
+            "view": {
+                display: "View"
+            }
         }
     },
     appPublicKey: fs.readFileSync(__dirname + "/../testHelper/public.key"),
@@ -98,8 +116,8 @@ let context: expressUserManagement.type.initContext = {
 let initialized = false;
 let initializeHandler = [];
 let setInitialized = () => {
-    if(initialized){
-        for(let handler of initializeHandler){
+    if (initialized) {
+        for (let handler of initializeHandler) {
             handler();
         }
     }
@@ -156,15 +174,15 @@ expressUserManagement.init(context, app).then(async (context) => {
     }));
 
     app.get(
-        '/', 
+        '/',
         expressUserManagement.middleware.signedIn(context)({
             mustSignedIn: true
-        }), 
+        }),
         (req, res, next) => {
             return res.render("home.html");
         });
     app.get(
-        '/user-management*', 
+        '/user-management*',
         [
             expressUserManagement.middleware.signedIn(context)({
                 mustSignedIn: true
@@ -200,10 +218,10 @@ nunjucksEnv.addFilter("bool", (val, ifTrue = "yes", ifFalse = "no") => {
 export default {
     app: app,
     initialized: async () => {
-        if(initialized){
+        if (initialized) {
             return initialized;
         }
-        else{
+        else {
             await new Promise((resolve) => {
                 initializeHandler.push(() => {
                     resolve();

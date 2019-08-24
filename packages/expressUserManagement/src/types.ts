@@ -14,6 +14,7 @@ export interface lang {
             emailFormat: string,
             registerSuccess: string,
             registerEmailFail: string,
+            registerNoConfirmationSuccess: string,
         },
         changeEmail: {
             emailFormatInvalid: string,

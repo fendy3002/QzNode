@@ -272,9 +272,16 @@ let userManagement: myType.api.userManagement = (context) => {
                 return next(new httpError(500, context.lang.auth.register.registerEmailFail.replace("{err}", ex.message)));
             };
 
-            return res.json({
-                message: context.lang.auth.register.registerSuccess.replace("{password}", password)
-            });
+            if(context.registerNeedConfirmation){
+                return res.json({
+                    message: context.lang.auth.register.registerSuccess.replace("{password}", password)
+                });
+            }
+            else{
+                return res.json({
+                    message: context.lang.auth.register.registerNoConfirmationSuccess.replace("{password}", password)
+                });
+            }
         },
         resetPassword: async (req, res, next) => {
             let password = null;

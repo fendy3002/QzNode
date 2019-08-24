@@ -12,6 +12,7 @@ const nunjucks = require('nunjucks');
 const session = require('express-session');
 const memoryStore = require('express-session/session/memory');
 const cookieParser = require('cookie-parser');
+const nodemailer = require('nodemailer');
 import * as expressUserManagement from "../src/index";
 
 const app = express();
@@ -46,6 +47,16 @@ let db = new Sequelize(process.env.MYSQL_DATABASE, "root", process.env.MYSQL_ROO
     },
     timezone: "Asia/Jakarta"
 });
+let mailTransport = nodemailer.createTransport({
+    port: process.env.MAIL_PORT,
+    host: process.env.MAIL_HOST,
+    auth: {
+        type: "login",
+        user: process.env.MAIL_USERNAME,
+        pass: process.env.MAIL_PASSWORD
+    },
+    authMethod: "PLAIN"
+});
 let context: expressUserManagement.type.initContext = {
     db: db,
     auth: (req: any, res: any) => { return (req.session && req.session.user) || res.locals.user },
@@ -57,7 +68,17 @@ let context: expressUserManagement.type.initContext = {
             
         },
         adminRegister: async (payload) => {
-            
+            let info = await new Promise((resolve, reject) => {
+                mailTransport.sendMail({
+                    from: "from@example.com",
+                    to: payload.email,
+                    subject: 'Register',
+                    html: 'Register success, confirmation: ' + payload.confirmation
+                }, (err, info) => {
+                    if(err){ reject(err); }
+                    else{ resolve(info); }
+                });
+            });
         },
         userRegister: async (payload) => {
             

@@ -265,7 +265,8 @@ let userManagement: myType.api.userManagement = (context) => {
                     username: username,
                     password: password,
                     confirmation: confirmation,
-                    name: name
+                    name: name,
+                    email: email
                 });
             } catch(ex){
                 return next(new httpError(500, context.lang.auth.register.registerEmailFail.replace("{err}", ex.message)));

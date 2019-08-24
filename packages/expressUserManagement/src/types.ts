@@ -76,12 +76,14 @@ export interface context{
             username: string,
             password: string,
             confirmation: string,
+            email: string,
             name: string
         }) => Promise<any>,
         userRegister: (payload: {
             username: string,
             password: string,
             confirmation: string,
+            email: string,
             name: string
         }) => Promise<any>,
         changeEmail: (payload: {
@@ -129,12 +131,14 @@ export interface initContext{
             username: string,
             password: string,
             confirmation: string,
+            email: string,
             name: string
         }) => Promise<any>,
         userRegister: (payload: {
             username: string,
             password: string,
             confirmation: string,
+            email: string,
             name: string
         }) => Promise<any>,
         changeEmail: (payload: {

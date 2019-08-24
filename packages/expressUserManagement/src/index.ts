@@ -21,6 +21,7 @@ export let init = async (initContext: myType.initContext, app: any) => {
     const context: myType.context = lo.merge({
         rememberTokenName: "usermanagement_remember",
         registerNeedConfirmation: true,
+        accessModule: {},
         render: {
             login: "auth/login.html",
             changePassword: "auth/changePassword.html",

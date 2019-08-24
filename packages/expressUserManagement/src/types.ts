@@ -47,6 +47,14 @@ export interface lang {
 export interface authPayload{
     id: string,
 };
+export interface accessModule{
+    [module: string]: {
+        [access: string]: {
+            display: string
+        }
+    }
+};
+
 export interface context{
     db: any,
     lang: lang,
@@ -97,6 +105,7 @@ export interface context{
             confirmation: string
         }) => Promise<any>
     },
+    accessModule: accessModule,
     appPublicKey: string,
     appPrivateKey: string,
     rememberTokenName: string,
@@ -153,6 +162,7 @@ export interface initContext{
             confirmation: string
         }) => Promise<any>
     },
+    accessModule ?: accessModule,
     appPublicKey: string,
     appPrivateKey: string,
     rememberTokenName ?: string,
@@ -210,9 +220,7 @@ export namespace service{
         username: string, password: string
     }
     export interface login{
-        (context: context, option ?: {
-            accessModule: any
-        }): (user: loginUserPayload, rememberMe: boolean) => Promise<any>
+        (context: context): (user: loginUserPayload, rememberMe: boolean) => Promise<any>
     }
     export interface registerUserPayload{
         name: string, 

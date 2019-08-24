@@ -14,12 +14,9 @@ import * as crypto from "crypto";
 import * as myType from '../types';
 const random = new Random();
 
-const loginService: myType.service.login = (context, option) => async (user, rememberMe = false) => {
+const loginService: myType.service.login = (context) => async (user, rememberMe = false) => {
     let {username, password} = user;
 
-    let useOption = lo.merge(option, {
-        accessModule: {}
-    });
     let userModel = userModelRaw.associate(context.db, userModelRaw(context.db));
     let userRememberTokenModel = userRememberTokenModelRaw(context.db);
     let userRoleModel = userRoleModelRaw(context.db);
@@ -57,7 +54,7 @@ const loginService: myType.service.login = (context, option) => async (user, rem
         }
 
         let reducedAppRoleAccess = {};
-        lo.forOwn(useOption.accessModule, (access, moduleName) => {
+        lo.forOwn(context.accessModule, (access, moduleName) => {
             reducedAppRoleAccess[moduleName] = reducedAppRoleAccess[moduleName] || {};
             Object.keys(access).forEach(k => {
                 reducedAppRoleAccess[moduleName][k] = false;

@@ -12,9 +12,9 @@ export interface lang {
             exists: string,
             usernameFormat: string,
             emailFormat: string,
-            registerSuccess: string,
-            registerEmailFail: string,
-            registerNoConfirmationSuccess: string,
+            success: string,
+            successButEmailFail: string,
+            noConfirmationSuccess: string
         },
         changeEmail: {
             emailFormatInvalid: string,
@@ -35,7 +35,8 @@ export interface lang {
         },
         resetPassword: {
             success: string,
-            mailFailSend: string
+            mailFailSend: string,
+            noConfirmationSuccess: string
         },
         setRole: {
             success: string

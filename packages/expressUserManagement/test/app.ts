@@ -110,7 +110,7 @@ let context: expressUserManagement.type.initContext = {
     },
     appPublicKey: fs.readFileSync(__dirname + "/../testHelper/public.key"),
     appPrivateKey: fs.readFileSync(__dirname + "/../testHelper/private.key"),
-    registerNeedConfirmation: true,
+    registerNeedConfirmation: false,
     sessionStore: sessionStore
 };
 let initialized = false;

@@ -269,17 +269,17 @@ let userManagement: myType.api.userManagement = (context) => {
                     email: email
                 });
             } catch(ex){
-                return next(new httpError(500, context.lang.auth.register.registerEmailFail.replace("{err}", ex.message)));
+                return next(new httpError(500, context.lang.auth.register.successButEmailFail.replace("{err}", ex.message)));
             };
 
             if(context.registerNeedConfirmation){
                 return res.json({
-                    message: context.lang.auth.register.registerSuccess.replace("{password}", password)
+                    message: context.lang.auth.register.success.replace("{password}", password)
                 });
             }
             else{
                 return res.json({
-                    message: context.lang.auth.register.registerNoConfirmationSuccess.replace("{password}", password)
+                    message: context.lang.auth.register.noConfirmationSuccess.replace("{password}", password)
                 });
             }
         },
@@ -310,9 +310,16 @@ let userManagement: myType.api.userManagement = (context) => {
                     )
                 );
             }
-            return res.json({
-                message: context.lang.auth.resetPassword.success.replace("{password}", password)
-            });
+            if(context.registerNeedConfirmation){
+                return res.json({
+                    message: context.lang.auth.resetPassword.success.replace("{password}", password)
+                });
+            }
+            else{
+                return res.json({
+                    message: context.lang.auth.resetPassword.noConfirmationSuccess.replace("{password}", password)
+                });
+            }
         },
     }
 };

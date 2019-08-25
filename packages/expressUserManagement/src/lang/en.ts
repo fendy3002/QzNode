@@ -10,9 +10,9 @@ const lang = function(context: myType.initContext): myType.lang {
                 "exists": "User {username} or email {email} already exists.",
                 "usernameFormat": "Username not in correct format.",
                 "emailFormat": "Email not in correct format.",
-                "registerSuccess": "User has been successfully registered and an email confirmation has been sent. The user need to confirm the email first before login.",
-                "registerEmailFail": "User has been successfully registered, but there are error when sending the confirmation email {err}.",
-                "registerNoConfirmationSuccess": "User has been successfully registered with password {password} . The password cannot be recovered by any means. Please change as soon as you able to.",
+                "success": "User has been successfully registered and an email confirmation has been sent. The user need to confirm the email first before login.",
+                "successButEmailFail": "User has been successfully registered, but there are error when sending the confirmation email {err}.",
+                "noConfirmationSuccess": "User has been successfully registered with password {password} . The password cannot be recovered by any means. Please change as soon as you able to.",
             },
             "changeEmail": {
                 "emailFormatInvalid": "Email not in correct format.",
@@ -33,6 +33,7 @@ const lang = function(context: myType.initContext): myType.lang {
             },
             "resetPassword": {
                 "success": "User reset password success.",
+                "noConfirmationSuccess": "User password has been reset to {password}.",
                 "mailFailSend": "User password has been reset, but e-mail with new password is failed to be sent. Please try again later or contact your system administrator. {err}"
             },
             "setRole": {

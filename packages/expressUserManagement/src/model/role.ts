@@ -5,9 +5,9 @@ let modelService: myTypes.modelType = Object.assign((db) => {
     let role = db.define('role', {
         id: {type: sequelize.STRING(36), primaryKey: true},
         name: {type: sequelize.STRING, primaryKey: true},
-        created_at: {type: sequelize.DATE},
+        utc_created: {type: sequelize.DATE},
         created_by: {type: sequelize.STRING},
-        updated_at: {type: sequelize.DATE},
+        utc_updated: {type: sequelize.DATE},
         updated_by: {type: sequelize.STRING},
     }, {
         tableName: "role",

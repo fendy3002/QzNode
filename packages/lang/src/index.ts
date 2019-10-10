@@ -19,7 +19,8 @@ let langUse = (langDictionary: LangContent) => {
             }
             for(let key of Object.keys(params)){
                 let regexPattern = new RegExp("{" + key + "}", "g");
-                content = content.replace(regexPattern, params[key]);
+                let contentStr = content as string;
+                content = contentStr.replace(regexPattern, params[key]);
             }
             return content;
         }
@@ -32,10 +33,7 @@ let langCore = async(initDictionary: LangDictionary) => {
 
     return {
         addLang: (languagecode: string, content: LangContent) => {
-            langDictionary[languagecode] = {
-                ...langDictionary[languagecode],
-                ...content
-            };
+            langDictionary[languagecode] = lo.merge(langDictionary[languagecode], content);
         },
         use: (languagecode: string) => {
             return langUse(langDictionary[languagecode]);

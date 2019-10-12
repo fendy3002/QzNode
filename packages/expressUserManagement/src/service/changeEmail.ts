@@ -3,7 +3,7 @@ const debug = require('debug')("QzNode:expressUserManagement:service:changeEmail
 import userModelRaw from '../model/user';
 import * as myType from '../types';
 
-let changeEmail: myType.service.changeEmail = (context) => async ({userId, email}) => {
+let changeEmail: myType.service.changeEmail = (context, lang) => async ({userId, email}) => {
     let userModel = userModelRaw.associate(context.db, userModelRaw(context.db));
     let user = await userModel(context.db).findOne({
         where: {
@@ -12,7 +12,7 @@ let changeEmail: myType.service.changeEmail = (context) => async ({userId, email
     });
     let pattern = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     if(!pattern.test(String(email).toLowerCase())){
-        throw new Error(context.lang.auth.changeEmail.emailFormatInvalid);
+        throw new Error(lang._("changeEmail.emailFormatInvalid"));
     }
 
     if(user){

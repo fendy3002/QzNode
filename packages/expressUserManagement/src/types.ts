@@ -1,3 +1,5 @@
+import {type as langType} from '@fendy3002/lang';
+
 export interface modelType{
     (db: any): any,
     associate: (db: any, model: any) => any
@@ -60,7 +62,6 @@ export interface accessModule{
 
 export interface context{
     db: any,
-    lang: lang,
     auth: (req: any, res: any) => Promise<authPayload|null>,
     path: {
         auth: string,
@@ -238,7 +239,7 @@ export namespace service{
         (context: context): (user: registerUserPayload) => Promise<any>
     }
     export interface changeEmail{
-        (context: context): (payload: {
+        (context: context, lang: langType.Pack): (payload: {
             userId: string,
             email: string
         }) => Promise<any>

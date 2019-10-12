@@ -35,8 +35,7 @@ export let init = async (initContext: myType.initContext, app: any) => {
             userApi: "/api/user-management/user",
             userConfirmApi: "/api/user/confirmation",
             roleApi: "/api/user-management/role"
-        },
-        lang: defaultLang(initContext)
+        }
     }, initContext);
 
     let apiUserManagement = await apiUserManagementRaw(context);

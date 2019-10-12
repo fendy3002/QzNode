@@ -11,6 +11,12 @@ import roleModelRaw from '../model/role';
 import userRoleModelRaw from '../model/userRole';
 import * as myType from '../types';
 
+import {type as langType} from '@fendy3002/lang';
+
+let lang = (req) => {
+    return req.lang.part("auth") as langType.Pack;
+}
+
 let userManagement: myType.api.userManagement = (context) => {
     const registerService = registerServiceRaw(context);
     const changeEmailService = changeEmailServiceRaw(context.db);
@@ -78,7 +84,7 @@ let userManagement: myType.api.userManagement = (context) => {
                 await user.save();
 
                 return res.json({
-                    message: context.lang.auth.changeActive.success
+                    message: lang(req)._("changeActive.success", "Change active success.")
                 });
             } catch (ex){
                 return next(new httpError(500, ex.message));
@@ -99,7 +105,7 @@ let userManagement: myType.api.userManagement = (context) => {
                     confirmation: user.confirmation
                 });
                 return res.json({
-                    message: context.lang.auth.resendConfirmation.success
+                    message: lang(req)._("resendConfirmation.success", "Resend confirmation success.")
                 });
             }
             else{
@@ -193,7 +199,7 @@ let userManagement: myType.api.userManagement = (context) => {
                     }).then(() => {resolve()});
                 });
                 return res.json({
-                    message: context.lang.auth.setRole.success
+                    message: lang(req)._("setRole.success", "Set role success.")
                 });
             } catch(ex){
                 return next(new httpError(500, ex.message));
@@ -212,7 +218,7 @@ let userManagement: myType.api.userManagement = (context) => {
                 await user.save();
 
                 return res.json({
-                    message: context.lang.auth.changeSuperAdmin.success
+                    message: lang(req)._("changeSuperAdmin.success", "Change super admin success.")
                 });
             } catch (ex){
                 return next(new httpError(500, ex.message));
@@ -232,7 +238,7 @@ let userManagement: myType.api.userManagement = (context) => {
                     confirmation
                 });
                 return res.json({
-                    message: context.lang.auth.changeEmail.success
+                    message: lang(req)._('changeEmail.success', "Change email success.")
                 })
             } catch (ex){
                 return next(new httpError(500, ex.message));
@@ -269,17 +275,34 @@ let userManagement: myType.api.userManagement = (context) => {
                     email: email
                 });
             } catch(ex){
-                return next(new httpError(500, context.lang.auth.register.successButEmailFail.replace("{err}", ex.message)));
+                let errMessage = lang(req)._(
+                    "register.successButEmailFail", 
+                    "User has been successfully registered, but there are error when sending the confirmation email {err}.", {
+                        err: ex.message
+                    });
+                return next(new httpError(500, errMessage));
             };
 
             if(context.registerNeedConfirmation){
+                let successMessage = lang(req)._(
+                    "register.success", 
+                    "User has been successfully registered and an email confirmation has been sent. The user need to confirm the email first before login.", 
+                    {
+                        password: password
+                    });
                 return res.json({
-                    message: context.lang.auth.register.success.replace("{password}", password)
+                    message: successMessage
                 });
             }
             else{
+                let successMessage = lang(req)._(
+                    "register.noConfirmationSuccess",
+                    "User has been successfully registered with password {password} . The password cannot be recovered by any means. Please change as soon as you able to.",
+                    {
+                        password: password
+                    });
                 return res.json({
-                    message: context.lang.auth.register.noConfirmationSuccess.replace("{password}", password)
+                    message: successMessage
                 });
             }
         },
@@ -302,22 +325,40 @@ let userManagement: myType.api.userManagement = (context) => {
                     email: email
                 });
             } catch (ex){
+                let errMessage = lang(req)._(
+                    "resetPassword.mailFailSend",
+                    "User password has been reset, but e-mail with new password is failed to be sent. Please try again later or contact your system administrator. {err}",
+                    {
+                        err: ex.message
+                    });
                 return next(
                     new httpError(
                         500, 
-                        context.lang.auth.resetPassword.mailFailSend.replace("{err}", ex.message),
+                        errMessage,
                         ex
                     )
                 );
             }
             if(context.registerNeedConfirmation){
+                let message = lang(req)._(
+                    "resetPassword.success",
+                    "User reset password success.",
+                    {
+                        password: password
+                    });
                 return res.json({
-                    message: context.lang.auth.resetPassword.success.replace("{password}", password)
+                    message: message
                 });
             }
             else{
+                let message = lang(req)._(
+                    "resetPassword.noConfirmationSuccess",
+                    "User password has been reset to {password}.",
+                    {
+                        password: password
+                    });
                 return res.json({
-                    message: context.lang.auth.resetPassword.noConfirmationSuccess.replace("{password}", password)
+                    message: message
                 });
             }
         },

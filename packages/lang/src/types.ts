@@ -21,7 +21,7 @@ export interface PackConstructor {
     (langDictionary: Lang.Content): Pack
 };
 export interface Pack{
-    _: (path: string, ifNull ?: string, params ?: Lang.UseParams) => Lang.Content | string
-    get: (path: string, ifNull ?: string, params ?: Lang.UseParams) => Lang.Content | string
+    _: (path: string, ifNull ?: string, params ?: Lang.UseParams) => string
+    get: (path: string, ifNull ?: string, params ?: Lang.UseParams) => string
     part: (path: string) => Pack
 };

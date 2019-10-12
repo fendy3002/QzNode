@@ -2,14 +2,13 @@ import lo = require('lodash');
 import * as myType from './types';
 export let pack: myType.PackConstructor = (langDictionary: myType.Lang.Content) => {
     let _ = (path: string, ifNull ?: string, params ?: myType.Lang.UseParams) => {
-        let content = lo.get(langDictionary, path, ifNull);
+        let content = lo.get(langDictionary, path, ifNull) as string;
         if(!params){
             return content;
         }
         for(let key of Object.keys(params)){
             let regexPattern = new RegExp("{" + key + "}", "g");
-            let contentStr = content as string;
-            content = contentStr.replace(regexPattern, params[key]);
+            content = content.replace(regexPattern, params[key]);
         }
         return content;
     };

@@ -1,6 +1,6 @@
 import * as mocha from 'mocha';
-
 import lang from '../src/index';
+
 let assert = require('assert');
 let testDictionary1 = {
     "en": {

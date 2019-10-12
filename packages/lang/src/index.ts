@@ -1,17 +1,7 @@
 import lo = require('lodash');
-
-interface LangContent {
-    [key: string]: string | LangContent
-};
-interface LangDictionary{
-    [languagecode: string]: LangContent
-};
-interface LangUseParams{
-    [key: string]: string
-};
-
-let langUse = (langDictionary: LangContent) => {
-    let _ = (path: string, ifNull ?: string, params ?: LangUseParams) => {
+import * as myType from './types';
+export let pack: myType.PackConstructor = (langDictionary: myType.Lang.Content) => {
+    let _ = (path: string, ifNull ?: string, params ?: myType.Lang.UseParams) => {
         let content = lo.get(langDictionary, path, ifNull);
         if(!params){
             return content;
@@ -27,23 +17,27 @@ let langUse = (langDictionary: LangContent) => {
         _: _,
         get: _,
         part: (path: string) => {
-            return langUse(lo.get(langDictionary, path) as LangContent);
+            return pack(lo.get(langDictionary, path) as myType.Lang.Content);
         }
     };
 };
-let langCore = async(initDictionary: LangDictionary) => {
-    let langDictionary: LangDictionary = {
+export let core: myType.CoreConstructor = async(initDictionary: myType.Lang.Dictionary) => {
+    let langDictionary: myType.Lang.Dictionary = {
         ...initDictionary
     };
-
-    return {
-        addLang: (languagecode: string, content: LangContent) => {
+    let coreInstance: myType.Core = {
+        addLang: (languagecode: string, content: myType.Lang.Content) => {
             langDictionary[languagecode] = lo.merge(langDictionary[languagecode], content);
+            return coreInstance;
         },
         use: (languagecode: string) => {
-            return langUse(langDictionary[languagecode]);
+            return pack(langDictionary[languagecode]);
         }
     };
+
+    return coreInstance;
 };
 
-export default langCore;
+export {myType as type};
+
+export default core;

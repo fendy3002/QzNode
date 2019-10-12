@@ -23,6 +23,9 @@ let langUse = (langDictionary: LangContent) => {
                 content = contentStr.replace(regexPattern, params[key]);
             }
             return content;
+        },
+        part: (path: string) => {
+            return langUse(lo.get(langDictionary, path) as LangContent);
         }
     };
 };

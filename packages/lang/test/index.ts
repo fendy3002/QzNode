@@ -45,6 +45,12 @@ mocha.describe('Lang', function() {
             "This will also show default", 
             langUseNotExists._("not.exists.path", "This will also show default")
         );
+        assert.equal(
+            "Default use param 13045", 
+            langUseNotExists._("not.exists.path", "Default use param {num}", {
+                "num": "13045"
+            })
+        );
     });
     mocha.it('should parsing param', async function() {
         let langSrc = await lang(testDictionary1);

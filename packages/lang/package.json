@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/lang",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "publishConfig": {
@@ -12,7 +12,9 @@
     "src/**/*"
   ],
   "scripts": {
-    "test": "mocha --require ts-node/register --trace-warnings test/**/*.ts"
+    "test": "mocha --require ts-node/register --trace-warnings test/**/*.ts",
+    "build": "tsc",
+    "prepublish": "yarn build"
   },
   "keywords": [
     "locale",

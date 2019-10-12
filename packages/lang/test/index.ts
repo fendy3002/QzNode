@@ -59,4 +59,26 @@ mocha.describe('Lang', function() {
             langUse._("one.one.two", "NULL", {name: "Luke Skywalker"})
         );
     });
+    mocha.it('should add language', async function() {
+        let langSrc = await lang(testDictionary1);
+        langSrc.addLang("en", {
+            "one": {
+                "one": {
+                    "three": "It is the third"
+                }
+            }
+        });
+        langSrc.addLang("id", {
+            "one": {
+                "one": {
+                    "one": "Ini one.one.one"
+                }
+            }
+        });
+        let langUse = langSrc.use("en");
+        assert.equal("It is the third", langUse._("one.one.three", "NULL"));
+        assert.equal("This is one.one.one", langUse._("one.one.one", "NULL"));
+        let langUseId = langSrc.use("id");
+        assert.equal("Ini one.one.one", langUseId._("one.one.one", "NULL"));
+    });
 });

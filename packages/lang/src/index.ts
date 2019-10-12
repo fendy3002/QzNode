@@ -11,19 +11,21 @@ interface LangUseParams{
 };
 
 let langUse = (langDictionary: LangContent) => {
-    return {
-        _: (path: string, ifNull: string, params ?: LangUseParams) => {
-            let content = lo.get(langDictionary, path, ifNull);
-            if(!params){
-                return content;
-            }
-            for(let key of Object.keys(params)){
-                let regexPattern = new RegExp("{" + key + "}", "g");
-                let contentStr = content as string;
-                content = contentStr.replace(regexPattern, params[key]);
-            }
+    let _ = (path: string, ifNull ?: string, params ?: LangUseParams) => {
+        let content = lo.get(langDictionary, path, ifNull);
+        if(!params){
             return content;
-        },
+        }
+        for(let key of Object.keys(params)){
+            let regexPattern = new RegExp("{" + key + "}", "g");
+            let contentStr = content as string;
+            content = contentStr.replace(regexPattern, params[key]);
+        }
+        return content;
+    };
+    return {
+        _: _,
+        get: _,
         part: (path: string) => {
             return langUse(lo.get(langDictionary, path) as LangContent);
         }

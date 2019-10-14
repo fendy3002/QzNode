@@ -12,7 +12,7 @@ let changeEmail: myType.service.changeEmail = (context, lang) => async ({userId,
     });
     let pattern = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     if(!pattern.test(String(email).toLowerCase())){
-        throw new Error(lang._("changeEmail.emailFormatInvalid"));
+        throw new Error(lang._("changeEmail.emailFormatInvalid", "Email not in correct format."));
     }
 
     if(user){
@@ -26,7 +26,7 @@ let changeEmail: myType.service.changeEmail = (context, lang) => async ({userId,
         };
     }
     else{
-        throw new Error(context.lang.auth.general.notFound);
+        throw new Error(lang._("general.notFound", "User not found."));
     }
 };
 

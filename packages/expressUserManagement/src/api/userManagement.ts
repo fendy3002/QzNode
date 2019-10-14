@@ -18,9 +18,6 @@ let lang = (req) => {
 }
 
 let userManagement: myType.api.userManagement = (context) => {
-    const registerService = registerServiceRaw(context);
-    const changeEmailService = changeEmailServiceRaw(context.db);
-    const resetPasswordService = resetPasswordServiceRaw(context);
     const userModel = userModelRaw(context.db);
     const roleAccessModel = roleAccessModelRaw(context.db);
     const roleModel = roleModelRaw(context.db);
@@ -225,6 +222,7 @@ let userManagement: myType.api.userManagement = (context) => {
             }
         },
         changeEmail: async (req, res, next) => {
+            const changeEmailService = changeEmailServiceRaw(context.db, lang(req));
             try{
                 let userId = req.params.id;
                 let {email} = req.body;
@@ -245,6 +243,8 @@ let userManagement: myType.api.userManagement = (context) => {
             }
         },
         register: async (req, res, next) => {
+            const registerService = registerServiceRaw(context, lang(req));
+
             let {name, username, email} = req.body;
             let password = uuid().replace(/\-/gi, "").substring(0, 10);
             let userid,
@@ -307,6 +307,8 @@ let userManagement: myType.api.userManagement = (context) => {
             }
         },
         resetPassword: async (req, res, next) => {
+            const resetPasswordService = resetPasswordServiceRaw(context, lang(req));
+
             let password = null;
             let email = null;
             let userid = req.params.id;

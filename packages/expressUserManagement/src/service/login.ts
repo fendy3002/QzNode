@@ -14,7 +14,7 @@ import * as crypto from "crypto";
 import * as myType from '../types';
 const random = new Random();
 
-const loginService: myType.service.login = (context) => async (user, rememberMe = false) => {
+const loginService: myType.service.login = (context, lang) => async (user, rememberMe = false) => {
     let {username, password} = user;
 
     let userModel = userModelRaw.associate(context.db, userModelRaw(context.db));
@@ -114,11 +114,11 @@ const loginService: myType.service.login = (context) => async (user, rememberMe 
             }
         }
         else{
-            throw new Error(context.lang.auth.login.notMatch);
+            throw new Error(lang._("login.notMatch", "Username or password does not match."));
         }
     }
     else{
-        throw new Error(context.lang.auth.login.notMatch);
+        throw new Error(lang._("login.notMatch", "Username or password does not match."));
     }
 };
 export default loginService;

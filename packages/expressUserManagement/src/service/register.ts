@@ -7,19 +7,18 @@ const uuid = require('uuid/v4');
 import userModelRaw from '../model/user';
 import * as myType from '../types';
 
-const registerService : myType.service.register = (context) => async (user) => {
+const registerService : myType.service.register = (context, lang) => async (user) => {
     let {name, username, email, password, superAdmin = false} = user;
     let userModel = userModelRaw(context.db);
     
     let usernameRegex = /^[a-zA-Z0-9]+$/;
-    const lang = context.lang;
     if(!username.match(usernameRegex)){
         debug("Username do not match format");
-        throw new Error(lang.auth.register.usernameFormat);
+        throw new Error(lang._("register.usernameFormat", "Username not in correct format."));
     }
     if(email.indexOf("@") < 0){
         debug("Email do not match format");
-        throw new Error(lang.auth.register.emailFormat);
+        throw new Error(lang._("register.emailFormat", "Email not in correct format."));
     }
 
     let userWhere = {
@@ -31,9 +30,15 @@ const registerService : myType.service.register = (context) => async (user) => {
     const existingUser = await userModel.findAll({ where: userWhere, raw: true });
     if(existingUser && existingUser.length > 0){
         debug("User exists");
-        throw new Error(lang.auth.register.exists
-            .replace("{username}", username)
-            .replace("{email}", email));
+        let errMessage = lang._(
+            "register.exists",
+            "",
+            {
+                username: username,
+                email: email,
+            }
+        )
+        throw new Error(errMessage);
     }
     const saltRounds = 10;
     let confirmation = uuid();

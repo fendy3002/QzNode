@@ -54,7 +54,7 @@
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "@fendy3002/lang": "^0.0.4",
+    "@fendy3002/lang": "^0.0.5",
     "bcrypt": "^3.0.6",
     "http-errors": "^1.7.2",
     "jsonwebtoken": "^8.5.1",

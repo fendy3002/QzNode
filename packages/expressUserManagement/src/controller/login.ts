@@ -22,7 +22,7 @@ const login: myType.controller.login = (context) => {
             let rememberMe = req.body.remember;
             let listenerUuid = req.body.listener_uuid;
             try{
-                let {user, selector, publicKey} = await loginService(context)({
+                let {user, selector, publicKey} = await loginService(context, req.lang.part("auth"))({
                     username: req.body.username,
                     password: req.body.password
                 }, rememberMe);

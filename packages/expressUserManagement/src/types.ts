@@ -226,7 +226,7 @@ export namespace service{
         username: string, password: string
     }
     export interface login{
-        (context: context): (user: loginUserPayload, rememberMe: boolean) => Promise<any>
+        (context: context, lang: langType.Pack): (user: loginUserPayload, rememberMe: boolean) => Promise<any>
     }
     export interface registerUserPayload{
         name: string, 
@@ -236,7 +236,7 @@ export namespace service{
         superAdmin: boolean
     }
     export interface register{
-        (context: context): (user: registerUserPayload) => Promise<any>
+        (context: context, lang: langType.Pack): (user: registerUserPayload) => Promise<any>
     }
     export interface changeEmail{
         (context: context, lang: langType.Pack): (payload: {
@@ -245,7 +245,7 @@ export namespace service{
         }) => Promise<any>
     }
     export interface changePassword{
-        (context: context): (payload: {
+        (context: context, lang: langType.Pack): (payload: {
             userid: string, 
             oldPassword: string, 
             newPassword: string, 
@@ -253,7 +253,7 @@ export namespace service{
         }) => Promise<any>
     }
     export interface resetPassword{
-        (context: context): (payload: {
+        (context: context, lang: langType.Pack): (payload: {
             userid: string
         }) => Promise<any>
     }

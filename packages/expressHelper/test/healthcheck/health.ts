@@ -40,6 +40,7 @@ mocha.describe("healthcheck", function(this) {
     let response = await chai.request(app)
       .get('/~/readiness');
 
+    addContext(this, "res.body", response.body)
     assert.equal("ok", response.body.mysql.status);
     assert.equal("failed", response.body.mongo.status);
     assert.equal("Mongo not connected", response.body.mongo.err);
@@ -66,6 +67,7 @@ mocha.describe("healthcheck", function(this) {
     let response = await chai.request(app)
       .get('/~/readiness');
 
+    addContext(this, "res.body", response.body)
     assert.equal("ok", response.body.mysql.status);
     assert.equal("failed", response.body.mongo.status);
     assert.equal("Timeout", response.body.mongo.err);

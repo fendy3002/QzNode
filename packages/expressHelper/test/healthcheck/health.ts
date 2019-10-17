@@ -7,6 +7,7 @@ import chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
 import healthcheck from '../../src/healthcheck/index';
+import * as i from '../../src/index';
 
 let generateApp = () => {
   let express = require('express');

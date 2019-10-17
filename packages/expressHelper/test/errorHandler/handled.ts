@@ -29,13 +29,36 @@ mocha.describe("errorHandler/handled", function(this) {
       return res.end();
     }));
     app.use((err, req, res, next) => {
-      assert.equal(500, err.status);
-      assert.equal("Internal Server Error", err.message);
+      res.status(err.status).json({
+        message: err.message
+      });
       res.end();
       return;
     });
     
-    return await chai.request(app)
+    let resultResponse = await chai.request(app)
       .get('/~');
+    assert.equal(500, resultResponse.status);
+    assert.equal("Internal Server Error", resultResponse.body.message);
+  });
+  mocha.it("Handle code error", async function(){
+    let app = generateApp();
+    app.get('/~', handled(async (req, res, next) => {
+      let i = null;
+      i.toString();
+      return res.end();
+    }));
+    app.use((err, req, res, next) => {
+      res.status(err.status).json({
+        message: err.message
+      });
+      res.end();
+      return;
+    });
+    
+    let resultResponse = await chai.request(app)
+      .get('/~');
+    assert.equal(500, resultResponse.status);
+    assert.equal("Cannot read property 'toString' of null", resultResponse.body.message);
   });
 });

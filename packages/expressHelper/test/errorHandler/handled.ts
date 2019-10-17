@@ -25,8 +25,7 @@ mocha.describe("errorHandler/handled", function(this) {
     let app = generateApp();
     nock(nockServer).get("/500").reply(500);
     app.get('/~', handled(async (req, res, next) => {
-      let result = await sa.get(nockServer + "/500");
-      console.log(result);
+      await sa.get(nockServer + "/500");
       return res.end();
     }));
     app.use((err, req, res, next) => {

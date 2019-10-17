@@ -31,10 +31,13 @@
     "dotenv": "^8.1.0",
     "mocha": "^6.2.1",
     "mochawesome": "^4.1.0",
+    "nock": "^11.4.0",
+    "superagent": "^5.1.0",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "http-errors": "^1.7.3"
   }
 }

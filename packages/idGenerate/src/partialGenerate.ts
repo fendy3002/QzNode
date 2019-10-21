@@ -4,15 +4,32 @@ let idPlaceholder = (len: string) => {
 };
 interface handlePayload {
     sql: string,
-    regex: string
+    regex: string,
+    prefix: string,
+    suffix: string
 };
 interface handleFunc {
     (payload: handlePayload): Promise<number>
 };
-export default async (format: string, handle: handleFunc) => {
+interface option{
+    data ?: any
+};
+export default async (format: string, handle: handleFunc, option ?: option) => {
+    let data = option ? option.data : null;
+
     let preformatTemplate = await generate(format, {
-        _id: idPlaceholder
+        _id: idPlaceholder,
+        ...data
     });
+
+    let prefix = preformatTemplate.substring(
+        0, 
+        preformatTemplate.indexOf("{{id}}")
+    );
+    let suffix = preformatTemplate.substring(
+        prefix.length + 6
+    );
+
     let regexFormat = await generate(preformatTemplate, {
         "id": "(\\d*)"
     });
@@ -22,10 +39,13 @@ export default async (format: string, handle: handleFunc) => {
         sql: await generate(preformatTemplate, {
             "id": "%"
         }),
+        prefix,
+        suffix
     };
-
+    
     let nextId = await handle(handlePayload);
     return generate(format, {
-        _id: (num) => nextId.toString().padStart(num, "0")
+        _id: (num) => nextId.toString().padStart(num, "0"),
+        ...data
     });
 };

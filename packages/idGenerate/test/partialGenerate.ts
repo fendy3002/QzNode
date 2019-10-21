@@ -18,4 +18,26 @@ mocha.describe("partialGenerate", function(this) {
         });
         assert.equal("INV/" + expectedDate +"/000007/X993", result);
     });
+    mocha.it("Should generate id together with date and additional", async function(){
+        let expectedDate = moment().format("YYYY/MM");
+        let result = await partialGenerate("INV/{{tag}}/{{_date('YYYY/MM')}}/{{_id(6)}}/X993", async (payload) => {
+            return 7;
+        }, {
+            data: {
+                tag: "CUST"
+            }
+        });
+        assert.equal("INV/CUST/" + expectedDate +"/000007/X993", result);
+    });
+    mocha.it("Has no suffix", async function(){
+        let expectedDate = moment().format("YYYY/MM");
+        let result = await partialGenerate("INV/{{tag}}/{{_date('YYYY/MM')}}/{{_id(6)}}", async (payload) => {
+            return 7;
+        }, {
+            data: {
+                tag: "CUST"
+            }
+        });
+        assert.equal("INV/CUST/" + expectedDate +"/000007", result);
+    });
 });

@@ -18,4 +18,10 @@ mocha.describe("generate", function(this) {
         let result = await generate("{{_date('YYYY-MM-DD')}}");
         assert.equal(moment().format("YYYY-MM-DD"), result);
     });
+    mocha.it("Should handle unknown variable", async function(){
+        await assert.rejects(
+            async () => await generate("THISISNOVAR{{asdfasd}}"), 
+            Error
+        );
+    });
 });

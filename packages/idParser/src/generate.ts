@@ -1,4 +1,4 @@
-import twig = require('twig');
+import nunjucks = require('nunjucks');
 import moment = require('moment');
 
 const dateFormat = (template: string) => {
@@ -17,11 +17,13 @@ const randomNumber = (num: number) => {
     return result;
 };
 
-export default async(format, data ?: any) => {
-    const template = twig.twig({
-        data: format
-    });
-    return template.render({
+const nunjucksRender = nunjucks.configure({
+    autoescape: true,
+    throwOnUndefined: true
+});
+
+export default async(format: string, data ?: any) => {
+    return nunjucksRender.renderString(format, {
         ...data,
         _date: dateFormat,
         _randomNumber: randomNumber

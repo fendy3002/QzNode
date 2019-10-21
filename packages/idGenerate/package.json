@@ -1,8 +1,17 @@
 {
   "name": "@fendy3002/id-generate",
   "version": "0.0.1",
-  "main": "index.js",
+  "description": "",
+  "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/fendy3002/QzNode/tree/master/packages/idGenerate",
   "license": "MIT",
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
   "scripts": {
     "test": "mocha test/**/*.ts",
     "build": "tsc",

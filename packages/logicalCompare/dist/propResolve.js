@@ -37,8 +37,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var lo = require("lodash");
+var moment = require("moment");
 exports.default = (function () { return function (data, obj) { return __awaiter(void 0, void 0, void 0, function () {
+    var dateValue;
     return __generator(this, function (_a) {
-        return [2 /*return*/, lo.get()];
+        if (obj.hasOwnProperty("$date")) {
+            dateValue = obj.$date;
+            if (dateValue === "now") {
+                return [2 /*return*/, new Date()];
+            }
+            else if (dateValue === "today") {
+                return [2 /*return*/, moment(moment(), "YYYY-MM-DD").toDate()];
+            }
+            else {
+                return [2 /*return*/, moment(dateValue)];
+            }
+        }
+        else {
+            // assume $prop
+            return [2 /*return*/, lo.get(data, obj.$prop)];
+        }
+        return [2 /*return*/];
     });
 }); }; });

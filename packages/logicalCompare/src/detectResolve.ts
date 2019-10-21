@@ -2,8 +2,10 @@ import andResolve from './andResolve';
 import orResolve from './orResolve';
 import propResolve from './propResolve';
 import compareResolve from './compareResolve';
+const debug = require('debug')("@fendy3002/logical-compare:detectResolve");
 
 export default () => async (data, obj) => {
+    debug("obj", obj);
     if(obj.hasOwnProperty("$and")){
         return await andResolve()(data, obj);
     }

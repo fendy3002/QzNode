@@ -1,7 +1,7 @@
 import lo = require('lodash');
 import moment = require('moment');
 export default () => async (data, obj) => {
-    if (obj.hasOwnProperty("$date")) {
+    if (obj && typeof(obj) == "object" && obj.hasOwnProperty("$date")) {
         let dateValue = obj.$date;
         if (dateValue === "now") {
             return new Date();

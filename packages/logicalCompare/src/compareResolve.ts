@@ -1,8 +1,11 @@
 import detectResolve from './detectResolve';
 import propResolve from './propResolve';
 import moment = require('moment');
+const debug = require('debug')("@fendy3002/logical-compare:compareResolve");
 
 const opEq = (propFrom, propWith) => {
+    debug("operation eq", propFrom, propWith);
+
     if(propFrom instanceof Date){
         return moment(propFrom).isSame(moment(propWith), "day");
     }
@@ -11,6 +14,8 @@ const opEq = (propFrom, propWith) => {
     }
 };
 const opCompare = (propFrom, propWith, operator) => {
+    debug("operation compare", propFrom, propWith, operator);
+    
     if(propFrom instanceof Date){
         return operator(moment(propFrom).diff(moment(propWith), "seconds"), 0);
     }
@@ -22,8 +27,8 @@ const opCompare = (propFrom, propWith, operator) => {
 export default () => {
     const getProp = async (data, obj) => {
         if(typeof(obj) == "object" && 
-            obj.hasOwnProperty("$prop") || 
-            obj.hasOwnProperty("$date")){
+            (obj.hasOwnProperty("$prop") || 
+            obj.hasOwnProperty("$date"))){
             return await propResolve()(data, obj);
         }
         else{
@@ -31,10 +36,11 @@ export default () => {
         }
     };
     return async (data, obj) => {
-        let sourceField = await getProp(data, obj[0]);
-        let operation = obj[1];
-        let comparerField = await getProp(data, obj[2]);
-        
+        let sourceField = await getProp(data, obj.$compare[0]);
+        let operation = obj.$compare[1];
+        let comparerField = await getProp(data, obj.$compare[2]);
+        debug("operation", operation);
+
         switch(operation){
             case "eq":
                 return opEq(sourceField, comparerField);

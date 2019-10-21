@@ -7,6 +7,7 @@ const opEq = (propFrom, propWith) => {
     debug("operation eq", propFrom, propWith);
 
     if(propFrom instanceof Date){
+        debug(`moment(propFrom).isSame(moment(propWith), "day")`, moment(propFrom).isSame(moment(propWith), "day"));
         return moment(propFrom).isSame(moment(propWith), "day");
     }
     else{
@@ -17,7 +18,9 @@ const opCompare = (propFrom, propWith, operator) => {
     debug("operation compare", propFrom, propWith, operator);
     
     if(propFrom instanceof Date){
-        return operator(moment(propFrom).diff(moment(propWith), "seconds"), 0);
+        const secondsDiff = moment(propFrom).diff(moment(propWith), "seconds");
+        debug("secondsDiff", secondsDiff);
+        return operator(secondsDiff, 0);
     }
     else{
         return operator(propFrom, propWith);

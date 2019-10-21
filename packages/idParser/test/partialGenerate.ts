@@ -11,4 +11,11 @@ mocha.describe("partialGenerate", function(this) {
         });
         assert.equal("INV/23/01/000007/X993", result);
     });
+    mocha.it("Should generate id together with date", async function(){
+        let expectedDate = moment().format("YYYY/MM");
+        let result = await partialGenerate("INV/{{_date('YYYY/MM')}}/{{_id(6)}}/X993", async (payload) => {
+            return 7;
+        });
+        assert.equal("INV/" + expectedDate +"/000007/X993", result);
+    });
 });

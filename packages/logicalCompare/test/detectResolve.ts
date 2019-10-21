@@ -60,6 +60,50 @@ mocha.describe("detectResolve", function (this) {
             );
         }
     });
+    mocha.it("should compare enum", async function () {
+        let data = { type: "PREMIUM" };
+        const conditions = [
+            { expect: true, op: "in", val: ["PREMIUM", "VIP"] },
+            { expect: false, op: "in", val: ["REGULAR", "VIP"] }
+        ];
+        for (let condition of conditions) {
+            assert.equal(
+                condition.expect,
+                await detectResolve()(
+                    data,
+                    {
+                        $compare: [
+                            { $prop: "type" },
+                            condition.op,
+                            condition.val
+                        ]
+                    })
+            );
+        }
+    });
+    mocha.it("should compare string", async function () {
+        let data = { name: "Luke Skywalker" };
+        const conditions = [
+            { expect: true, op: "starts_with", val: "Luke" },
+            { expect: false, op: "starts_with", val: "Lucas" },
+            { expect: true, op: "ends_with", val: "Skywalker" },
+            { expect: false, op: "ends_with", val: "Solo" },
+        ];
+        for (let condition of conditions) {
+            assert.equal(
+                condition.expect,
+                await detectResolve()(
+                    data,
+                    {
+                        $compare: [
+                            { $prop: "name" },
+                            condition.op,
+                            condition.val
+                        ]
+                    })
+            );
+        }
+    });
     mocha.it("should compare and or condition", async function () {
         let data = { birth: "2000-03-12 03:33:29", total_price: 12000 };
         let priceTrue = {

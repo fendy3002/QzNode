@@ -84,4 +84,21 @@ mocha.describe("yamlEval", function (this) {
       `;
     assert.equal(expect, await yamlEval()(data, condition));
   });
+  mocha.it("should do enum comparison", async function () {
+    let data = {
+      name: "Luke Skywalker",
+      type: "PREMIUM",
+      birth: "2000-03-12",
+      total_price: 99999,
+    };
+    let expect = true;
+    let condition =
+      `
+      $compare:
+        - $prop: "type"
+        - "in"
+        - ["REGULAR", "PREMIUM", "VIP"]
+      `;
+    assert.equal(expect, await yamlEval()(data, condition));
+  });
 });

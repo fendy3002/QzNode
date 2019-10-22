@@ -6,23 +6,23 @@ const debug = require('debug')("@fendy3002/logical-compare:compareResolve");
 const opEq = (propFrom, propWith) => {
     debug("operation eq", propFrom, propWith);
 
-    if(propFrom instanceof Date){
+    if (propFrom instanceof Date) {
         debug(`moment(propFrom).isSame(moment(propWith), "day")`, moment(propFrom).isSame(moment(propWith), "day"));
         return moment(propFrom).isSame(moment(propWith), "day");
     }
-    else{
+    else {
         return propFrom == propWith;
     }
 };
 const opCompare = (propFrom, propWith, operator) => {
     debug("operation compare", propFrom, propWith, operator);
-    
-    if(propFrom instanceof Date){
+
+    if (propFrom instanceof Date) {
         const secondsDiff = moment(propFrom).diff(moment(propWith), "seconds");
         debug("secondsDiff", secondsDiff);
         return operator(secondsDiff, 0);
     }
-    else{
+    else {
         return operator(propFrom, propWith);
     }
 };
@@ -34,7 +34,7 @@ export default () => {
         let comparerField = await propResolve()(data, obj.$compare[2]);
         debug("operation", operation);
 
-        switch(operation){
+        switch (operation) {
             case "eq":
                 return opEq(sourceField, comparerField);
             case "ne":
@@ -47,14 +47,25 @@ export default () => {
                 return opCompare(sourceField, comparerField, (k, l) => k < l);
             case "lte":
                 return opCompare(sourceField, comparerField, (k, l) => k <= l);
-            case "starts_with":
-                return (sourceField as string).startsWith(comparerField);
-            case "ends_with":
-                return (sourceField as string).endsWith(comparerField);
-            case "contains":
-                return (sourceField as string).indexOf(comparerField) >= 0;
-            case "in":
-                return (comparerField as Array<string>).indexOf(sourceField as string) >= 0;
+            case "starts_with": {
+                let sourceStr = (sourceField as string).toLowerCase()
+                let comparerStr = (comparerField as string).toLowerCase()
+                return sourceStr.startsWith(comparerStr);
+            }
+            case "ends_with": {
+                let sourceStr = (sourceField as string).toLowerCase()
+                let comparerStr = (comparerField as string).toLowerCase()
+                return sourceStr.endsWith(comparerStr);
+            }
+            case "contains": {
+                let sourceStr = (sourceField as string).toLowerCase()
+                let comparerStr = (comparerField as string).toLowerCase()
+                return sourceStr.indexOf(comparerStr) >= 0;
+            }
+            case "in": {
+                let sourceStr = (sourceField as string).toLowerCase()
+                return (comparerField as Array<string>).map(k => k.toLowerCase()).indexOf(sourceStr) >= 0;
+            }
             case "regex":
                 // to parse regex
                 return null;

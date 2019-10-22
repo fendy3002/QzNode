@@ -1,2 +1,2 @@
-declare const _default: () => (data: any, obj: any) => Promise<any>;
-export default _default;
+declare const propResolve: () => (data: any, obj: any) => any;
+export default propResolve;

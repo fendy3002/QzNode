@@ -38,25 +38,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var lo = require("lodash");
 var moment = require("moment");
-exports.default = (function () { return function (data, obj) { return __awaiter(void 0, void 0, void 0, function () {
-    var dateValue;
-    return __generator(this, function (_a) {
-        if (obj.hasOwnProperty("$date")) {
-            dateValue = obj.$date;
-            if (dateValue === "now") {
+var debug = require('debug')("@fendy3002/logical-compare:propResolve");
+var propResolve = function () { return function (data, obj) { return __awaiter(void 0, void 0, void 0, function () {
+    var dateValue, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                debug("obj", obj);
+                if (!(obj && typeof (obj) == "object" && obj.hasOwnProperty("$date"))) return [3 /*break*/, 6];
+                dateValue = obj.$date;
+                if (!(dateValue === "now")) return [3 /*break*/, 1];
                 return [2 /*return*/, new Date()];
-            }
-            else if (dateValue === "today") {
+            case 1:
+                if (!(dateValue === "today")) return [3 /*break*/, 2];
                 return [2 /*return*/, moment(moment(), "YYYY-MM-DD").toDate()];
-            }
-            else {
-                return [2 /*return*/, moment(dateValue)];
-            }
+            case 2:
+                if (!(typeof (dateValue) == "object" && dateValue.hasOwnProperty("$prop"))) return [3 /*break*/, 4];
+                _a = moment;
+                return [4 /*yield*/, propResolve()(data, dateValue)];
+            case 3: return [2 /*return*/, _a.apply(void 0, [_b.sent()]).toDate()];
+            case 4: return [2 /*return*/, moment(dateValue).toDate()];
+            case 5: return [3 /*break*/, 7];
+            case 6:
+                if (obj && typeof (obj) == "object" && obj.hasOwnProperty("$prop")) {
+                    // assume $prop
+                    return [2 /*return*/, lo.get(data, obj.$prop)];
+                }
+                else {
+                    return [2 /*return*/, obj];
+                }
+                _b.label = 7;
+            case 7: return [2 /*return*/];
         }
-        else {
-            // assume $prop
-            return [2 /*return*/, lo.get(data, obj.$prop)];
-        }
-        return [2 /*return*/];
     });
-}); }; });
+}); }; };
+exports.default = propResolve;

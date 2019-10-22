@@ -1,6 +1,47 @@
+`Logical Compare` is a library that can use comparison logic in either JSON or YAML format, and use it to evaluate whether given data matching the comparison logic.
 
-# blocks
+# Installation & Usage
+npm:
+```bash
+$ npm install --save @fendy3002/logical-compare
+```
+yarn:
+```bash
+$ yarn add @fendy3002/logical-compare
+```
 
+There are 2 ways to use `logical compare`, either using `JSON` format with `eval`, or `YAML` format with `yamlEval`. Example for JSON:
+
+```javascript
+import {eval} from '@fendy3002/logical-compare';
+
+let data = { total_price: 10000 };
+let logic: {
+    $compare: [
+        {$prop: "total_price"},
+        "gt",
+        5000
+    ]
+};
+let evaluation = await eval()(data, logic);
+```
+For YAML:
+```javascript
+import {yamlEval} from '@fendy3002/logical-compare';
+
+let data = { total_price: 10000 };
+let logic: `
+  $compare:
+    - $prop: "total_price"
+    - "gt"
+    - 5000
+`;
+let evaluation = await yamlEval()(data, logic);
+```
+
+# Blocks
+
+The logic pieces are consists of blocks. Each block can be a logical operator (`or`, `and`), comparison (`compare`, `between`), or data (`date`, `prop`).
 
 # `$prop` block
 

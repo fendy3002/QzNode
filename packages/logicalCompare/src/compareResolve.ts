@@ -28,20 +28,10 @@ const opCompare = (propFrom, propWith, operator) => {
 };
 
 export default () => {
-    const getProp = async (data, obj) => {
-        if(typeof(obj) == "object" && 
-            (obj.hasOwnProperty("$prop") || 
-            obj.hasOwnProperty("$date"))){
-            return await propResolve()(data, obj);
-        }
-        else{
-            return obj;
-        }
-    };
     return async (data, obj) => {
-        let sourceField = await getProp(data, obj.$compare[0]);
+        let sourceField = await propResolve()(data, obj.$compare[0]);
         let operation = obj.$compare[1];
-        let comparerField = await getProp(data, obj.$compare[2]);
+        let comparerField = await propResolve()(data, obj.$compare[2]);
         debug("operation", operation);
 
         switch(operation){

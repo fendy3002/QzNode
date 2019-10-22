@@ -4,7 +4,7 @@ const debug = require('debug')("@fendy3002/logical-compare:propResolve");
 
 const propResolve = () => async (data, obj) => {
     debug("obj", obj);
-    if (obj && typeof(obj) == "object" && obj.hasOwnProperty("$date")) {
+    if (obj && typeof (obj) == "object" && obj.hasOwnProperty("$date")) {
         let dateValue = obj.$date;
         if (dateValue === "now") {
             return new Date();
@@ -12,16 +12,19 @@ const propResolve = () => async (data, obj) => {
         else if (dateValue === "today") {
             return moment(moment(), "YYYY-MM-DD").toDate();
         }
-        else if(typeof(dateValue) == "object" && dateValue.hasOwnProperty("$prop")){
+        else if (typeof (dateValue) == "object" && dateValue.hasOwnProperty("$prop")) {
             return moment(await propResolve()(data, dateValue)).toDate();
         }
         else {
             return moment(dateValue).toDate();
         }
     }
-    else {
+    else if (obj && typeof (obj) == "object" && obj.hasOwnProperty("$prop")) {
         // assume $prop
         return lo.get(data, obj.$prop);
+    }
+    else {
+        return obj;
     }
 };
 export default propResolve;

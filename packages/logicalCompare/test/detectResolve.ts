@@ -202,4 +202,32 @@ mocha.describe("detectResolve", function (this) {
             );
         }
     });
+    mocha.it("should compare between comparison", async function () {
+        let data = { total_price: 99999 };
+        const conditions = [
+            { expect: true, case: ["$between", 99998, 100000] },
+            { expect: true, case: ["$between", 99999, 100000] },
+            { expect: true, case: ["$between", 99998, 99999] },
+            { expect: false, case: ["$between", 99997, 99998] },
+            { expect: false, case: ["$between", 100000, 100001] },
+
+            { expect: true, case: ["$betweenEx", 99998, 100000] },
+            { expect: false, case: ["$betweenEx", 99999, 100000] },
+            { expect: false, case: ["$betweenEx", 99998, 99999] },
+            { expect: false, case: ["$betweenEx", 99997, 99998] },
+            { expect: false, case: ["$betweenEx", 100000, 100001] },
+        ];
+        for (let condition of conditions) {
+            assert.equal(
+                condition.expect,
+                await detectResolve()(data, {
+                    [condition.case[0]]: [
+                        condition.case[1],
+                        {$prop: "total_price"},
+                        condition.case[2],
+                    ]
+                }),
+            );
+        }
+    });
 });

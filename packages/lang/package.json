@@ -6,7 +6,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/fendy3002/QzNode/tree/master/packages/lang",
+  "homepage": "https://github.com/fendy3002/QzNode/tree/master/packages/lang#readme",
   "files": [
     "dist/**/*",
     "src/**/*"

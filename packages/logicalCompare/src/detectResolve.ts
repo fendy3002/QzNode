@@ -19,7 +19,7 @@ export default () => async (data, obj) => {
     else if(obj.hasOwnProperty("$between") || obj.hasOwnProperty("$betweenEx")){
         return await betweenResolve()(data, obj);
     }
-    else if(obj.hasOwnProperty("$prop") || obj.hasOwnProperty("$date")){
+    else if(obj.hasOwnProperty("$prop") || obj.hasOwnProperty("$date") || obj.hasOwnProperty("$boolean")){
         return await propResolve()(data, obj);
     }
 };

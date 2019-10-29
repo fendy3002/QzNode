@@ -230,4 +230,23 @@ mocha.describe("detectResolve", function (this) {
             );
         }
     });
+    mocha.it("should result boolean", async function () {
+        let data = { name: "Luke Skywalker" };
+        const conditions = [
+            { expect: true,  val: "true" },
+            { expect: true, val: true },
+            { expect: false,  val: "false" },
+            { expect: false, val: false },
+        ];
+        for (let condition of conditions) {
+            assert.equal(
+                condition.expect,
+                await detectResolve()(
+                    data,
+                    {
+                        $boolean: condition.val
+                    })
+            );
+        }
+    });
 });

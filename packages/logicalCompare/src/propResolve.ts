@@ -19,6 +19,15 @@ const propResolve = () => async (data, obj) => {
             return moment(dateValue).toDate();
         }
     }
+    else if (obj && typeof (obj) == "object" && obj.hasOwnProperty("$boolean")) {
+        if(typeof(obj.$boolean) == "boolean" ){
+            return obj.$boolean;
+        }
+        else{
+            // assume string
+            return obj.$boolean.toLowerCase() === "true";
+        }
+    }
     else if (obj && typeof (obj) == "object" && obj.hasOwnProperty("$prop")) {
         // assume $prop
         return lo.get(data, obj.$prop);

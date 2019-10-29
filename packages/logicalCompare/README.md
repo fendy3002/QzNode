@@ -65,6 +65,20 @@ JSON:
 }
 ```
 
+# `$boolean` block
+JSON:
+```javascript
+{
+    "$boolean": "true"
+}
+```
+YAML:
+```yaml
+  $boolean: "true"
+```
+
+Will be replaced with boolean value. True if value is boolean `true`, or a string equals `"true"`. Otherwise false.
+
 # `$date` block
 
 JSON:

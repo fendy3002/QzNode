@@ -1,9 +1,9 @@
 import * as myType from '../types';
 import express = require('express');
 
-let generateCheck = (timeout) => (check, key) => {
+let generateCheck = (timeout, req, res) => (check, key) => {
     return Promise.race([
-        check[key]().then((result) => {
+        check[key](req, res).then((result) => {
             return {
                 [key]: {
                     status: "ok"
@@ -38,8 +38,9 @@ export default async (configuration : myType.healthCheck.configuration) => {
         router.get("/~/readiness", async (req, res, next) => {
             let result: any = {};
             let promiseHandler = [];
+            let generateChecker = generateCheck(checkTimeout, req, res);
             for(let key of Object.keys(configuration.check)){
-                promiseHandler.push(generateCheck(checkTimeout)(configuration.check, key));
+                promiseHandler.push(generateChecker(configuration.check, key));
             }
             let handledResult = await Promise.all(promiseHandler);
             for(let eachResult of handledResult){

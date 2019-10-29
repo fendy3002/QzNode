@@ -34,7 +34,7 @@ Or whether something happen to services when the server produce an error.
 import {healthCheck} from '@fendy3002/express-helper';
 
 app.use(healthCheck{
-    mongo: async () => {
+    mongo: async (req, res) => {
         await mongoose.connection.db.admin().ping();
         return;
     },

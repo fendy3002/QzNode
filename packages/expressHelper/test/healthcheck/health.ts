@@ -27,10 +27,10 @@ mocha.describe("healthcheck", function(this) {
   mocha.it("/~/liveness should check configured", async function(){
     let app = generateApp();
     let check = {
-      mysql: async () => {
+      mysql: async (req, res) => {
         return;
       },
-      mongo: async () => {
+      mongo: async (req, res) => {
         throw new Error("Mongo not connected");
       }
     };

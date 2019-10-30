@@ -6,7 +6,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/fendy3002/QzNode/tree/master/packages/idGenerate",
+  "homepage": "https://github.com/fendy3002/QzNode/tree/master/packages/idGenerate#readme",
   "license": "MIT",
   "files": [
     "dist/**/*",
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "moment": "^2.24.0",
-    "nunjucks": "^3.2.0"
+    "nunjucks": "^3.2.0",
+    "uuid": "^3.3.3"
   }
 }

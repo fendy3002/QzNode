@@ -24,4 +24,8 @@ mocha.describe("generate", function(this) {
             Error
         );
     });
+    mocha.it("Should handle uuid", async function(){
+        let result = await generate("{{_uuid()}}");
+        assert.equal(36, result.length);
+    });
 });

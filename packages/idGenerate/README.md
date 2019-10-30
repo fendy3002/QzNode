@@ -19,6 +19,7 @@ Generate accept `nunjucks` format as first parameter. The generate function also
 
 * `_date`: accept `moment` date format. It will return today's local date. ex: `date('YYYY/MM/DD')`
 * `_randomNumber`: accept `number`, length of characters. ex: `_randomNumber(8)` for 8-characters
+* `_uuid`: accept nothing. It will return randomly generated uuid
 
 ## Additional parameters
 

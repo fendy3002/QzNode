@@ -1,5 +1,6 @@
 import nunjucks = require('nunjucks');
 import moment = require('moment');
+import uuid = require('uuid/v4');
 
 const dateFormat = (template: string) => {
     return moment().format(template);
@@ -25,6 +26,7 @@ const nunjucksRender = nunjucks.configure({
 export default async(format: string, data ?: any) => {
     return nunjucksRender.renderString(format, {
         ...data,
+        _uuid: uuid,
         _date: dateFormat,
         _randomNumber: randomNumber
     });

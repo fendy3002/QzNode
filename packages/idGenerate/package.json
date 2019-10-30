@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/id-generate",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/index.js",
   "publishConfig": {

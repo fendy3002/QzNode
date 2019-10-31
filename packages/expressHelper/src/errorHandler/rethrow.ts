@@ -1,7 +1,9 @@
 export const append = (innerErr, newErr) => {
     newErr.original = innerErr;
-    newErr.stack = newErr.stack.split('\n').slice(0, 2).join('\n') + '\n' +
-        innerErr.stack;
+    if(innerErr.stack){
+        newErr.stack = newErr.stack.split('\n').slice(0, 2).join('\n') + '\n' +
+            innerErr.stack;
+    }
     return newErr;
 };
 export const from = (innerErr) => (message) => {

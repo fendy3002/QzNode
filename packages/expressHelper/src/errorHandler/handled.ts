@@ -17,7 +17,9 @@ export default (handler: (req, res, next) => Promise<void | any>) => {
                     else if (err.response.body && err.response.body.error) {
                         nextPayload = httpError(err.response.status, err.response.body.error);
                     }
-                    nextPayload = httpError(err.response.status, err.message);
+                    else {
+                        nextPayload = httpError(err.response.status, err.message);
+                    }
                 }
                 else {
                     nextPayload = httpError(err.response.status, err.message);

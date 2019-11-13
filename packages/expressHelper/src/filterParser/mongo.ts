@@ -2,8 +2,8 @@ import lo = require('lodash');
 import moment = require('moment');
 export namespace type {
     export interface option {
-        prefix: string,
-        validateKey: boolean
+        prefix?: string,
+        validateKey?: boolean
     };
     export interface schemaObj {
         key: string,
@@ -59,6 +59,22 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
             }
         }
     };
+    let gte = (key, value) => {
+        let crossCheckResult = crossCheckSchema(key);
+        return {
+            [crossCheckResult.key]: {
+                "$gte": crossCheckResult.value(value)
+            }
+        };
+    };
+    let lte = (key, value) => {
+        let crossCheckResult = crossCheckSchema(key);
+        return {
+            [crossCheckResult.key]: {
+                "$lte": crossCheckResult.value(value)
+            }
+        };
+    };
     return {
         "eq": (key, value) => {
             let crossCheckResult = crossCheckSchema(key);
@@ -68,6 +84,10 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                 }
             };
         },
+        "from": gte,
+        "gte": gte,
+        "to": lte,
+        "lte": lte
     };
 }
 let service = async (content: type.content, schema: type.schema = null, option: type.option = null) => {

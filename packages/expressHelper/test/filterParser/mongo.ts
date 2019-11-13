@@ -9,7 +9,12 @@ mocha.describe("filterParser mongo", function (this) {
     let result = await mongoFilter({
       "filter.name": "Luke Skywalker",
       "filter.age.from": "20"
-    }, null, {
+    }, {
+      "age": {
+        "key": "userAge",
+        "type": "number"
+      }
+    }, {
         prefix: "filter"
       });
 
@@ -21,8 +26,8 @@ mocha.describe("filterParser mongo", function (this) {
           }
         },
         {
-          "age": {
-            "$gte": "20"
+          "userAge": {
+            "$gte": 20
           }
         }
       ]

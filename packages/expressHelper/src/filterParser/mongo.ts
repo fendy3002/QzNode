@@ -52,12 +52,10 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                 throw new Error("Key is not allowed");
             }
         }
-        else {
-            return {
-                key: key,
-                value: (val) => val
-            }
-        }
+        return {
+            key: key,
+            value: (val) => val
+        };
     };
     let gte = (key, value) => {
         let crossCheckResult = crossCheckSchema(key);

@@ -43,10 +43,17 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                         valConverter = (val) => moment(val, schemaTypeObj.formatFrom).format(schemaTypeObj.formatTo);
                     }
                     else if (schemaTypeObj.type == "timestamp") {
-                        if (schemaTypeObj.formatFrom == "timestamp" || !schemaTypeObj.formatFrom) {
-                            valConverter = (val) => moment.unix(val).unix();
+                        let formatToConverter = (val) => val.valueOf();
+                        if (schemaTypeObj.formatTo == "second" || schemaTypeObj.formatTo == "seconds") {
+                            formatToConverter = (val) => val.unix();
                         }
-                        valConverter = (val) => moment(val, schemaTypeObj.formatFrom).unix();
+                        if (schemaTypeObj.formatFrom == "timestamp" || !schemaTypeObj.formatFrom) {
+                            valConverter = (val) => formatToConverter(moment(val));
+                        }
+                        else if (schemaTypeObj.formatFrom == "second" || schemaTypeObj.formatFrom == "seconds") {
+                            valConverter = (val) => formatToConverter(moment.unix(val));
+                        }
+                        valConverter = (val) => formatToConverter(moment(val, schemaTypeObj.formatFrom));
                     }
                     return {
                         key: schemaType.key,

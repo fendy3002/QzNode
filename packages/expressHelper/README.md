@@ -108,4 +108,35 @@ Will result in filter logic of `transactionDate >= 2001-01-01 AND transactionDat
 
 ## Schema
 
-Key-value object containing the schema / data type definition. The value can be either `string` or `object`. 
+Key-value object containing the schema / data type definition. The value can be either `string` or `object`. Each content properties with matched prefix will be searched for schema. If found, it'll use the schema definition. If not found, the data type will set to `string`. If not found and `option.validateKey` is set to true, it'll throw error if `option.notFoundKeyError` is true. Otherwise the property will be skipped.
+
+Example string schema:
+
+```javascript
+{
+    "name": "name",
+    "trxDate": "transactionDate"
+}
+```
+
+This will keep `filter.name` property as `name`, but will change `filter.trxDate` to `transactionDate`. Useful if you want to have different query and schema property name.
+
+```javascript
+{
+    "price": {
+        "key": "totalPrice",
+        "type": "number"
+    },
+    "trxDate": {
+        "key": "transactionDate",
+        "type": "date",
+        "formatFrom": "YYYY-MM-DD",
+        "formatTo": "YYYY-MM-DD HH:mm:ss"
+    },
+    "timestampDate": {
+        "key": "transactionTimestamp",
+        "type": "timestamp",
+        "formatFrom": "YYYY-MM-DD"
+    }
+}
+```

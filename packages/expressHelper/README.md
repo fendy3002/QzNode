@@ -43,3 +43,35 @@ app.use(healthCheck{
 })
 ```
 
+# Filter Parser
+
+This module / library will parse key-value query / body based on prefix, compare with supplied schema, and returning mongodb or mongoose filter (and possibly sequelize in the future).
+
+Usage:
+``` javascript
+import {filterParser} from '@fendy3002/express-helper';
+
+app.get('/', async (req, res, next) => {
+    let filter = await mongoFilter(req.query, {
+      "age": {
+        "key": "userAge",
+        "type": "number"
+      }
+    }, {
+        prefix: "filter"
+      });
+    let listData = mongoModel.find(filter);
+});
+```
+
+This will parse any query / body start with `filter.`, for example `filter.age` or `filter.name`. Read more on `Content` section.
+
+## Parameters:
+
+* `content`: key-value object. Not strictly enforced but recommend if the value is string. Usually `req.query` or `req.body`. Read more on `Content` section.
+* `schema`: key-value object. The schema to define data types and filter keys. Read more on `Schema` section
+* `option.prefix`: string. The prefix which part of query / body to parse (without suffix dot). The default prefix is `filter`
+* `option.validateKey`: boolean. If true, it will check the schema to compare. If the content key does not exists in schema, it'll throw error
+
+## Content
+

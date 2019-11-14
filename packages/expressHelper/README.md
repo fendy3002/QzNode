@@ -75,3 +75,16 @@ This will parse any query / body start with `filter.`, for example `filter.age` 
 
 ## Content
 
+Is a key-value object, and only properties with matching prefix (defined in option) are being used. For example if the prefix is `filter`, from the following `req.query` (or `req.body`) data:
+
+``` javascript
+{
+    "name": "Luke Skywalker",
+    "age": "15",
+    "filter.category": "REGULAR",
+    "filter.transactionDate": "2001-01-01"
+}
+```
+
+Only 2, `filter.category` and `filter.transactionDate` that will be used as filter.
+

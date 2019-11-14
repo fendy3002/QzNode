@@ -73,6 +73,15 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
             }
         };
     };
+    let regex = (key, value) => {
+        let crossCheckResult = crossCheckSchema(key);
+        return {
+            [crossCheckResult.key]: {
+                "$regex": value,
+                "$options": "gim"
+            }
+        };
+    };
     return {
         "eq": (key, value) => {
             let crossCheckResult = crossCheckSchema(key);
@@ -85,7 +94,8 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         "from": gte,
         "gte": gte,
         "to": lte,
-        "lte": lte
+        "lte": lte,
+        "regex": regex
     };
 }
 let service = async (content: type.content, schema: type.schema = null, option: type.option = null) => {

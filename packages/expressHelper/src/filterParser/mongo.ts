@@ -3,7 +3,8 @@ import moment = require('moment');
 export namespace type {
     export interface option {
         prefix?: string,
-        validateKey?: boolean
+        validateKey?: boolean,
+        notFoundKeyError?: boolean
     };
     export interface schemaObj {
         key: string,
@@ -62,7 +63,12 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                 }
             }
             else if (option.validateKey) {
-                throw new Error("Key is not allowed");
+                if (option.notFoundKeyError) {
+                    throw new Error("Key is not allowed");
+                }
+                else {
+                    return null;
+                }
             }
         }
         return {
@@ -70,19 +76,11 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
             value: (val) => val
         };
     };
-    let gte = (key, value) => {
+    let keyOperation = (operation) => (key, value) => {
         let crossCheckResult = crossCheckSchema(key);
         return {
             [crossCheckResult.key]: {
-                "$gte": crossCheckResult.value(value)
-            }
-        };
-    };
-    let lte = (key, value) => {
-        let crossCheckResult = crossCheckSchema(key);
-        return {
-            [crossCheckResult.key]: {
-                "$lte": crossCheckResult.value(value)
+                [operation]: crossCheckResult.value(value)
             }
         };
     };
@@ -96,18 +94,14 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         };
     };
     return {
-        "eq": (key, value) => {
-            let crossCheckResult = crossCheckSchema(key);
-            return {
-                [crossCheckResult.key]: {
-                    "$eq": crossCheckResult.value(value)
-                }
-            };
-        },
-        "from": gte,
-        "gte": gte,
-        "to": lte,
-        "lte": lte,
+        "eq": (key, value) => keyOperation("$eq"),
+        "ne": (key, value) => keyOperation("$ne"),
+        "from": keyOperation("$gte"),
+        "gte": keyOperation("$gte"),
+        "gt": keyOperation("$gt"),
+        "to": keyOperation("$lte"),
+        "lte": keyOperation("$lte"),
+        "lt": keyOperation("$lt"),
         "regex": regex
     };
 };
@@ -118,7 +112,8 @@ let emptyValue = (val) => {
 let service = async (content: type.content, schema: type.schema = null, option: type.option = null) => {
     let useOption = lo.merge(option, {
         prefix: "filter",
-        validateKey: false
+        validateKey: false,
+        notFoundKeyError: true
     });
     let operationConverter = operationConverterRaw(useOption, schema);
 
@@ -126,22 +121,29 @@ let service = async (content: type.content, schema: type.schema = null, option: 
     for (let key of Object.keys(content)) {
         if (key.startsWith(useOption.prefix + ".")) {
             if (useOption.validateKey && !schema) {
-                throw new Error("Key is not allowed");
+                if (useOption.notFoundKeyError) {
+                    throw new Error("Key is not allowed");
+                }
+                else {
+                    return {};
+                }
             }
             if (emptyValue(content[key])) {
                 continue;
             }
             let keyParts = key.split(".");
             if (keyParts.length == 2) {
-                filter.push(
-                    operationConverter["eq"](keyParts[1], content[key])
-                );
+                let eachFilter = operationConverter["eq"](keyParts[1], content[key]);
+                if(eachFilter){
+                    filter.push(eachFilter);
+                }
             }
             else if (keyParts.length == 3) {
                 let operation = keyParts[2];
-                filter.push(
-                    operationConverter[operation](keyParts[1], content[key])
-                );
+                let eachFilter = operationConverter[operation](keyParts[1], content[key])
+                if(eachFilter){
+                    filter.push(eachFilter);
+                }
             }
         }
     }

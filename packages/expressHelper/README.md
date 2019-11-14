@@ -71,7 +71,8 @@ This will parse any query / body start with `filter.`, for example `filter.age` 
 * `content`: key-value object. Not strictly enforced but recommend if the value is string. Usually `req.query` or `req.body`. Read more on `Content` section.
 * `schema`: key-value object. The schema to define data types and filter keys. Read more on `Schema` section
 * `option.prefix`: string. The prefix which part of query / body to parse (without suffix dot). The default prefix is `filter`
-* `option.validateKey`: boolean. If true, it will check the schema to compare. If the content key does not exists in schema, it'll throw error
+* `option.validateKey`: boolean, default false. If true, it will check the schema to compare. If the content key does not exists in schema, it'll throw error
+* `option.notFoundKeyError`: boolean, default true. If true, it will throw error if `validateKey` option is true, and the content key does not exists in schema. Otherwise it just skip the property
 
 ## Content
 
@@ -86,5 +87,25 @@ Is a key-value object, and only properties with matching prefix (defined in opti
 }
 ```
 
-Only 2, `filter.category` and `filter.transactionDate` that will be used as filter.
+Only 2, `filter.category` and `filter.transactionDate` that will be used as filter. There are several operations that can be used to help for conditional filter, for example in the following content:
 
+``` javascript
+{
+    "filter.transactionDate.from": "2001-01-01",
+    "filter.transactionDate.to": "2001-01-03"
+}
+```
+
+Will result in filter logic of `transactionDate >= 2001-01-01 AND transactionDate <= 2001-01-03`. The available operations are:
+
+* `eq`: equals. If not defined the operation will default to eq
+* `ne`: not equals
+* `from` or `gte`: greater than or equals
+* `gt`: greater than
+* `to` or `lte`: less than or equals
+* `lt`: less than
+* `regex`: regex comparison
+
+## Schema
+
+Key-value object containing the schema / data type definition. The value can be either `string` or `object`. 

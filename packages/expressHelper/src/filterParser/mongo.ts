@@ -42,6 +42,12 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                         schemaTypeObj.formatTo = schemaTypeObj.formatTo || "YYYY-MM-DD";
                         valConverter = (val) => moment(val, schemaTypeObj.formatFrom).format(schemaTypeObj.formatTo);
                     }
+                    else if (schemaTypeObj.type == "timestamp") {
+                        if (schemaTypeObj.formatFrom == "timestamp" || !schemaTypeObj.formatFrom) {
+                            valConverter = (val) => moment.unix(val).unix();
+                        }
+                        valConverter = (val) => moment(val, schemaTypeObj.formatFrom).unix();
+                    }
                     return {
                         key: schemaType.key,
                         value: valConverter
@@ -97,7 +103,11 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         "lte": lte,
         "regex": regex
     };
-}
+};
+
+let emptyValue = (val) => {
+    return val === undefined || val === null || val === "";
+};
 let service = async (content: type.content, schema: type.schema = null, option: type.option = null) => {
     let useOption = lo.merge(option, {
         prefix: "filter",
@@ -110,6 +120,9 @@ let service = async (content: type.content, schema: type.schema = null, option: 
         if (key.startsWith(useOption.prefix + ".")) {
             if (useOption.validateKey && !schema) {
                 throw new Error("Key is not allowed");
+            }
+            if (emptyValue(content[key])) {
+                continue;
             }
             let keyParts = key.split(".");
             if (keyParts.length == 2) {

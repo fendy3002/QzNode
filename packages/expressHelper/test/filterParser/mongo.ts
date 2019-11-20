@@ -15,8 +15,8 @@ mocha.describe("filterParser mongo", function (this) {
         "type": "number"
       }
     }, {
-        prefix: "filter"
-      });
+      prefix: "filter"
+    });
 
     let expected = {
       "$and": [
@@ -33,5 +33,24 @@ mocha.describe("filterParser mongo", function (this) {
       ]
     };
     assert.deepEqual(expected, result);
+  });
+  mocha.it("should throw key not found error", async function () {
+    assert.rejects(async() => {
+      await mongoFilter({
+        "filter.name": "Luke Skywalker",
+        "filter.age.from": "20"
+      }, {
+        "age": {
+          "key": "userAge",
+          "type": "number"
+        }
+      }, {
+        prefix: "filter",
+        validateKey: true,
+        notFoundKeyError: true
+      });
+    },
+      Error
+    );
   });
 });

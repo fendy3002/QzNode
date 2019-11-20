@@ -120,11 +120,11 @@ let emptyValue = (val) => {
     return val === undefined || val === null || val === "";
 };
 let service = async (content: type.content, schema: type.schema = null, option: type.option = null) => {
-    let useOption = lo.merge(option, {
+    let useOption = lo.merge({
         prefix: "filter",
         validateKey: false,
         notFoundKeyError: true
-    });
+    }, option);
     let operationConverter = operationConverterRaw(useOption, schema);
 
     let filter = [];
@@ -157,14 +157,16 @@ let service = async (content: type.content, schema: type.schema = null, option: 
             }
         }
     }
-    if (filter.length > 0) {
+    if (filter.length > 1) {
         return {
             "$and": filter
         };
     }
+    else if (filter.length == 1) {
+        return filter;
+    }
     else {
         return {};
     }
-
 };
 export default service;

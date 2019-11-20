@@ -163,7 +163,7 @@ let service = async (content: type.content, schema: type.schema = null, option: 
         };
     }
     else if (filter.length == 1) {
-        return filter;
+        return filter[0];
     }
     else {
         return {};

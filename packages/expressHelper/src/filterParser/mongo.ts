@@ -64,7 +64,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
             }
             else if (option.validateKey) {
                 if (option.notFoundKeyError) {
-                    throw new Error("Key is not allowed");
+                    throw new Error(`Key "${key}" is not allowed`);
                 }
                 else {
                     return null;
@@ -78,24 +78,34 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
     };
     let keyOperation = (operation) => (key, value) => {
         let crossCheckResult = crossCheckSchema(key);
-        return {
-            [crossCheckResult.key]: {
-                [operation]: crossCheckResult.value(value)
-            }
-        };
+        if (crossCheckResult) {
+            return {
+                [crossCheckResult.key]: {
+                    [operation]: crossCheckResult.value(value)
+                }
+            };
+        }
+        else {
+            return null;
+        }
     };
     let regex = (key, value) => {
         let crossCheckResult = crossCheckSchema(key);
-        return {
-            [crossCheckResult.key]: {
-                "$regex": value,
-                "$options": "gim"
-            }
-        };
+        if (crossCheckResult) {
+            return {
+                [crossCheckResult.key]: {
+                    "$regex": value,
+                    "$options": "gim"
+                }
+            };
+        }
+        else {
+            return null;
+        }
     };
     return {
-        "eq": (key, value) => keyOperation("$eq"),
-        "ne": (key, value) => keyOperation("$ne"),
+        "eq": keyOperation("$eq"),
+        "ne": keyOperation("$ne"),
         "from": keyOperation("$gte"),
         "gte": keyOperation("$gte"),
         "gt": keyOperation("$gt"),
@@ -122,7 +132,7 @@ let service = async (content: type.content, schema: type.schema = null, option: 
         if (key.startsWith(useOption.prefix + ".")) {
             if (useOption.validateKey && !schema) {
                 if (useOption.notFoundKeyError) {
-                    throw new Error("Key is not allowed");
+                    throw new Error("No filter is allowed");
                 }
                 else {
                     return {};
@@ -134,14 +144,14 @@ let service = async (content: type.content, schema: type.schema = null, option: 
             let keyParts = key.split(".");
             if (keyParts.length == 2) {
                 let eachFilter = operationConverter["eq"](keyParts[1], content[key]);
-                if(eachFilter){
+                if (eachFilter) {
                     filter.push(eachFilter);
                 }
             }
             else if (keyParts.length == 3) {
                 let operation = keyParts[2];
                 let eachFilter = operationConverter[operation](keyParts[1], content[key])
-                if(eachFilter){
+                if (eachFilter) {
                     filter.push(eachFilter);
                 }
             }

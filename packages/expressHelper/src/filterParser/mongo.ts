@@ -92,7 +92,13 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
     let opIn = (key, value) => {
         let crossCheckResult = crossCheckSchema(key);
         if (crossCheckResult) {
-            let returnValue = value.split(",").map(k => k.trim());
+            let returnValue = [];
+            if (typeof (value) == "string") {
+                returnValue = value.split(",").map(k => k.trim());
+            }
+            else if(Array.isArray(value)){
+                returnValue = value;
+            }
             return {
                 [crossCheckResult.key]: {
                     $in: returnValue

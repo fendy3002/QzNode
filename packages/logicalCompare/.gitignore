@@ -1,3 +1,4 @@
 /dist
+/es2015
 /node_modules
 yarn-error.log

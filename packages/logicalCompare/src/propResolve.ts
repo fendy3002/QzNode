@@ -6,24 +6,62 @@ const propResolve = () => async (data, obj) => {
     debug("obj", obj);
     if (obj && typeof (obj) == "object" && obj.hasOwnProperty("$date")) {
         let dateValue = obj.$date;
+        let convertFrom = (dateValue) => {
+            if (!obj.formatFrom) {
+                return moment(dateValue);
+            }
+            else {
+                if (obj.formatFrom.toLowerCase() == "timestamp") {
+                    if (dateValue < 9999999999) {
+                        return moment.unix(dateValue);
+                    }
+                    else {
+                        return moment(dateValue);
+                    }
+                }
+                else {
+                    return moment(dateValue, obj.formatFrom);
+                }
+            }
+        };
+        let convertTo = (momentValue) => {
+            if (!obj.formatTo) {
+                return momentValue.toDate();
+            }
+            else {
+                if (obj.formatTo.toLowerCase() == "timestamp") {
+                    return momentValue.valueOf();
+                }
+                else if (obj.formatTo.toLowerCase() == "unix") {
+                    return momentValue.unix();
+                }
+                else {
+                    return momentValue.toDate();
+                }
+            }
+        };
         if (dateValue === "now") {
-            return new Date();
+            return convertTo(moment());
         }
         else if (dateValue === "today") {
-            return moment(moment(), "YYYY-MM-DD").toDate();
-        }
-        else if (typeof (dateValue) == "object" && dateValue.hasOwnProperty("$prop")) {
-            return moment(await propResolve()(data, dateValue)).toDate();
+            return convertTo(moment(moment(), "YYYY-MM-DD"));
         }
         else {
-            return moment(dateValue).toDate();
+            let source = null;
+            if (typeof (dateValue) == "object" && dateValue.hasOwnProperty("$prop")) {
+                source = convertFrom(await propResolve()(data, dateValue));
+            }
+            else {
+                source = convertFrom(dateValue);
+            }
+            return convertTo(source);
         }
     }
     else if (obj && typeof (obj) == "object" && obj.hasOwnProperty("$boolean")) {
-        if(typeof(obj.$boolean) == "boolean" ){
+        if (typeof (obj.$boolean) == "boolean") {
             return obj.$boolean;
         }
-        else{
+        else {
             // assume string
             return obj.$boolean.toLowerCase() === "true";
         }

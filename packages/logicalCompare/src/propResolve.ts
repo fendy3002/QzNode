@@ -11,7 +11,8 @@ const propResolve = () => async (data, obj) => {
                 return moment(dateValue);
             }
             else {
-                if (obj.formatFrom.toLowerCase() == "timestamp") {
+                if (obj.formatFrom.toLowerCase() == "timestamp" ||
+                    obj.formatFrom.toLowerCase() == "unix") {
                     if (dateValue < 9999999999) {
                         return moment.unix(dateValue);
                     }
@@ -36,7 +37,7 @@ const propResolve = () => async (data, obj) => {
                     return momentValue.unix();
                 }
                 else {
-                    return momentValue.toDate();
+                    return momentValue.format(obj.formatTo);
                 }
             }
         };

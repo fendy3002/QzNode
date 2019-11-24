@@ -108,6 +108,24 @@ YAML:
     $prop: "birth"
 ```
 
+`$date` block can also have 2 additional `formatFrom` and `formatTo` property. 
+
+The available values for both `formatFrom` and `formatTo` options are `timestamp`, `unix` or `moment` format. 
+
+For `formatFrom`, this block will read `timestamp` value if it is on `timestamp` or `unix`, or try to use it as `moment` format.
+
+For `formatTo`, this block will return millisecond `timestamp` if it is `timestamp`. Second `timestamp` if it is `unix`, or string using `moment` format. Example:
+
+```javascript
+{
+    "$date": {
+        "$prop": "birth"
+    },
+    "formatFrom": "YYYY-MM-DD",
+    "formatTo": "timestamp"
+}
+```
+
 # `$and` block
 
 JSON:

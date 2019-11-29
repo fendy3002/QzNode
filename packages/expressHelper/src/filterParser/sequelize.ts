@@ -1,5 +1,6 @@
 import lo = require('lodash');
 import moment = require('moment');
+import Sequelize = require('sequelize');
 export namespace type {
     export interface option {
         prefix?: string,
@@ -81,7 +82,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         if (crossCheckResult) {
             return {
                 [crossCheckResult.key]: {
-                    [operation]: crossCheckResult.value(value)
+                    [Sequelize.Op[operation]]: crossCheckResult.value(value)
                 }
             };
         }
@@ -101,7 +102,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
             }
             return {
                 [crossCheckResult.key]: {
-                    $in: returnValue
+                    [Sequelize.Op.in]: returnValue
                 }
             };
         }
@@ -114,8 +115,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         if (crossCheckResult) {
             return {
                 [crossCheckResult.key]: {
-                    "$regex": value,
-                    "$options": "gim"
+                    [Sequelize.Op.regexp]: value
                 }
             };
         }
@@ -124,28 +124,33 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         }
     };
     let contains = (key, value) => {
-        return regex(key, ".*" + value + ".*");
+        let crossCheckResult = crossCheckSchema(key);
+        if (crossCheckResult) {
+            return {
+                [crossCheckResult.key]: {
+                    [Sequelize.Op.like]: "%" + value + "%"
+                }
+            };
+        }
+        else {
+            return null;
+        }
     };
-    let startsWith = (key, value) => {
-        return regex(key, "^" + value);
-    };
-    let endsWith = (key, value) => {
-        return regex(key, value + "$");
-    };
+
     return {
-        "eq": keyOperation("$eq"),
-        "ne": keyOperation("$ne"),
-        "from": keyOperation("$gte"),
-        "gte": keyOperation("$gte"),
-        "gt": keyOperation("$gt"),
-        "to": keyOperation("$lte"),
-        "lte": keyOperation("$lte"),
-        "lt": keyOperation("$lt"),
+        "eq": keyOperation(Sequelize.Op.eq),
+        "ne": keyOperation(Sequelize.Op.ne),
+        "from": keyOperation(Sequelize.Op.gte),
+        "gte": keyOperation(Sequelize.Op.gte),
+        "gt": keyOperation(Sequelize.Op.gt),
+        "to": keyOperation(Sequelize.Op.lte),
+        "lte": keyOperation(Sequelize.Op.lte),
+        "lt": keyOperation(Sequelize.Op.lt),
         "in": opIn,
         "regex": regex,
         "contains": contains,
-        "starts_with": startsWith,
-        "ends_with": endsWith
+        "starts_with": keyOperation(Sequelize.Op.startsWith),
+        "ends_with" : keyOperation(Sequelize.Op.endsWith)
     };
 };
 

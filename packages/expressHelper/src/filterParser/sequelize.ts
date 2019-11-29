@@ -197,7 +197,7 @@ let service = async (content: type.content, schema: type.schema = null, option: 
     }
     if (filter.length > 1) {
         return {
-            "$and": filter
+            [Sequelize.Op.and]: filter
         };
     }
     else if (filter.length == 1) {

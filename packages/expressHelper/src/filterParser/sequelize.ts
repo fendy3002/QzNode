@@ -82,7 +82,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         if (crossCheckResult) {
             return {
                 [crossCheckResult.key]: {
-                    [Sequelize.Op[operation]]: crossCheckResult.value(value)
+                    [operation]: crossCheckResult.value(value)
                 }
             };
         }

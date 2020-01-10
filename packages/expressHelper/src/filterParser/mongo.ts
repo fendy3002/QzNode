@@ -9,8 +9,9 @@ export namespace type {
     export interface schemaObj {
         key: string,
         type: string,
-        formatFrom?: string
-        formatTo?: string
+        formatFrom?: string,
+        formatTo?: string,
+        endOfDay?: boolean
     };
     export interface schema {
         [key: string]: string | schemaObj
@@ -41,20 +42,35 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                     else if (schemaTypeObj.type == "date") {
                         schemaTypeObj.formatFrom = schemaTypeObj.formatFrom || "YYYY-MM-DD";
                         schemaTypeObj.formatTo = schemaTypeObj.formatTo || "YYYY-MM-DD";
-                        valConverter = (val) => moment(val, schemaTypeObj.formatFrom).format(schemaTypeObj.formatTo);
+                        schemaTypeObj.endOfDay = schemaTypeObj.endOfDay || false;
+                        if (!schemaTypeObj.endOfDay) {
+                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).format(schemaTypeObj.formatTo);
+                        }
+                        else {
+                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).endOf('day').format(schemaTypeObj.formatTo);
+                        }
                     }
                     else if (schemaTypeObj.type == "timestamp") {
+                        schemaTypeObj.endOfDay = schemaTypeObj.endOfDay || false;
+
                         let formatToConverter = (val) => val.valueOf();
                         if (schemaTypeObj.formatTo == "second" || schemaTypeObj.formatTo == "seconds") {
                             formatToConverter = (val) => val.unix();
                         }
+                        let formatDay = formatToConverter;
+                        if (schemaTypeObj.endOfDay) {
+                            formatDay = (val) => formatToConverter(val.endOf('day'));
+                        }
+
                         if (schemaTypeObj.formatFrom == "timestamp" || !schemaTypeObj.formatFrom) {
-                            valConverter = (val) => formatToConverter(moment(val));
+                            valConverter = (val) => formatDay(moment(val));
                         }
                         else if (schemaTypeObj.formatFrom == "second" || schemaTypeObj.formatFrom == "seconds") {
-                            valConverter = (val) => formatToConverter(moment.unix(val));
+                            valConverter = (val) => formatDay(moment.unix(val));
                         }
-                        valConverter = (val) => formatToConverter(moment(val, schemaTypeObj.formatFrom));
+                        else {
+                            valConverter = (val) => formatDay(moment(val, schemaTypeObj.formatFrom));
+                        }
                     }
                     return {
                         key: schemaType.key,

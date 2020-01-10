@@ -105,6 +105,9 @@ Will result in filter logic of `transactionDate >= 2001-01-01 AND transactionDat
 * `to` or `lte`: less than or equals
 * `lt`: less than
 * `regex`: regex comparison
+* `contains`: search for records with field which contains value, similar with sql's like '%' + value + '%'
+* `starts_with`: search for records with field which starts with value, similar with sql's like '%' + value
+* `ends_with`: search for records with field which ends with value, similar with sql's like value + '%'
 
 ## Schema
 
@@ -131,12 +134,14 @@ This will keep `filter.name` property as `name`, but will change `filter.trxDate
         "key": "transactionDate",
         "type": "date",
         "formatFrom": "YYYY-MM-DD",
-        "formatTo": "YYYY-MM-DD HH:mm:ss"
+        "formatTo": "YYYY-MM-DD HH:mm:ss",
+        "endOfDay": false
     },
     "timestampDate": {
         "key": "transactionTimestamp",
         "type": "timestamp",
-        "formatFrom": "YYYY-MM-DD"
+        "formatFrom": "YYYY-MM-DD",
+        "endOfDay": false
     }
 }
 ```

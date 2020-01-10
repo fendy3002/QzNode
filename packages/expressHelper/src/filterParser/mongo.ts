@@ -21,7 +21,7 @@ export namespace type {
     };
 };
 let operationConverterRaw = (option: type.option = null, schema: type.schema = null, ) => {
-    let crossCheckSchema = (key) => {
+    let crossCheckSchema = (key, operation: string) => {
         if (schema) {
             if (schema[key]) {
                 let schemaType = schema[key];
@@ -43,11 +43,11 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                         schemaTypeObj.formatFrom = schemaTypeObj.formatFrom || "YYYY-MM-DD";
                         schemaTypeObj.formatTo = schemaTypeObj.formatTo || "YYYY-MM-DD";
                         schemaTypeObj.endOfDay = schemaTypeObj.endOfDay || false;
-                        if (!schemaTypeObj.endOfDay) {
-                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).format(schemaTypeObj.formatTo);
+                        if (schemaTypeObj.endOfDay && (operation == "lte" || operation == "to")) {
+                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).endOf('day').format(schemaTypeObj.formatTo);
                         }
                         else {
-                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).endOf('day').format(schemaTypeObj.formatTo);
+                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).format(schemaTypeObj.formatTo);
                         }
                     }
                     else if (schemaTypeObj.type == "timestamp") {
@@ -58,7 +58,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                             formatToConverter = (val) => val.unix();
                         }
                         let formatDay = formatToConverter;
-                        if (schemaTypeObj.endOfDay) {
+                        if (schemaTypeObj.endOfDay && (operation == "lte" || operation == "to")) {
                             formatDay = (val) => formatToConverter(val.endOf('day'));
                         }
 
@@ -92,8 +92,8 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
             value: (val) => val
         };
     };
-    let keyOperation = (operation) => (key, value) => {
-        let crossCheckResult = crossCheckSchema(key);
+    let keyOperation = (operation, code) => (key, value) => {
+        let crossCheckResult = crossCheckSchema(key, code);
         if (crossCheckResult) {
             return {
                 [crossCheckResult.key]: {
@@ -106,7 +106,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         }
     };
     let opIn = (key, value) => {
-        let crossCheckResult = crossCheckSchema(key);
+        let crossCheckResult = crossCheckSchema(key, "in");
         if (crossCheckResult) {
             let returnValue = [];
             if (typeof (value) == "string") {
@@ -126,7 +126,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         }
     };
     let regex = (key, value) => {
-        let crossCheckResult = crossCheckSchema(key);
+        let crossCheckResult = crossCheckSchema(key, "regex");
         if (crossCheckResult) {
             return {
                 [crossCheckResult.key]: {
@@ -149,14 +149,14 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         return regex(key, value + "$");
     };
     return {
-        "eq": keyOperation("$eq"),
-        "ne": keyOperation("$ne"),
-        "from": keyOperation("$gte"),
-        "gte": keyOperation("$gte"),
-        "gt": keyOperation("$gt"),
-        "to": keyOperation("$lte"),
-        "lte": keyOperation("$lte"),
-        "lt": keyOperation("$lt"),
+        "eq": keyOperation("$eq", "eq"),
+        "ne": keyOperation("$ne", "ne"),
+        "from": keyOperation("$gte", "from"),
+        "gte": keyOperation("$gte", "gte"),
+        "gt": keyOperation("$gt", "gt"),
+        "to": keyOperation("$lte", "to"),
+        "lte": keyOperation("$lte", "lte"),
+        "lt": keyOperation("$lt", "lt"),
         "in": opIn,
         "regex": regex,
         "contains": contains,

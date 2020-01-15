@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/lang",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "main": "dist/index.js",
   "publishConfig": {
@@ -29,6 +29,7 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "markdown-it": "^10.0.0"
   }
 }

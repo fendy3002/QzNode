@@ -1,6 +1,8 @@
 import lo = require('lodash');
-import markdown = require('markdown-it');
+import markdownRaw = require('markdown-it');
 import * as myType from './types';
+
+const markdown = new markdownRaw();
 export let pack: myType.PackConstructor = (langDictionary: myType.Lang.Content, context: myType.Context) => {
     let getter = (val) => {
         if (context.render == "markdown") {

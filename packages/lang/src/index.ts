@@ -13,19 +13,23 @@ export let pack: myType.PackConstructor = (langDictionary: myType.Lang.Content, 
         }
     }
     let _ = (path: string, ifNull?: string, params?: myType.Lang.UseParams) => {
+        return getter(text(path, ifNull, params));
+    };
+    let text = (path: string, ifNull?: string, params?: myType.Lang.UseParams) => {
         let content = lo.get(langDictionary, path, ifNull) as string;
         if (!params) {
-            return getter(content);
+            return content;
         }
         for (let key of Object.keys(params)) {
             let regexPattern = new RegExp("{" + key + "}", "g");
             content = content.replace(regexPattern, params[key]);
         }
-        return getter(content);
+        return content;
     };
     return {
         _: _,
         get: _,
+        text: text,
         part: (path: string) => {
             return pack(lo.get(langDictionary, path) as myType.Lang.Content, context);
         }

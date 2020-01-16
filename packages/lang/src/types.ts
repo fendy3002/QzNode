@@ -30,5 +30,6 @@ export interface PackConstructor {
 export interface Pack {
     _: (path: string, ifNull?: string, params?: Lang.UseParams) => string
     get: (path: string, ifNull?: string, params?: Lang.UseParams) => string
-    part: (path: string) => Pack
+    part: (path: string) => Pack,
+    text: (path: string, ifNull?: string, params?: Lang.UseParams) => string
 };

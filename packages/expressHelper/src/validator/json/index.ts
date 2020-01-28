@@ -4,27 +4,36 @@ import * as native from '../native';
 export interface ValidateResult<T> {
     isValid: boolean,
     data: T,
-    message: string[]
+    errors: {
+        property: string,
+        message: string
+    }[]
 };
 
 export const schema = (schema: any) => {
     const validateObj = async (val: any, schema: any, path: string): Promise<ValidateResult<any>> => {
         let isValid = true;
-        let message: string[] = [];
+        let errors: {
+            property: string,
+            message: string
+        }[] = [];
         let data: any = null;
         if (schema.type == "object") {
             data = {};
             for (let prop of Object.keys(schema.properties)) {
-                let newPath = path ? path + "." + prop : prop;
+                let newPath = path + "." + prop;
                 let validateResult = await validateObj(val[prop], schema.properties[prop], newPath);
                 isValid = isValid && validateResult.isValid;
-                message = message.concat(validateResult.message);
+                errors = errors.concat(validateResult.errors);
                 let propData = validateResult.data;
                 if (schema.properties[prop].type == "string" &&
                     schema.required && schema.required.some(k => k == prop)) {
                     if (propData == "" || propData == null) {
                         isValid = false;
-                        message.push(newPath);
+                        errors.push({
+                            property: newPath,
+                            message: "is required"
+                        });
                     }
                     data[prop] = propData;
                 }
@@ -46,28 +55,40 @@ export const schema = (schema: any) => {
             data = [];
             if (val && !Array.isArray(val)) {
                 isValid = false;
-                message.push(path);
+                errors.push({
+                    property: path,
+                    message: "is not array"
+                });
             }
             else {
                 for (let each of val) {
                     let validateResult = await validateObj(each, schema.items, path)
                     isValid = isValid && validateResult.isValid;
-                    message = message.concat(validateResult.message);
+                    errors = errors.concat(validateResult.errors);
                     data.push(validateResult.data);
                 }
             }
         }
         else if (schema.type == "number") {
             isValid = native.isNumeric(val);
-            data = parseFloat(val);
             if (!isValid) {
-                message.push(path);
+                errors.push({
+                    property: path,
+                    message: "is not a number"
+                });
+                data = null;
+            }
+            else {
+                data = parseFloat(val);
             }
         }
         else if (schema.type == "integer") {
             isValid = native.isInteger(val);
             if (!isValid) {
-                message.push(path);
+                errors.push({
+                    property: path,
+                    message: "is not an integer"
+                });
                 data = null;
             }
             else {
@@ -79,7 +100,11 @@ export const schema = (schema: any) => {
             if (schema.required) {
                 if (data == null || data == "") {
                     isValid = false;
-                    message.push(path);
+
+                    errors.push({
+                        property: path,
+                        message: "is required"
+                    });
                 }
             }
         }
@@ -87,18 +112,21 @@ export const schema = (schema: any) => {
         return {
             isValid,
             data: data,
-            message
+            errors
         }
     };
     const validate = async <T>(val): Promise<ValidateResult<T>> => {
-        let result = await validateObj(val, schema, "");
+        let result = await validateObj(val, schema, "instance");
         if (result.isValid) {
             let jsonSchemaValidator = new jsonSchema();
             let jsonSchemaValidation = jsonSchemaValidator.validate(result.data, schema);
             if (jsonSchemaValidation.errors && jsonSchemaValidation.errors.length > 0) {
                 result.isValid = false;
-                result.message = result.message.concat(jsonSchemaValidation.errors.map(k => {
-                    return k.property + " " + k.message;
+                result.errors = result.errors.concat(jsonSchemaValidation.errors.map(k => {
+                    return {
+                        property: k.property,
+                        message: k.message
+                    };
                 }))
             }
         }

@@ -19,7 +19,16 @@ export const schema = (schema: any) => {
                 let validateResult = await validateObj(val[prop], schema.properties[prop], newPath);
                 isValid = isValid && validateResult.isValid;
                 message = message.concat(validateResult.message);
-                data[prop] = validateResult.data;
+                let propData = validateResult.data;
+
+                if (schema.properties[prop].type == "string" &&
+                    schema.required && schema.required.some(k => k == prop)) {
+                    if (propData == "" || propData == null) {
+                        isValid = false;
+                        message.push(newPath);
+                    }
+                }
+                data[prop] = propData;
             }
         }
         else if (schema.type == "array") {
@@ -56,6 +65,12 @@ export const schema = (schema: any) => {
         }
         else if (schema.type == "string") {
             data = val;
+            if (schema.required) {
+                if (data == null || data == "") {
+                    isValid = false;
+                    message.push(path);
+                }
+            }
         }
 
         return {
@@ -71,7 +86,7 @@ export const schema = (schema: any) => {
             let jsonSchemaValidation = jsonSchemaValidator.validate(result.data, schema);
             if (jsonSchemaValidation.errors && jsonSchemaValidation.errors.length > 0) {
                 result.isValid = false;
-                result.message = result.message.concat(jsonSchemaValidator.errors.map(k => {
+                result.message = result.message.concat(jsonSchemaValidation.errors.map(k => {
                     return k.property + " " + k.message;
                 }))
             }

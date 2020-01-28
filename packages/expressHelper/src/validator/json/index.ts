@@ -6,7 +6,8 @@ export interface ValidateResult<T> {
     data: T,
     errors: {
         property: string,
-        message: string
+        message: string,
+        name: string
     }[]
 };
 
@@ -15,7 +16,8 @@ export const schema = (schema: any) => {
         let isValid = true;
         let errors: {
             property: string,
-            message: string
+            message: string,
+            name: string,
         }[] = [];
         let data: any = null;
         if (schema.type == "object") {
@@ -32,6 +34,7 @@ export const schema = (schema: any) => {
                         isValid = false;
                         errors.push({
                             property: newPath,
+                            name: schema.properties[prop].name ? schema.properties[prop].name : newPath,
                             message: "is required"
                         });
                     }
@@ -57,6 +60,7 @@ export const schema = (schema: any) => {
                 isValid = false;
                 errors.push({
                     property: path,
+                    name: schema.name ? schema.name : path,
                     message: "is not array"
                 });
             }
@@ -74,6 +78,7 @@ export const schema = (schema: any) => {
             if (!isValid) {
                 errors.push({
                     property: path,
+                    name: schema.name ? schema.name : path,
                     message: "is not a number"
                 });
                 data = null;
@@ -86,7 +91,8 @@ export const schema = (schema: any) => {
             isValid = native.isInteger(val);
             if (!isValid) {
                 errors.push({
-                    property: path,
+                    name: path,
+                    property: schema.name ? schema.name : path,
                     message: "is not an integer"
                 });
                 data = null;
@@ -102,6 +108,7 @@ export const schema = (schema: any) => {
                     isValid = false;
 
                     errors.push({
+                        name: schema.name ? schema.name : path,
                         property: path,
                         message: "is required"
                     });
@@ -125,6 +132,7 @@ export const schema = (schema: any) => {
                 result.errors = result.errors.concat(jsonSchemaValidation.errors.map(k => {
                     return {
                         property: k.property,
+                        name: k.schema && k.schema.name ? k.schema.name : k.property,
                         message: k.message
                     };
                 }))

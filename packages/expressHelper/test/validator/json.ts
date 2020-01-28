@@ -11,7 +11,8 @@ mocha.describe("validator json", function (this) {
       "name": { "type": "string" },
       "birth": {
         'type': 'string',
-        'format': 'date'
+        'format': 'date',
+        'name': "Birth date"
       },
       "address": {
         "type": "object",
@@ -177,5 +178,6 @@ mocha.describe("validator json", function (this) {
     });
     assert.equal(false, result.isValid);
     assert.equal("instance.birth", result.errors[0].property);
+    assert.equal("Birth date", result.errors[0].name);
   });
 });

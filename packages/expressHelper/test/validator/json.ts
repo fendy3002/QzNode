@@ -22,7 +22,8 @@ mocha.describe("validator json", function (this) {
           },
           "zip": { "type": "string" },
           "city": { "type": "string", "required": true },
-          "country": { "type": "string" }
+          "country": { "type": "string" },
+          "area": { "type": "string" }
         },
         "required": ["country"]
       },
@@ -42,11 +43,15 @@ mocha.describe("validator json", function (this) {
       "votes": "1600"
     });
 
+    addContext(this, {
+      title: "result",
+      value: result
+    });
     assert.equal(true, result.isValid);
     assert.equal(1, result.data.address.lines.length);
     assert.equal(1600, result.data.votes);
   });
-  mocha.it("validate error json schema (1)", async function () {
+  mocha.it("validate error json schema - non number", async function () {
     let result = await jsonValidator.schema(schema).validate<any>({
       "name": "Barack Obama",
       "birth": "2010-01-01",
@@ -59,12 +64,16 @@ mocha.describe("validator json", function (this) {
       "votes": "1600axxc123"
     });
 
+    addContext(this, {
+      title: "result",
+      value: result
+    });
     assert.equal(false, result.isValid);
     assert.equal(1, result.data.address.lines.length);
     assert.equal(1, result.message.length);
     assert.equal('votes', result.message[0]);
   });
-  mocha.it("validate error json schema (2)", async function () {
+  mocha.it("validate error json schema - number, array format,", async function () {
     let result = await jsonValidator.schema(schema).validate<any>({
       "name": "Barack Obama",
       "birth": "2010-99-01",
@@ -77,12 +86,16 @@ mocha.describe("validator json", function (this) {
       "votes": "1600axxc123"
     });
 
+    addContext(this, {
+      title: "result",
+      value: result
+    });
     assert.equal(false, result.isValid);
     assert.equal(2, result.message.length);
     assert.equal('address.lines', result.message[0]);
     assert.equal('votes', result.message[1]);
   });
-  mocha.it("validate error json schema (3)", async function () {
+  mocha.it("validate error json schema - city string required", async function () {
     let result = await jsonValidator.schema(schema).validate<any>({
       "name": "Barack Obama",
       "birth": "2010-01-01",
@@ -95,11 +108,15 @@ mocha.describe("validator json", function (this) {
       "votes": "1600"
     });
 
+    addContext(this, {
+      title: "result",
+      value: result
+    });
     assert.equal(false, result.isValid);
     assert.equal(1, result.message.length);
     assert.equal('address.city', result.message[0]);
   });
-  mocha.it("validate error json schema (4)", async function () {
+  mocha.it("validate error json schema - country string required", async function () {
     let result = await jsonValidator.schema(schema).validate<any>({
       "name": "Barack Obama",
       "birth": "2010-01-01",
@@ -112,8 +129,32 @@ mocha.describe("validator json", function (this) {
       "votes": "1600"
     });
 
+    addContext(this, {
+      title: "result",
+      value: result
+    });
     assert.equal(false, result.isValid);
     assert.equal(1, result.message.length);
     assert.equal('address.country', result.message[0]);
+  });
+  mocha.it("validate error json schema - string null not error", async function () {
+    let result = await jsonValidator.schema(schema).validate<any>({
+      "name": "Barack Obama",
+      "birth": "2010-01-01",
+      "address": {
+        "lines": ["1600 Pennsylvania Avenue Northwest"],
+        "zip": "DC 20500",
+        "city": "Washington",
+        "country": "USA",
+        "area": null
+      },
+      "votes": "1600"
+    });
+
+    addContext(this, {
+      title: "result",
+      value: result
+    });
+    assert.equal(true, result.isValid);
   });
 });

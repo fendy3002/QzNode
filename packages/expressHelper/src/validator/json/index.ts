@@ -20,15 +20,26 @@ export const schema = (schema: any) => {
                 isValid = isValid && validateResult.isValid;
                 message = message.concat(validateResult.message);
                 let propData = validateResult.data;
-
                 if (schema.properties[prop].type == "string" &&
                     schema.required && schema.required.some(k => k == prop)) {
                     if (propData == "" || propData == null) {
                         isValid = false;
                         message.push(newPath);
                     }
+                    data[prop] = propData;
                 }
-                data[prop] = propData;
+                else if (schema.properties[prop].type == "string" && propData == null) {
+                    if ((!schema.required || !schema.required.some(k => k == prop))
+                        && !schema.properties[prop].required) {
+                        data[prop] = "";
+                    }
+                    else {
+                        data[prop] = propData;
+                    }
+                }
+                else {
+                    data[prop] = propData;
+                }
             }
         }
         else if (schema.type == "array") {

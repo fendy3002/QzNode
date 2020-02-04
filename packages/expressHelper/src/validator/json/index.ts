@@ -28,7 +28,7 @@ export const schema = (schema: any) => {
                 isValid = isValid && validateResult.isValid;
                 errors = errors.concat(validateResult.errors);
                 let propData = validateResult.data;
-                if (!isValid) {
+                if (!validateResult.isValid) {
                     data[prop] = propData;
                     continue;
                 }

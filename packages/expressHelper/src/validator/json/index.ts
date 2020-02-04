@@ -27,6 +27,9 @@ export const schema = (schema: any) => {
                 let validateResult = await validateObj(val[prop], schema.properties[prop], newPath);
                 isValid = isValid && validateResult.isValid;
                 errors = errors.concat(validateResult.errors);
+                if (!isValid) {
+                    continue;
+                }
                 let propData = validateResult.data;
                 if (schema.properties[prop].type == "string" &&
                     schema.required && schema.required.some(k => k == prop)) {
@@ -43,7 +46,16 @@ export const schema = (schema: any) => {
                 else if (schema.properties[prop].type == "string" && propData == null) {
                     if ((!schema.required || !schema.required.some(k => k == prop))
                         && !schema.properties[prop].required) {
-                        data[prop] = "";
+                        delete data[prop];
+                    }
+                    else {
+                        data[prop] = propData;
+                    }
+                }
+                else if (schema.properties[prop].type == "boolean" && typeof (propData) != "boolean") {
+                    if ((!schema.required || !schema.required.some(k => k == prop))
+                        && !schema.properties[prop].required) {
+                        delete data[prop];
                     }
                     else {
                         data[prop] = propData;
@@ -112,6 +124,34 @@ export const schema = (schema: any) => {
                         property: path,
                         message: "is required"
                     });
+                }
+            }
+        }
+        else if (schema.type == "boolean") {
+            data = val;
+            if (schema.required) {
+                if (data == null || data == "") {
+                    isValid = false;
+
+                    errors.push({
+                        name: schema.name ? schema.name : path,
+                        property: path,
+                        message: "is required"
+                    });
+                }
+            }
+            if (isValid && typeof (data) == "string") {
+                if (data && data != "") {
+                    if (data == "true") { data = true; }
+                    else if (data == "false") { data = false; }
+                    else {
+                        isValid = false;
+                        errors.push({
+                            name: schema.name ? schema.name : path,
+                            property: path,
+                            message: "is not a boolean"
+                        });
+                    }
                 }
             }
         }

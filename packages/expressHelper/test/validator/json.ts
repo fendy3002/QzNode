@@ -28,8 +28,11 @@ mocha.describe("validator json", function (this) {
         },
         "required": ["country"]
       },
-      "votes": { "type": "integer", "minimum": 1 }
-    }
+      "votes": { "type": "integer", "minimum": 1 },
+      "isWorkforce": { "type": "boolean" },
+      "isVip": { "type": "boolean" }
+    },
+    "required": ["isWorkforce"]
   };
   mocha.it("validate json schema", async function () {
     let result = await jsonValidator.schema(schema).validate<any>({
@@ -41,7 +44,8 @@ mocha.describe("validator json", function (this) {
         "city": "Washington",
         "country": "USA"
       },
-      "votes": "1600"
+      "votes": "1600",
+      "isWorkforce": false
     });
 
     addContext(this, {
@@ -62,7 +66,8 @@ mocha.describe("validator json", function (this) {
         "city": "Washington",
         "country": "USA"
       },
-      "votes": "1600axxc123"
+      "votes": "1600axxc123",
+      "isWorkforce": false
     });
 
     addContext(this, {
@@ -84,7 +89,8 @@ mocha.describe("validator json", function (this) {
         "city": "Washington",
         "country": "USA"
       },
-      "votes": "1600axxc123"
+      "votes": "1600axxc123",
+      "isWorkforce": false
     });
 
     addContext(this, {
@@ -106,7 +112,8 @@ mocha.describe("validator json", function (this) {
         "city": "",
         "country": "USA"
       },
-      "votes": "1600"
+      "votes": "1600",
+      "isWorkforce": false
     });
 
     addContext(this, {
@@ -127,7 +134,8 @@ mocha.describe("validator json", function (this) {
         "city": "Washington",
         "country": ""
       },
-      "votes": "1600"
+      "votes": "1600",
+      "isWorkforce": false
     });
 
     addContext(this, {
@@ -149,7 +157,8 @@ mocha.describe("validator json", function (this) {
         "country": "USA",
         "area": null
       },
-      "votes": "1600"
+      "votes": "1600",
+      "isWorkforce": false
     });
 
     addContext(this, {
@@ -169,7 +178,8 @@ mocha.describe("validator json", function (this) {
         "country": "USA",
         "area": null
       },
-      "votes": "1600"
+      "votes": "1600",
+      "isWorkforce": false
     });
 
     addContext(this, {
@@ -179,5 +189,70 @@ mocha.describe("validator json", function (this) {
     assert.equal(false, result.isValid);
     assert.equal("instance.birth", result.errors[0].property);
     assert.equal("Birth date", result.errors[0].name);
+  });
+  mocha.it("validate json schema - boolean format", async function () {
+    let result = await jsonValidator.schema(schema).validate<any>({
+      "name": "Barack Obama",
+      "birth": "2010-01-01",
+      "address": {
+        "lines": ["1600 Pennsylvania Avenue Northwest"],
+        "zip": "DC 20500",
+        "city": "Washington",
+        "country": "USA",
+        "area": null
+      },
+      "votes": "1600",
+      "isWorkforce": "false",
+      "isVip": ""
+    });
+
+    addContext(this, {
+      title: "result",
+      value: result
+    });
+    assert.equal(true, result.isValid);
+    assert.equal(false, result.data.hasOwnProperty("isVip"));
+  });
+  mocha.it("validate error json schema - boolean format required", async function () {
+    let result = await jsonValidator.schema(schema).validate<any>({
+      "name": "Barack Obama",
+      "birth": "2010-01-01",
+      "address": {
+        "lines": ["1600 Pennsylvania Avenue Northwest"],
+        "zip": "DC 20500",
+        "city": "Washington",
+        "country": "USA",
+        "area": null
+      },
+      "votes": "1600",
+      "isWorkforce": ""
+    });
+
+    addContext(this, {
+      title: "result",
+      value: result
+    });
+    assert.equal(false, result.isValid);
+  });
+  mocha.it("validate error json schema - boolean format incorrect", async function () {
+    let result = await jsonValidator.schema(schema).validate<any>({
+      "name": "Barack Obama",
+      "birth": "2010-01-01",
+      "address": {
+        "lines": ["1600 Pennsylvania Avenue Northwest"],
+        "zip": "DC 20500",
+        "city": "Washington",
+        "country": "USA",
+        "area": null
+      },
+      "votes": "1600",
+      "isWorkforce": "TRUE"
+    });
+
+    addContext(this, {
+      title: "result",
+      value: result
+    });
+    assert.equal(false, result.isValid);
   });
 });

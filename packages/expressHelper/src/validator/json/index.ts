@@ -27,10 +27,11 @@ export const schema = (schema: any) => {
                 let validateResult = await validateObj(val[prop], schema.properties[prop], newPath);
                 isValid = isValid && validateResult.isValid;
                 errors = errors.concat(validateResult.errors);
+                let propData = validateResult.data;
                 if (!isValid) {
+                    data[prop] = propData;
                     continue;
                 }
-                let propData = validateResult.data;
                 if (schema.properties[prop].type == "string" &&
                     schema.required && schema.required.some(k => k == prop)) {
                     if (propData == "" || propData == null) {

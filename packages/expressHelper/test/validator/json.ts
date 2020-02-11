@@ -56,6 +56,28 @@ mocha.describe("validator json", function (this) {
     assert.equal(1, result.data.address.lines.length);
     assert.equal(1600, result.data.votes);
   });
+  mocha.it("validate json schema - empty date", async function () {
+    let result = await jsonValidator.schema(schema).validate<any>({
+      "name": "Barack Obama",
+      "birth": "",
+      "address": {
+        "lines": ["1600 Pennsylvania Avenue Northwest"],
+        "zip": "DC 20500",
+        "city": "Washington",
+        "country": "USA"
+      },
+      "votes": "1600",
+      "isWorkforce": false
+    });
+
+    addContext(this, {
+      title: "result",
+      value: result
+    });
+    assert.equal(true, result.isValid);
+    assert.equal(1, result.data.address.lines.length);
+    assert.equal(1600, result.data.votes);
+  });
   mocha.it("validate error json schema - non number", async function () {
     let result = await jsonValidator.schema(schema).validate<any>({
       "name": "Barack Obama",

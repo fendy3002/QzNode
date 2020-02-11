@@ -33,7 +33,8 @@ export const schema = (schema: any) => {
                     continue;
                 }
                 if (schema.properties[prop].type == "string" &&
-                    schema.required && schema.required.some(k => k == prop)) {
+                    (schema.required && schema.required.some(k => k == prop))
+                ) {
                     if (propData == "" || propData == null) {
                         isValid = false;
                         errors.push({
@@ -44,9 +45,13 @@ export const schema = (schema: any) => {
                     }
                     data[prop] = propData;
                 }
-                else if (schema.properties[prop].type == "string" && propData == null) {
-                    if ((!schema.required || !schema.required.some(k => k == prop))
-                        && !schema.properties[prop].required) {
+                else if (schema.properties[prop].type == "string" &&
+                    (propData == null || propData == "")
+                ) {
+                    if (
+                        !(schema.required && schema.required.some(k => k == prop))
+                        && !schema.properties[prop].required
+                    ) {
                         delete data[prop];
                     }
                     else {

@@ -125,6 +125,26 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
             return null;
         }
     };
+    let opAll = (key, value) => {
+        let crossCheckResult = crossCheckSchema(key, "all");
+        if (crossCheckResult) {
+            let returnValue = [];
+            if (typeof (value) == "string") {
+                returnValue = value.split(",").map(k => k.trim());
+            }
+            else if (Array.isArray(value)) {
+                returnValue = value;
+            }
+            return {
+                [crossCheckResult.key]: {
+                    $all: returnValue
+                }
+            };
+        }
+        else {
+            return null;
+        }
+    };
     let regex = (key, value) => {
         let crossCheckResult = crossCheckSchema(key, "regex");
         if (crossCheckResult) {
@@ -158,6 +178,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         "lte": keyOperation("$lte", "lte"),
         "lt": keyOperation("$lt", "lt"),
         "in": opIn,
+        "all": opAll,
         "regex": regex,
         "contains": contains,
         "starts_with": startsWith,

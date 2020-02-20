@@ -1,0 +1,32 @@
+const Mongoose = require('mongoose');
+
+export default async (mongoose) => {
+    const modelName = '{{ Name | safe }}';
+    try {
+        // if already defined, return 
+        return mongoose.model(modelName);
+    } catch (ex) {
+        const Schema = Mongoose.Schema;
+        const definedSchema = new Schema({
+            _id: {{ _idType | safe }},
+            {% for field in Fields %}
+            {{ field.Name | safe }}: {{ field.Type | safe }}
+            {% endfor %}
+        }, {
+            collection: '{{ Name | safe }}',
+            toJSON: {
+                virtuals: false
+            }
+        });
+
+        {% for unique in Uniques %}
+        definedSchema.index({
+            {% for field in unique.Fields %}
+            {{ field.Name | safe }}: {{ "1" if field.Ascending else "-1" }}
+            {% endfor %}
+        }, { unique: true });
+        {% endfor %}
+        
+        return mongoose.model(modelName, definedSchema);
+    }
+};

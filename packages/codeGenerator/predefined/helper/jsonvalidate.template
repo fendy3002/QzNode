@@ -1,0 +1,13 @@
+{% for field in _data %}
+{% if field.Type == "object" %}
+
+{% elif field.Type == "array" %}
+
+{% elif field.Gui | length %}
+    {{ field.Gui.Name }}: { 
+        "type": "{{ field.Gui.Type }}",
+        "name": "{{ field.Gui.Label }}",
+        "required": {{ "true" if field.Gui.Required else "false" }}
+    },
+{% endif %}
+{% endfor %}

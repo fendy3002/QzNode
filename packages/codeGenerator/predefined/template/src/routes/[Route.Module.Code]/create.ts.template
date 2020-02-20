@@ -10,6 +10,36 @@ import onFullyApprove from './onFullyApprove';
 import notificationManagerRaw from '../../libs/notificationManager';
 
 export default async (router, config: types.config.app, moduleInfo: types.moduleInfo, evalApproval: evalApprovalType, insertApproval: insertApprovalType) => {
+    let validate = async (body) => {
+        return await validator.json.schema({
+            type: "object",
+            properties: {
+                
+                IsPublic: { type: "boolean", name: "Is Public" },
+                LanguageCode: { type: "string", name: "Language" },
+                DocumentSummary: { type: "string", name: "Summary" },
+                DocumentNo: { type: "string", name: "Document No" },
+                DocumentDate: { type: "string", format: "date", name: "Document Date" },
+                Attribute: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            AttributeLabel: { type: "string", name: "Attribute Label" },
+                            AttributeValue: { type: "string" },
+                            SequenceNo: { type: "number" },
+                            IsDefault: { type: "boolean" }
+                        },
+                        required: ['AttributeLabel']
+                    },
+                    name: "Attribute"
+                }
+            },
+            required: [
+                "DocumentSummary"
+            ]
+        }).validate<any>(body);
+    };
     // create post
     router.post("/create/:id",
         errorHandler.handled(async (req, res, next) => {

@@ -14,4 +14,13 @@ export namespace Mongo {
             }]
         }]
     };
+};
+
+export interface BaseRoute {
+    Module: {
+        Code: string,
+        UrlPrefix: string,
+        Title: string,
+        
+    }
 }

@@ -1,0 +1,50 @@
+import express = require('express');
+import uuid = require('uuid/v4');
+let router = express.Router();
+import { errorHandler, filterParser } from "@fendy3002/express-helper";
+
+import * as types from '../types';
+import getApprovalRaw from '../libs/approval/getApproval';
+import evalApprovalRaw from '../libs/approval/evalApproval';
+import insertApprovalRaw from '../libs/approval/insertApproval';
+
+import getList from './{{ Module.Code | safe }}/getList';
+import getTransactionOrderList from './{{ Module.Code | safe }}/getTransactionOrderList';
+import viewTransactionOrder from './{{ Module.Code | safe }}/viewTransactionOrder';
+import view from './{{ Module.Code | safe }}/view';
+import create from './{{ Module.Code | safe }}/create';
+import update from './{{ Module.Code | safe }}/update';
+import delete from './{{ Module.Code | safe }}/delete';
+import approval from './{{ Module.Code | safe }}/approval';
+
+export default async (config: types.config.app) => {
+    let moduleInfo: types.moduleInfo = {
+        code: "{{ Module.Code | safe }}",
+        urlPrefix: "{{ Module.UrlPrefix | safe }}",
+        title: "{{ Module.Title }}",
+        statusField: "{{ Module.code }}"
+    };
+
+    const getApproval = await getApprovalRaw(config);
+    const evalApproval = await evalApprovalRaw(config, moduleInfo.code);
+    const insertApproval = await insertApprovalRaw(config);
+
+    await getList(router, config, moduleInfo);
+    await getTransactionOrder(router, config, moduleInfo);
+    await getChooseCreate(router, config, moduleInfo);
+
+    await create(router, config, moduleInfo, evalApproval, insertApproval);
+    await update(router, config, moduleInfo, evalApproval, insertApproval);
+    await delete(router, config, moduleInfo, evalApproval, insertApproval);
+    await view(router, config, moduleInfo);
+    await viewTransactionOrder(router, config, moduleInfo);
+
+    router.get("/:id/log",
+        errorHandler.handled(async (req, res, next) => {
+            return res.redirect(`/${moduleInfo.urlPrefix}/transaction-order?filter.RecordId.contains=${req.params.id}&search=1`)
+        })
+    );
+    await approval(router, config, moduleInfo, getApproval);
+
+    return router;
+}

@@ -1,0 +1,56 @@
+{
+    "Model": {
+        "Name": "test_model",
+        "_idType": "String",
+        "Fields": [
+            {
+                "Name": "Name",
+                "Type": "string",
+                "Required": true,
+                "Gui": {
+                    "Name": "Name",
+                    "Type": "text",
+                    "Label": "Test Name"
+                }
+            },
+            {
+                "Name": "Address",
+                "Type": "_object",
+                "Required": true,
+                "Properties": [
+                    {
+                        "Name": "StreetName",
+                        "Type": "string",
+                        "required": true,
+                        "Gui": {
+                            "Name": "StreetName",
+                            "Type": "text",
+                            "Label": "Street Name"
+                        }
+                    },
+                    {
+                        "Name": "BuildingName",
+                        "Type": "string",
+                        "required": false,
+                        "Gui": {
+                            "Name": "BuildingName",
+                            "Type": "text",
+                            "Label": "Building Name"
+                        }
+                    }
+                ],
+                "Gui": {
+                    "Name": "Address"
+                }
+            }
+        ],
+        "Uniques": []
+    },
+    "Route": {
+        "Module": {
+            "Code": "test_module",
+            "UrlPrefix": "test-module",
+            "Title": "Test"
+        }
+    }
+}

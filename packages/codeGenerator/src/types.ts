@@ -2,15 +2,12 @@ export namespace Mongo {
     export interface Field {
         Name: string,
         Type: string,
-        Properties ?: {
-            [key: string]: Field
-        },
+        Properties ?: [Field],
         Required: boolean,
         Gui ?: {
             Name: string,
-            Type: string,
-            Required: boolean,
-            Label: string
+            Type ?: string,
+            Label ?: string
         }
     };
     

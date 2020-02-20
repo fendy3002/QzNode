@@ -1,18 +1,26 @@
 {% for field in _data %}
 {% if field.Gui | length %}
     {% if field.Type == "object" %}
-
+        "{{ field.Gui.Name | safe }}": {
+            type: "object",
+            properties: {
+                {% _helper.renderHelper("jsonvalidate.template", field.Properties) | safe %}
+            }
+        }
     {% elif field.Type == "array" %}
-        {{ field.Gui.Name }}: {
+        "{{ field.Gui.Name | safe }}": {
             type: "array",
             items: {
-
+                type: "object",
+                properties: {
+                    {% _helper.renderHelper("jsonvalidate.template", field.Properties) | safe %}
+                }
             }
         }
     {% else %}
-        {{ field.Gui.Name }}: { 
-            "type": "{{ field.Gui.Type }}",
-            "name": "{{ field.Gui.Label }}",
+        "{{ field.Gui.Name | safe}}": { 
+            "type": "{{ field.Gui.Type | safe }}",
+            "name": "{{ field.Gui.Label | safe }}",
             "required": {{ "true" if field.Gui.Required else "false" }}
         },
     {% endif %}

@@ -1,3 +1,12 @@
+{% macro renderField(fields) %}
+    {% for field in fields %}
+    {% if field.Type == "" or field.Type == "_object" %}
+        {% renderField(field.Properties) | safe %}
+    {% else %}
+        {{ field.Name | safe }}: {{ field.Type | safe }}
+    {% endif %}
+    {% endfor %}
+{% endmacro %}
 const Mongoose = require('mongoose');
 
 export default async (mongoose) => {
@@ -9,9 +18,7 @@ export default async (mongoose) => {
         const Schema = Mongoose.Schema;
         const definedSchema = new Schema({
             _id: {{ _idType | safe }},
-            {% for field in Fields %}
-            {{ field.Name | safe }}: {{ field.Type | safe }}
-            {% endfor %}
+            {% renderField(Fields) | safe %}
         }, {
             collection: '{{ Name | safe }}',
             toJSON: {

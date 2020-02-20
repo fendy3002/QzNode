@@ -1,7 +1,7 @@
 {% macro renderField(fields) %}
     {% for field in fields %}
     {% if field.Type == "" or field.Type == "_object" %}
-        {% renderField(field.Properties) | safe %}
+        {{ renderField(field.Properties) | safe }}
     {% else %}
         {{ field.Name | safe }}: {{ field.Type | safe }}
     {% endif %}
@@ -18,7 +18,7 @@ export default async (mongoose) => {
         const Schema = Mongoose.Schema;
         const definedSchema = new Schema({
             _id: {{ _idType | safe }},
-            {% renderField(Fields) | safe %}
+            {{ renderField(Fields) | safe }}
         }, {
             collection: '{{ Name | safe }}',
             toJSON: {

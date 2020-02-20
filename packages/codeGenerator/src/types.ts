@@ -2,9 +2,20 @@ export namespace Mongo {
     export interface Field {
         Name: string,
         Type: string,
+        Properties ?: {
+            [key: string]: Field
+        },
+        Required: boolean,
+        Gui ?: {
+            Name: string,
+            Type: string,
+            Required: boolean,
+            Label: string
+        }
     };
     
     export interface Model {
+        Name: string,
         _idType: string,
         Fields: [Field],
         Uniques: [{
@@ -16,7 +27,7 @@ export namespace Mongo {
     };
 };
 
-export interface BaseRoute {
+export interface Route {
     Module: {
         Code: string,
         UrlPrefix: string,

@@ -1,0 +1,145 @@
+import { errorHandler } from "@fendy3002/express-helper";
+let uuid = require('uuid/v4');
+import lo = require('lodash');
+import moment = require('moment');
+
+import * as types from '../../types';
+import { ServiceType as evalApprovalType } from '../../libs/approval/evalApproval';
+import { ServiceType as insertApprovalType } from '../../libs/approval/insertApproval';
+import onFullyApprove from './onFullyApprove';
+import notificationManagerRaw from '../../libs/notificationManager';
+
+export default async (router, config: types.config.app, moduleInfo: types.moduleInfo, evalApproval: evalApprovalType, insertApproval: insertApprovalType) => {
+    // create post
+    router.post("/create/:id",
+        errorHandler.handled(async (req, res, next) => {
+            res.locals._title = "Add " + moduleInfo.title;
+            const changeRequestModel = req.mongoose.model("change_request");
+            let notificationManager = await notificationManagerRaw(config, req.notificator, req.lang);
+            
+            const users = await req.openidService.getUsers();
+
+            let FacilityKey = req.body.FacilityKey;
+            let CategoryKey = req.body.CategoryKey;
+            let UserKey = req.body.UserKey;
+
+            if (!UserKey) {
+                const facilityModel = req.mongoose.model("facility");
+                const facilityDocumentCategoryModel = req.mongoose.model("facility_document_category");
+                
+                const facilityDocumentCategory = await facilityDocumentCategoryModel.find({_id:req.params.id}).lean();
+                const facility = await facilityModel.find({_id:facilityDocumentCategory[0].FacilityKey}).lean();
+    
+                const data = {
+                    FacilityKey: facility[0]._id,
+                    CategoryKey: facilityDocumentCategory[0]._id,
+                    FacilityName: facility[0].Name,
+                    CategoryName: facilityDocumentCategory[0].CategoryName,
+                    ...req.body
+                };
+
+                return res.render("user_facility_document_category/edit.html", {
+                    data: data,
+                    userData: users,
+                    modal: {
+                        type: "error",
+                        message: "User is required".bold()
+                    },
+                    operation: "I",
+                    moduleInfo: moduleInfo
+                });
+            }else {
+                let changeRequestId = uuid();
+                let modelId = uuid();
+                let changePayload = {
+                    _id: changeRequestId,
+                    TransactionStatusCode: "20",
+                    ModuleCode: moduleInfo.code,
+                    Operation: "I",
+                    RecordId: modelId,
+                    CurrentValue: null,
+                    NextValue: {
+                        _id: modelId,
+                        FacilityKey: FacilityKey,
+                        CategoryKey: CategoryKey,
+                        UserKey: UserKey,
+                        LastModifiedAtTimeStamp: new Date().getTime(),
+                        LastModifiedOperationCode: "I",
+                        LastModifiedByUserAccountKey: req.session.user.id,
+                        LastModifiedByUserAccountName: req.session.user.name
+                    },
+                    ReasonForChanging: null,
+                    Log: [],
+                    LastModifiedAtTimeStamp: new Date().getTime(),
+                    LastModifiedByUserAccountKey: req.session.user.id,
+                    LastModifiedByUserAccountName: req.session.user.name
+                };
+
+                let approval = await evalApproval(changePayload.NextValue, "I");
+                let approvalId = null;
+                if (approval) {
+                    // approval on progress
+                    changePayload.TransactionStatusCode = "10";
+                    approvalId = await insertApproval({
+                        CurrentTransactionJSON: null,
+                        NextTransactionJSON: null,
+                        TransactionID: changePayload._id,
+                        Approval: approval,
+
+                        UserAccountKey: req.session.user.id,
+                        UserAccountName: req.session.user.name,
+                    });
+                }
+                let insertResult = await changeRequestModel.create(
+                    changePayload
+                );
+                if (approval) {
+                    await notificationManager.submitApproval({
+                        operation: "I",
+                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
+                        approvalUrl: `${req.fullHostUrl}/approval/` + approvalId.lineId,
+                        firstApproverId: approval.ApproverTransactionJSON["1"].UserAccountKey,
+                        requestId: changeRequestId,
+                        moduleName: moduleInfo.title,
+                        timestamp: new Date().getTime(),
+                        userId: req.session.user.id,
+                        submitterEmail: req.session.user.email
+                    });
+                    req.flash('modal_' + req.body._form_id, {
+                        "type": "success",
+                        "message": req.lang._("general.successApproval", "", {
+                            subject: req.lang.text("general.create.successApproval", "", {
+                                module: moduleInfo.title
+                            }),
+                            transaction_id: changeRequestId.toUpperCase(),
+                            timestamp: moment(changePayload.LastModifiedAtTimeStamp).format(config.dateTimeFullFormat)
+                        })
+                    });
+                }
+                else {
+                    let newRecord = await onFullyApprove(req, changeRequestId, "I");
+                    await notificationManager.submitNoApproval({
+                        operation: "I",
+                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
+                        requestId: changeRequestId,
+                        moduleName: moduleInfo.title,
+                        timestamp: new Date().getTime(),
+                        userId: req.session.user.id,
+                        submitterEmail: req.session.user.email
+                    });
+                    req.flash('modal_' + req.body._form_id, {
+                        "type": "success",
+                        "message": req.lang._("general.successNoApproval", "", {
+                            subject: req.lang.text("general.create.successNoApproval", "", {
+                                module: moduleInfo.title
+                            }),
+                            record_id: modelId.toUpperCase(),
+                            timestamp: moment(changePayload.LastModifiedAtTimeStamp).format(config.dateTimeFullFormat)
+                        })
+                    });
+                }
+                return res.redirect(`/${moduleInfo.urlPrefix}/create?_form_id=${req.body._form_id}`);
+            }
+        })
+    );
+};

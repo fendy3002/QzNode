@@ -1,32 +1,34 @@
 {% macro renderField(fields) %}
     {% for field in fields %}
     {% if field.Type == "" or field.Type == "_object" %}
-        {{ renderField(field.Properties) | safe }}
+        {{ field.Name | safe }}: {
+            {{ renderField(field.Properties) | safe }}
+        }
     {% else %}
-        {{ field.Name | safe }}: {{ field.Type | safe }}
+        {{ field.Name | safe }}: {{ field.Type | safe }},
     {% endif %}
     {% endfor %}
 {% endmacro %}
 const Mongoose = require('mongoose');
 
 export default async (mongoose) => {
-    const modelName = '{{ Name | safe }}';
+    const modelName = '{{ Model.Name | safe }}';
     try {
         // if already defined, return 
         return mongoose.model(modelName);
     } catch (ex) {
         const Schema = Mongoose.Schema;
         const definedSchema = new Schema({
-            _id: {{ _idType | safe }},
-            {{ renderField(Fields) | safe }}
+            _id: {{ Model._idType | safe }},
+            {{ renderField(Model.Fields) | safe }}
         }, {
-            collection: '{{ Name | safe }}',
+            collection: '{{ Model.Name | safe }}',
             toJSON: {
                 virtuals: false
             }
         });
 
-        {% for unique in Uniques %}
+        {% for unique in Model.Uniques %}
         definedSchema.index({
             {% for field in unique.Fields %}
             {{ field.Name | safe }}: {{ "1" if field.Ascending else "-1" }}

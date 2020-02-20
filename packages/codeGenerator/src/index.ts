@@ -8,7 +8,7 @@ const getHelper = (option) => {
         return nunjucks.render(path.join(option.path.helper, helperName), {
             _helper: helper,
             _data: data
-        });
+        }).replace(/\n\s*\n/g, '\n');
     };
     const isArr = (val: any) => {
         return Array.isArray(val);
@@ -64,7 +64,7 @@ const renderPath = async (currentPath: string, option) => {
             const fileContent = nunjucks.render(itemPath, {
                 _helper: option.helper,
                 ...option.schema
-            });
+            }).replace(/\n\s*\n/g, '\n');
             fs.writeFileSync(itemOutputPath, fileContent);
         }
         else {
@@ -89,6 +89,7 @@ const doTask = async () => {
     const schemaStr = fs.readFileSync(schemaPath, "utf8");
     const schemaObj = JSON.parse(schemaStr);
 
+    console.log("schema", schemaObj)
     let context: any = {
         ...option,
         path: {

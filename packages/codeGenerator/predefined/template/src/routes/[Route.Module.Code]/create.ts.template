@@ -1,4 +1,4 @@
-import { errorHandler } from "@fendy3002/express-helper";
+import { errorHandler, validator } from "@fendy3002/express-helper";
 let uuid = require('uuid/v4');
 import lo = require('lodash');
 import moment = require('moment');
@@ -14,30 +14,8 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         return await validator.json.schema({
             type: "object",
             properties: {
-                
-                IsPublic: { type: "boolean", name: "Is Public" },
-                LanguageCode: { type: "string", name: "Language" },
-                DocumentSummary: { type: "string", name: "Summary" },
-                DocumentNo: { type: "string", name: "Document No" },
-                DocumentDate: { type: "string", format: "date", name: "Document Date" },
-                Attribute: {
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: {
-                            AttributeLabel: { type: "string", name: "Attribute Label" },
-                            AttributeValue: { type: "string" },
-                            SequenceNo: { type: "number" },
-                            IsDefault: { type: "boolean" }
-                        },
-                        required: ['AttributeLabel']
-                    },
-                    name: "Attribute"
-                }
-            },
-            required: [
-                "DocumentSummary"
-            ]
+                {{ _helper.renderHelper("jsonvalidate.template", Model.Fields) | safe }}
+            }
         }).validate<any>(body);
     };
     // create post

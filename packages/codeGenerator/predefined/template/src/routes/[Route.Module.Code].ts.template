@@ -8,21 +8,21 @@ import getApprovalRaw from '../libs/approval/getApproval';
 import evalApprovalRaw from '../libs/approval/evalApproval';
 import insertApprovalRaw from '../libs/approval/insertApproval';
 
-import getList from './{{ Module.Code | safe }}/getList';
-import getTransactionOrderList from './{{ Module.Code | safe }}/getTransactionOrderList';
-import viewTransactionOrder from './{{ Module.Code | safe }}/viewTransactionOrder';
-import view from './{{ Module.Code | safe }}/view';
-import create from './{{ Module.Code | safe }}/create';
-import update from './{{ Module.Code | safe }}/update';
-import delete from './{{ Module.Code | safe }}/delete';
-import approval from './{{ Module.Code | safe }}/approval';
+import getList from './{{ Route.Module.Code | safe }}/getList';
+import getTransactionOrderList from './{{ Route.Module.Code | safe }}/getTransactionOrderList';
+import viewTransactionOrder from './{{ Route.Module.Code | safe }}/viewTransactionOrder';
+import view from './{{ Route.Module.Code | safe }}/view';
+import createRoute from './{{ Route.Module.Code | safe }}/create';
+import updateRoute from './{{ Route.Module.Code | safe }}/update';
+import deleteRoute from './{{ Route.Module.Code | safe }}/delete';
+import approval from './{{ Route.Module.Code | safe }}/approval';
 
 export default async (config: types.config.app) => {
     let moduleInfo: types.moduleInfo = {
-        code: "{{ Module.Code | safe }}",
-        urlPrefix: "{{ Module.UrlPrefix | safe }}",
-        title: "{{ Module.Title }}",
-        statusField: "{{ Module.code }}"
+        code: "{{ Route.Module.Code | safe }}",
+        urlPrefix: "{{ Route.Module.UrlPrefix | safe }}",
+        title: "{{ Route.Module.Title | safe }}",
+        statusField: "{{ Route.Module.Code | safe }}"
     };
 
     const getApproval = await getApprovalRaw(config);
@@ -30,12 +30,11 @@ export default async (config: types.config.app) => {
     const insertApproval = await insertApprovalRaw(config);
 
     await getList(router, config, moduleInfo);
-    await getTransactionOrder(router, config, moduleInfo);
-    await getChooseCreate(router, config, moduleInfo);
+    await getTransactionOrderList(router, config, moduleInfo);
 
-    await create(router, config, moduleInfo, evalApproval, insertApproval);
-    await update(router, config, moduleInfo, evalApproval, insertApproval);
-    await delete(router, config, moduleInfo, evalApproval, insertApproval);
+    await createRoute(router, config, moduleInfo, evalApproval, insertApproval);
+    await updateRoute(router, config, moduleInfo, evalApproval, insertApproval);
+    await deleteRoute(router, config, moduleInfo, evalApproval, insertApproval);
     await view(router, config, moduleInfo);
     await viewTransactionOrder(router, config, moduleInfo);
 

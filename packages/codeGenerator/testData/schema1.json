@@ -5,11 +5,12 @@
         "Fields": [
             {
                 "Name": "Name",
-                "Type": "string",
+                "Type": "String",
                 "Required": true,
                 "Gui": {
                     "Name": "Name",
                     "Type": "text",
+                    "ValidateType": "string",
                     "Label": "Test Name"
                 }
             },
@@ -20,27 +21,30 @@
                 "Properties": [
                     {
                         "Name": "StreetName",
-                        "Type": "string",
+                        "Type": "String",
                         "required": true,
                         "Gui": {
                             "Name": "StreetName",
                             "Type": "text",
+                            "ValidateType": "string",
                             "Label": "Street Name"
                         }
                     },
                     {
                         "Name": "BuildingName",
-                        "Type": "string",
+                        "Type": "String",
                         "required": false,
                         "Gui": {
                             "Name": "BuildingName",
                             "Type": "text",
+                            "ValidateType": "string",
                             "Label": "Building Name"
                         }
                     }
                 ],
                 "Gui": {
-                    "Name": "Address"
+                    "Name": "Address",
+                    "ValidateType": "object"
                 }
             }
         ],

@@ -1,9 +1,4 @@
-{% macro renderNextFalueField(Fields) %}
-    {% for field in Fields  %}
-    "{{ field.Name }}": validateResult.data.{{ field.Gui.Name | safe }},
-    {% endfor %}
-{% endmacro %}
-import { errorHandler, validator } from "@fendy3002/express-helper";
+import { errorHandler } from "@fendy3002/express-helper";
 let uuid = require('uuid/v4');
 import lo = require('lodash');
 import moment = require('moment');
@@ -27,14 +22,20 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         return {
         };
     };
-    // create post
-    router.post("/create/:id",
+    // update post
+    router.post("/:id/update",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = "Add " + moduleInfo.title;
+            res.locals._title = "Edit " + moduleInfo.title;
             const changeRequestModel = req.mongoose.model("change_request");
             let notificationManager = await notificationManagerRaw(config, req.notificator, req.lang);
-            
+
+            let modelId = req.params.id;
             let validateResult = await validatePostData(req.body);
+
+            let reasonForChanging = req.body.ReasonForChanging;
+            const data = {
+                ...req.body
+            };
             if (!validateResult.isValid) {
                 return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
                     data: req.body,
@@ -45,32 +46,55 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     supplement: await getSupplement(req),
                     operation: "I"
                 });
-            } else {
+            } else if (!reasonForChanging) {
+                return res.render(`/edit.html`, {
+                    data: data,
+                    modal: {
+                        type: "error",
+                        message: "Reason for Changing is required".bold()
+                    },
+                    operation: "U",
+                    moduleInfo: moduleInfo
+                });
+            } else if (await changeRequestModel.findOne({
+                ModuleCode: moduleInfo.code,
+                "NextValue._id": modelId,
+                TransactionStatusCode: "10"
+            })) {
+                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+                    data: data,
+                    modal: {
+                        "type": "error",
+                        "message": (req.lang._("general.update.pendingApproval", "")).bold()
+                    },
+                    operation: "U",
+                    moduleInfo: moduleInfo
+                });
+            }else {
                 let changeRequestId = uuid();
-                let modelId = uuid();
                 let changePayload = {
                     _id: changeRequestId,
                     TransactionStatusCode: "20",
                     ModuleCode: moduleInfo.code,
-                    Operation: "I",
+                    Operation: "U",
                     RecordId: modelId,
-                    CurrentValue: null,
+                    CurrentValue: userFacilityDocumentCategoryData,
                     NextValue: {
-                        _id: modelId,
-                        {{ renderNextFalueField(Model.Fields) | safe }}
+                        ...userFacilityDocumentCategoryData,
+                        UserKey: UserKey,
                         LastModifiedAtTimeStamp: new Date().getTime(),
-                        LastModifiedOperationCode: "I",
+                        LastModifiedOperationCode: "U",
                         LastModifiedByUserAccountKey: req.session.user.id,
                         LastModifiedByUserAccountName: req.session.user.name
                     },
-                    ReasonForChanging: null,
+                    ReasonForChanging: reasonForChanging,
                     Log: [],
                     LastModifiedAtTimeStamp: new Date().getTime(),
                     LastModifiedByUserAccountKey: req.session.user.id,
                     LastModifiedByUserAccountName: req.session.user.name
                 };
 
-                let approval = await evalApproval(changePayload.NextValue, "I");
+                let approval = await evalApproval(changePayload.NextValue, "U");
                 let approvalId = null;
                 if (approval) {
                     // approval on progress
@@ -90,8 +114,8 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 );
                 if (approval) {
                     await notificationManager.submitApproval({
-                        operation: "I",
-                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
+                        operation: "U",
+                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log`,
                         approvalUrl: `${req.fullHostUrl}/approval/` + approvalId.lineId,
                         firstApproverId: approval.ApproverTransactionJSON["1"].UserAccountKey,
                         requestId: changeRequestId,
@@ -103,29 +127,28 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     req.flash('modal_' + req.body._form_id, {
                         "type": "success",
                         "message": req.lang._("general.successApproval", "", {
-                            subject: req.lang.text("general.create.successApproval", "", {
+                            subject: req.lang.text("general.update.successApproval", "", {
                                 module: moduleInfo.title
                             }),
                             transaction_id: changeRequestId.toUpperCase(),
                             timestamp: moment(changePayload.LastModifiedAtTimeStamp).format(config.dateTimeFullFormat)
                         })
                     });
-                }
-                else {
-                    let newRecord = await onFullyApprove(req, changeRequestId, "I");
+                }else {
                     await notificationManager.submitNoApproval({
-                        operation: "I",
-                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
+                        operation: "U",
+                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log`,
                         requestId: changeRequestId,
                         moduleName: moduleInfo.title,
                         timestamp: new Date().getTime(),
                         userId: req.session.user.id,
                         submitterEmail: req.session.user.email
                     });
+                    let newRecord = await onFullyApprove(req, changeRequestId, "U");
                     req.flash('modal_' + req.body._form_id, {
                         "type": "success",
                         "message": req.lang._("general.successNoApproval", "", {
-                            subject: req.lang.text("general.create.successNoApproval", "", {
+                            subject: req.lang.text("general.update.successNoApproval", "", {
                                 module: moduleInfo.title
                             }),
                             record_id: modelId.toUpperCase(),
@@ -133,7 +156,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         })
                     });
                 }
-                return res.redirect(`/${moduleInfo.urlPrefix}/create?_form_id=${req.body._form_id}`);
+                return res.redirect(`/${moduleInfo.urlPrefix}/${changeRequestId}/view-log?_form_id=${req.body._form_id}`);
             }
         })
     );

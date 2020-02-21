@@ -1,4 +1,4 @@
-import { errorHandler } from "@fendy3002/express-helper";
+import { errorHandler, validator } from "@fendy3002/express-helper";
 let uuid = require('uuid/v4');
 import lo = require('lodash');
 import moment = require('moment');
@@ -27,9 +27,11 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         errorHandler.handled(async (req, res, next) => {
             res.locals._title = "Edit " + moduleInfo.title;
             const changeRequestModel = req.mongoose.model("change_request");
-            let notificationManager = await notificationManagerRaw(config, req.notificator, req.lang);
-
+            const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
+            const notificationManager = await notificationManagerRaw(config, req.notificator, req.lang);
             let modelId = req.params.id;
+            let currentModuleData = await currentModuleModel.findById(modelId).lean();
+
             let validateResult = await validatePostData(req.body);
 
             let reasonForChanging = req.body.ReasonForChanging;
@@ -78,10 +80,9 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     ModuleCode: moduleInfo.code,
                     Operation: "U",
                     RecordId: modelId,
-                    CurrentValue: userFacilityDocumentCategoryData,
+                    CurrentValue: currentModuleData,
                     NextValue: {
-                        ...userFacilityDocumentCategoryData,
-                        UserKey: UserKey,
+                        ...currentModuleData,
                         LastModifiedAtTimeStamp: new Date().getTime(),
                         LastModifiedOperationCode: "U",
                         LastModifiedByUserAccountKey: req.session.user.id,
@@ -134,7 +135,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                             timestamp: moment(changePayload.LastModifiedAtTimeStamp).format(config.dateTimeFullFormat)
                         })
                     });
-                }else {
+                } else {
                     await notificationManager.submitNoApproval({
                         operation: "U",
                         viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log`,

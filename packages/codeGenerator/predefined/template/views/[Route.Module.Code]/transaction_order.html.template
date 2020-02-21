@@ -1,0 +1,179 @@
+{{ _helper.block.open }} extends "template/operational.html" {{ _helper.block.close }}
+{{ _helper.block.open }} import "template/crud/filter_modal.html" as filterModal {{ _helper.block.close }}
+
+{{ _helper.block.open }} macro filterContent(context) {{ _helper.block.close }}
+<div class="row">
+    <div class="col-md-6">
+        <div class="row form-group">
+            
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row form-group">
+            
+        </div>
+    </div>
+</div>
+{{ _helper.block.open }} endmacro {{ _helper.block.close }}
+
+{{ _helper.block.open }} block content {{ _helper.block.close }}
+<ol class="breadcrumb" style="margin-bottom: 0px;">
+    <li class="breadcrumb-item"><a href="/#">Home</a></li>
+    <li class="breadcrumb-item active">{{ _helper.print.open }} moduleInfo.title {{ _helper.print.close }}</li>
+</ol>
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title mb-0">{{ _helper.print.open }} moduleInfo.title {{ _helper.print.close }}</h2>
+    </div>
+</div>
+<div class="container-fluid">
+    <div id="ui-view">
+        <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 16px;">
+            <li class="nav-item">
+                <a class="nav-link" href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}">{{ _helper.print.open }} moduleInfo.title | upper {{ _helper.print.close }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="javascript:void()">TRANSACTION ORDER</a>
+            </li>
+        </ul>
+        <div class="card">
+            <div class="card-body">
+                <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/create" class="btn btn-square btn-primary">
+                    <i class="fa fa-plus"></i> Add
+                </a>
+                <button type="button" class="btn btn-square btn-primary" data-toggle="modal"
+                    data-target="[data-role='filter_modal']">
+                    <i class="fa fa-search"></i> Filter
+                </button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- Pagination -->
+                        {{ _helper.print.open }}
+                            _pagination({
+                                link: '/' + moduleInfo.urlPrefix + '/transaction-order?page={current}',
+                                cssClass: "pull-right",
+                                query: _query,
+                                current: _paginationData.current, 
+                                rowCount: _paginationData.rowCount,
+                                pageLimit : _paginationData.pageLimit
+                            }) | safe
+                        {{ _helper.print.close }}
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 8px;">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-sm text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Transaction Date
+                                        </th>
+                                        <th>
+                                            Transaction #
+                                        </th>
+                                        <th>
+                                            Transaction Status
+                                        </th>
+                                        <th>
+                                            Operation
+                                        </th>
+                                        {{ _helper.renderHelper("tableHeaderField.template", Model.Fields) | safe }}
+                                        <th>
+                                            Created By
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{ _helper.block.open }} for each in data {{ _helper.block.close }}
+                                    <tr class="{{ _helper.print.open }} each.TransactionStatusCode | rowStatus {{ _helper.print.close }} ninja-container">
+                                        <td>{{ _helper.print.open }} each.LastModifiedAtTimeStamp | fromNow | safe {{ _helper.print.close }}</td>
+                                        <td>{{ _helper.print.open }} each._id {{ _helper.print.open }}</td>
+                                        <td><i
+                                                class="status-flag"></i>{{ _helper.print.open }} _status(moduleInfo.statusField, each.TransactionStatusCode) {{ _helper.print.close }}
+                                        </td>
+                                        <td>
+                                            {{ _helper.print.open }} _lang.text('operation.' + each.Operation, '') | upper {{ _helper.print.close }}
+                                        </td>
+                                        {{ _helper.renderHelper("tableBodyField.template", Model.Fields) | safe }}
+                                        <td>{{ _helper.print.open }} each.LastModifiedByUserAccountName {{ _helper.print.close }}</td>
+                                        <td>
+                                            <div class="ninja-panel extend-left">
+                                                <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} each._id | urlencode {{ _helper.print.close }}/view-log"
+                                                    class="btn btn-secondary btn-square btn-sm">
+                                                    <i class="fa fa-eye"></i> View
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {{ _helper.block.open }} else {{ _helper.block.close }}
+                                    <tr>
+                                        <td colspan="99" align="center">No data</td>
+                                    </tr>
+                                    {{ _helper.block.open }} endfor {{ _helper.block.close }}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- Pagination -->
+                        {{ _helper.print.open }}
+                            _pagination({
+                                link: '/' + moduleInfo.urlPrefix + '/transaction-order?page={current}',
+                                cssClass: "pull-right",
+                                query: _query,
+                                current: _paginationData.current, 
+                                rowCount: _paginationData.rowCount,
+                                pageLimit : _paginationData.pageLimit
+                            }) | safe
+                        {{ _helper.print.close }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{ _helper.print.open }} filterModal.render({
+    body: filterContent,
+    query: _query,
+    context: {
+        _query: _query
+    }
+}) | safe {{ _helper.print.close }}
+
+<div class="modal fade" role="dialog" id="_form_modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <p data-role="icon"></p>
+                <p data-role="content"></p>
+                <button class="btn btn-primary btn-square" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{ _helper.block.open }} endblock {{ _helper.block.close }}
+{{ _helper.block.open }} block script {{ _helper.block.close }}
+<script>
+    let modalData = {{ _helper.print.open }} modal | default (null) | dump | safe {{ _helper.print.close }};
+
+    $.fn.datepicker.defaults.format = "yyyy-mm-dd";
+    $('.input-group.date').datepicker({
+        todayBtn: "linked",
+        endDate: '+0d',
+        todayHighlight: true
+    });
+    $("[data-role='select2']").select2();
+
+    if (modalData) {
+        window._u.showModal(modalData, $("#_form_modal"));
+    }
+</script>
+{{ _helper.block.open }} endblock {{ _helper.block.close }}

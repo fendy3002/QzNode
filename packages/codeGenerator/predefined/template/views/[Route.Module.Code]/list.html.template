@@ -72,22 +72,14 @@
                             <table class="table table-sm text-nowrap">
                                 <thead>
                                     <tr class="">
-                                        {% for field in Model.Fields %}
-                                        {% if field.Type != "_object" and field.Type != "" %}
-                                        <th>{{ field.Gui.Name }}</th>
-                                        {% endif %}
-                                        {% endfor %}
+                                        {{ _helper.renderHelper("tableHeaderField.template", Model.Fields) | safe }}
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {{ _helper.block.open }} for each in data {{ _helper.block.close }}
                                     <tr class="ninja-container">
-                                        {% for field in Model.Fields %}
-                                        {% if field.Type != "_object" and field.Type != "" %}
-                                        <td>{{ _helper.print.open }} each.{{ field.Name }} {{ _helper.print.close }}</th>
-                                        {% endif %}
-                                        {% endfor %}                                        
+                                        {{ _helper.renderHelper("tableBodyField.template", Model.Fields) | safe }}
                                         <td>
                                             <div class="ninja-panel extend-left">
                                                 <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} each._id | urlencode {{ _helper.print.close }}/view"

@@ -1,0 +1,133 @@
+import { errorHandler } from "@fendy3002/express-helper";
+import uuid = require('uuid/v4');
+import httpErrors = require('http-errors');
+import debugRaw = require('debug');
+import lo = require('lodash');
+
+import actionApprovalRaw from '../../libs/approval/actionApproval';
+import { ServiceType as GetApprovalService } from '../../libs/approval/getApproval';
+import helperRaw from './helper';
+import notificationManagerRaw from '../../libs/notificationManager';
+import * as types from '../../types';
+let debug = debugRaw("app:routes/form/approval");
+
+export default async (router, config: types.config.app, moduleInfo: types.moduleInfo, getApproval: GetApprovalService) => {
+    const helper = await helperRaw(config);
+    router.get([
+        "/:id/approval/:approval_id/:line_id",
+        "/:id/approval/:approval_id"
+    ],
+        errorHandler.handled(async (req, res, next) => {
+            const changeRequestModel = req.mongoose.model("change_request");
+            const approvalTransactionModel = req.mongoose.model("approval_transaction");
+            const approvalTransactionLineModel = req.mongoose.model("approval_transaction_line");
+
+            res.locals._title = moduleInfo.title;
+
+            let approvalTransactionLine = null;
+            if (req.params.line_id) {
+                approvalTransactionLine = await approvalTransactionLineModel.findOne({
+                    _id: req.params.line_id
+                }).lean();
+                if (approvalTransactionLine.ApprovalTransactionKey != req.params.approval_id) {
+                    return next(httpErrors(400, "Link not valid"));
+                }
+            }
+
+            let approvalTransaction = await getApproval(req.session.user, req.params.approval_id, req.params.line_id);
+            let recordData = await changeRequestModel.findOne({
+                _id: req.params.id
+            }).lean();
+            const data = {
+                ...recordData.CurrentValue,
+                ...recordData.NextValue,
+                ...recordData
+            };
+
+            return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+                data: data,
+                approval: approvalTransaction,
+                isApprovalAction: approvalTransactionLine !== null,
+                operation: "A",
+                moduleInfo: moduleInfo
+            });
+        })
+    );
+    router.post("/:id/approval/:approval_id/:line_id",
+        errorHandler.handled(async (req, res, next) => {
+            const changeRequestModel = req.mongoose.model("change_request");
+            let notificationManager = await notificationManagerRaw(config, req.notificator, req.lang);
+            res.locals._title = moduleInfo.title;
+
+            let approvalAction = req.body.approval_action;
+            let approvalComment = req.body.approval_comment;
+            if (!approvalComment) {
+                let approvalTransaction = await getApproval(req.session.user, req.params.approval_id, req.params.line_id);
+                let result = await changeRequestModel.findOne({
+                    _id: req.params.id
+                }).lean();
+
+                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+                    data: {
+                        ...result,
+                        ...result.NextValue
+                    },
+                    approval: approvalTransaction,
+                    isApprovalAction: approvalAction,
+                    modal: {
+                        type: "error",
+                        message: "Approval Comment is required".bold()
+                    },
+                    operation: 'A',
+                    moduleInfo: moduleInfo
+                });
+            }
+            await actionApprovalRaw(config, req.mongoose)({
+                onFullyApprove: async (approval, line) => {
+                    await helper.onFullyApprove(req, req.params.id, approval.ReferenceTransactionJSON.OperationCode);
+                    return await notificationManager.fullyApproveRequest({
+                        viewUrl: `/${moduleInfo.urlPrefix}/${approval.ReferenceTransactionJSON.TransactionID}/view-log`,
+                        moduleName: moduleInfo.title,
+                        submitterId: approval.LastModifiedByUserAccountKey,
+                        operation: approval.ReferenceTransactionJSON.OperationCode,
+                        requestId: approval.ReferenceTransactionJSON.TransactionID,
+                        timestamp: approval.RecordTimestamp
+                    });
+                },
+                onNextApprove: async (approval, line) => {
+                    return await notificationManager.nextApprover({
+                        approvalUrl: "/approval/" + line._id,
+                        moduleName: moduleInfo.title,
+                        nextApproverId: line.UserAccountKey,
+                        operation: approval.ReferenceTransactionJSON.OperationCode,
+                        requestId: approval.ReferenceTransactionJSON.TransactionID,
+                        timestamp: approval.RecordTimestamp
+                    });
+                },
+                onReject: async (approval, line) => {
+                    let setTransactionStatusCode = "00";
+                    await changeRequestModel.update({
+                        _id: req.params.id
+                    }, {
+                        $set: {
+                            TransactionStatusCode: setTransactionStatusCode
+                        }
+                    });
+                    return await notificationManager.rejectApproval({
+                        viewUrl: `/${moduleInfo.urlPrefix}/${approval.ReferenceTransactionJSON.TransactionID}/view-log`,
+                        moduleName: moduleInfo.title,
+                        submitterId: approval.LastModifiedByUserAccountKey,
+                        operation: approval.ReferenceTransactionJSON.OperationCode,
+                        requestId: approval.ReferenceTransactionJSON.TransactionID,
+                        timestamp: approval.RecordTimestamp
+                    });
+                }
+            }, {
+                action: approvalAction,
+                comment: approvalComment,
+                lineId: req.params.line_id
+            });
+            return res.redirect('/approval');
+        })
+    );
+};

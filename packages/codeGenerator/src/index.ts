@@ -29,7 +29,15 @@ const getHelper = (option) => {
         isArr,
         asArr,
         inArray,
-        isObj
+        isObj,
+        print: {
+            open: "{{",
+            close: "}}"
+        },
+        block: {
+            open: "{%",
+            close: "%}"
+        }
     };
     return helper;
 }

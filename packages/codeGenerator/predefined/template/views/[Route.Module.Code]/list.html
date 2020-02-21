@@ -1,0 +1,149 @@
+{{ _helper.block.open }} extends "template/operational.html" {{ _helper.block.close }}
+{{ _helper.block.open }} import "template/crud/filter_modal.html" as filterModal {{ _helper.block.close }}
+
+{{ _helper.block.open }} macro filterContent(context) {{ _helper.block.close }}
+<div class="row">
+    <div class="col-md-6">
+        <div class="row form-group">
+            
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row form-group">
+            
+        </div>
+    </div>
+</div>
+{{ _helper.block.open }} endmacro {{ _helper.block.close }}
+
+{{ _helper.block.open }} block content {{ _helper.block.close }}
+<ol class="breadcrumb" style="margin-bottom: 0px;">
+    <li class="breadcrumb-item"><a href="/#">Home</a></li>
+    <li class="breadcrumb-item active">{{ _helper.print.open }} moduleInfo.title {{ _helper.print.close }}</li>
+</ol>
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title mb-0">{{ _helper.print.open }} moduleInfo.title {{ _helper.print.close }}</h2>
+    </div>
+</div>
+<div class="container-fluid">
+    <div id="ui-view">
+        <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 16px;">
+            <li class="nav-item">
+                <a class="nav-link active" href="javascript:void()">{{ _helper.print.open }} moduleInfo.title | upper {{ _helper.print.close }}a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/transaction-order">TRANSACTION ORDER</a>
+            </li>
+        </ul>
+        <div class="card">
+            <div class="card-body">
+                <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/create" class="btn btn-square btn-primary">
+                    <i class="fa fa-plus"></i> Add
+                </a>
+                <button type="button" class="btn btn-square btn-primary" data-toggle="modal"
+                    data-target="[data-role='filter_modal']">
+                    <i class="fa fa-search"></i> Filter
+                </button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- Pagination -->
+                        {{ _helper.print.open }}
+                            _pagination({
+                                link: '/' + moduleInfo.urlPrefix + '?page={current}',
+                                cssClass: "pull-right",
+                                query: _query,
+                                current: _paginationData.current, 
+                                rowCount: _paginationData.rowCount,
+                                pageLimit : _paginationData.pageLimit
+                            }) | safe
+                        {{ _helper.print.close }}
+                    </div>
+                </div>
+
+
+                <div class="row" style="margin-bottom: 8px;">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-sm text-nowrap">
+                                <thead>
+                                    <tr class="">
+                                        {% for field in Model.Fields %}
+                                        {% if field.Type != "_object" and field.Type != "" %}
+                                        <th>{{ field.Gui.Name }}</th>
+                                        {% endif %}
+                                        {% endfor %}
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{ _helper.block.open }} for each in data {{ _helper.block.close }}
+                                    <tr class="ninja-container">
+                                        {% for field in Model.Fields %}
+                                        {% if field.Type != "_object" and field.Type != "" %}
+                                        <td>{{ _helper.print.open }} each.{{ field.Name }} {{ _helper.print.close }}</th>
+                                        {% endif %}
+                                        {% endfor %}                                        
+                                        <td>
+                                            <div class="ninja-panel extend-left">
+                                                <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} each._id | urlencode {{ _helper.print.close }}/view"
+                                                    class="btn btn-secondary btn-square btn-sm">
+                                                    <i class="fa fa-eye"></i> View
+                                                </a>
+                                                <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} each._id | urlencode {{ _helper.print.close }}/update"
+                                                    class="btn btn-square btn-primary btn-sm">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                                <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} each._id | urlencode {{ _helper.print.close }}/delete"
+                                                    class="btn btn-square btn-danger btn-sm">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </a>
+                                                <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} each._id | urlencode {{ _helper.print.close }}/log"
+                                                    class="btn btn-secondary btn-square btn-sm">
+                                                    <i class="fa fa-clipboard"></i> Log
+                                                </a>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+                                    {{ _helper.block.open }} else {{ _helper.block.close }}
+                                    <tr>
+                                        <td colspan="99" align="center">No data</td>
+                                    </tr>
+                                    {{ _helper.block.open }} endfor {{ _helper.block.close }}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <!-- Pagination -->
+                        {{ _helper.print.open }}
+                            _pagination({
+                                link: '/' + moduleInfo.urlPrefix + '?page={current}',
+                                cssClass: "pull-right",
+                                query: _query,
+                                current: _paginationData.current, 
+                                rowCount: _paginationData.rowCount,
+                                pageLimit : _paginationData.pageLimit
+                            }) | safe
+                        {{ _helper.print.close }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ _helper.print.open }} filterModal.render({
+    body: filterContent,
+    query: _query,
+    context: null
+}) | safe {{ _helper.print.close }}
+{{ _helper.block.open }} endblock {{ _helper.block.close }}

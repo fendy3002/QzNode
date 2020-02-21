@@ -1,0 +1,45 @@
+import { errorHandler, filterParser } from "@fendy3002/express-helper";
+import * as types from '../../types';
+
+export default async (router, config: types.config.app, moduleInfo: types.moduleInfo) => {
+    const getSupplement = async (req) => {
+    };
+    router.get("/",
+        errorHandler.handled(async (req, res, next) => {
+            res.locals._title = moduleInfo.title;
+            const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
+            //pagination
+            let page_limit = req.query.page_limit ? req.query.page_limit : 25;
+            let page = req.query.page ? req.query.page : 1;
+            let totalData = 0;
+
+            let result = [];
+            //get data
+            if (req.query.search) {
+                let filter = await filterParser.mongo(req.query, {
+                    
+                }, {
+                    "validateKey": true
+                });
+                filter = {
+                    ...filter
+                };
+                
+                totalData = await currentModuleModel.count(filter);
+                //get data
+                result = await currentModuleModel.find(filter)
+                    .skip((page - 1) * page_limit).limit(parseInt(page_limit)).lean();
+                }
+            return res.render(`${moduleInfo.UrlPrefix}/list.html`, {
+                data: result,
+                _paginationData: {
+                    current: page,
+                    rowCount: totalData,
+                    pageLimit: page_limit,
+                },
+                moduleInfo: moduleInfo,
+                supplement: await getSupplement(req)
+            });
+        })
+    );
+};

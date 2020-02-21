@@ -1,3 +1,37 @@
+{% macro renderLabel(field, readOnly) %}
+    {% if readOnly %}
+    {% set requiredClause = "false" %}
+    {% elif field.Required == true %}
+    {% set requiredClause = 'operation != "V" and operation != "A"' %}
+    {% else %}
+    {% set requiredClause = "false" %}
+    {% endif %}
+    
+                {{ _helper.print.open }}
+                    _form.label("{{ field.Gui.Label }}", {
+                        "cssClass": "col-form-label",
+                        "required": {{ requiredClause }},
+                        "attr": {
+                            "for": "{{ field.Gui.Name }}"
+                        }
+                    }) | safe
+                {{ _helper.print.close }}
+{% endmacro %}
+{% macro renderReadonly(readOnly) %}
+    {% if _data._readOnly %}
+    {{ "readonly" }}
+    {% else %}
+    {{ '{{ "readonly" if operation == "V" or operation == "A" }}' | safe }}
+    {% endif %}
+{% endmacro %}
+{% macro renderDisabled(readOnly) %}
+    {% if _data._readOnly %}
+    {{ "disabled" }}
+    {% else %}
+    {{ '{{ "disabled" if operation == "V" or operation == "A" }}' | safe }}
+    {% endif %}
+{% endmacro %}
+
 {% set col = 0 %}
 {% for field in _data.Fields %}
 
@@ -6,35 +40,38 @@
 {% endif %}
 
 {% if field.Gui.Type == "text" %}
-    {% set readOnly = "" %}
-    {% if _data._readOnly %}
-        {% set readonly = "readonly" %}
-    {% else %}
-        {% set readonly = '{{ "readonly" if operation == "V" or operation == "A" }}' %}
-    {% endif %}
-    
     <div class="col-sm-12 col-md-6">
         <div class="form-group row">
             <div class="col-md-4 text-right">
-                <label class="col-form-label" for="{{ field.Gui.Name }}">{{ field.Gui.Label | safe }}</label>
+                {{ renderLabel(field, _data._readOnly) | safe }}
             </div>
             <div class="col-md-8">
                 <input class="form-control" type="text" name="{{ field.Gui.Name }}"
-                    value="{{ _helper.print.open }} data.{{ field.Gui.Name }} {{ _helper.print.close }}" {{ readonly | safe }} />
+                    value="{{ _helper.print.open }} data.{{ field.Gui.Name }} {{ _helper.print.close }}" {{ renderReadonly(_data._readOnly) | safe }} />
             </div>
         </div>
     </div>
 {% elif field.Gui.Type == "checkbox" %}
-
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group row">
+            <div class="col-md-4 text-right">
+                {{ renderLabel(field, _data._readOnly) | safe }}
+            </div>
+            <div class="col-md-8">
+                <input class="form-control" type="checkbox" name="{{ field.Gui.Name }}"
+                    value="true" {{ _helper.print.open }} "checked" if data.{{ field.Gui.Name }} == "true" {{ _helper.print.close }} {{ renderDisabled(_data._readOnly) | safe }} />
+            </div>
+        </div>
+    </div>
 {% elif field.Gui.Type == "number" %}
     <div class="col-sm-12 col-md-6">
         <div class="form-group row">
             <div class="col-md-4 text-right">
-                <label class="col-form-label" for="{{ field.Gui.Name }}">{{ field.Gui.Label | safe }}</label>
+                {{ renderLabel(field, _data._readOnly) | safe }}
             </div>
             <div class="col-md-8">
                 <input class="form-control text-right" type="text" name="{{ field.Gui.Name }}" data-role="number"
-                    value="{{ _helper.print.open }} data.{{ field.Gui.Name }} {{ _helper.print.close }}" {{ readonly | safe }} />
+                    value="{{ _helper.print.open }} data.{{ field.Gui.Name }} {{ _helper.print.close }}" {{ renderReadonly(_data._readOnly) | safe }} />
             </div>
         </div>
     </div>

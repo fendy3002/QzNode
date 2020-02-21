@@ -3,7 +3,7 @@
     {% if field.Type == "" or field.Type == "_object" %}
         {{ field.Name | safe }}: {
             {{ renderField(field.Properties) | safe }}
-        }
+        },
     {% else %}
         {{ field.Name | safe }}: {{ field.Type | safe }},
     {% endif %}

@@ -46,6 +46,17 @@
                     "Name": "Address",
                     "ValidateType": "object"
                 }
+            },
+            {
+                "Name": "Height",
+                "Type": "String",
+                "required": true,
+                "Gui": {
+                    "Name": "Height",
+                    "Type": "number",
+                    "ValidateType": "number",
+                    "Label": "Height (cm)"
+                }
             }
         ],
         "Uniques": []

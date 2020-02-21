@@ -39,6 +39,7 @@ const renderPath = async (currentPath: string, option) => {
         const fileStat = fs.lstatSync(itemPath);
 
         if (fileStat.isFile()) {
+            console.log("processing file: ", itemPath);
             let fileContent = nunjucks.render(itemPath, {
                 _helper: option.helper,
                 ...option.schema

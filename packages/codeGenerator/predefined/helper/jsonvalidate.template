@@ -6,7 +6,7 @@
             properties: {
                 {{ _helper.renderHelper("jsonvalidate.template", field.Properties) | safe }}
             }
-        }
+        },
     {% elif field.Type == "array" %}
         "{{ field.Gui.Name | safe }}": {
             type: "array",
@@ -16,7 +16,7 @@
                     {{ _helper.renderHelper("jsonvalidate.template", field.Properties) | safe }}
                 }
             }
-        }
+        },
     {% else %}
         "{{ field.Gui.Name | safe}}": { 
             "type": "{{ field.Gui.ValidateType | safe }}",

@@ -50,7 +50,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
             }
             let newFormId = uuid();
             const result = await currentModuleModel.findById(id).lean();
-            return res.render(`{{ moduleInfo.UrlPrefix }}/edit.html`, {
+            return res.render(`{{ moduleInfo.urlPrefix }}/edit.html`, {
                 data: result,
                 modal: modalData,
                 supplement: await getSupplement(req),

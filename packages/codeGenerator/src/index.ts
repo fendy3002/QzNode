@@ -3,11 +3,18 @@ import path = require('path');
 import commandLineArgs = require('command-line-args');
 
 import nunjucks = require('nunjucks');
+import prettier = require("prettier");
 import getHelper from './helper';
 
 const optionDefinitions = [
     { name: 'schema', alias: 's', type: String, defaultOption: true },
     { name: 'template', alias: 't', type: String },
+];
+
+const supportedPrettierFileFormat = [
+    { ext: ".ts", parser: "typescript" },
+    { ext: ".js", parser: "babel" },
+//    { ext: ".html", parser: "html" }
 ];
 
 const replaceFileName = (original: string, option) => {
@@ -32,10 +39,25 @@ const renderPath = async (currentPath: string, option) => {
         const fileStat = fs.lstatSync(itemPath);
 
         if (fileStat.isFile()) {
-            const fileContent = nunjucks.render(itemPath, {
+            let fileContent = nunjucks.render(itemPath, {
                 _helper: option.helper,
                 ...option.schema
             }).replace(/\n\s*\n/g, '\n');
+            let realExtension = path.extname(replaceFileName(item, option));
+            let prettierFormat = supportedPrettierFileFormat.filter(k => k.ext == realExtension)
+            if (
+                option.schema.Prettier &&
+                prettierFormat.length > 0 &&
+                !option.schema.ExcludePrettier.some(k => k == realExtension)
+            ) {
+                fileContent = prettier.format(fileContent, {
+                    parser: prettierFormat[0].parser,
+                    arrowParens: "always",
+                    tabWidth: 4,
+                    proseWrap: "never",
+                    ...option.schema.Prettier
+                });
+            }
             fs.writeFileSync(itemOutputPath, fileContent);
         }
         else {

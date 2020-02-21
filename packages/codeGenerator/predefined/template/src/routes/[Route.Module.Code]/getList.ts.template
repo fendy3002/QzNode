@@ -28,9 +28,10 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 totalData = await currentModuleModel.count(filter);
                 //get data
                 result = await currentModuleModel.find(filter)
+                    .sort({ LastModifiedAtTimeStamp: -1 })
                     .skip((page - 1) * page_limit).limit(parseInt(page_limit)).lean();
-                }
-            return res.render(`${moduleInfo.UrlPrefix}/list.html`, {
+            }
+            return res.render(`${moduleInfo.urlPrefix}/list.html`, {
                 data: result,
                 _paginationData: {
                     current: page,

@@ -56,5 +56,9 @@
             "UrlPrefix": "test-module",
             "Title": "Test"
         }
-    }
+    },
+    "Prettier": {
+        "tabWidth": 4
+    },
+    "ExcludePrettier": []
 }

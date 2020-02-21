@@ -32,7 +32,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         errorHandler.handled(async (req, res, next) => {
             res.locals._title = "Delete " + moduleInfo.title;
             const changeRequestModel = req.mongoose.model("change_request");
-            const currentModuleModel = req.mongoose.model("{{ ModuleInfo.UrlPrefix }}");
+            const currentModuleModel = req.mongoose.model("{{ ModuleInfo.urlPrefix }}");
             let id = req.params.id;
 
             if (await changeRequestModel.findOne({
@@ -83,7 +83,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 ...req.body,
             };
             if (!reasonForChanging) {
-                return res.render(`${moduleInfo.UrlPrefix}/edit.html`, {
+                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
                     data: data,
                     modal: {
                         type: "error",
@@ -98,7 +98,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 "NextValue._id": modelId,
                 TransactionStatusCode: "10"
             })) {
-                return res.render(`${moduleInfo.UrlPrefix}/edit.html`, {
+                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
                     data: data,
                     modal: {
                         "type": "error",

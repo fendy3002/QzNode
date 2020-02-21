@@ -93,7 +93,7 @@
                                     {{ _helper.block.open }} for each in data {{ _helper.block.close }}
                                     <tr class="{{ _helper.print.open }} each.TransactionStatusCode | rowStatus {{ _helper.print.close }} ninja-container">
                                         <td>{{ _helper.print.open }} each.LastModifiedAtTimeStamp | fromNow | safe {{ _helper.print.close }}</td>
-                                        <td>{{ _helper.print.open }} each._id {{ _helper.print.open }}</td>
+                                        <td>{{ _helper.print.open }} each._id {{ _helper.print.close }}</td>
                                         <td><i
                                                 class="status-flag"></i>{{ _helper.print.open }} _status(moduleInfo.statusField, each.TransactionStatusCode) {{ _helper.print.close }}
                                         </td>

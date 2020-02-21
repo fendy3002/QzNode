@@ -30,7 +30,7 @@
     <div id="ui-view">
         <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 16px;">
             <li class="nav-item">
-                <a class="nav-link active" href="javascript:void()">{{ _helper.print.open }} moduleInfo.title | upper {{ _helper.print.close }}a>
+                <a class="nav-link active" href="javascript:void()">{{ _helper.print.open }} moduleInfo.title | upper {{ _helper.print.close }}</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/transaction-order">TRANSACTION ORDER</a>

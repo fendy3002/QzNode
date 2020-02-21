@@ -44,7 +44,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 _form_id: newFormId
             };
 
-            return res.render(`${moduleInfo.UrlPrefix}/edit.html`, {
+            return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
                 data: data,
                 modal: modalData,
                 supplement: await getSupplement(req),

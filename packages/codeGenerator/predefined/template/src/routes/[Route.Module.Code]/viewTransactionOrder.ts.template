@@ -26,7 +26,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 modalData = req.flash('modal_' + oldFormId)[0];
             }
 
-            return res.render(`${moduleInfo.UrlPrefix}/edit.html`, {
+            return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
                 data: {
                     ...result.CurrentValue,
                     ...result.NextValue,

@@ -28,75 +28,105 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         return {
         };
     };
-    // create
-    router.get("/create",
+    router.get("/:id/delete",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = "Add " + moduleInfo.title;
+            res.locals._title = "Delete " + moduleInfo.title;
+            const changeRequestModel = req.mongoose.model("change_request");
+            const currentModuleModel = req.mongoose.model("{{ ModuleInfo.UrlPrefix }}");
+            let id = req.params.id;
 
+            if (await changeRequestModel.findOne({
+                ModuleCode: moduleInfo.code,
+                "NextValue._id": id,
+                TransactionStatusCode: "10"
+            })) {
+                req.flash('_modal', {
+                    "type": "error",
+                    "message": (req.lang._("general.delete.pendingApproval", "")).bold()
+                });
+                let redirectTo = req.header('Referer') || "/approval-template";
+                return res.redirect(redirectTo);
+            }
             let modalData = null;
             if (req.query._form_id) {
                 let oldFormId = req.query._form_id;
                 modalData = req.flash('modal_' + oldFormId)[0];
             }
             let newFormId = uuid();
+            let result = await currentModuleModel.findById(id).lean();
 
-            const data = {
-                _form_id: newFormId
-            };
-
-            return res.render(`${moduleInfo.UrlPrefix}/edit.html`, {
-                data: data,
+            return res.render("user_facility_document_category/edit.html", {
+                data: result,
                 modal: modalData,
                 supplement: await getSupplement(req),
-                operation: "I",
+                operation: "D",
                 moduleInfo: moduleInfo
             });
         })
     );
-    // create post
-    router.post("/create",
+    // delete post
+    router.post("/:id/delete",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = "Add " + moduleInfo.title;
+            res.locals._title = "Delete " + moduleInfo.title;
             const changeRequestModel = req.mongoose.model("change_request");
+            const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
+
             let notificationManager = await notificationManagerRaw(config, req.notificator, req.lang);
-            
-            let validateResult = await validatePostData(req.body);
-            if (!validateResult.isValid) {
-                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
-                    data: req.body,
+
+            let modelId = req.params.id;
+            const currentModuleData = await currentModuleModel.findOne({
+                _id: modelId
+            }).lean();
+
+            let reasonForChanging = req.body.ReasonForChanging;
+            const data = {
+                ...req.body,
+            };
+            if (!reasonForChanging) {
+                return res.render(`${moduleInfo.UrlPrefix}/edit.html`, {
+                    data: data,
+                    modal: {
+                        type: "error",
+                        message: "Reason for Changing is Required".bold()
+                    },
+                    operation: "D",
+                    moduleInfo:moduleInfo
+                });
+            }
+            else if (await changeRequestModel.findOne({
+                ModuleCode: moduleInfo.code,
+                "NextValue._id": modelId,
+                TransactionStatusCode: "10"
+            })) {
+                return res.render(`${moduleInfo.UrlPrefix}/edit.html`, {
+                    data: data,
                     modal: {
                         "type": "error",
-                        "message": validateResult.errors.map(k => k.name + " " + k.message).join(",<br/>").bold()
+                        "message": (req.lang._("general.delete.pendingApproval", "")).bold()
                     },
-                    supplement: await getSupplement(req),
-                    operation: "I"
+                    operation: "D",
+                    moduleInfo:moduleInfo
                 });
-            } else {
+            }
+            else {
                 let changeRequestId = uuid();
-                let modelId = uuid();
                 let changePayload = {
                     _id: changeRequestId,
                     TransactionStatusCode: "20",
                     ModuleCode: moduleInfo.code,
-                    Operation: "I",
+                    Operation: "D",
                     RecordId: modelId,
-                    CurrentValue: null,
-                    NextValue: {
-                        _id: modelId,
-                        {{ renderNextFalueField(Model.Fields) | safe }}
-                        LastModifiedAtTimeStamp: new Date().getTime(),
-                        LastModifiedOperationCode: "I",
-                        LastModifiedByUserAccountKey: req.session.user.id,
-                        LastModifiedByUserAccountName: req.session.user.name
-                    },
-                    ReasonForChanging: null,
+                    CurrentValue: currentModuleData,
+                    NextValue: null,
+                    ReasonForChanging: reasonForChanging,
                     Log: [],
                     LastModifiedAtTimeStamp: new Date().getTime(),
+                    LastModifiedOperationCode: "D",
                     LastModifiedByUserAccountKey: req.session.user.id,
                     LastModifiedByUserAccountName: req.session.user.name
                 };
 
-                let approval = await evalApproval(changePayload.NextValue, "I");
+                let approval = await evalApproval(changePayload.NextValue, "D");
                 let approvalId = null;
                 if (approval) {
                     // approval on progress
@@ -116,7 +146,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 );
                 if (approval) {
                     await notificationManager.submitApproval({
-                        operation: "I",
+                        operation: "D",
                         viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
                         approvalUrl: `${req.fullHostUrl}/approval/` + approvalId.lineId,
                         firstApproverId: approval.ApproverTransactionJSON["1"].UserAccountKey,
@@ -129,7 +159,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     req.flash('modal_' + req.body._form_id, {
                         "type": "success",
                         "message": req.lang._("general.successApproval", "", {
-                            subject: req.lang.text("general.create.successApproval", "", {
+                            subject: req.lang.text("general.delete.successApproval", "", {
                                 module: moduleInfo.title
                             }),
                             transaction_id: changeRequestId.toUpperCase(),
@@ -138,9 +168,8 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     });
                 }
                 else {
-                    let newRecord = await helper.onFullyApprove(req, changeRequestId, "I");
                     await notificationManager.submitNoApproval({
-                        operation: "I",
+                        operation: "D",
                         viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
                         requestId: changeRequestId,
                         moduleName: moduleInfo.title,
@@ -148,10 +177,11 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         userId: req.session.user.id,
                         submitterEmail: req.session.user.email
                     });
+                    let newRecord = await helper.onFullyApprove(req, changeRequestId, "D");
                     req.flash('modal_' + req.body._form_id, {
                         "type": "success",
                         "message": req.lang._("general.successNoApproval", "", {
-                            subject: req.lang.text("general.create.successNoApproval", "", {
+                            subject: req.lang.text("general.delete.successNoApproval", "", {
                                 module: moduleInfo.title
                             }),
                             record_id: modelId.toUpperCase(),
@@ -159,7 +189,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         })
                     });
                 }
-                return res.redirect(`/${moduleInfo.urlPrefix}/create?_form_id=${req.body._form_id}`);
+                return res.redirect(`/${moduleInfo.urlPrefix}/${changeRequestId}/view-log?_form_id=${req.body._form_id}`);
             }
         })
     );

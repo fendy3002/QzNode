@@ -23,6 +23,42 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         return {
         };
     };
+    // update
+    router.get("/:id/update",
+        errorHandler.handled(async (req, res, next) => {
+            res.locals._title = "Edit " + moduleInfo.title;
+            const changeRequestModel = req.mongoose.model("change_request");
+            const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
+            let id = req.params.id;
+
+            if (await changeRequestModel.findOne({
+                ModuleCode: moduleInfo.code,
+                "NextValue._id": id,
+                TransactionStatusCode: "10"
+            })) {
+                req.flash('_modal', {
+                    "type": "error",
+                    "message": (req.lang._("general.update.pendingApproval", "")).bold()
+                });
+                let redirectTo = req.header('Referer') || `/${moduleInfo.urlPrefix}`;
+                return res.redirect(redirectTo);
+            }
+            let modalData = null;
+            if (req.query._form_id) {
+                let oldFormId = req.query._form_id;
+                modalData = req.flash('modal_' + oldFormId)[0];
+            }
+            let newFormId = uuid();
+            const result = await currentModuleModel.findById(id).lean();
+            return res.render(`{{ moduleInfo.UrlPrefix }}/edit.html`, {
+                data: result,
+                modal: modalData,
+                supplement: await getSupplement(req),
+                operation: "U",
+                moduleInfo: moduleInfo
+            });
+        })
+    );
     // update post
     router.post("/:id/update",
         errorHandler.handled(async (req, res, next) => {

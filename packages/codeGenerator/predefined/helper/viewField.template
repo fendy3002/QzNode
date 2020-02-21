@@ -1,0 +1,39 @@
+{% set col = 0 %}
+{% for field in _data.Fields %}
+
+{% if col == 0 %}
+<div class="row">
+{% endif %}
+
+{% if field.Gui.Type == "text" %}
+    {% set readOnly = "" %}
+    {% if _data._readOnly %}
+        {% set readonly = "readonly" %}
+    {% else %}
+        {% set readonly = '{{ "readonly" if operation == "V" or operation == "A" }}' %}
+    {% endif %}
+    
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group row">
+            <div class="col-md-4 text-right">
+                <label class="col-form-label" for="{{ field.Gui.Name }}">{{ field.Gui.Label | safe }}</label>
+            </div>
+            <div class="col-md-8">
+                <input class="form-control" type="text" name="{{ field.Gui.Name }}"
+                    value="{{ _helper.print.open }} data._id | upper {{ _helper.print.close }}" {{ readonly | safe }} />
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% if col == 1 %}
+</div>
+{% set col = 0 %}
+{% else %}
+{% set col = 1 %}
+{% endif %}
+
+{% endfor %}
+{% if col == 1 %}
+</div>
+{% endif %}

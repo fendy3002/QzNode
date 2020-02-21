@@ -104,7 +104,7 @@
                             </div>
                             <hr />
                             {{ _helper.block.open }} endif {{ _helper.block.close }}
-                            {{ _helper.renderHelper("viewField.template", Model.Fields) | safe }}
+                            {{ _helper.renderHelper("viewField.template", _helper.appendObj(Model, { _readOnly: false })) | safe }}
                         </div>
                     </div>
                 </div>

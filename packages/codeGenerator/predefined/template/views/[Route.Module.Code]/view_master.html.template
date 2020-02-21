@@ -1,0 +1,97 @@
+{{ readonly }}
+
+{{ _helper.block.open }} extends "template/operational.html" {{ _helper.block.close }}
+{{ _helper.block.open }} import "template/approval/detail_panel.html" as approvalPanel {{ _helper.block.close }}
+{{ _helper.block.open }} import "template/approval/action_panel.html" as actionPanel {{ _helper.block.close }}
+
+{{ _helper.block.open }} block content {{ _helper.block.close }}
+<ol class="breadcrumb" style="margin-bottom: 0px;">
+    <li class="breadcrumb-item"><a href="/#">Home</a></li>
+    <li class="breadcrumb-item"> <a href="/{{ _helper.print.open }} moduleInfo.urlPrefix {{ _helper.print.close }}/#">{{ _helper.print.open }} moduleInfo.title {{ _helper.print.close }}</a></li>
+    <li class="breadcrumb-item active">
+        {{ _helper.print.open }} _lang.text("pageOperation." + operation, operation) | changeCase {{ _helper.print.close }} {{ _helper.print.open }} moduleInfo.title {{ _helper.print.close }}
+    </li>
+</ol>
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title mb-0">{{ _helper.print.open }} _lang.text("pageOperation." + operation, operation) | changeCase {{ _helper.print.close }}
+            {{ _helper.print.open }} moduleInfo.title {{ _helper.print.close }}</h2>
+    </div>
+</div>
+<div class="container-fluid">
+    <div id="ui-view">
+
+        <div class="card">
+            <div class="card-body">
+                <a href="/{{ _helper.print.open }} _pageInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} data._id | urlencode {{ _helper.print.close }}/update"
+                    class="btn btn-square btn-primary">
+                    <i class="fa fa-pencil"></i> Edit
+                </a>
+                <a href="/{{ _helper.print.open }} _pageInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} data._id | urlencode {{ _helper.print.close }}/delete"
+                    class="btn btn-square btn-danger">
+                    <i class="fa fa-remove"></i> Delete
+                </a>
+                <a href="/{{ _helper.print.open }} _pageInfo.urlPrefix {{ _helper.print.close }}/{{ _helper.print.open }} data._id | urlencode {{ _helper.print.close }}/log"
+                    class="btn btn-square btn-secondary">
+                    <i class="fa fa-clipboard"></i> Log
+                </a>
+            </div>
+        </div>
+        <form class="form-horizontal" method="POST">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            {{ _helper.renderHelper("viewField.template", _helper.appendObj(Model, { _readOnly: true }) ) | safe }}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {{ _helper.block.open }} if operation != "A" {{ _helper.block.close }}
+                    <div class="row">
+                        <div class="col-sm-12 text-right">
+                            <button type="button" class="btn btn-secondary btn-square _btn-back"></button>
+                            <button class="btn btn-square btn-primary" {{"hidden" if operation =="V" else ""}}>
+                                {{ _helper.print.open }} _form.operation(operation) {{ _helper.print.close }}
+                            </button>
+                        </div>
+                    </div>
+                    {{ _helper.block.open }} else {{ _helper.block.close }}
+                    {{ _helper.print.open }} actionPanel.render(approval) | safe {{ _helper.print.close }}
+                    {{ _helper.block.open }} endif {{ _helper.block.close }}
+                </div>
+            </div>
+            {{ _helper.block.open }} if operation == "A" or operation == "V" {{ _helper.block.close }}
+            {{ _helper.print.open }} approvalPanel.render(approval, _user) | safe {{ _helper.print.close }}
+            {{ _helper.block.open }} endif {{ _helper.block.close }}
+            <input type="hidden" name="_form_id" value="{{ _helper.print.open }} data._form_id {{ _helper.print.close }}" />
+        </form>
+    </div>
+</div>
+<div class="modal fade" role="dialog" id="_form_modal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <p data-role="icon"></p>
+                <p data-role="content"></p>
+                <button class="btn btn-primary btn-square" type="button" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ _helper.block.open }} endblock {{ _helper.block.close }}
+
+{{ _helper.block.open }} block script {{ _helper.block.close }}
+<script>
+    let modalData = {{ _helper.print.open }} modal | default (null) | dump | safe {{ _helper.print.close }};
+    $("[data-role='select2']").select2({
+        theme: "bootstrap"
+    });
+    if (modalData) {
+        window._u.showModal(modalData, $("#_form_modal"));
+    }
+</script>
+{{ _helper.print.open }} approvalPanel.renderScript(_userToken, data._id) | safe {{ _helper.print.close }}
+
+{{ _helper.block.open }} endblock {{ _helper.block.close }}

@@ -11,10 +11,11 @@ import moment = require('moment');
 import * as types from '../../types';
 import { ServiceType as evalApprovalType } from '../../libs/approval/evalApproval';
 import { ServiceType as insertApprovalType } from '../../libs/approval/insertApproval';
-import onFullyApprove from './onFullyApprove';
+import helperRaw from './helper';
 import notificationManagerRaw from '../../libs/notificationManager';
 
 export default async (router, config: types.config.app, moduleInfo: types.moduleInfo, evalApproval: evalApprovalType, insertApproval: insertApprovalType) => {
+    const helper = await helperRaw(config);
     const validatePostData = async (body) => {
         return await validator.json.schema({
             type: "object",
@@ -112,7 +113,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     });
                 }
                 else {
-                    let newRecord = await onFullyApprove(req, changeRequestId, "I");
+                    let newRecord = await helper.onFullyApprove(req, changeRequestId, "I");
                     await notificationManager.submitNoApproval({
                         operation: "I",
                         viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,

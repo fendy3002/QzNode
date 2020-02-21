@@ -1,0 +1,88 @@
+import debugRaw = require('debug');
+import * as types from '../../../types';
+
+let debugFullyApprove = debugRaw("app:routes/{{ Route.Module.Code }}/fully_approve");
+
+const helperService = async (config: types.config.app) => {
+    const onFullyApprove = async (req, requestId, operationCode) => {
+        const changeRequestModel = req.mongoose.model("change_request");
+        const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
+
+        let changeRequestData = await changeRequestModel.findOneAndUpdate({
+            _id: requestId
+        }, {
+            $set: {
+                TransactionStatusCode: "20"
+            }
+        }, {
+            new: true
+        });
+
+        try {
+            if (operationCode == "U") {
+                await currentModuleModel.findOneAndUpdate(
+                    {
+                        _id: changeRequestData.NextValue._id
+                    },
+                    {
+                        "$set": {
+                            ...changeRequestData.NextValue,
+                            {% for field in Model.Fields %}
+                            {% if field.Gui | length %}
+                            "{{ field.Name }}": changeRequestData.NextValue.{{ field.Gui.Name }},
+                            {% endif %}
+                            {% endfor %}
+                            IsPublic: changeRequestData.NextValue.IsPublic,
+                        }
+                    },
+                    {
+                        new: true
+                    });
+            }
+            else if (operationCode == "I") {
+                let toCreate = {
+                    ...changeRequestData.NextValue
+                };
+                await currentModuleModel.create(toCreate);
+            }
+            else if (operationCode == "D") {
+                await currentModuleModel.findOneAndDelete({ _id: changeRequestData.CurrentValue._id })
+            }
+
+            let updateResult = await changeRequestModel.findOneAndUpdate({ _id: requestId }, {
+                $set: {
+                    TransactionStatusCode: "99",
+                    LastModifiedAtTimeStamp: new Date().getTime()
+                },
+            }, {
+                new: true
+            });
+            debugFullyApprove("existing", updateResult);
+            return updateResult;
+        }
+        catch (ex) {
+            debugFullyApprove(ex);
+            await changeRequestModel.findOneAndUpdate({ _id: requestId }, {
+                $set: {
+                    TransactionStatusCode: "04",
+                },
+                $push: {
+                    "Log": {
+                        "TimeStamp": new Date().getTime(),
+                        "Type": "error",
+                        "Data": JSON.parse(JSON.stringify(ex, Object.getOwnPropertyNames(ex))),
+                        "Message": ex.message
+                    }
+                }
+            }, {
+                new: true
+            });
+            return null;
+        };
+    };
+    return {
+        onFullyApprove
+    };
+};
+
+export default helperService;

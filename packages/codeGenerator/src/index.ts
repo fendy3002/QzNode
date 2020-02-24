@@ -14,7 +14,7 @@ const optionDefinitions = [
 const supportedPrettierFileFormat = [
     { ext: ".ts", parser: "typescript" },
     { ext: ".js", parser: "babel" },
-//    { ext: ".html", parser: "html" }
+    //    { ext: ".html", parser: "html" }
 ];
 
 const replaceFileName = (original: string, option) => {
@@ -80,21 +80,49 @@ const doTask = async () => {
     const templateDir = path.join(process.cwd(), option.template, "template");
     const outputDir = path.join(process.cwd(), option.template, "output");
     const schemaPath = path.join(process.cwd(), option.schema);
-    const schemaStr = fs.readFileSync(schemaPath, "utf8");
-    const schemaObj = JSON.parse(schemaStr);
+    const schemaStat = fs.statSync(schemaPath);
+    console.log({
+        helperDir,
+        templateDir,
+        outputDir,
+        schemaPath
+    });
+    const processingSchema = [];
+    if (schemaStat.isFile()) {
+        processingSchema.push(schemaPath);
+    }
+    else {
+        // if directory, loop all schema
+        for (const file of fs.readdirSync(schemaPath)) {
+            const fullPath = path.join(schemaPath, file);
+            if (path.extname(file) == ".json" || path.extname(file) == ".js") {
+                processingSchema.push(fullPath);
+            }
+        }
+    }
+    for (const schemaFilePath of processingSchema) {
+        let schemaObj = null;
+        if (path.extname(schemaFilePath) == ".json") {
+            const schemaStr = fs.readFileSync(schemaFilePath, "utf8");
+            schemaObj = JSON.parse(schemaStr);
+        }
+        else {
+            schemaObj = require(schemaFilePath).default;
+        }
 
-    console.log("schema", schemaObj)
-    let context: any = {
-        ...option,
-        path: {
-            helper: helperDir,
-            template: templateDir,
-            output: outputDir
-        },
-        schema: schemaObj
-    };
-    const helper = getHelper(context);
-    context.helper = helper;
-    await renderPath("", context);
+        console.log("schema", schemaObj)
+        let context: any = {
+            ...option,
+            path: {
+                helper: helperDir,
+                template: templateDir,
+                output: outputDir
+            },
+            schema: schemaObj
+        };
+        const helper = getHelper(context);
+        context.helper = helper;
+        await renderPath("", context);
+    }
 };
 doTask();

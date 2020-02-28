@@ -6,20 +6,20 @@ const router = routington();
 interface route {
     label: string,
     path: string | string[],
-    data ?: any,
-    callback ?: (data: changePayload) => Promise<any>
+    data?: any,
+    callback?: (data: changePayload) => Promise<any>
 };
 
-interface changePayload{
-    route ?: route,
+interface changePayload {
+    route?: route,
     location: string,
-    routeParam ?: any,
+    routeParam?: any,
     queryParam: any,
-    hash ?: string
+    hash?: string
 }
-interface initPayload{
+interface initPayload {
     routes: route[],
-    option ?: {
+    option?: {
         root: string,
         event: {
             historyChange: (data: changePayload) => Promise<any>
@@ -28,8 +28,8 @@ interface initPayload{
 };
 
 const urlSearchParamsToJSON = (urlParam) => {
-    let result : any = {};
-    for(let pair of urlParam.entries()){
+    let result: any = {};
+    for (let pair of urlParam.entries()) {
         result[pair[0]] = pair[1];
     }
     return result;
@@ -44,12 +44,12 @@ const defaultOption = {
     }
 };
 const urlRouter = (init: initPayload) => {
-    const {routes, option} = init;
+    const { routes, option } = init;
     const useOption = lo.merge(defaultOption, option);
 
-    for(let eachRoute of routes){
+    for (let eachRoute of routes) {
         const paths = Array.isArray(eachRoute.path) ? eachRoute.path : [eachRoute.path];
-        for(let eachPath of paths){
+        for (let eachPath of paths) {
             let definedRoute = router.define(eachPath.padEnd(0, "/"));
             definedRoute[0].label = eachRoute.label;
         }
@@ -67,16 +67,16 @@ const urlRouter = (init: initPayload) => {
         };
 
         let routeMatch = router.match(getUrl(location.pathname, useOption.root));
-        if(routeMatch){
+        if (routeMatch) {
             let label = routeMatch.node.label;
             changePayload.route = routes.find(k => k.label == label);
             changePayload.routeParam = routeMatch.param;
         }
         let process = Promise.resolve();
-        if(changePayload.route && changePayload.route.callback){
+        if (changePayload.route && changePayload.route.callback) {
             process = process.then(() => changePayload.route.callback(changePayload));
         }
-        if(defaultOption.event.historyChange){
+        if (defaultOption.event.historyChange) {
             process = process.then(() => defaultOption.event.historyChange());
         }
         return process;
@@ -86,15 +86,23 @@ const urlRouter = (init: initPayload) => {
     });
     const innerSetPath = (path, queryParams, hash) => {
         const urlParams = new URLSearchParams();
-        lo.forOwn(queryParams, (val, key) => {
-            urlParams.set(key, val);
-        });
+        for (let key of Object.keys(queryParams)) {
+            let val = queryParams[key];
+            if (Array.isArray(val)) {
+                for (let each of val) {
+                    urlParams.set(key, each);
+                }
+            }
+            else {
+                urlParams.set(key, val);
+            }
+        }
 
         let redirectTo = path;
-        if(queryParams && Object.keys(queryParams).length > 0){
+        if (queryParams && Object.keys(queryParams).length > 0) {
             redirectTo += '?' + urlParams;
         }
-        if(hash){
+        if (hash) {
             redirectTo += '#' + hash;
         }
 
@@ -106,10 +114,10 @@ const urlRouter = (init: initPayload) => {
         let redirectTo = ("/" + useOption.root + "/" + path).replace(/\/\//gi, "/");
         return innerSetPath(redirectTo, queryParams, hash);
     };
-    
+
     const changePath = (path) => {
         const queryParam = urlSearchParamsToJSON(new URLSearchParams(window.location.search));
-        return setPath(path, queryParam, window.location.hash );
+        return setPath(path, queryParam, window.location.hash);
     };
     const setQueryParam = (queryParams) => {
         let loc = window.location;
@@ -129,7 +137,7 @@ const urlRouter = (init: initPayload) => {
         const queryParam = urlSearchParamsToJSON(new URLSearchParams(window.location.search));
         let loc = window.location;
         let redirectTo = `${loc.pathname}`;
-        return innerSetPath(redirectTo, queryParam, hash );
+        return innerSetPath(redirectTo, queryParam, hash);
     };
     const generatePath = (path) => {
         return ("/" + useOption.root + "/" + path).replace(/\/\//gi, "/");

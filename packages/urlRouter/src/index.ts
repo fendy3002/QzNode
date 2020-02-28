@@ -90,7 +90,7 @@ const urlRouter = (init: initPayload) => {
             let val = queryParams[key];
             if (Array.isArray(val)) {
                 for (let each of val) {
-                    urlParams.set(key, each);
+                    urlParams.append(key, each);
                 }
             }
             else {

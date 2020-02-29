@@ -30,7 +30,15 @@ interface initPayload {
 const urlSearchParamsToJSON = (urlParam) => {
     let result: any = {};
     for (let pair of urlParam.entries()) {
-        result[pair[0]] = pair[1];
+        if (!result[pair[0]]) {
+            result[pair[0]] = pair[1];
+        }
+        else {
+            if (!Array.isArray(result[pair[0]])) {
+                result[pair[0]] = [result[pair[0]]];
+            }
+            result[pair[0]].push(pair[1]);
+        }
     }
     return result;
 };

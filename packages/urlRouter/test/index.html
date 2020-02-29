@@ -27,12 +27,13 @@
                     path: '/order/:id',
                     data: { foo: "bar" },
                     callback : (data) => {
+                        console.log("root");
                         console.log(data);
                     }
                 },
             ],
             option: {
-                root: "/my-path",
+                root: "/my-path/my-page",
                 event: {
                     historyChange: (data) => {
                         

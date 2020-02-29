@@ -30,7 +30,6 @@
                         console.log(data);
                     }
                 },
-                
             ],
             option: {
                 root: "/my-path",
@@ -42,7 +41,7 @@
             }
         });
 
-        myUrlRouter.setPath("/", {}, null);
+        myUrlRouter.refresh();
         let phase = 0;
         const action = [
             (evt) => {

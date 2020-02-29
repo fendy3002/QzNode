@@ -12,7 +12,7 @@ interface route {
 
 interface changePayload {
     route?: route,
-    location: string,
+    location: any,
     routeParam?: any,
     queryParam: any,
     hash?: string
@@ -77,7 +77,7 @@ const urlRouter = (init: initPayload) => {
             process = process.then(() => changePayload.route.callback(changePayload));
         }
         if (defaultOption.event.historyChange) {
-            process = process.then(() => defaultOption.event.historyChange());
+            process = process.then(() => defaultOption.event.historyChange(changePayload));
         }
         return process;
     };
@@ -143,10 +143,27 @@ const urlRouter = (init: initPayload) => {
         return ("/" + useOption.root + "/" + path).replace(/\/\//gi, "/");
     };
 
+    const getLocationInfo = () => {
+        let location = window.location;
+        const changePayload: changePayload = {
+            location: location,
+            queryParam: urlSearchParamsToJSON(new URLSearchParams(location.search)),
+            hash: location.hash
+        };
+
+        let routeMatch = router.match(getUrl(location.pathname, useOption.root));
+        if (routeMatch) {
+            let label = routeMatch.node.label;
+            changePayload.route = routes.find(k => k.label == label);
+            changePayload.routeParam = routeMatch.param;
+        }
+        return changePayload;
+    };
     return {
         setPath: setPath,
         setQueryParam: setQueryParam,
         refresh: () => onChange(window.location),
+        getLocationInfo: getLocationInfo,
 
         changePath: changePath,
         changeQueryParam: changeQueryParam,

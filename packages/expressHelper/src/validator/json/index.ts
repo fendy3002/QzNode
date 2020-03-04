@@ -136,7 +136,7 @@ export const schema = (schema: any) => {
         else if (schema.type == "boolean") {
             data = val;
             if (schema.required) {
-                if (data == null || data == "") {
+                if ((data == null || data == "") && data !== false) {
                     isValid = false;
 
                     errors.push({

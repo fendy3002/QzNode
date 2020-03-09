@@ -1,4 +1,11 @@
 {% for supplement in _GroupSupplement() %}
     let {{ supplement.ModelName }}Model = req.mongoose.model("{{ supplement.ModelName }}");
-    
+    let {{ supplement.ModelName }}Data = await {{ supplement.ModelName }}Model.find({});
+    {% for fieldName, pair in supplement.Pair %}
+    let {{ fieldName }}Pair: any = {};
+    for(let each of {{ supplement.ModelName }}Data) {
+        {{ fieldName }}Pair[each["{{ pair.key }}"]] = each;
+    }
+    supplement["{{ fieldName }}"] = {{ fieldName }}Pair;
+    {% endfor %}
 {% endfor %}

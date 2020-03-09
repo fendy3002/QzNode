@@ -7,7 +7,7 @@ const getHelper = async (context: types.Context) => {
     const extensions: any = {};
     for (let extensionFile of fs.readdirSync(context.path.extension)) {
         let extensionFullPath = path.join(context.path.extension, extensionFile);
-        let extensionRaw = await import(extensionFullPath);
+        let extensionRaw = (await import(extensionFullPath)).default;
         let extension = await extensionRaw(context.schema);
         let extensionName = "";
         if (!extension.name) {

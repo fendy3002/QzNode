@@ -67,9 +67,9 @@
                     "Type": "select",
                     "Label": "City",
                     "Supplement": {
-                        "ModelName": "model1",
-                        "Key": "",
-                        "Value": ""
+                        "ModelName": "city",
+                        "Key": "_id",
+                        "Value": "CityName"
                     }
                 }
             }

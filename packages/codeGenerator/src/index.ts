@@ -9,7 +9,6 @@ import * as types from './types';
 
 const optionDefinitions = [
     { name: 'schema', alias: 's', type: String, defaultOption: true },
-    { name: 'extension', alias: 'e', type: String },
     { name: 'template', alias: 't', type: String },
 ];
 
@@ -81,7 +80,7 @@ const doTask = async () => {
     const helperDir = path.join(process.cwd(), option.template, "helper");
     const templateDir = path.join(process.cwd(), option.template, "template");
     const outputDir = path.join(process.cwd(), option.template, "output");
-    const extensionDir = path.join(process.cwd(), option.extension, "extension");
+    const extensionDir = path.join(process.cwd(), option.template, "extension");
     const schemaPath = path.join(process.cwd(), option.schema);
     const schemaStat = fs.statSync(schemaPath);
     console.log({

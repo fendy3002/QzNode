@@ -20,7 +20,7 @@ const getHelper = async (context: types.Context) => {
     }
 
     const renderHelper = (helperName: string, data: any) => {
-        return nunjucks.render(path.join(context.path.helper, helperName), {
+        return context.nunjucks.default.render(path.join(context.path.helper, helperName), {
             _helper: helper,
             _data: data,
             ...extensions

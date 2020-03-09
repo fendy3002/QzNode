@@ -31,20 +31,21 @@ const replaceFileName = (original: string, option) => {
     return result;
 };
 
+let htmlNunjucks = nunjucks.configure({
+    tags: {
+        blockStart: '|%',
+        blockEnd: '%|',
+        variableStart: '|$',
+        variableEnd: '$|',
+        commentStart: '|#',
+        commentEnd: '#|'
+    }
+});
+let defaultNunjucks = nunjucks.configure({});
+
 const renderPath = async (currentPath: string, option) => {
     const replacedCurrentPath = replaceFileName(currentPath, option);
     const dirs = fs.readdirSync(path.join(option.path.template, currentPath));
-    let defaultNunjucks = nunjucks.configure({});
-    let htmlNunjucks = nunjucks.configure({
-        tags: {
-            blockStart: '<%',
-            blockEnd: '%>',
-            variableStart: '<$',
-            variableEnd: '$>',
-            commentStart: '<#',
-            commentEnd: '#>'
-        }
-    });
     for (const item of dirs) {
         const itemPath = path.join(option.path.template, currentPath, item);
         const itemOutputPath = path.join(option.path.output, replacedCurrentPath, replaceFileName(item, option));
@@ -144,7 +145,11 @@ const doTask = async () => {
                 output: outputDir,
                 extension: extensionDir
             },
-            schema: schemaObj
+            schema: schemaObj,
+            nunjucks: {
+                default: defaultNunjucks,
+                html: htmlNunjucks
+            }
         };
         const helper = await getHelper(context);
         context.helper = helper;

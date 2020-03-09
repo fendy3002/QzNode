@@ -42,7 +42,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-12">
-                            |$ _helper.renderHelper("viewField.template", _helper.appendObj(Model, { _readOnly: true }) ) | safe $|
+                            |$ _helper.renderHelper("viewField.html.template", _helper.appendObj(Model, { _readOnly: true }) ) | safe $|
                         </div>
                     </div>
                 </div>

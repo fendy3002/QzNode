@@ -20,7 +20,12 @@ const getHelper = async (context: types.Context) => {
     }
 
     const renderHelper = (helperName: string, data: any) => {
-        return context.nunjucks.default.render(path.join(context.path.helper, helperName), {
+        let replacedHelperName = helperName.replace(".template", "");
+        let renderer = context.nunjucks.default;
+        if (path.extname(replacedHelperName) == ".html") {
+            renderer = context.nunjucks.html;
+        }
+        return renderer.render(path.join(context.path.helper, helperName), {
             _helper: helper,
             _data: data,
             ...extensions

@@ -1,0 +1,5 @@
+|% for field in _data %|
+|% if field.Type != "_object" and field.Type != "" %|
+                                        <th>|$ field.Gui.Name $|</th>
+|% endif %|
+|% endfor %|

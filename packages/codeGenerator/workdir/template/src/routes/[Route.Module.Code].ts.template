@@ -44,7 +44,7 @@ export default async (config: types.config.app) => {
 
     router.get("/:id/log",
         errorHandler.handled(async (req, res, next) => {
-            return res.redirect(`/${moduleInfo.urlPrefix}/transaction-order?filter.RecordId.contains=${req.params.id}&search=1`)
+            return res.redirect(`/${req.moduleInfo.urlPrefix}/transaction-order?filter.RecordId.contains=${req.params.id}&search=1`)
         })
     );
     await approval(router, config, moduleInfo, getApproval);

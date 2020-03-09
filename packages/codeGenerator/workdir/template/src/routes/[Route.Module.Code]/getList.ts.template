@@ -9,7 +9,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
     };
     router.get("/",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = moduleInfo.title;
+            res.locals._title = req.moduleInfo.title;
             const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
             //pagination
             let page_limit = req.query.page_limit ? req.query.page_limit : 25;
@@ -34,14 +34,14 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     .sort({ LastModifiedAtTimeStamp: -1 })
                     .skip((page - 1) * page_limit).limit(parseInt(page_limit)).lean();
             }
-            return res.render(`${moduleInfo.urlPrefix}/list.html`, {
+            return res.render(`${req.moduleInfo.urlPrefix}/list.html`, {
                 data: result,
                 _paginationData: {
                     current: page,
                     rowCount: totalData,
                     pageLimit: page_limit,
                 },
-                moduleInfo: moduleInfo,
+                moduleInfo: req.moduleInfo,
                 supplement: await getSupplement(req, result)
             });
         })

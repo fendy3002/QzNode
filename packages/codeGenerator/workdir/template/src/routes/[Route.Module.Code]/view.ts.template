@@ -6,7 +6,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
     };
     router.get("/:id/view",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = moduleInfo.title;
+            res.locals._title = req.moduleInfo.title;
             const currentModuleModel = req.mongoose.model("{{ Module.Name }}");
             let id = req.params.id;
             let result = await currentModuleModel.findById(id).lean();
@@ -15,14 +15,14 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 let oldFormId = req.query._form_id;
                 modalData = req.flash('modal_' + oldFormId)[0];
             }
-            return res.render(`${moduleInfo.urlPrefix}/view_master.html`, {
+            return res.render(`${req.moduleInfo.urlPrefix}/view_master.html`, {
                 data: {
                     ...result
                 },
                 supplement: await getSupplement(req),
                 operation: "V",
                 modal: modalData,
-                moduleInfo: moduleInfo
+                moduleInfo: req.moduleInfo
             });
         })
     );

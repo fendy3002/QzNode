@@ -22,7 +22,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
             const approvalTransactionModel = req.mongoose.model("approval_transaction");
             const approvalTransactionLineModel = req.mongoose.model("approval_transaction_line");
 
-            res.locals._title = moduleInfo.title;
+            res.locals._title = req.moduleInfo.title;
 
             let approvalTransactionLine = null;
             if (req.params.line_id) {
@@ -44,12 +44,12 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 ...recordData
             };
 
-            return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+            return res.render(`${req.moduleInfo.urlPrefix}/edit.html`, {
                 data: data,
                 approval: approvalTransaction,
                 isApprovalAction: approvalTransactionLine !== null,
                 operation: "A",
-                moduleInfo: moduleInfo
+                moduleInfo: req.moduleInfo
             });
         })
     );
@@ -57,7 +57,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         errorHandler.handled(async (req, res, next) => {
             const changeRequestModel = req.mongoose.model("change_request");
             let notificationManager = await notificationManagerRaw(config, req.notificator, req.lang);
-            res.locals._title = moduleInfo.title;
+            res.locals._title = req.moduleInfo.title;
 
             let approvalAction = req.body.approval_action;
             let approvalComment = req.body.approval_comment;
@@ -67,7 +67,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     _id: req.params.id
                 }).lean();
 
-                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+                return res.render(`${req.moduleInfo.urlPrefix}/edit.html`, {
                     data: {
                         ...result,
                         ...result.NextValue
@@ -79,15 +79,15 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         message: "Approval Comment is required".bold()
                     },
                     operation: 'A',
-                    moduleInfo: moduleInfo
+                    moduleInfo: req.moduleInfo
                 });
             }
             await actionApprovalRaw(config, req.mongoose)({
                 onFullyApprove: async (approval, line) => {
                     await helper.onFullyApprove(req, req.params.id, approval.ReferenceTransactionJSON.OperationCode);
                     return await notificationManager.fullyApproveRequest({
-                        viewUrl: `/${moduleInfo.urlPrefix}/${approval.ReferenceTransactionJSON.TransactionID}/view-log`,
-                        moduleName: moduleInfo.title,
+                        viewUrl: `/${req.moduleInfo.urlPrefix}/${approval.ReferenceTransactionJSON.TransactionID}/view-log`,
+                        moduleName: req.moduleInfo.title,
                         submitterId: approval.LastModifiedByUserAccountKey,
                         operation: approval.ReferenceTransactionJSON.OperationCode,
                         requestId: approval.ReferenceTransactionJSON.TransactionID,
@@ -97,7 +97,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 onNextApprove: async (approval, line) => {
                     return await notificationManager.nextApprover({
                         approvalUrl: "/approval/" + line._id,
-                        moduleName: moduleInfo.title,
+                        moduleName: req.moduleInfo.title,
                         nextApproverId: line.UserAccountKey,
                         operation: approval.ReferenceTransactionJSON.OperationCode,
                         requestId: approval.ReferenceTransactionJSON.TransactionID,
@@ -114,8 +114,8 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         }
                     });
                     return await notificationManager.rejectApproval({
-                        viewUrl: `/${moduleInfo.urlPrefix}/${approval.ReferenceTransactionJSON.TransactionID}/view-log`,
-                        moduleName: moduleInfo.title,
+                        viewUrl: `/${req.moduleInfo.urlPrefix}/${approval.ReferenceTransactionJSON.TransactionID}/view-log`,
+                        moduleName: req.moduleInfo.title,
                         submitterId: approval.LastModifiedByUserAccountKey,
                         operation: approval.ReferenceTransactionJSON.OperationCode,
                         requestId: approval.ReferenceTransactionJSON.TransactionID,

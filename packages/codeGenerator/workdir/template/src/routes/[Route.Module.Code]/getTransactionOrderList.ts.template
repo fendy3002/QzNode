@@ -15,7 +15,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
     
     router.get("/transaction-order",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = moduleInfo.title;
+            res.locals._title = req.moduleInfo.title;
 
             const changeRequestModel = req.mongoose.model("change_request");
 
@@ -38,7 +38,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     });
                     filter = {
                         ...filter,
-                        ModuleCode: moduleInfo.code
+                        ModuleCode: req.moduleInfo.code
                     };
 
                     totalData = await changeRequestModel.count(filter);
@@ -55,8 +55,8 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 }
             }
 
-            return res.render(`${moduleInfo.urlPrefix}/transaction_order.html`, {
-                moduleInfo: moduleInfo,
+            return res.render(`${req.moduleInfo.urlPrefix}/transaction_order.html`, {
+                moduleInfo: req.moduleInfo,
                 data: result,
                 modal: modalData,
                 _paginationData: {

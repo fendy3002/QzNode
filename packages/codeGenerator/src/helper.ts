@@ -1,11 +1,29 @@
 import path = require('path');
+import fs = require('fs');
+import * as types from './types';
 
 import nunjucks = require('nunjucks');
-const getHelper = (option) => {
+const getHelper = async (context: types.Context) => {
+    const extensions: any = {};
+    for (let extensionFile of fs.readdirSync(context.path.extension)) {
+        let extensionFullPath = path.join(context.path.extension, extensionFile);
+        let extensionRaw = await import(extensionFullPath);
+        let extension = await extensionRaw(context.schema);
+        let extensionName = "";
+        if (!extension.name) {
+            extensionName = path.basename(extensionFile);
+        }
+        else {
+            extensionName = extension.name;
+        }
+        extensions["_" + extensionName] = extension.data;
+    }
+
     const renderHelper = (helperName: string, data: any) => {
-        return nunjucks.render(path.join(option.path.helper, helperName), {
+        return nunjucks.render(path.join(context.path.helper, helperName), {
             _helper: helper,
-            _data: data
+            _data: data,
+            ...extensions
         }).replace(/\n\s*\n/g, '\n');
     };
     const isArr = (val: any) => {

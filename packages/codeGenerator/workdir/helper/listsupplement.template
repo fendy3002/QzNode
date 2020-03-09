@@ -1,0 +1,4 @@
+{% for supplement in _GroupSupplement() %}
+    let {{ supplement.ModelName }}Model = req.mongoose.model("{{ supplement.ModelName }}");
+    
+{% endfor %}

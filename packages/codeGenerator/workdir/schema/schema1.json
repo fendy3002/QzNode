@@ -57,6 +57,21 @@
                     "ValidateType": "number",
                     "Label": "Height (cm)"
                 }
+            },
+            {
+                "Name": "City",
+                "Type": "String",
+                "required": true,
+                "Gui": {
+                    "Name": "City",
+                    "Type": "select",
+                    "Label": "City",
+                    "Supplement": {
+                        "ModelName": "model1",
+                        "Key": "",
+                        "Value": ""
+                    }
+                }
             }
         ],
         "Uniques": []

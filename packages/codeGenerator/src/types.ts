@@ -32,3 +32,14 @@ export interface Route {
         
     }
 }
+
+export interface Context{
+    path: {
+        helper: string,
+        template: string,
+        output: string,
+        extension: string
+    },
+    schema: any,
+    [key: string]: any
+}

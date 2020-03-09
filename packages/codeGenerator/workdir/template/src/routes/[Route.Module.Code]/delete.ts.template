@@ -117,7 +117,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     ModuleCode: req.moduleInfo.code,
                     Operation: "D",
                     RecordId: modelId,
-                    CurrentValue: currentModuleData,
+                    CurrentValue: null,
                     NextValue: currentModuleData,
                     ReasonForChanging: reasonForChanging,
                     Log: [],

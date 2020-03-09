@@ -34,6 +34,17 @@ const replaceFileName = (original: string, option) => {
 const renderPath = async (currentPath: string, option) => {
     const replacedCurrentPath = replaceFileName(currentPath, option);
     const dirs = fs.readdirSync(path.join(option.path.template, currentPath));
+    let defaultNunjucks = nunjucks.configure({});
+    let htmlNunjucks = nunjucks.configure({
+        tags: {
+            blockStart: '<%',
+            blockEnd: '%>',
+            variableStart: '<$',
+            variableEnd: '$>',
+            commentStart: '<#',
+            commentEnd: '#>'
+        }
+    });
     for (const item of dirs) {
         const itemPath = path.join(option.path.template, currentPath, item);
         const itemOutputPath = path.join(option.path.output, replacedCurrentPath, replaceFileName(item, option));
@@ -41,11 +52,22 @@ const renderPath = async (currentPath: string, option) => {
 
         if (fileStat.isFile()) {
             console.log("processing file: ", itemPath);
-            let fileContent = nunjucks.render(itemPath, {
-                _helper: option.helper,
-                ...option.schema
-            }).replace(/\n\s*\n/g, '\n');
             let realExtension = path.extname(replaceFileName(item, option));
+            let fileContent = "";
+            if (realExtension != ".html") {
+                fileContent = defaultNunjucks.render(itemPath, {
+                    _helper: option.helper,
+                    ...option.schema
+                });
+            }
+            else {
+                fileContent = htmlNunjucks.render(itemPath, {
+                    _helper: option.helper,
+                    ...option.schema
+                });
+            }
+            fileContent = fileContent.replace(/\n\s*\n/g, '\n');
+
             let prettierFormat = supportedPrettierFileFormat.filter(k => k.ext == realExtension)
             if (
                 option.schema.Prettier &&

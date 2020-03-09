@@ -82,7 +82,7 @@
                                         <th>
                                             Operation
                                         </th>
-                                        |$ _helper.renderHelper("tableHeaderField.template", Model.Fields) | safe $|
+                                        |$ _helper.renderHelper("tableHeaderField.html.template", Model.Fields) | safe $|
                                         <th>
                                             Created By
                                         </th>
@@ -100,7 +100,7 @@
                                         <td>
                                             {{ _lang.text('operation.' + each.Operation, '') | upper }}
                                         </td>
-                                        |$ _helper.renderHelper("tableBodyField.template", Model.Fields) | safe $|
+                                        |$ _helper.renderHelper("tableBodyField.html.template", Model.Fields) | safe $|
                                         <td>{{ each.LastModifiedByUserAccountName }}</td>
                                         <td>
                                             <div class="ninja-panel extend-left">

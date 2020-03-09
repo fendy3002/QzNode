@@ -72,14 +72,14 @@
                             <table class="table table-sm text-nowrap">
                                 <thead>
                                     <tr class="">
-                                        |$ _helper.renderHelper("tableHeaderField.template", Model.Fields) | safe $|
+                                        |$ _helper.renderHelper("tableHeaderField.html.template", Model.Fields) | safe $|
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for each in data %}
                                     <tr class="ninja-container">
-                                        |$ _helper.renderHelper("tableBodyField.template", Model.Fields) | safe $|
+                                        |$ _helper.renderHelper("tableBodyField.html.template", Model.Fields) | safe $|
                                         <td>
                                             <div class="ninja-panel extend-left">
                                                 <a href="/{{ moduleInfo.urlPrefix }}/{{ each._id | urlencode }}/view"

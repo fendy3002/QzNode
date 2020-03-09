@@ -2,7 +2,10 @@ import { errorHandler, filterParser } from "@fendy3002/express-helper";
 import * as types from '../../types';
 
 export default async (router, config: types.config.app, moduleInfo: types.moduleInfo) => {
-    const getSupplement = async (req) => {
+    const getSupplement = async (req, data) => {
+        let supplement: any = {};
+        {{ _helper.renderHelper("listsupplement.template", Model.Fields) | safe }}
+        return supplement;
     };
     router.get("/",
         errorHandler.handled(async (req, res, next) => {
@@ -39,7 +42,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     pageLimit: page_limit,
                 },
                 moduleInfo: moduleInfo,
-                supplement: await getSupplement(req)
+                supplement: await getSupplement(req, result)
             });
         })
     );

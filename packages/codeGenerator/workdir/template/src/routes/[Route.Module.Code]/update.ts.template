@@ -20,8 +20,9 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         }).validate<any>(body);
     };
     const getSupplement = async (req) => {
-        return {
-        };
+        let supplement: any = {};
+        {{ _helper.renderHelper("listsupplement.template", Model.Fields) | safe }}
+        return supplement;
     };
     // update
     router.get("/:id/update",

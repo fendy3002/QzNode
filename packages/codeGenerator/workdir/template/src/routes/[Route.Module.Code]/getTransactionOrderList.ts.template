@@ -7,7 +7,10 @@ export default async (router, config: types.config.app, moduleInfo: types.module
             success: true
         };
     };
-    const getSupplement = async (req) => {
+    const getSupplement = async (req, data) => {
+        let supplement: any = {};
+        {{ _helper.renderHelper("listsupplement.template", Model.Fields) | safe }}
+        return supplement;
     };
     
     router.get("/transaction-order",
@@ -61,7 +64,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     rowCount: totalData,
                     pageLimit: page_limit,
                 },
-                supplement: await getSupplement(req)
+                supplement: await getSupplement(req, result)
             });
         })
     );

@@ -25,8 +25,9 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         }).validate<any>(body);
     };
     const getSupplement = async (req) => {
-        return {
-        };
+        let supplement: any = {};
+        {{ _helper.renderHelper("listsupplement.template", Model.Fields) | safe }}
+        return supplement;
     };
     router.get("/:id/delete",
         errorHandler.handled(async (req, res, next) => {
@@ -117,7 +118,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     Operation: "D",
                     RecordId: modelId,
                     CurrentValue: currentModuleData,
-                    NextValue: null,
+                    NextValue: currentModuleData,
                     ReasonForChanging: reasonForChanging,
                     Log: [],
                     LastModifiedAtTimeStamp: new Date().getTime(),

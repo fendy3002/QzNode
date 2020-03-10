@@ -14,6 +14,11 @@ export default async (migrateConfig: types.MigrateConfig<any>) => {
             fileName: String,
             status: String,
             migratedAt: Number,
+            log: [{
+                type: String,
+                at: Number,
+                message: String
+            }]
         }, {
             collection: migrateConfig.schemaVersion.collectionName,
             toJSON: {

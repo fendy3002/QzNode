@@ -26,16 +26,13 @@ let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig
             let migrationFiles = lo.orderBy(
                 fs.readdirSync(config.dirpath)
             );
-            let maxStoredVersionRecord = (await schemaVersionModel.aggregate([
-                {
-                    $project: {
-                        maxVersion: {
-                            $max: "$_id"
-                        }
-                    }
-                }
-            ]))[0];
-            let maxStoredVersion = maxStoredVersionRecord && maxStoredVersionRecord.maxVersion || "0000.0000.0000";
+            let maxStoredVersionRecord = await schemaVersionModel.find().sort({ _id: -1 }).limit(1);
+            let maxStoredVersion = "0000.0000.0000";
+            if (!maxStoredVersionRecord || maxStoredVersionRecord.length > 0) {
+                maxStoredVersion = maxStoredVersionRecord[0]._id;
+            }
+            log("Max version: " + maxStoredVersion, "info");
+
             for (let migrationFile of migrationFiles) {
                 log("Processing migration: " + migrationFile, "info");
                 let fullPath = path.join(config.dirpath, migrationFile);

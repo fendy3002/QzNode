@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/mongoose-migration",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "main": "dist/index.js",
   "license": "MIT",
   "publishConfig": {

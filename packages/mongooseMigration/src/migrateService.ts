@@ -19,7 +19,7 @@ let updateModelVersion: types.UpdateModelVersion = async (model, version) => {
     });
 };
 let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig<any>) => {
-    let log = logRaw(config);
+    let log = logRaw(config.log);
     return {
         migrate: async () => {
             let schemaVersionModel = await schemaVersionModelConstructor(config);

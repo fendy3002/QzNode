@@ -6,11 +6,12 @@ export interface MigrateConfig<T> {
     },
     mongoose: mongoose.Mongoose,
     context: T,
-    log: {
-        level: string,
-        write: (message: string) => Promise<void>
-    }
+    log: LogConfig
 };
+export interface LogConfig {
+    level: string,
+    write: (message: string) => Promise<void>
+}
 export interface MigrateRequestPayload<T> extends MigrateConfig<T> {
     version: string,
     schemaVersionModel: mongoose.Model<any>,

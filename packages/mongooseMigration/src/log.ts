@@ -1,5 +1,5 @@
 import * as types from './types';
-export default (config: types.MigrateConfig<any>) => {
+export default (config: types.LogConfig) => {
     let levelMap = {
         "error": 1,
         "info": 2,
@@ -7,10 +7,10 @@ export default (config: types.MigrateConfig<any>) => {
     };
     return async (message: string, level: string) => {
         if (
-            levelMap[config.log.level] <= levelMap[level]
+            levelMap[level] <= levelMap[config.level]
         ) {
-            if (config.log.write) {
-                await config.log.write(message);
+            if (config.write) {
+                await config.write(message);
             }
         }
     };

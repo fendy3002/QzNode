@@ -2,7 +2,7 @@ const Mongoose = require('mongoose');
 import * as types from './types';
 
 export default async (migrateConfig: types.MigrateConfig<any>) => {
-    const modelName = 'document';
+    const modelName = migrateConfig.schemaVersion.collectionName;
     try {
         // if already defined, return 
         return migrateConfig.mongoose.model(modelName);

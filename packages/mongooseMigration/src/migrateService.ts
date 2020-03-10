@@ -4,12 +4,13 @@ import lo = require('lodash');
 import * as types from './types';
 import padVersion from './padVersion';
 import trimVersion from './trimVersion';
+import logRaw from './log';
 import schemaVersionModelConstructor from './schemaVersionModel';
 let updateModelVersion: types.UpdateModelVersion = async (model, version) => {
     let paddedVersion = padVersion(version);
     return await model.update({
         __version: {
-            $ne: paddedVersion
+            $lt: paddedVersion
         }
     }, {
         $set: {
@@ -18,6 +19,7 @@ let updateModelVersion: types.UpdateModelVersion = async (model, version) => {
     });
 };
 let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig<any>) => {
+    let log = logRaw(config);
     return {
         migrate: async () => {
             let schemaVersionModel = await schemaVersionModelConstructor(config);
@@ -33,12 +35,14 @@ let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig
                     }
                 }
             ]))[0];
+            let maxStoredVersion = maxStoredVersionRecord && maxStoredVersionRecord.maxVersion || "0000.0000.0000";
             for (let migrationFile of migrationFiles) {
+                log("Processing migration: " + migrationFile, "info");
                 let fullPath = path.join(config.dirpath, migrationFile);
                 let fileVersion = path.basename(migrationFile).split("__")[0];
                 fileVersion = fileVersion.replace("V", "");
                 let paddedVersion = padVersion(fileVersion);
-                if (paddedVersion < maxStoredVersionRecord.maxVersion) {
+                if (paddedVersion > maxStoredVersion) {
                     let migrateRequest: types.MigrateRequest<any> = (await import(fullPath)).default;
                     let insertedVersion: any = await schemaVersionModel.create({
                         _id: paddedVersion,
@@ -55,6 +59,7 @@ let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig
                             updateModelVersion: updateModelVersion
                         });
                         insertedVersion.status = "done";
+                        log("Processing migration: " + migrationFile + " done", "info");
                         await insertedVersion.save();
                     } catch (err) {
                         insertedVersion.status = "error";
@@ -63,6 +68,9 @@ let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig
                             at: new Date().getTime(),
                             message: err.toString(),
                         });
+                        log("Processing migration: " + migrationFile + " error", "error");
+                        log(err.toString(), "error");
+
                         await insertedVersion.save();
                         throw err;
                     }

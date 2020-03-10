@@ -5,7 +5,11 @@ export interface MigrateConfig<T> {
         collectionName: string
     },
     mongoose: mongoose.Mongoose,
-    context: T
+    context: T,
+    log: {
+        level: string,
+        write: (message: string) => Promise<void>
+    }
 };
 export interface MigrateRequestPayload<T> extends MigrateConfig<T> {
     version: string,

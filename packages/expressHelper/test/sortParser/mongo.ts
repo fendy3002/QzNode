@@ -14,7 +14,7 @@ mocha.describe("sortParser mongo", function (this) {
       "name": "userName"
     }, {
       prefix: "sort"
-    });
+    }).array();
 
     let expected = [
       ["userAge", 1],
@@ -31,7 +31,7 @@ mocha.describe("sortParser mongo", function (this) {
         "age": "userAge",
       }, {
         prefix: "sort"
-      });
+      }).array();
     },
       Error
     );

@@ -69,38 +69,55 @@ let getSortClauseRaw = (schema: type.schema = null, option: type.option = null) 
     };
 };
 
-let service = async (content: type.content, schema: type.schema = null, option: type.option = null) => {
-    let useOption = lo.merge({
-        prefix: "sort",
-        validateKey: false,
-        notFoundKeyError: true
-    }, option);
-    let getSortClause = getSortClauseRaw(schema, useOption);
-    let sort = {};
-    for (let key of Object.keys(content)) {
-        if (key.startsWith(useOption.prefix + ".")) {
-            if (useOption.validateKey && !schema) {
-                if (useOption.notFoundKeyError) {
-                    throw new Error("No sort is allowed");
+let service = (content: type.content, schema: type.schema = null, option: type.option = null) => {
+    let getSortObj = async() => {
+        let useOption = lo.merge({
+            prefix: "sort",
+            validateKey: false,
+            notFoundKeyError: true
+        }, option);
+        let getSortClause = getSortClauseRaw(schema, useOption);
+        let sort = {};
+        for (let key of Object.keys(content)) {
+            if (key.startsWith(useOption.prefix + ".")) {
+                if (useOption.validateKey && !schema) {
+                    if (useOption.notFoundKeyError) {
+                        throw new Error("No sort is allowed");
+                    }
+                    else {
+                        return [];
+                    }
                 }
-                else {
-                    return [];
+                if (emptyValue(content[key])) {
+                    continue;
                 }
+                sort = {
+                    ...sort,
+                    ...getSortClause(key, content[key])
+                };
             }
-            if (emptyValue(content[key])) {
-                continue;
-            }
-            sort = {
-                ...sort,
-                ...getSortClause(key, content[key])
-            };
         }
-    }
-    let arr = [];
-    for (let key of lo.orderBy(Object.keys(sort))) {
-        arr.push(sort[key]);
-    }
+        return sort;
+    };
+    return {
+        string: async () => {
+            let sort = await getSortObj();
+            let result = '';
+            for (let key of lo.orderBy(Object.keys(sort))) {
+                result += sort[key][1] == -1 ? "-" : "" + sort[key][0];
+            }
+            return result;
+        },
+        array: async () => {
+            let sort = await getSortObj();
+            let arr = [];
+            for (let key of lo.orderBy(Object.keys(sort))) {
+                arr.push(sort[key]);
+            }
 
-    return arr;
+            return arr;
+        },
+        object: getSortObj
+    };
 };
 export default service;

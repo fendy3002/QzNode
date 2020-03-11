@@ -104,9 +104,9 @@ let service = (content: type.content, schema: type.schema = null, option: type.o
             let sort = await getSortObj();
             let result = '';
             for (let key of lo.orderBy(Object.keys(sort))) {
-                result += sort[key][1] == -1 ? "-" : "" + sort[key][0];
+                result += (sort[key][1] == -1 ? "-" : "") + sort[key][0] + " ";
             }
-            return result;
+            return result.trim();
         },
         array: async () => {
             let sort = await getSortObj();

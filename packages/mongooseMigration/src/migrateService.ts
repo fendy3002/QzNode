@@ -34,12 +34,13 @@ let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig
             log("Max version: " + maxStoredVersion, "info");
 
             for (let migrationFile of migrationFiles) {
-                log("Processing migration: " + migrationFile, "info");
+                log("Checking migration: " + migrationFile, "info");
                 let fullPath = path.join(config.dirpath, migrationFile);
                 let fileVersion = path.basename(migrationFile).split("__")[0];
                 fileVersion = fileVersion.replace("V", "");
                 let paddedVersion = padVersion(fileVersion);
                 if (paddedVersion > maxStoredVersion) {
+                    log("Running migration: " + migrationFile, "info");
                     let migrateRequest: types.MigrateRequest<any> = (await import(fullPath)).default;
                     let insertedVersion: any = await schemaVersionModel.create({
                         _id: paddedVersion,
@@ -56,7 +57,7 @@ let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig
                             updateModelVersion: updateModelVersion
                         });
                         insertedVersion.status = "done";
-                        log("Processing migration: " + migrationFile + " done", "info");
+                        log("Running migration: " + migrationFile + " done", "info");
                         await insertedVersion.save();
                     } catch (err) {
                         insertedVersion.status = "error";
@@ -65,7 +66,7 @@ let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig
                             at: new Date().getTime(),
                             message: err.toString(),
                         });
-                        log("Processing migration: " + migrationFile + " error", "error");
+                        log("Running migration: " + migrationFile + " error", "error");
                         log(err.toString(), "error");
 
                         await insertedVersion.save();

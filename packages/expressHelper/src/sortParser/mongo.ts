@@ -84,7 +84,7 @@ let service = async (content: type.content, schema: type.schema = null, option: 
                     throw new Error("No sort is allowed");
                 }
                 else {
-                    return {};
+                    return [];
                 }
             }
             if (emptyValue(content[key])) {

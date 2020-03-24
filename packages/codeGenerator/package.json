@@ -1,9 +1,7 @@
 {
   "name": "@fendy3002/code-generator",
-  "version": "0.1.2",
-  "bin": {
-    "codeGenerator": "dist/index.js"
-  },
+  "version": "0.1.3",
+  "bin": "./dist/index.js",
   "main": "dist/index.js",
   "license": "MIT",
   "files": [

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import fs = require('fs');
 import path = require('path');
 import commandLineArgs = require('command-line-args');

@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/code-generator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "bin": {
     "codeGenerator": "dist/index.js"
   },
@@ -11,7 +11,7 @@
     "src/**/*"
   ],
   "publishConfig": {
-    "access": "public"    
+    "access": "public"
   },
   "scripts": {
     "compile": "ts-node src/index.ts -t ./workdir ./workdir/schema",

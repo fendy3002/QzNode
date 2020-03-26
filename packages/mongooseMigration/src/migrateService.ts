@@ -16,6 +16,8 @@ let updateModelVersion: types.UpdateModelVersion = async (model, version) => {
         $set: {
             __version: paddedVersion
         }
+    }, {
+        multi: true
     });
 };
 let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig<any>) => {

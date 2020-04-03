@@ -6,7 +6,10 @@ interface State {
     Columns: TableColumn[]
     ResizingColumnIndex: number,
     StartColumnWidth: number,
-    StartXPos: number
+    StartXPos: number,
+    CustomRowHeight: {
+        [index: number]: number
+    }
 };
 interface TableColumn {
     Header: () => any,
@@ -25,14 +28,21 @@ class Table extends React.Component<TableProps, State> {
         super(props);
         this.state = {
             Columns: [],
+            CustomRowHeight: {},
             ResizingColumnIndex: -1,
             StartColumnWidth: 0,
             StartXPos: 0,
+            ResizingRowIndex: -1,
+            StartRowHeight: 0,
+            StartYPos: 0,
         };
         [
             "resizeColumnDrag",
             "resizeColumnStart",
-            "resizeColumnStop"
+            "resizeColumnStop",
+            "resizeRowDrag",
+            "resizeRowStart",
+            "resizeRowStop"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -54,24 +64,28 @@ class Table extends React.Component<TableProps, State> {
     }
     resizeColumnStart(evt) {
         const resizingColIndex = evt.currentTarget.dataset.col;
+        const startColumnWidth = this.state.Columns[resizingColIndex].width;
         const xPos = evt.clientX;
         this.setState(() => {
             return {
                 ResizingColumnIndex: resizingColIndex,
                 StartXPos: xPos,
+                StartColumnWidth: startColumnWidth
             };
         });
     }
     resizeColumnDrag(evt) {
+
     }
     resizeColumnStop(evt) {
         const resizingColIndex = this.state.ResizingColumnIndex;
+        const startColumnWidth = this.state.StartColumnWidth;
         const xPos = evt.clientX;
         const startXPos = this.state.StartXPos;
         const newColumns = this.state.Columns.map((k, colIndex) => {
             let width = k.width;
             if (colIndex == resizingColIndex) {
-                width = k.width + xPos - startXPos;
+                width = Math.max(50, startColumnWidth + xPos - startXPos);
             }
             return {
                 ...k,
@@ -87,9 +101,44 @@ class Table extends React.Component<TableProps, State> {
         });
     }
 
+    resizeRowStart(evt) {
+        const resizingRowIndex = evt.currentTarget.dataset.row;
+        const startRowHeight = (this.state.CustomRowHeight[resizingRowIndex] || this.props.RowHeight);
+        const yPos = evt.clientY;
+        this.setState(() => {
+            return {
+                ResizingRowIndex: resizingRowIndex,
+                StartYPos: yPos,
+                StartRowHeight: startRowHeight
+            };
+        });
+    }
+    resizeRowDrag(evt) {
+
+    }
+    resizeRowStop(evt) {
+        const resizingRowIndex = this.state.ResizingRowIndex;
+        const startRowHeight = this.state.StartRowHeight;
+        const yPos = evt.clientY;
+        const startYPos = this.state.StartYPos;
+        const newHeight = Math.max(24, startRowHeight + yPos - startYPos)
+        console.log(resizingRowIndex);
+        
+        this.setState(() => {
+            return {
+                CustomRowHeight: {
+                    ...this.state.CustomRowHeight,
+                    [resizingRowIndex]: newHeight
+                },
+                ResizingRowIndex: -1,
+                StartYPos: 0,
+            };
+        });
+    }
+
     render() {
         const { data, RowHeight } = this.props;
-        const { Columns } = this.state;
+        const { Columns, CustomRowHeight } = this.state;
         return <table>
             <thead>
                 <tr
@@ -106,6 +155,7 @@ class Table extends React.Component<TableProps, State> {
             <tbody>
                 {(data || []).map((row, rowIndex) => {
                     let rowBody = Columns.map((col, colIndex) => {
+                        const heightOfRow = (CustomRowHeight[rowIndex] || RowHeight);
                         return <td
                             style={{
                             }}
@@ -113,12 +163,14 @@ class Table extends React.Component<TableProps, State> {
                             <div style={{
                                 width: col.width,
                                 display: "flex",
-                                height: RowHeight + "px",
+                                height: heightOfRow + "px",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis"
                             }}>
                                 <div style={{
-                                    flexGrow: 2
+                                    flexGrow: 2,
+                                    wordWrap: "break-word",
+                                    wordBreak: "break-word"
                                 }}>
                                     {col.Body(row)}
                                 </div>
@@ -129,13 +181,24 @@ class Table extends React.Component<TableProps, State> {
                                 >
                                     <div style={{
                                         flex: "0 0 8px",
-                                        height: RowHeight + "px",
+                                        height: heightOfRow + "px",
                                         backgroundColor: "yellow",
                                         cursor: "ew-resize"
                                     }} data-row={rowIndex} data-col={colIndex}>
                                     </div>
                                 </DraggableCore>
                             </div>
+                            <DraggableCore
+                                onStart={this.resizeRowStart}
+                                onDrag={this.resizeRowDrag}
+                                onStop={this.resizeRowStop}
+                            >
+                                <div style={{
+                                    height: "8px",
+                                    backgroundColor: "yellow",
+                                    cursor: "ns-resize"
+                                }} data-row={rowIndex} data-col={colIndex}></div>
+                            </DraggableCore>
                         </td>;
                     });
                     return <tr

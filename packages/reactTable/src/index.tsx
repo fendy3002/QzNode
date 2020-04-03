@@ -1,6 +1,6 @@
 const React = require('react');
 const lo = require('lodash');
-const {DraggableCore} = require('react-draggable');
+const { DraggableCore } = require('react-draggable');
 
 interface State {
     Columns: TableColumn[]
@@ -29,6 +29,13 @@ class Table extends React.Component<TableProps, State> {
             StartColumnWidth: 0,
             StartXPos: 0,
         };
+        [
+            "resizeColumnDrag",
+            "resizeColumnStart",
+            "resizeColumnStop"
+        ].forEach((handler) => {
+            this[handler] = this[handler].bind(this);
+        });
     }
 
     static getDerivedStateFromProps(props, state) {
@@ -44,6 +51,40 @@ class Table extends React.Component<TableProps, State> {
             });
         }
         return returnState;
+    }
+    resizeColumnStart(evt) {
+        const resizingColIndex = evt.currentTarget.dataset.col;
+        const xPos = evt.clientX;
+        this.setState(() => {
+            return {
+                ResizingColumnIndex: resizingColIndex,
+                StartXPos: xPos,
+            };
+        });
+    }
+    resizeColumnDrag(evt) {
+    }
+    resizeColumnStop(evt) {
+        const resizingColIndex = this.state.ResizingColumnIndex;
+        const xPos = evt.clientX;
+        const startXPos = this.state.StartXPos;
+        const newColumns = this.state.Columns.map((k, colIndex) => {
+            let width = k.width;
+            if (colIndex == resizingColIndex) {
+                width = k.width + xPos - startXPos;
+            }
+            return {
+                ...k,
+                width: width
+            };
+        });
+        this.setState(() => {
+            return {
+                Columns: newColumns,
+                ResizingColumnIndex: -1,
+                StartXPos: 0,
+            };
+        });
     }
 
     render() {
@@ -81,13 +122,19 @@ class Table extends React.Component<TableProps, State> {
                                 }}>
                                     {col.Body(row)}
                                 </div>
-                                <div style={{
-                                    flex: "0 0 8px",
-                                    height: RowHeight + "px",
-                                    backgroundColor: "yellow",
-                                    cursor: "ew-resize"
-                                }}>
-                                </div>
+                                <DraggableCore
+                                    onStart={this.resizeColumnStart}
+                                    onDrag={this.resizeColumnDrag}
+                                    onStop={this.resizeColumnStop}
+                                >
+                                    <div style={{
+                                        flex: "0 0 8px",
+                                        height: RowHeight + "px",
+                                        backgroundColor: "yellow",
+                                        cursor: "ew-resize"
+                                    }} data-row={rowIndex} data-col={colIndex}>
+                                    </div>
+                                </DraggableCore>
                             </div>
                         </td>;
                     });

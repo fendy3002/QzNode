@@ -1,10 +1,13 @@
 const React = require('react');
 const lo = require('lodash');
+const {DraggableCore} = require('react-draggable');
 
 interface State {
-    editing: boolean,
-    text: string
-}
+    Columns: TableColumn[]
+    ResizingColumnIndex: number,
+    StartColumnWidth: number,
+    StartXPos: number
+};
 interface TableColumn {
     Header: () => any,
     Body: (row) => any,
@@ -21,7 +24,10 @@ class Table extends React.Component<TableProps, State> {
     constructor(props) {
         super(props);
         this.state = {
-            Columns: []
+            Columns: [],
+            ResizingColumnIndex: -1,
+            StartColumnWidth: 0,
+            StartXPos: 0,
         };
     }
 
@@ -65,11 +71,23 @@ class Table extends React.Component<TableProps, State> {
                             key={"td_" + rowIndex + "_" + colIndex}>
                             <div style={{
                                 width: col.width,
+                                display: "flex",
                                 height: RowHeight + "px",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis"
                             }}>
-                                {col.Body(row)}
+                                <div style={{
+                                    flexGrow: 2
+                                }}>
+                                    {col.Body(row)}
+                                </div>
+                                <div style={{
+                                    flex: "0 0 8px",
+                                    height: RowHeight + "px",
+                                    backgroundColor: "yellow",
+                                    cursor: "ew-resize"
+                                }}>
+                                </div>
                             </div>
                         </td>;
                     });

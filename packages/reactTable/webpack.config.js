@@ -1,7 +1,19 @@
 const path = require('path');
 const sourceCodes = [{
     entry: {
-        "index": path.resolve(__dirname, "react/index.tsx")
+        "index": path.resolve(__dirname, "testServer/react/index.tsx")
+    },
+    output: {
+        path: path.resolve(__dirname, 'testServer/public/js/bin'),
+        filename: "index.js"
+    }
+}, {
+    entry: {
+        "index": path.resolve(__dirname, "src/index.tsx")
+    },
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: "[name].js"
     }
 }];
 module.exports = [...sourceCodes.map(

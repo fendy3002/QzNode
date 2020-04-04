@@ -28,19 +28,53 @@ interface TableProps {
     data: any[],
     Columns: TableColumn[]
     RowHeight: number
-}
-
-const styleComponent = {
-    table: {
-        base: styled.table`
-            border: 1px solid #dee2e6;
-            width: 100%;
-            color: #212529;
-            border-collapse: collapse;
-        `
-    }
 };
+const BsTr = styled.tr`
+    display: block;
+    &:after, &:before {
+        box-sizing: border-box;
+    }
+`;
+const BsTd = styled.td`
+    padding: .3rem;
+    display: table-cell;
+    border: 1px solid #dee2e6;
+    width: ${props => props.csswidth}px;
+    &:after, &:before {
+        box-sizing: border-box;
+    }
+`;
+const BsTh = styled.th`
+    padding: .3rem;
+    display: table-cell;
+    font-weight: bold;
+    border: 1px solid #dee2e6;
+    width: ${props => props.csswidth}px;
+`;
+const BsTHead = styled.tbody`
+    display: table-row-group;
+    vertical-align: middle;
+`;
+const BsTBody = styled.tbody`
+    display: table-row-group;
+    vertical-align: middle;
+`;
+const BsTable = styled.table`
+    display: table;
+    border-spacing: 2px;
+    border: 1px solid #dee2e6;
+    width: 100%;
+    color: #212529;
+    border-collapse: collapse;
+    margin-bottom: 0px;
 
+    &:after, &:before {
+        box-sizing: border-box;
+    }
+    ${BsTBody} ${BsTr}:nth-of-type(odd){
+        background-color: rgba(0,0,0,.05);
+    }
+`;
 const ResizePanel = styled.div`
     display: inline-block;
     &:hover {
@@ -173,36 +207,28 @@ class Table extends React.Component<TableProps, State> {
         const { Columns, CustomRowHeight } = this.state;
         return <div>
             <div>
-                <table className="table table-sm table-striped table-bordered"
-                    style={{
-                        marginBottom: "0px"
-                    }}>
-                    <thead>
-                        <tr
-                            style={{
-                                display: "block",
-                            }}>
+                <BsTable>
+                    <BsTHead>
+                        <BsTr>
                             {Columns.map((col, index) => {
-                                return <th style={{
-                                    width: (col.width + 10) + "px"
-                                }} key={"th_" + index}>
+                                return <BsTh csswidth={col.width + 10} key={"th_" + index}>
                                     {col.Header()}
-                                </th>
+                                </BsTh>
                             })}
-                        </tr>
-                    </thead>
-                </table>
+                        </BsTr>
+                    </BsTHead>
+                </BsTable>
             </div>
             <div style={{
                 height: "300px",
                 overflowY: "scroll"
             }}>
-                <table className="table table-sm table-striped table-bordered">
-                    <tbody>
+                <BsTable className="table table-sm table-striped table-bordered">
+                    <BsTBody>
                         {(data || []).map((row, rowIndex) => {
                             let rowBody = Columns.map((col, colIndex) => {
                                 const heightOfRow = (CustomRowHeight[rowIndex] || RowHeight);
-                                return <td
+                                return <BsTd
                                     style={{
                                         paddingRight: "0px",
                                         paddingBottom: "0px"
@@ -255,18 +281,15 @@ class Table extends React.Component<TableProps, State> {
                                                 data-row={rowIndex} data-col={colIndex} data-direction="both"></ResizePanel>
                                         </DraggableCore>
                                     </div>
-                                </td>;
+                                </BsTd>;
                             });
-                            return <tr
-                                style={{
-                                    display: "block",
-                                }}
+                            return <BsTr
                                 key={"tr_" + rowIndex}>
                                 {rowBody}
-                            </tr>;
+                            </BsTr>;
                         })}
-                    </tbody>
-                </table>
+                    </BsTBody>
+                </BsTable>
             </div>
         </div>;
     }

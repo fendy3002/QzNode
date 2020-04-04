@@ -1,10 +1,37 @@
+import { FunctionComponent } from "react";
+
 const React = require('react');
 const {
     ResizePanel
 } = require('./styled');
 const { DraggableCore } = require('react-draggable');
 
-export default ({ width, height, body, data, onResizeStart, onResizeDrag, onResizeStop }) => {
+interface ResizableDivProps {
+    width: number,
+    height: number,
+    body: any,
+    data: {
+        [key: string]: any
+    },
+    onClick?: any,
+    onResizeStart: any,
+    onResizeDrag: any,
+    onResizeStop: any
+}
+
+const ResizableDiv: FunctionComponent<ResizableDivProps> = ({
+    width, height, body, data,
+    onClick,
+    onResizeStart, onResizeDrag, onResizeStop }) => {
+    let bodyDivStyle: any = {
+        verticalAlign: 'top',
+        display: "inline-block",
+        width: (width - 4) + "px",
+        height: height + "px",
+    };
+    if (onClick) {
+        bodyDivStyle.cursor = "pointer";
+    }
     return <>
         <div style={{
             display: "block",
@@ -14,11 +41,7 @@ export default ({ width, height, body, data, onResizeStart, onResizeDrag, onResi
             textOverflow: "ellipsis",
             margin: "0"
         }}>
-            <div style={{
-                verticalAlign: 'top',
-                display: "inline-block",
-                width: (width - 4) + "px"
-            }}>
+            <div style={bodyDivStyle}>
                 {body}
             </div>
             <DraggableCore
@@ -55,3 +78,9 @@ export default ({ width, height, body, data, onResizeStart, onResizeDrag, onResi
         </div>
     </>;
 };
+
+ResizableDiv.defaultProps = {
+    data: {}
+};
+
+export default ResizableDiv;

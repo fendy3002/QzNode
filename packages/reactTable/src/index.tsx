@@ -59,10 +59,14 @@ class Table extends React.Component<TableProps, State> {
             "resizeDrag",
             "resizeStart",
             "resizeStop",
+            "headerClick",
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
     }
+    public static defaultProps = {
+        RowHeight: 24
+    };
 
     static getDerivedStateFromProps(props, state) {
         let returnState = {
@@ -141,6 +145,10 @@ class Table extends React.Component<TableProps, State> {
         });
     }
 
+    headerClick(evt) {
+
+    }
+
     render() {
         const { data, HeaderHeight, RowHeight } = this.props;
         const { Columns, CustomRowHeight } = this.state;
@@ -151,13 +159,19 @@ class Table extends React.Component<TableProps, State> {
                         <BsTr>
                             {Columns.map((col, colIndex) => {
                                 const heightOfRow = (CustomRowHeight["thead"] || HeaderHeight);
-                                return <BsTh csswidth={col.width + 10} key={"th_" + colIndex}>
+                                return <BsTh
+                                    style={{
+                                        paddingRight: "0px",
+                                        paddingBottom: "0px"
+                                    }}
+                                    csswidth={col.width + 10} key={"th_" + colIndex}>
                                     <ResizableDiv
                                         body={col.Header()}
                                         data={{
                                             "data-row": "thead",
                                             "data-col": colIndex
                                         }}
+                                        onClick={this.headerClick}
                                         width={col.width}
                                         height={heightOfRow}
                                         onResizeStart={this.resizeStart}

@@ -1,6 +1,7 @@
 const React = require('react');
 const lo = require('lodash');
 const { DraggableCore } = require('react-draggable');
+import styled, { css } from 'styled-components';
 
 interface State {
     Columns: TableColumn[]
@@ -28,6 +29,42 @@ interface TableProps {
     Columns: TableColumn[]
     RowHeight: number
 }
+
+const styleComponent = {
+    table: {
+        base: styled.table`
+            border: 1px solid #dee2e6;
+            width: 100%;
+            color: #212529;
+            border-collapse: collapse;
+        `
+    }
+};
+
+const ResizePanel = styled.div`
+    display: inline-block;
+    &:hover {
+        background-color: #DDDDDD;
+    }
+    ${props => (props.direction == "horizontal") && css`
+        vertical-align: top;
+        cursor: ew-resize;
+        width: 8px;
+        min-height: ${props.height}px;
+    `}
+    ${props => (props.direction == "vertical") && css`
+        vertical-align: top;
+        cursor: ns-resize;
+        width: ${props.width}px;
+        min-height: 8px;
+    `}
+    ${props => (props.direction == "both") && css`
+        vertical-align: top;
+        cursor: nwse-resize;
+        width: 8px;
+        min-height: 8px;
+    `}
+`;
 
 class Table extends React.Component<TableProps, State> {
     constructor(props) {
@@ -191,14 +228,8 @@ class Table extends React.Component<TableProps, State> {
                                             onDrag={this.resizeDrag}
                                             onStop={this.resizeStop}
                                         >
-                                            <div style={{
-                                                verticalAlign: 'top',
-                                                display: "inline-block",
-                                                cursor: "ew-resize",
-                                                width: (8) + "px",
-                                                minHeight: (heightOfRow) + "px",
-                                            }} data-row={rowIndex} data-col={colIndex} data-direction="horizontal">
-                                            </div>
+                                            <ResizePanel height={heightOfRow} direction={"horizontal"}
+                                                data-row={rowIndex} data-col={colIndex} data-direction="horizontal"></ResizePanel>
                                         </DraggableCore>
                                     </div>
                                     <div style={{
@@ -212,26 +243,16 @@ class Table extends React.Component<TableProps, State> {
                                             onDrag={this.resizeDrag}
                                             onStop={this.resizeStop}
                                         >
-                                            <div style={{
-                                                verticalAlign: 'top',
-                                                cursor: "ns-resize",
-                                                display: "inline-block",
-                                                width: (col.width - 4) + "px",
-                                                minHeight: "8px",
-                                            }} data-row={rowIndex} data-col={colIndex} data-direction="vertical"></div>
+                                            <ResizePanel width={col.width - 4} direction={"vertical"}
+                                                data-row={rowIndex} data-col={colIndex} data-direction="vertical"></ResizePanel>
                                         </DraggableCore>
                                         <DraggableCore
                                             onStart={this.resizeStart}
                                             onDrag={this.resizeDrag}
                                             onStop={this.resizeStop}
                                         >
-                                            <div style={{
-                                                verticalAlign: 'top',
-                                                cursor: "nwse-resize",
-                                                display: "inline-block",
-                                                width: (8) + "px",
-                                                minHeight: "8px",
-                                            }} data-row={rowIndex} data-col={colIndex} data-direction="both"></div>
+                                            <ResizePanel direction={"both"}
+                                                data-row={rowIndex} data-col={colIndex} data-direction="both"></ResizePanel>
                                         </DraggableCore>
                                     </div>
                                 </td>;

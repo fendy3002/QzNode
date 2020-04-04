@@ -24,6 +24,7 @@ let moduleMap = {
                     StartWidth: 200
                 },
             ]}
+            HeaderHeight={32}
             RowHeight={80}
             data={props.store.posts}
         ></Table>;

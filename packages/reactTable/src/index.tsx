@@ -10,6 +10,7 @@ const {
     BsTable,
     ResizePanel
 } = require('./styled');
+import ResizableDiv from './ResizableDiv';
 
 interface State {
     Columns: TableColumn[]
@@ -141,16 +142,28 @@ class Table extends React.Component<TableProps, State> {
     }
 
     render() {
-        const { data, RowHeight } = this.props;
+        const { data, HeaderHeight, RowHeight } = this.props;
         const { Columns, CustomRowHeight } = this.state;
         return <div>
             <div>
                 <BsTable>
                     <BsTHead>
                         <BsTr>
-                            {Columns.map((col, index) => {
-                                return <BsTh csswidth={col.width + 10} key={"th_" + index}>
-                                    {col.Header()}
+                            {Columns.map((col, colIndex) => {
+                                const heightOfRow = (CustomRowHeight["thead"] || HeaderHeight);
+                                return <BsTh csswidth={col.width + 10} key={"th_" + colIndex}>
+                                    <ResizableDiv
+                                        body={col.Header()}
+                                        data={{
+                                            "data-row": "thead",
+                                            "data-col": colIndex
+                                        }}
+                                        width={col.width}
+                                        height={heightOfRow}
+                                        onResizeStart={this.resizeStart}
+                                        onResizeDrag={this.resizeDrag}
+                                        onResizeStop={this.resizeStop}
+                                    ></ResizableDiv>
                                 </BsTh>
                             })}
                         </BsTr>
@@ -172,53 +185,18 @@ class Table extends React.Component<TableProps, State> {
                                         paddingBottom: "0px"
                                     }}
                                     key={"td_" + rowIndex + "_" + colIndex}>
-                                    <div style={{
-                                        display: "block",
-                                        height: heightOfRow + "px",
-                                        width: (col.width + 4) + "px",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        margin: "0"
-                                    }}>
-                                        <div style={{
-                                            verticalAlign: 'top',
-                                            display: "inline-block",
-                                            width: (col.width - 4) + "px"
-                                        }}>
-                                            {col.Body(row)}
-                                        </div>
-                                        <DraggableCore
-                                            onStart={this.resizeStart}
-                                            onDrag={this.resizeDrag}
-                                            onStop={this.resizeStop}
-                                        >
-                                            <ResizePanel height={heightOfRow} direction={"horizontal"}
-                                                data-row={rowIndex} data-col={colIndex} data-direction="horizontal"></ResizePanel>
-                                        </DraggableCore>
-                                    </div>
-                                    <div style={{
-                                        display: "block",
-                                        height: "8px",
-                                        width: (col.width + 4) + "px",
-                                        margin: "0"
-                                    }}>
-                                        <DraggableCore
-                                            onStart={this.resizeStart}
-                                            onDrag={this.resizeDrag}
-                                            onStop={this.resizeStop}
-                                        >
-                                            <ResizePanel width={col.width - 4} direction={"vertical"}
-                                                data-row={rowIndex} data-col={colIndex} data-direction="vertical"></ResizePanel>
-                                        </DraggableCore>
-                                        <DraggableCore
-                                            onStart={this.resizeStart}
-                                            onDrag={this.resizeDrag}
-                                            onStop={this.resizeStop}
-                                        >
-                                            <ResizePanel direction={"both"}
-                                                data-row={rowIndex} data-col={colIndex} data-direction="both"></ResizePanel>
-                                        </DraggableCore>
-                                    </div>
+                                    <ResizableDiv
+                                        body={col.Body(row)}
+                                        data={{
+                                            "data-row": rowIndex,
+                                            "data-col": colIndex
+                                        }}
+                                        width={col.width}
+                                        height={heightOfRow}
+                                        onResizeStart={this.resizeStart}
+                                        onResizeDrag={this.resizeDrag}
+                                        onResizeStop={this.resizeStop}
+                                    ></ResizableDiv>
                                 </BsTd>;
                             });
                             return <BsTr

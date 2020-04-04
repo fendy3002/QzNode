@@ -12,20 +12,20 @@ let { observer, inject } = mobxReact;
 let moduleMap = {
     "list": (props: any) => {
         return <Table
-            Columns={[
+            columns={[
                 {
-                    Header: () => "Title",
-                    Body: (row) => row.title,
-                    StartWidth: 100
+                    header: () => "Title",
+                    body: (row) => row.title,
+                    startWidth: 100
                 },
                 {
-                    Header: () => "Body",
-                    Body: (row) => row.body,
-                    StartWidth: 200
+                    header: () => "Body",
+                    body: (row) => row.body,
+                    startWidth: 200
                 },
             ]}
-            HeaderHeight={32}
-            RowHeight={80}
+            headerHeight={32}
+            rowHeight={80}
             data={props.store.posts}
         ></Table>;
     }

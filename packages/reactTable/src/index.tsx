@@ -9,48 +9,22 @@ const {
     BsTable
 } = require('./styled');
 import ResizableDiv from './ResizableDiv';
+import * as types from './types';
 
-interface State {
-    Columns: TableColumn[]
-    Resizing: {
-        ColumnIndex: number,
-        RowIndex: number,
-        Width: number,
-        Height: number,
-        XPos: number,
-        YPos: number,
-        Direction: string
-    }
-    CustomRowHeight: {
-        [index: number]: number
-    }
-};
-interface TableColumn {
-    Header: () => any,
-    Body: (row) => any,
-    StartWidth: 60,
-
-}
-interface TableProps {
-    data: any[],
-    Columns: TableColumn[]
-    RowHeight: number
-};
-
-class Table extends React.Component<TableProps, State> {
+class Table extends React.Component<types.Table.Props, types.Table.State> {
     constructor(props) {
         super(props);
         this.state = {
-            Columns: [],
-            CustomRowHeight: {},
-            Resizing: {
-                ColumnIndex: null,
-                RowIndex: null,
-                Width: null,
-                Height: null,
-                XPos: null,
-                YPos: null,
-                Direction: null,
+            columns: [],
+            customRowHeight: {},
+            resizing: {
+                columnIndex: null,
+                rowIndex: null,
+                width: null,
+                height: null,
+                xPos: null,
+                yPos: null,
+                direction: null,
             },
         };
         [
@@ -63,18 +37,18 @@ class Table extends React.Component<TableProps, State> {
         });
     }
     public static defaultProps = {
-        RowHeight: 24
+        rowHeight: 24
     };
 
     static getDerivedStateFromProps(props, state) {
         let returnState = {
             ...state
         };
-        if (state.Columns.length != props.Columns.length) {
-            returnState.Columns = props.Columns.map(k => {
+        if (state.columns.length != props.columns.length) {
+            returnState.columns = props.columns.map(k => {
                 return {
                     ...k,
-                    width: k.StartWidth
+                    width: k.startWidth || 120
                 };
             });
         }
@@ -89,14 +63,14 @@ class Table extends React.Component<TableProps, State> {
 
         this.setState((state) => {
             return {
-                Resizing: {
-                    ColumnIndex: colIndex,
-                    RowIndex: rowIndex,
-                    Width: state.Columns[colIndex].width,
-                    Height: (this.state.CustomRowHeight[rowIndex] || this.props.RowHeight),
-                    XPos: xPos,
-                    YPos: yPos,
-                    Direction: direction,
+                resizing: {
+                    columnIndex: colIndex,
+                    rowIndex: rowIndex,
+                    width: state.columns[colIndex].width,
+                    height: (this.state.customRowHeight[rowIndex] || this.props.rowHeight),
+                    xPos: xPos,
+                    yPos: yPos,
+                    direction: direction,
                 }
             };
         });
@@ -104,26 +78,26 @@ class Table extends React.Component<TableProps, State> {
     resizeDrag(evt) {
     }
     resizeStop(evt) {
-        let resizeHandler = this.state.Resizing;
+        let resizeHandler = this.state.resizing;
         const xPos = evt.clientX;
         const yPos = evt.clientY;
 
         let newState: any = {
-            Resizing: {
-                ColumnIndex: null,
-                RowIndex: null,
-                Width: null,
-                Height: null,
-                XPos: null,
-                YPos: null,
-                Direction: null,
+            resizing: {
+                columnIndex: null,
+                rowIndex: null,
+                width: null,
+                height: null,
+                xPos: null,
+                yPos: null,
+                direction: null,
             }
         };
-        if (resizeHandler.Direction == "horizontal" || resizeHandler.Direction == "both") {
-            newState.Columns = this.state.Columns.map((k, colIndex) => {
+        if (resizeHandler.direction == "horizontal" || resizeHandler.direction == "both") {
+            newState.columns = this.state.columns.map((k, colIndex) => {
                 let width = k.width;
-                if (colIndex == resizeHandler.ColumnIndex) {
-                    width = Math.max(50, resizeHandler.Width + xPos - resizeHandler.XPos);
+                if (colIndex == resizeHandler.columnIndex) {
+                    width = Math.max(50, resizeHandler.width + xPos - resizeHandler.xPos);
                 }
                 return {
                     ...k,
@@ -131,11 +105,11 @@ class Table extends React.Component<TableProps, State> {
                 };
             });
         }
-        if (resizeHandler.Direction == "vertical" || resizeHandler.Direction == "both") {
-            const newHeight = Math.max(24, resizeHandler.Height + yPos - resizeHandler.YPos)
-            newState.CustomRowHeight = {
-                ...this.state.CustomRowHeight,
-                [resizeHandler.RowIndex]: newHeight
+        if (resizeHandler.direction == "vertical" || resizeHandler.direction == "both") {
+            const newHeight = Math.max(24, resizeHandler.height + yPos - resizeHandler.yPos)
+            newState.customRowHeight = {
+                ...this.state.customRowHeight,
+                [resizeHandler.rowIndex]: newHeight
             };
         }
         this.setState(() => {
@@ -148,15 +122,15 @@ class Table extends React.Component<TableProps, State> {
     }
 
     render() {
-        const { data, HeaderHeight, RowHeight } = this.props;
-        const { Columns, CustomRowHeight } = this.state;
+        const { data, headerHeight, rowHeight } = this.props;
+        const { columns, customRowHeight } = this.state;
         return <div>
             <div>
                 <BsTable>
                     <BsTHead>
                         <BsTr>
-                            {Columns.map((col, colIndex) => {
-                                const heightOfRow = (CustomRowHeight["thead"] || HeaderHeight);
+                            {columns.map((col, colIndex) => {
+                                const heightOfRow = (customRowHeight["thead"] || headerHeight);
                                 return <BsTh
                                     style={{
                                         paddingRight: "0px",
@@ -164,7 +138,7 @@ class Table extends React.Component<TableProps, State> {
                                     }}
                                     csswidth={col.width + 10} key={"th_" + colIndex}>
                                     <ResizableDiv
-                                        body={col.Header()}
+                                        body={col.header()}
                                         data={{
                                             "data-row": "thead",
                                             "data-col": colIndex
@@ -189,8 +163,8 @@ class Table extends React.Component<TableProps, State> {
                 <BsTable className="table table-sm table-striped table-bordered">
                     <BsTBody>
                         {(data || []).map((row, rowIndex) => {
-                            let rowBody = Columns.map((col, colIndex) => {
-                                const heightOfRow = (CustomRowHeight[rowIndex] || RowHeight);
+                            let rowBody = columns.map((col, colIndex) => {
+                                const heightOfRow = (customRowHeight[rowIndex] || rowHeight);
                                 return <BsTd
                                     style={{
                                         paddingRight: "0px",
@@ -198,7 +172,7 @@ class Table extends React.Component<TableProps, State> {
                                     }}
                                     key={"td_" + rowIndex + "_" + colIndex}>
                                     <ResizableDiv
-                                        body={col.Body(row)}
+                                        body={col.body(row)}
                                         data={{
                                             "data-row": rowIndex,
                                             "data-col": colIndex

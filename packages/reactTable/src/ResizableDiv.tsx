@@ -5,21 +5,9 @@ const {
     ResizePanel
 } = require('./styled');
 const { DraggableCore } = require('react-draggable');
+import * as types from './types';
 
-interface ResizableDivProps {
-    width: number,
-    height: number,
-    body: any,
-    data: {
-        [key: string]: any
-    },
-    onClick?: any,
-    onResizeStart: any,
-    onResizeDrag: any,
-    onResizeStop: any
-}
-
-const ResizableDiv: FunctionComponent<ResizableDivProps> = ({
+const ResizableDiv: FunctionComponent<types.ResizableDiv.Props> = ({
     width, height, body, data,
     onClick,
     onResizeStart, onResizeDrag, onResizeStop }) => {

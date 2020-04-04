@@ -17,5 +17,10 @@ app.get(['/admin', '/admin/*'], (req, res) => {
     res.write(fs.readFileSync(__dirname + "/index.html", 'utf8'));
     res.end();
 });
+app.get(['/bsadmin', '/bsadmin/*'], (req, res) => {
+    res.set('content-type', 'text/html');
+    res.write(fs.readFileSync(__dirname + "/bootstrap.html", 'utf8'));
+    res.end();
+});
 
 app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`))

@@ -4,9 +4,15 @@ const { DraggableCore } = require('react-draggable');
 
 interface State {
     Columns: TableColumn[]
-    ResizingColumnIndex: number,
-    StartColumnWidth: number,
-    StartXPos: number,
+    Resizing: {
+        ColumnIndex: number,
+        RowIndex: number,
+        Width: number,
+        Height: number,
+        XPos: number,
+        YPos: number,
+        Direction: string
+    }
     CustomRowHeight: {
         [index: number]: number
     }
@@ -29,20 +35,20 @@ class Table extends React.Component<TableProps, State> {
         this.state = {
             Columns: [],
             CustomRowHeight: {},
-            ResizingColumnIndex: -1,
-            StartColumnWidth: 0,
-            StartXPos: 0,
-            ResizingRowIndex: -1,
-            StartRowHeight: 0,
-            StartYPos: 0,
+            Resizing: {
+                ColumnIndex: null,
+                RowIndex: null,
+                Width: null,
+                Height: null,
+                XPos: null,
+                YPos: null,
+                Direction: null,
+            },
         };
         [
-            "resizeColumnDrag",
-            "resizeColumnStart",
-            "resizeColumnStop",
-            "resizeRowDrag",
-            "resizeRowStart",
-            "resizeRowStop"
+            "resizeDrag",
+            "resizeStart",
+            "resizeStop",
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -62,77 +68,66 @@ class Table extends React.Component<TableProps, State> {
         }
         return returnState;
     }
-    resizeColumnStart(evt) {
-        const resizingColIndex = evt.currentTarget.dataset.col;
-        const startColumnWidth = this.state.Columns[resizingColIndex].width;
+    resizeStart(evt) {
+        const colIndex = evt.currentTarget.dataset.col;
+        const rowIndex = evt.currentTarget.dataset.row;
+        const direction = evt.currentTarget.dataset.direction;
         const xPos = evt.clientX;
-        this.setState(() => {
+        const yPos = evt.clientY;
+
+        this.setState((state) => {
             return {
-                ResizingColumnIndex: resizingColIndex,
-                StartXPos: xPos,
-                StartColumnWidth: startColumnWidth
+                Resizing: {
+                    ColumnIndex: colIndex,
+                    RowIndex: rowIndex,
+                    Width: state.Columns[colIndex].width,
+                    Height: (this.state.CustomRowHeight[rowIndex] || this.props.RowHeight),
+                    XPos: xPos,
+                    YPos: yPos,
+                    Direction: direction,
+                }
             };
         });
     }
-    resizeColumnDrag(evt) {
-
+    resizeDrag(evt) {
     }
-    resizeColumnStop(evt) {
-        const resizingColIndex = this.state.ResizingColumnIndex;
-        const startColumnWidth = this.state.StartColumnWidth;
+    resizeStop(evt) {
+        let resizeHandler = this.state.Resizing;
         const xPos = evt.clientX;
-        const startXPos = this.state.StartXPos;
-        const newColumns = this.state.Columns.map((k, colIndex) => {
-            let width = k.width;
-            if (colIndex == resizingColIndex) {
-                width = Math.max(50, startColumnWidth + xPos - startXPos);
+        const yPos = evt.clientY;
+
+        let newState: any = {
+            Resizing: {
+                ColumnIndex: null,
+                RowIndex: null,
+                Width: null,
+                Height: null,
+                XPos: null,
+                YPos: null,
+                Direction: null,
             }
-            return {
-                ...k,
-                width: width
+        };
+        if (resizeHandler.Direction == "horizontal" || resizeHandler.Direction == "both") {
+            newState.Columns = this.state.Columns.map((k, colIndex) => {
+                let width = k.width;
+                if (colIndex == resizeHandler.ColumnIndex) {
+                    width = Math.max(50, resizeHandler.Width + xPos - resizeHandler.XPos);
+                }
+                return {
+                    ...k,
+                    width: width
+                };
+            });
+        }
+        if (resizeHandler.Direction == "vertical" || resizeHandler.Direction == "both") {
+            const newHeight = Math.max(24, resizeHandler.Height + yPos - resizeHandler.YPos)
+            newState.CustomRowHeight = {
+                ...this.state.CustomRowHeight,
+                [resizeHandler.RowIndex]: newHeight
             };
-        });
+        }
         this.setState(() => {
-            return {
-                Columns: newColumns,
-                ResizingColumnIndex: -1,
-                StartXPos: 0,
-            };
-        });
-    }
-
-    resizeRowStart(evt) {
-        const resizingRowIndex = evt.currentTarget.dataset.row;
-        const startRowHeight = (this.state.CustomRowHeight[resizingRowIndex] || this.props.RowHeight);
-        const yPos = evt.clientY;
-        this.setState(() => {
-            return {
-                ResizingRowIndex: resizingRowIndex,
-                StartYPos: yPos,
-                StartRowHeight: startRowHeight
-            };
-        });
-    }
-    resizeRowDrag(evt) {
-
-    }
-    resizeRowStop(evt) {
-        const resizingRowIndex = this.state.ResizingRowIndex;
-        const startRowHeight = this.state.StartRowHeight;
-        const yPos = evt.clientY;
-        const startYPos = this.state.StartYPos;
-        const newHeight = Math.max(24, startRowHeight + yPos - startYPos)
-        console.log(resizingRowIndex);
-        
-        this.setState(() => {
-            return {
-                CustomRowHeight: {
-                    ...this.state.CustomRowHeight,
-                    [resizingRowIndex]: newHeight
-                },
-                ResizingRowIndex: -1,
-                StartYPos: 0,
-            };
+            return newState;
         });
     }
 
@@ -161,6 +156,74 @@ class Table extends React.Component<TableProps, State> {
                             }}
                             key={"td_" + rowIndex + "_" + colIndex}>
                             <div style={{
+                                backgroundColor: "yellow",
+                                display: "block",
+                                height: heightOfRow + "px",
+                                width: col.width + "px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                margin: "0"
+                            }}>
+                                <div style={{
+                                    verticalAlign: 'top',
+                                    display: "inline-block",
+                                    width: (col.width - 8) + "px"
+                                }}>
+                                    {col.Body(row)}
+                                </div>
+                                <DraggableCore
+                                    onStart={this.resizeStart}
+                                    onDrag={this.resizeDrag}
+                                    onStop={this.resizeStop}
+                                >
+                                    <div style={{
+                                        verticalAlign: 'top',
+                                        backgroundColor: "black",
+                                        display: "inline-block",
+                                        cursor: "ew-resize",
+                                        width: (8) + "px",
+                                        minHeight: (heightOfRow) + "px",
+                                    }} data-row={rowIndex} data-col={colIndex} data-direction="horizontal">
+                                    </div>
+                                </DraggableCore>
+                            </div>
+                            <div style={{
+                                display: "block",
+                                height: "8px",
+                                width: col.width + "px",
+                                margin: "0"
+                            }}>
+                                <DraggableCore
+                                    onStart={this.resizeStart}
+                                    onDrag={this.resizeDrag}
+                                    onStop={this.resizeStop}
+                                >
+                                    <div style={{
+                                        backgroundColor: "black",
+                                        verticalAlign: 'top',
+                                        cursor: "ns-resize",
+                                        display: "inline-block",
+                                        width: (col.width - 8) + "px",
+                                        minHeight: "8px",
+                                    }} data-row={rowIndex} data-col={colIndex} data-direction="vertical"></div>
+                                </DraggableCore>
+                                <DraggableCore
+                                    onStart={this.resizeStart}
+                                    onDrag={this.resizeDrag}
+                                    onStop={this.resizeStop}
+                                >
+                                    <div style={{
+                                        backgroundColor: "blue",
+                                        verticalAlign: 'top',
+                                        cursor: "nwse-resize",
+                                        display: "inline-block",
+                                        width: (8) + "px",
+                                        minHeight: "8px",
+                                    }} data-row={rowIndex} data-col={colIndex} data-direction="both"></div>
+                                </DraggableCore>
+                            </div>
+
+                            {/* <div style={{
                                 width: col.width,
                                 display: "flex",
                                 height: heightOfRow + "px",
@@ -198,7 +261,7 @@ class Table extends React.Component<TableProps, State> {
                                     backgroundColor: "yellow",
                                     cursor: "ns-resize"
                                 }} data-row={rowIndex} data-col={colIndex}></div>
-                            </DraggableCore>
+                            </DraggableCore> */}
                         </td>;
                     });
                     return <tr

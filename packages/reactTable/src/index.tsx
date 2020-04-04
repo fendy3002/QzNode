@@ -1,14 +1,12 @@
 const React = require('react');
 const lo = require('lodash');
-const { DraggableCore } = require('react-draggable');
 const {
     BsTHead,
     BsTBody,
     BsTh,
     BsTr,
     BsTd,
-    BsTable,
-    ResizePanel
+    BsTable
 } = require('./styled');
 import ResizableDiv from './ResizableDiv';
 

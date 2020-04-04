@@ -134,148 +134,120 @@ class Table extends React.Component<TableProps, State> {
     render() {
         const { data, RowHeight } = this.props;
         const { Columns, CustomRowHeight } = this.state;
-        return <table className="table table-sm table-striped table-bordered">
-            <thead>
-                <tr
+        return <div>
+            <div>
+                <table className="table table-sm table-striped table-bordered"
                     style={{
-                        display: "block",
+                        marginBottom: "0px"
                     }}>
-                    {Columns.map((col, index) => {
-                        return <th style={{
-                            width: (col.width + 10) + "px"
-                        }} key={"th_" + index}>
-                            {col.Header()}
-                        </th>
-                    })}
-                </tr>
-            </thead>
-            <tbody>
-                {(data || []).map((row, rowIndex) => {
-                    let rowBody = Columns.map((col, colIndex) => {
-                        const heightOfRow = (CustomRowHeight[rowIndex] || RowHeight);
-                        return <td
+                    <thead>
+                        <tr
                             style={{
-                            }}
-                            key={"td_" + rowIndex + "_" + colIndex}>
-                            <div style={{
-                                backgroundColor: "yellow",
                                 display: "block",
-                                height: heightOfRow + "px",
-                                width: col.width + "px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                margin: "0"
                             }}>
-                                <div style={{
-                                    verticalAlign: 'top',
-                                    display: "inline-block",
-                                    width: (col.width - 8) + "px"
-                                }}>
-                                    {col.Body(row)}
-                                </div>
-                                <DraggableCore
-                                    onStart={this.resizeStart}
-                                    onDrag={this.resizeDrag}
-                                    onStop={this.resizeStop}
-                                >
+                            {Columns.map((col, index) => {
+                                return <th style={{
+                                    width: (col.width + 10) + "px"
+                                }} key={"th_" + index}>
+                                    {col.Header()}
+                                </th>
+                            })}
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div style={{
+                height: "300px",
+                overflowY: "scroll"
+            }}>
+                <table className="table table-sm table-striped table-bordered">
+                    <tbody>
+                        {(data || []).map((row, rowIndex) => {
+                            let rowBody = Columns.map((col, colIndex) => {
+                                const heightOfRow = (CustomRowHeight[rowIndex] || RowHeight);
+                                return <td
+                                    style={{
+                                        paddingRight: "0px",
+                                        paddingBottom: "0px"
+                                    }}
+                                    key={"td_" + rowIndex + "_" + colIndex}>
                                     <div style={{
-                                        verticalAlign: 'top',
-                                        backgroundColor: "black",
-                                        display: "inline-block",
-                                        cursor: "ew-resize",
-                                        width: (8) + "px",
-                                        minHeight: (heightOfRow) + "px",
-                                    }} data-row={rowIndex} data-col={colIndex} data-direction="horizontal">
-                                    </div>
-                                </DraggableCore>
-                            </div>
-                            <div style={{
-                                display: "block",
-                                height: "8px",
-                                width: col.width + "px",
-                                margin: "0"
-                            }}>
-                                <DraggableCore
-                                    onStart={this.resizeStart}
-                                    onDrag={this.resizeDrag}
-                                    onStop={this.resizeStop}
-                                >
-                                    <div style={{
-                                        backgroundColor: "black",
-                                        verticalAlign: 'top',
-                                        cursor: "ns-resize",
-                                        display: "inline-block",
-                                        width: (col.width - 8) + "px",
-                                        minHeight: "8px",
-                                    }} data-row={rowIndex} data-col={colIndex} data-direction="vertical"></div>
-                                </DraggableCore>
-                                <DraggableCore
-                                    onStart={this.resizeStart}
-                                    onDrag={this.resizeDrag}
-                                    onStop={this.resizeStop}
-                                >
-                                    <div style={{
-                                        backgroundColor: "blue",
-                                        verticalAlign: 'top',
-                                        cursor: "nwse-resize",
-                                        display: "inline-block",
-                                        width: (8) + "px",
-                                        minHeight: "8px",
-                                    }} data-row={rowIndex} data-col={colIndex} data-direction="both"></div>
-                                </DraggableCore>
-                            </div>
-
-                            {/* <div style={{
-                                width: col.width,
-                                display: "flex",
-                                height: heightOfRow + "px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis"
-                            }}>
-                                <div style={{
-                                    flexGrow: 2,
-                                    wordWrap: "break-word",
-                                    wordBreak: "break-word"
-                                }}>
-                                    {col.Body(row)}
-                                </div>
-                                <DraggableCore
-                                    onStart={this.resizeColumnStart}
-                                    onDrag={this.resizeColumnDrag}
-                                    onStop={this.resizeColumnStop}
-                                >
-                                    <div style={{
-                                        flex: "0 0 8px",
+                                        display: "block",
                                         height: heightOfRow + "px",
-                                        backgroundColor: "yellow",
-                                        cursor: "ew-resize"
-                                    }} data-row={rowIndex} data-col={colIndex}>
+                                        width: (col.width + 4) + "px",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        margin: "0"
+                                    }}>
+                                        <div style={{
+                                            verticalAlign: 'top',
+                                            display: "inline-block",
+                                            width: (col.width - 4) + "px"
+                                        }}>
+                                            {col.Body(row)}
+                                        </div>
+                                        <DraggableCore
+                                            onStart={this.resizeStart}
+                                            onDrag={this.resizeDrag}
+                                            onStop={this.resizeStop}
+                                        >
+                                            <div style={{
+                                                verticalAlign: 'top',
+                                                display: "inline-block",
+                                                cursor: "ew-resize",
+                                                width: (8) + "px",
+                                                minHeight: (heightOfRow) + "px",
+                                            }} data-row={rowIndex} data-col={colIndex} data-direction="horizontal">
+                                            </div>
+                                        </DraggableCore>
                                     </div>
-                                </DraggableCore>
-                            </div>
-                            <DraggableCore
-                                onStart={this.resizeRowStart}
-                                onDrag={this.resizeRowDrag}
-                                onStop={this.resizeRowStop}
-                            >
-                                <div style={{
-                                    height: "8px",
-                                    backgroundColor: "yellow",
-                                    cursor: "ns-resize"
-                                }} data-row={rowIndex} data-col={colIndex}></div>
-                            </DraggableCore> */}
-                        </td>;
-                    });
-                    return <tr
-                        style={{
-                            display: "block",
-                        }}
-                        key={"tr_" + rowIndex}>
-                        {rowBody}
-                    </tr>;
-                })}
-            </tbody>
-        </table>;
+                                    <div style={{
+                                        display: "block",
+                                        height: "8px",
+                                        width: (col.width + 4) + "px",
+                                        margin: "0"
+                                    }}>
+                                        <DraggableCore
+                                            onStart={this.resizeStart}
+                                            onDrag={this.resizeDrag}
+                                            onStop={this.resizeStop}
+                                        >
+                                            <div style={{
+                                                verticalAlign: 'top',
+                                                cursor: "ns-resize",
+                                                display: "inline-block",
+                                                width: (col.width - 4) + "px",
+                                                minHeight: "8px",
+                                            }} data-row={rowIndex} data-col={colIndex} data-direction="vertical"></div>
+                                        </DraggableCore>
+                                        <DraggableCore
+                                            onStart={this.resizeStart}
+                                            onDrag={this.resizeDrag}
+                                            onStop={this.resizeStop}
+                                        >
+                                            <div style={{
+                                                verticalAlign: 'top',
+                                                cursor: "nwse-resize",
+                                                display: "inline-block",
+                                                width: (8) + "px",
+                                                minHeight: "8px",
+                                            }} data-row={rowIndex} data-col={colIndex} data-direction="both"></div>
+                                        </DraggableCore>
+                                    </div>
+                                </td>;
+                            });
+                            return <tr
+                                style={{
+                                    display: "block",
+                                }}
+                                key={"tr_" + rowIndex}>
+                                {rowBody}
+                            </tr>;
+                        })}
+                    </tbody>
+                </table>
+            </div>
+        </div>;
     }
 };
 export default Table;

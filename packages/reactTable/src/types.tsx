@@ -1,8 +1,3 @@
-export interface Anchor {
-    Href: string,
-
-};
-
 export namespace Table {
     export interface Column {
         header: () => any,
@@ -24,20 +19,29 @@ export namespace Table {
             [index: number]: number
         }
     };
+    export interface ToolbarArgs {
+        data: any,
+    };
+    export interface ChangeArgs {
+        page: number,
+        limit: number,
+        filter: any,
+        sort: {
+            [key: string]: string
+        }
+    };
     export interface Props {
         data: any[],
-        columns: Column[]
-        rowHeight?: number
+        columns: Column[],
+        toolbar: (data: ToolbarArgs) => any,
+        rowHeight?: number,
+        onChange: (changePayload: ChangeArgs) => void
     };
 };
 export namespace Toolbar {
     export interface Props {
-        actions: {
-            onClick: () => void,
-            disabled ?: boolean,
-            buttonType: string,
-            body: () => any
-        }[]
+        data?: any,
+        body: (data: Table.ToolbarArgs) => any
     };
 };
 export namespace ResizableDiv {

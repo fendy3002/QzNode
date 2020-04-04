@@ -12,6 +12,9 @@ let { observer, inject } = mobxReact;
 let moduleMap = {
     "list": (props: any) => {
         return <Table
+            toolbar={({ data }) => {
+                return <></>;
+            }}
             columns={[
                 {
                     header: () => "Title",
@@ -48,7 +51,7 @@ export default class App extends React.Component {
         if (!currentStore) {
             return <></>;
         }
-        let appModule = moduleMap[currentStore.name]({store: currentStore});
+        let appModule = moduleMap[currentStore.name]({ store: currentStore });
         return appModule;
     }
 };

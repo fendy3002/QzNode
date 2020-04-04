@@ -31,7 +31,9 @@ interface TableProps {
 };
 const BsTr = styled.tr`
     display: block;
-    &:after, &:before {
+    
+    box-sizing: border-box;
+    &::after, &::before {
         box-sizing: border-box;
     }
 `;
@@ -40,7 +42,9 @@ const BsTd = styled.td`
     display: table-cell;
     border: 1px solid #dee2e6;
     width: ${props => props.csswidth}px;
-    &:after, &:before {
+    
+    box-sizing: border-box;
+    &::after, &::before {
         box-sizing: border-box;
     }
 `;
@@ -50,14 +54,29 @@ const BsTh = styled.th`
     font-weight: bold;
     border: 1px solid #dee2e6;
     width: ${props => props.csswidth}px;
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
 `;
 const BsTHead = styled.tbody`
     display: table-row-group;
     vertical-align: middle;
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
 `;
 const BsTBody = styled.tbody`
     display: table-row-group;
     vertical-align: middle;
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
 `;
 const BsTable = styled.table`
     display: table;
@@ -67,8 +86,14 @@ const BsTable = styled.table`
     color: #212529;
     border-collapse: collapse;
     margin-bottom: 0px;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
 
-    &:after, &:before {
+    box-sizing: border-box;
+    &::after, &::before {
         box-sizing: border-box;
     }
     ${BsTBody} ${BsTr}:nth-of-type(odd){

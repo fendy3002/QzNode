@@ -46,7 +46,7 @@ class Store {
                 },
             ],
             option: {
-                root: "/admin",
+                root: "/" + ((context && context.root) || "admin"),
                 event: {
                     historyChange: (data) => {
                     }

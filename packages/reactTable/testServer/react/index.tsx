@@ -8,7 +8,9 @@ import App from "./App";
 import store from './store';
 
 (window as any).app = (elem, context) => {
-    let storeInstance = new store(context);
+    let storeInstance = new store(context || {
+        root: "admin"
+    });
     ReactDOM.render(
         <MobxReact.Provider store={storeInstance}>
             <App />

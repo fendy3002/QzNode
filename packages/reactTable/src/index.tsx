@@ -134,14 +134,16 @@ class Table extends React.Component<TableProps, State> {
     render() {
         const { data, RowHeight } = this.props;
         const { Columns, CustomRowHeight } = this.state;
-        return <table>
+        return <table className="table table-sm table-striped table-bordered">
             <thead>
                 <tr
                     style={{
                         display: "block",
                     }}>
                     {Columns.map((col, index) => {
-                        return <th width={col.width} key={"th_" + index}>
+                        return <th style={{
+                            width: (col.width + 10) + "px"
+                        }} key={"th_" + index}>
                             {col.Header()}
                         </th>
                     })}

@@ -19,12 +19,12 @@ let moduleMap = {
                 {
                     header: () => "Title",
                     body: (row) => row.title,
-                    startWidth: 100
+                    startWidth: 700
                 },
                 {
                     header: () => "Body",
                     body: (row) => row.body,
-                    startWidth: 200
+                    startWidth: 900
                 },
             ]}
             headerHeight={32}

@@ -125,7 +125,7 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
         const { data, headerHeight, rowHeight } = this.props;
         const { columns, customRowHeight } = this.state;
         return <div>
-            <div>
+            <div style={{ overflow: "hidden" }}>
                 <BsTable>
                     <BsTHead>
                         <BsTr>
@@ -158,14 +158,70 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
             </div>
             <div style={{
                 height: "300px",
-                overflowY: "scroll"
+                overflowY: "scroll",
+                overflowX: "scroll",
+                scrollMarginRight: "32px"
             }}>
-                <BsTable className="table table-sm table-striped table-bordered">
-                    <BsTBody>
+                <div style={{
+                    display: "inline-block",
+                    marginRight: "32px",
+                    marginBottom: "32px"
+                }}>
+                    <BsTable>
+                        <BsTBody>
+                            {(data || []).map((row, rowIndex) => {
+                                let rowBody = columns.map((col, colIndex) => {
+                                    const heightOfRow = (customRowHeight[rowIndex] || rowHeight);
+                                    return <BsTd
+                                        style={{
+                                            paddingRight: "0px",
+                                            paddingBottom: "0px"
+                                        }}
+                                        key={"td_" + rowIndex + "_" + colIndex}>
+                                        <ResizableDiv
+                                            body={col.body(row)}
+                                            data={{
+                                                "data-row": rowIndex,
+                                                "data-col": colIndex
+                                            }}
+                                            width={col.width}
+                                            height={heightOfRow}
+                                            onResizeStart={this.resizeStart}
+                                            onResizeDrag={this.resizeDrag}
+                                            onResizeStop={this.resizeStop}
+                                        ></ResizableDiv>
+                                    </BsTd>;
+                                });
+                                return <BsTr
+                                    key={"tr_" + rowIndex}>
+                                    {rowBody}
+                                </BsTr>;
+                            })}
+                        </BsTBody>
+                    </BsTable>
+                </div>
+                {/* <div
+                    style={{
+                        display: "block",
+                        position: "absolute",
+                        right: "-32px",
+                        minWidth: "32px",
+                        minHeight: "32px",
+                        backgroundColor: "yellow"
+                    }}
+                ></div> */}
+            </div>
+            {/* <div style={{
+                height: "300px",
+                overflowY: "scroll",
+                overflowX: "scroll",
+            }} className="table-responsive">
+                <table className="table table-sm table-striped table-bordered">
+                    <tbody>
                         {(data || []).map((row, rowIndex) => {
                             let rowBody = columns.map((col, colIndex) => {
                                 const heightOfRow = (customRowHeight[rowIndex] || rowHeight);
-                                return <BsTd
+                                return <td
                                     style={{
                                         paddingRight: "0px",
                                         paddingBottom: "0px"
@@ -183,16 +239,16 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                                         onResizeDrag={this.resizeDrag}
                                         onResizeStop={this.resizeStop}
                                     ></ResizableDiv>
-                                </BsTd>;
+                                </td>;
                             });
-                            return <BsTr
+                            return <tr
                                 key={"tr_" + rowIndex}>
                                 {rowBody}
-                            </BsTr>;
+                            </tr>;
                         })}
-                    </BsTBody>
-                </BsTable>
-            </div>
+                    </tbody>
+                </table>
+            </div>*/}
         </div>;
     }
 };

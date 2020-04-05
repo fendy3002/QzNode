@@ -94,7 +94,7 @@ class Pagination extends React.Component<types.Pagination.Props, any> {
                 </span>
             </div>
             <BsSelect style={{ verticalAlign: "bottom" }}>
-                {paginationOption.map(k => <option value={k}>{k}</option>)}
+                {paginationOption.map(k => <option value={k} key={k}>{k}</option>)}
             </BsSelect>
         </>;
     }

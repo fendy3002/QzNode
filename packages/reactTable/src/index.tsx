@@ -148,7 +148,7 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
     }
 
     render() {
-        const { data, headerHeight, rowHeight } = this.props;
+        const { data, headerHeight, rowHeight, pagination } = this.props;
         const { columns, customRowHeight } = this.state;
         return <div>
             <div style={{ marginBottom: "8px" }}>
@@ -156,7 +156,7 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                     <DivCol6>
                     </DivCol6>
                     <DivCol6 style={{ textAlign: "right" }}>
-                        <Pagination page={12} pageCount={25}></Pagination>
+                        <Pagination {...pagination}></Pagination>
                     </DivCol6>
                 </DivRow>
             </div>

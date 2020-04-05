@@ -35,7 +35,15 @@ export namespace Table {
         columns: Column[],
         toolbar: (data: ToolbarArgs) => any,
         rowHeight?: number,
-        onChange: (changePayload: ChangeArgs) => void
+        onChange: (changePayload: ChangeArgs) => void,
+        pagination: {
+            limit ?: number,
+            page: number,
+            display ?: number,
+            pageCount: number,
+            paginationOption: number[],
+            onChange: (evt: any) => void
+        }
     };
 };
 export namespace Pagination {
@@ -44,6 +52,8 @@ export namespace Pagination {
         page: number,
         display ?: number,
         pageCount: number,
+        onClick: (evt: any) => void,
+        onChange: (evt: any) => void,
         paginationOption: number[]
     }
 };

@@ -30,6 +30,12 @@ let moduleMap = {
             headerHeight={32}
             rowHeight={80}
             data={props.store.posts}
+            pagination={{
+                page: props.store.filter.page,
+                pageCount: Math.ceil(props.store.filter.rowCount / props.store.filter.limit),
+                limit: props.store.filter.limit,
+                onChange: props.store.handlePageChange
+            }}
         ></Table>;
     }
 };

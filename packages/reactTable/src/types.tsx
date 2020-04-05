@@ -1,4 +1,16 @@
 export namespace Table {
+    export interface Props extends ListTable.Props {
+        pagination: {
+            limit ?: number,
+            page: number,
+            display ?: number,
+            pageCount: number,
+            paginationOption: number[],
+            onChange: (evt: any) => void
+        }
+    };
+};
+export namespace ListTable {
     export interface Column {
         header: () => any,
         body: (row) => any,
@@ -35,15 +47,8 @@ export namespace Table {
         columns: Column[],
         toolbar: (data: ToolbarArgs) => any,
         rowHeight?: number,
-        onChange: (changePayload: ChangeArgs) => void,
-        pagination: {
-            limit ?: number,
-            page: number,
-            display ?: number,
-            pageCount: number,
-            paginationOption: number[],
-            onChange: (evt: any) => void
-        }
+        bodyHeight?: number,
+        onChange: (changePayload: ChangeArgs) => void
     };
 };
 export namespace Pagination {
@@ -60,7 +65,7 @@ export namespace Pagination {
 export namespace Toolbar {
     export interface Props {
         data?: any,
-        body: (data: Table.ToolbarArgs) => any
+        body: (data: ListTable.ToolbarArgs) => any
     };
 };
 export namespace ResizableDiv {

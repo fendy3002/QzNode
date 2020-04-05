@@ -73,6 +73,7 @@
   "dependencies": {
     "bootstrap": "^4.4.1",
     "react-bootstrap": "^1.0.0",
+    "react-fontawesome": "^1.7.1",
     "styled-components": "^5.0.1"
   }
 }

@@ -38,6 +38,14 @@ export namespace Table {
         onChange: (changePayload: ChangeArgs) => void
     };
 };
+export namespace Pagination {
+    export interface Props {
+        limit ?: number,
+        page: number,
+        display ?: number,
+        pageCount: number
+    }
+};
 export namespace Toolbar {
     export interface Props {
         data?: any,

@@ -10,6 +10,7 @@ const {
 } = require('./styled');
 import ResizableDiv from './ResizableDiv';
 import * as types from './types';
+import Pagination from './Pagination';
 
 class Table extends React.Component<types.Table.Props, types.Table.State> {
     constructor(props) {
@@ -148,6 +149,9 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
         const { data, headerHeight, rowHeight } = this.props;
         const { columns, customRowHeight } = this.state;
         return <div>
+            <div>
+                <Pagination page={12} pageCount={25}></Pagination>
+            </div>
             <div style={{ overflow: "hidden" }} ref={this.ref.headerDiv}>
                 <div style={{
                     display: "inline-block",

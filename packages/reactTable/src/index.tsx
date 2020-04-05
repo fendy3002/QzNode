@@ -32,6 +32,7 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
             "resizeStart",
             "resizeStop",
             "headerClick",
+            "domHandleScroll",
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -129,14 +130,18 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
     headerClick(evt) {
 
     }
+    domHandleScroll(evt) {
+        this.ref.headerDiv.current.scrollLeft = evt.target.scrollLeft;
+    }
     componentDidMount() {
         if (this.ref.bodyDiv && this.ref.bodyDiv.current) {
-            this.ref.bodyDiv.current.addEventListener("scroll", (evt) => {
-                this.ref.headerDiv.current.scrollLeft = evt.target.scrollLeft;
-            });
+            this.ref.bodyDiv.current.addEventListener("scroll", this.domHandleScroll);
         }
     }
     componentWillUnmount() {
+        if (this.ref.bodyDiv && this.ref.bodyDiv.current) {
+            this.ref.bodyDiv.current.removeEventListener("scroll", this.domHandleScroll);
+        }
     }
 
     render() {

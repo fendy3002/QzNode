@@ -35,9 +35,18 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
+        this.ref = {
+            ...this.ref,
+            headerDiv: React.createRef(),
+            bodyDiv: React.createRef(),
+        };
     }
     public static defaultProps = {
         rowHeight: 24
+    };
+    ref = {
+        headerDiv: null,
+        bodyDiv: null
     };
 
     static getDerivedStateFromProps(props, state) {
@@ -120,52 +129,70 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
     headerClick(evt) {
 
     }
+    componentDidMount() {
+        if (this.ref.bodyDiv && this.ref.bodyDiv.current) {
+            this.ref.bodyDiv.current.addEventListener("scroll", (evt) => {
+                this.ref.headerDiv.current.scrollLeft = evt.target.scrollLeft;
+            });
+        }
+    }
+    componentWillUnmount() {
+    }
 
     render() {
         const { data, headerHeight, rowHeight } = this.props;
         const { columns, customRowHeight } = this.state;
         return <div>
-            <div style={{ overflow: "hidden" }}>
-                <BsTable>
-                    <BsTHead>
-                        <BsTr>
-                            {columns.map((col, colIndex) => {
-                                const heightOfRow = (customRowHeight["thead"] || headerHeight);
-                                return <BsTh
-                                    style={{
-                                        paddingRight: "0px",
-                                        paddingBottom: "0px"
-                                    }}
-                                    csswidth={col.width + 10} key={"th_" + colIndex}>
-                                    <ResizableDiv
-                                        body={col.header()}
-                                        data={{
-                                            "data-row": "thead",
-                                            "data-col": colIndex
+            <div style={{ overflow: "hidden" }} ref={this.ref.headerDiv}>
+                <div style={{
+                    display: "inline-block",
+                    marginRight: "64px",
+                    marginBottom: "0px",
+                    paddingBottom: "0px",
+                    verticalAlign: "top",
+                }}>
+                    <BsTable>
+                        <BsTHead>
+                            <BsTr>
+                                {columns.map((col, colIndex) => {
+                                    const heightOfRow = (customRowHeight["thead"] || headerHeight);
+                                    return <BsTh
+                                        style={{
+                                            paddingRight: "0px",
+                                            paddingBottom: "0px"
                                         }}
-                                        onClick={this.headerClick}
-                                        width={col.width}
-                                        height={heightOfRow}
-                                        onResizeStart={this.resizeStart}
-                                        onResizeDrag={this.resizeDrag}
-                                        onResizeStop={this.resizeStop}
-                                    ></ResizableDiv>
-                                </BsTh>
-                            })}
-                        </BsTr>
-                    </BsTHead>
-                </BsTable>
+                                        csswidth={col.width + 10} key={"th_" + colIndex}>
+                                        <ResizableDiv
+                                            body={col.header()}
+                                            data={{
+                                                "data-row": "thead",
+                                                "data-col": colIndex
+                                            }}
+                                            onClick={this.headerClick}
+                                            width={col.width}
+                                            height={heightOfRow}
+                                            onResizeStart={this.resizeStart}
+                                            onResizeDrag={this.resizeDrag}
+                                            onResizeStop={this.resizeStop}
+                                        ></ResizableDiv>
+                                    </BsTh>
+                                })}
+                            </BsTr>
+                        </BsTHead>
+                    </BsTable>
+                </div>
             </div>
             <div style={{
                 height: "300px",
                 overflowY: "scroll",
                 overflowX: "scroll",
                 scrollMarginRight: "32px"
-            }}>
+            }} ref={this.ref.bodyDiv}>
                 <div style={{
                     display: "inline-block",
                     marginRight: "32px",
-                    marginBottom: "32px"
+                    marginBottom: "32px",
+                    verticalAlign: "top",
                 }}>
                     <BsTable>
                         <BsTBody>

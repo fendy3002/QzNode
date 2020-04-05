@@ -9,7 +9,9 @@ const {
     BsTable,
     BsButtonSecondary,
     DivRow,
-    DivCol6
+    DivCol6,
+    TrNinjaContainer,
+    DivNinjaPanel
 } = require('./styled');
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
@@ -40,6 +42,8 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
             "resizeStop",
             "headerClick",
             "domHandleScroll",
+            "trNinjaOnEnter",
+            "trNinjaOnLeave"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -140,6 +144,20 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
     domHandleScroll(evt) {
         this.ref.headerDiv.current.scrollLeft = evt.target.scrollLeft;
     }
+    trNinjaOnEnter(evt) {
+        const ninjapanel = evt.currentTarget.querySelector("[data-role='ninjapanel']");
+        ninjapanel.style.display = "block";
+        const ninjapanelWidth = ninjapanel.offsetWidth;
+        const scrollContainer = evt.currentTarget.closest("[data-role='scroll-container']");
+        const expectedLeft = scrollContainer.offsetWidth - 64 - ninjapanelWidth + scrollContainer.scrollLeft;
+        ninjapanel.style.left = expectedLeft + "px";
+        ninjapanel.style.top = ninjapanel.parentElement.offsetTop + 12 + "px";
+    }
+    trNinjaOnLeave(evt) {
+        const ninjapanel = evt.currentTarget.querySelector("[data-role='ninjapanel']");
+        ninjapanel.style.display = "none";
+    }
+
     componentDidMount() {
         if (this.ref.bodyDiv && this.ref.bodyDiv.current) {
             this.ref.bodyDiv.current.addEventListener("scroll", this.domHandleScroll);
@@ -152,7 +170,7 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
     }
 
     render() {
-        const { data, headerHeight, rowHeight, pagination } = this.props;
+        const { data, headerHeight, rowHeight, pagination, toolbar } = this.props;
         const { columns, customRowHeight } = this.state;
         return <div>
             <div style={{ marginBottom: "8px" }}>
@@ -161,7 +179,7 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                     </DivCol6>
                     <DivCol6 style={{ textAlign: "right" }}>
                         <div style={{ display: "inline-block", marginRight: "8px" }}>
-                            <BsButtonSecondary>
+                            <BsButtonSecondary type="button">
                                 <FAIcon icon={faFilter}></FAIcon>
                             </BsButtonSecondary>
                         </div>
@@ -212,13 +230,13 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                 height: "300px",
                 overflowY: "scroll",
                 overflowX: "scroll",
-                scrollMarginRight: "32px"
-            }} ref={this.ref.bodyDiv}>
+            }} ref={this.ref.bodyDiv} data-role={"scroll-container"}>
                 <div style={{
                     display: "inline-block",
                     marginRight: "32px",
                     marginBottom: "32px",
                     verticalAlign: "top",
+                    position: "relative"
                 }}>
                     <BsTable>
                         <BsTBody>
@@ -245,10 +263,17 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                                         ></ResizableDiv>
                                     </BsTd>;
                                 });
-                                return <BsTr
+                                return <TrNinjaContainer
+                                    onMouseEnter={this.trNinjaOnEnter}
+                                    onMouseLeave={this.trNinjaOnLeave}
                                     key={"tr_" + rowIndex}>
                                     {rowBody}
-                                </BsTr>;
+                                    <BsTd key={"td_" + rowIndex + "_act"}>
+                                        <DivNinjaPanel data-role="ninjapanel" extend="left">
+                                            {toolbar(row)}
+                                        </DivNinjaPanel>
+                                    </BsTd>
+                                </TrNinjaContainer>;
                             })}
                         </BsTBody>
                     </BsTable>

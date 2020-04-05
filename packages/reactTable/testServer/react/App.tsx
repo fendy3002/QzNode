@@ -36,6 +36,9 @@ let moduleMap = {
                 limit: props.store.filter.limit,
                 onChange: props.store.handlePageChange
             }}
+            toolbar={(row) => {
+                return <button type="button" className="btn btn-primary">Edit</button>
+            }}
         ></Table>;
     }
 };

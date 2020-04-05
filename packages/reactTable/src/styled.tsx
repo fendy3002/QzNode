@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 
+/* BS table */
 export const BsTr = styled.tr`
     display: block;
 
@@ -75,6 +76,7 @@ export const BsTable = styled.table`
         box-sizing: border-box;
     }
     `;
+/* End BS table */
 
 export const BsSelect = styled.select`
     height: calc(1.5em + .5rem + 2px);
@@ -263,6 +265,31 @@ export const PaginationUl = styled.ul`
         box-sizing: border-box;
     }
 `;
+
+/* Ninja Panel */
+
+export const DivNinjaPanel = styled.div`
+    display: none;
+    float: right;
+    position: absolute;
+    //right: 16px;
+    background-color: #FFFFFF;
+    padding: 0px 0 4px 0;
+
+    ${props => props.extend == "left" && css`
+        padding-left: 32px;
+        background: linear-gradient(to right, rgba(255,255,255, 0) 0%, rgba(255,255,255, 1) 10%);
+    `}
+`;
+
+export const TrNinjaContainer = styled(BsTr)`
+    min-height: 32px;
+    line-height: 32px;
+    // &:hover ${DivNinjaPanel} {
+    //     display: inline-block;
+    // }
+`;
+/* end Ninja Panel */
 
 export const DivRow = styled.div`
     display: -ms-flexbox;

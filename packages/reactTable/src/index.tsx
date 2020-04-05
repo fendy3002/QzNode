@@ -7,6 +7,7 @@ const {
     BsTr,
     BsTd,
     BsTable,
+    BsButtonSecondary,
     DivRow,
     DivCol6
 } = require('./styled');
@@ -160,9 +161,9 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                     </DivCol6>
                     <DivCol6 style={{ textAlign: "right" }}>
                         <div style={{ display: "inline-block", marginRight: "8px" }}>
-                            <button className="btn btn-sm btn-outline-secondary">
+                            <BsButtonSecondary>
                                 <FAIcon icon={faFilter}></FAIcon>
-                            </button>
+                            </BsButtonSecondary>
                         </div>
                         <Pagination {...pagination}></Pagination>
                     </DivCol6>

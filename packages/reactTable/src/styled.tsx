@@ -63,15 +63,16 @@ export const BsTable = styled.table`
     line-height: 1.5;
     text-align: left;
 
-    box-sizing: border-box;
-    &::after, &::before {
-        box-sizing: border-box;
-    }
     // & ${BsTBody} ${BsTr}:nth-of-type(odd){
     //     background-color: rgba(0,0,0,.05);
     // }
     & ${BsTBody} ${BsTr}:hover{
         background-color: rgba(0,0,0,.075)
+    }
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
     }
     `;
 
@@ -112,6 +113,46 @@ export const BsSelect = styled.select`
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 
     width: auto;
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
+`;
+export const BsButtonSecondary = styled.button`
+    cursor: pointer;
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    color: #6c757d;
+    border-color: #6c757d;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    -webkit-appearance: button;
+    text-transform: none;
+    overflow: visible;
+    margin: 0;
+    font-family: inherit;
+
+    color: #6c757d;
+    border-color: #6c757d;
+
+    &:hover {
+        color: #fff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
 `;
 export const ResizePanel = styled.div`
     display: inline-block;

@@ -29,7 +29,7 @@ const ResizableDiv: FunctionComponent<types.ResizableDiv.Props> = ({
             textOverflow: "ellipsis",
             margin: "0"
         }}>
-            <div style={bodyDivStyle}>
+            <div style={bodyDivStyle} onClick={onClick} {...data}>
                 {body}
             </div>
             <DraggableCore

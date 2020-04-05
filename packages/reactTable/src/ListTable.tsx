@@ -7,14 +7,11 @@ const {
     BsTr,
     BsTd,
     BsTable,
-    BsButtonSecondary,
-    DivRow,
-    DivCol6,
     TrNinjaContainer,
     DivNinjaPanel
 } = require('./styled');
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 
 import ResizableDiv from './ResizableDiv';
 import * as types from './types';
@@ -69,7 +66,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             returnState.columns = props.columns.map(k => {
                 return {
                     ...k,
-                    width: k.startWidth || 120
+                    width: k.startWidth || 120,
+                    sortable: k.sortable || true
                 };
             });
         }
@@ -81,6 +79,10 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         const direction = evt.currentTarget.dataset.direction;
         const xPos = evt.clientX;
         const yPos = evt.clientY;
+        let height = (
+            this.state.customRowHeight[rowIndex] ||
+                rowIndex == "thead" ? this.props.headerHeight : this.props.rowHeight
+        );
 
         this.setState((state) => {
             return {
@@ -88,7 +90,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                     columnIndex: colIndex,
                     rowIndex: rowIndex,
                     width: state.columns[colIndex].width,
-                    height: (this.state.customRowHeight[rowIndex] || this.props.rowHeight),
+                    height: height,
                     xPos: xPos,
                     yPos: yPos,
                     direction: direction,
@@ -139,7 +141,21 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     }
 
     headerClick(evt) {
-
+        const colClickIndex = evt.currentTarget.dataset.col;
+        this.setState((state) => {
+            return {
+                columns: state.columns.map((col, colIndex) => {
+                    let sort = null;
+                    if (colIndex == colClickIndex) {
+                        sort = col.sort * -1 || 1;
+                    }
+                    return {
+                        ...col,
+                        sort: sort
+                    };
+                })
+            }
+        })
     }
     domHandleScroll(evt) {
         this.ref.headerDiv.current.scrollLeft = evt.target.scrollLeft;
@@ -186,6 +202,24 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                             <BsTr>
                                 {columns.map((col, colIndex) => {
                                     const heightOfRow = (customRowHeight["thead"] || headerHeight);
+                                    let colBodyWidth = !col.sortable ? col.width : col.width - 24;
+                                    let body = !col.sortable ? col.header() : <>
+                                        <div style={{
+                                            display: "inline-block",
+                                            width: colBodyWidth + "px"
+                                        }}>
+                                            {col.header()}
+                                        </div>
+                                        <div style={{
+                                            display: "inline-block"
+                                        }}>
+                                            <FAIcon icon={(
+                                                col.sort == 1 ? faSortUp :
+                                                    col.sort == -1 ? faSortDown :
+                                                        faSort)} />
+                                        </div>
+                                    </>;
+
                                     return <BsTh
                                         style={{
                                             paddingRight: "0px",
@@ -193,7 +227,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                         }}
                                         csswidth={col.width + 10} key={"th_" + colIndex}>
                                         <ResizableDiv
-                                            body={col.header()}
+                                            body={body}
                                             data={{
                                                 "data-row": "thead",
                                                 "data-col": colIndex

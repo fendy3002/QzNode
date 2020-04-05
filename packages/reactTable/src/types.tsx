@@ -15,6 +15,8 @@ export namespace ListTable {
         header: () => any,
         body: (row) => any,
         startWidth?: number,
+        sortable?: boolean,
+        sort?: number
     };
     export interface State {
         columns: Column[]

@@ -71,6 +71,45 @@ export const BsTable = styled.table`
         background-color: rgba(0,0,0,.05);
     }
     `;
+
+export const BsSelect = styled.select`
+    height: calc(1.5em + .5rem + 2px);
+
+    font-weight: 400;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    
+    padding: .25rem .5rem;
+    font-size: .875rem;
+    line-height: 1.5;
+    border-radius: 0;
+    word-wrap: normal;
+    text-transform: none;
+    margin: 0;
+    font-family: inherit;
+
+    overflow: visible;
+
+    -webkit-writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-indent: 0px;
+    text-shadow: none;
+    text-align: start;
+    -webkit-appearance: menulist;
+    align-items: center;
+    white-space: pre;
+    -webkit-rtl-ordering: logical;
+    cursor: default;
+    font: 400 13.3333px Arial;
+
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+    width: auto;
+`;
 export const ResizePanel = styled.div`
     display: inline-block;
     &:hover {

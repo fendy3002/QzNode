@@ -4,6 +4,7 @@ import {
     PaginationUl,
     PaginationLink,
     PaginationItem,
+    BsSelect
 } from './styled';
 import * as types from './types';
 
@@ -64,7 +65,7 @@ class Pagination extends React.Component<types.Pagination.Props, any> {
             pages.push({ display: pageCount, page: pageCount });
         }
         return <>
-            <div style={{ display: "inline-block" }}>
+            <div style={{ display: "inline-block", verticalAlign: "bottom" }}>
                 <PaginationUl>
                     {pages.map((k, i) => {
                         return <PaginationItem key={i} active={k.active}>
@@ -77,12 +78,24 @@ class Pagination extends React.Component<types.Pagination.Props, any> {
                     })}
                 </PaginationUl>
             </div>
-            <span style={{ "marginLeft": "8px", "marginRight": "8px" }}>
-                Show
+            <div style={{
+                display: "inline-block", verticalAlign: "bottom",
+                height: "calc(1.5em + .5rem + 2px)",
+                "marginLeft": "8px", "marginRight": "8px",
+            }}>
+                <div style={{
+                    display: "inline-block",
+                    height: "100%",
+                    verticalAlign: "middle",
+                    marginRight: "-0.25em"
+                }}>&nbsp;</div>
+                <span style={{ verticalAlign: "middle", }}>
+                    Show
                 </span>
-            <select className="form-control form-control-sm w-auto" style={{ display: "inline-block" }}>
+            </div>
+            <BsSelect style={{ verticalAlign: "bottom" }}>
                 {paginationOption.map(k => <option value={k}>{k}</option>)}
-            </select>
+            </BsSelect>
         </>;
     }
 };

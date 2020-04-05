@@ -10,6 +10,9 @@ const {
     DivRow,
     DivCol6
 } = require('./styled');
+import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
+
 import ResizableDiv from './ResizableDiv';
 import * as types from './types';
 import Pagination from './Pagination';
@@ -156,6 +159,11 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                     <DivCol6>
                     </DivCol6>
                     <DivCol6 style={{ textAlign: "right" }}>
+                        <div style={{ display: "inline-block", marginRight: "8px" }}>
+                            <button className="btn btn-sm btn-outline-secondary">
+                                <FAIcon icon={faFilter}></FAIcon>
+                            </button>
+                        </div>
                         <Pagination {...pagination}></Pagination>
                     </DivCol6>
                 </DivRow>

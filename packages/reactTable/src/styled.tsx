@@ -67,8 +67,11 @@ export const BsTable = styled.table`
     &::after, &::before {
         box-sizing: border-box;
     }
-    & ${BsTBody} ${BsTr}:nth-of-type(odd){
-        background-color: rgba(0,0,0,.05);
+    // & ${BsTBody} ${BsTr}:nth-of-type(odd){
+    //     background-color: rgba(0,0,0,.05);
+    // }
+    & ${BsTBody} ${BsTr}:hover{
+        background-color: rgba(0,0,0,.075)
     }
     `;
 

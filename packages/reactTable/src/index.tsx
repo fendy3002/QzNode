@@ -149,7 +149,7 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
         ninjapanel.style.display = "block";
         const ninjapanelWidth = ninjapanel.offsetWidth;
         const scrollContainer = evt.currentTarget.closest("[data-role='scroll-container']");
-        const expectedLeft = scrollContainer.offsetWidth - 64 - ninjapanelWidth + scrollContainer.scrollLeft;
+        const expectedLeft = scrollContainer.offsetWidth - 72 - ninjapanelWidth + scrollContainer.scrollLeft;
         ninjapanel.style.left = expectedLeft + "px";
         ninjapanel.style.top = ninjapanel.parentElement.offsetTop + 12 + "px";
     }

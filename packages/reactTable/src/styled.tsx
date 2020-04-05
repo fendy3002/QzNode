@@ -180,3 +180,30 @@ export const PaginationUl = styled.ul`
         box-sizing: border-box;
     }
 `;
+
+export const DivRow = styled.div`
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
+`;
+export const DivCol = css`
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;`;
+export const DivCol6 = styled.div`
+    ${DivCol}
+    flex: 0 0 50%;
+    max-width: 50%;
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
+`;

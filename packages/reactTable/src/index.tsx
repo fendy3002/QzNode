@@ -6,7 +6,9 @@ const {
     BsTh,
     BsTr,
     BsTd,
-    BsTable
+    BsTable,
+    DivRow,
+    DivCol6
 } = require('./styled');
 import ResizableDiv from './ResizableDiv';
 import * as types from './types';
@@ -149,8 +151,14 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
         const { data, headerHeight, rowHeight } = this.props;
         const { columns, customRowHeight } = this.state;
         return <div>
-            <div>
-                <Pagination page={12} pageCount={25}></Pagination>
+            <div style={{ marginBottom: "8px" }}>
+                <DivRow>
+                    <DivCol6>
+                    </DivCol6>
+                    <DivCol6 style={{ textAlign: "right" }}>
+                        <Pagination page={12} pageCount={25}></Pagination>
+                    </DivCol6>
+                </DivRow>
             </div>
             <div style={{ overflow: "hidden" }} ref={this.ref.headerDiv}>
                 <div style={{
@@ -236,55 +244,16 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                         </BsTBody>
                     </BsTable>
                 </div>
-                {/* <div
-                    style={{
-                        display: "block",
-                        position: "absolute",
-                        right: "-32px",
-                        minWidth: "32px",
-                        minHeight: "32px",
-                        backgroundColor: "yellow"
-                    }}
-                ></div> */}
             </div>
-            {/* <div style={{
-                height: "300px",
-                overflowY: "scroll",
-                overflowX: "scroll",
-            }} className="table-responsive">
-                <table className="table table-sm table-striped table-bordered">
-                    <tbody>
-                        {(data || []).map((row, rowIndex) => {
-                            let rowBody = columns.map((col, colIndex) => {
-                                const heightOfRow = (customRowHeight[rowIndex] || rowHeight);
-                                return <td
-                                    style={{
-                                        paddingRight: "0px",
-                                        paddingBottom: "0px"
-                                    }}
-                                    key={"td_" + rowIndex + "_" + colIndex}>
-                                    <ResizableDiv
-                                        body={col.body(row)}
-                                        data={{
-                                            "data-row": rowIndex,
-                                            "data-col": colIndex
-                                        }}
-                                        width={col.width}
-                                        height={heightOfRow}
-                                        onResizeStart={this.resizeStart}
-                                        onResizeDrag={this.resizeDrag}
-                                        onResizeStop={this.resizeStop}
-                                    ></ResizableDiv>
-                                </td>;
-                            });
-                            return <tr
-                                key={"tr_" + rowIndex}>
-                                {rowBody}
-                            </tr>;
-                        })}
-                    </tbody>
-                </table>
-            </div>*/}
+            <div style={{ marginBottom: "8px" }}>
+                {/* <div className="row">
+                    <div className="col-6">
+                    </div >
+                    <div className="col-6 text-right">
+                        <Pagination page={12} pageCount={25}></Pagination>
+                    </div>
+                </div > */}
+            </div>
         </div>;
     }
 };

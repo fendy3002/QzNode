@@ -43,7 +43,8 @@ export namespace Pagination {
         limit ?: number,
         page: number,
         display ?: number,
-        pageCount: number
+        pageCount: number,
+        paginationOption: number[]
     }
 };
 export namespace Toolbar {

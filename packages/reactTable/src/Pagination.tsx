@@ -12,7 +12,7 @@ class Pagination extends React.Component<types.Pagination.Props, any> {
         super(props);
         this.state = {};
         [
-            "handleOnClick"
+            "handleClick"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -20,10 +20,11 @@ class Pagination extends React.Component<types.Pagination.Props, any> {
 
     public static defaultProps = {
         display: 5,
-        limit: 25
+        limit: 25,
+        paginationOption: [25, 50, 75, 100]
     };
 
-    handleOnClick(evt) {
+    handleClick(evt) {
         let { page, onClick, onChange } = this.props;
         if (onClick) {
             onClick(evt);
@@ -38,7 +39,11 @@ class Pagination extends React.Component<types.Pagination.Props, any> {
         }
     }
     render() {
-        let { page, limit, display, pageCount } = this.props;
+        let { page, limit, display, pageCount, paginationOption } = this.props;
+        if (!paginationOption.some(k => k == limit)) {
+            paginationOption.push(limit);
+            paginationOption = lo.sortBy(paginationOption, k => k);
+        }
 
         let subtractor = -Math.floor((display - 1) / 2);
         let minPage = Math.max(page + subtractor, 1);
@@ -59,17 +64,25 @@ class Pagination extends React.Component<types.Pagination.Props, any> {
             pages.push({ display: pageCount, page: pageCount });
         }
         return <>
-            <PaginationUl>
-                {pages.map((k, i) => {
-                    return <PaginationItem key={i} active={k.active}>
-                        <PaginationLink style={{  }} data-page={k.page} onClick={this.handleOnClick}
-                            dangerouslySetInnerHTML={{
-                                __html: k.display
-                            }}
-                        ></PaginationLink>
-                    </PaginationItem>;
-                })}
-            </PaginationUl>
+            <div style={{ display: "inline-block" }}>
+                <PaginationUl>
+                    {pages.map((k, i) => {
+                        return <PaginationItem key={i} active={k.active}>
+                            <PaginationLink data-page={k.page} onClick={this.handleClick}
+                                dangerouslySetInnerHTML={{
+                                    __html: k.display
+                                }}
+                            ></PaginationLink>
+                        </PaginationItem>;
+                    })}
+                </PaginationUl>
+            </div>
+            <span style={{ "marginLeft": "8px", "marginRight": "8px" }}>
+                Show
+                </span>
+            <select className="form-control form-control-sm w-auto" style={{ display: "inline-block" }}>
+                {paginationOption.map(k => <option value={k}>{k}</option>)}
+            </select>
         </>;
     }
 };

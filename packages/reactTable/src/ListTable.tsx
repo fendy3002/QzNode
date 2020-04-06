@@ -68,7 +68,6 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                 return {
                     ...k,
                     width: k.startWidth || 120,
-                    sortable: k.sortable || true
                 };
             });
         }
@@ -148,11 +147,11 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                 columns: state.columns.map((col, colIndex) => {
                     let sort = null;
                     if (colIndex == colClickIndex) {
-                        sort = col.sort * -1 || 1;
+                        sort = col.sortOrder * -1 || 1;
                     }
                     return {
                         ...col,
-                        sort: sort
+                        sortOrder: sort
                     };
                 })
             }
@@ -184,6 +183,23 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         }
     }
 
+    getChangeArgs() {
+        let sort: any = {};
+        let sortIndex = 0;
+        for (let col of this.state.columns) {
+            if (col.sortOrder == 1 || col.sortOrder == -1) {
+                sort[sortIndex] = col.sort();
+                sortIndex++;
+            }
+        }
+        let args: types.ListTable.ChangeArgs = {
+            filter: {},
+            limit: 0,
+            page: 0,
+            sort: {}
+        };
+    }
+
     componentDidMount() {
         if (this.ref.bodyDiv && this.ref.bodyDiv.current) {
             this.ref.bodyDiv.current.addEventListener("scroll", this.domHandleScroll);
@@ -212,8 +228,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                             <BsTr>
                                 {columns.map((col, colIndex) => {
                                     const heightOfRow = (customRowHeight["thead"] || headerHeight);
-                                    let colBodyWidth = !col.sortable ? col.width : col.width - 24;
-                                    let body = !col.sortable ? col.header() : <>
+                                    let colBodyWidth = !col.sort ? col.width : col.width - 24;
+                                    let body = !col.sort ? col.header() : <>
                                         <div style={{
                                             display: "inline-block",
                                             width: colBodyWidth + "px"
@@ -224,11 +240,15 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                             display: "inline-block"
                                         }}>
                                             <FAIcon icon={(
-                                                col.sort == 1 ? faSortUp :
-                                                    col.sort == -1 ? faSortDown :
+                                                col.sortOrder == 1 ? faSortUp :
+                                                    col.sortOrder == -1 ? faSortDown :
                                                         faSort)} />
                                         </div>
                                     </>;
+                                    let addProps: any = {}
+                                    if(col.sort){
+                                        addProps.onClick= this.headerClick;
+                                    }
 
                                     return <BsTh
                                         style={{
@@ -242,7 +262,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                                 "data-row": "thead",
                                                 "data-col": colIndex
                                             }}
-                                            onClick={this.headerClick}
+                                            {...addProps}
                                             width={col.width}
                                             height={heightOfRow}
                                             onResizeStart={this.resizeStart}

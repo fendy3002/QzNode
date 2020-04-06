@@ -11,15 +11,21 @@ export namespace Table {
     };
 };
 export namespace ListTable {
-    export interface Column {
+    export interface ColumnState {
+        header: () => any,
+        body: (row) => any,
+        width: number,
+        sort?: () => string,
+        sortOrder?: number
+    };
+    export interface ColumnProp {
         header: () => any,
         body: (row) => any,
         startWidth?: number,
-        sortable?: boolean,
-        sort?: number
+        sort?: () => string,
     };
     export interface State {
-        columns: Column[]
+        columns: ColumnState[]
         resizing: {
             columnIndex: number,
             rowIndex: number,
@@ -28,7 +34,7 @@ export namespace ListTable {
             xPos: number,
             yPos: number,
             direction: string
-        }
+        },
         customRowHeight: {
             [index: number]: number
         }
@@ -46,7 +52,7 @@ export namespace ListTable {
     };
     export interface Props {
         data: any[],
-        columns: Column[],
+        columns: ColumnProp[],
         toolbar: (data: ToolbarArgs) => any,
         rowHeight?: number,
         bodyHeight?: number,

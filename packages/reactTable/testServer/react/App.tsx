@@ -18,11 +18,13 @@ let moduleMap = {
             columns={[
                 {
                     header: () => "Title",
+                    sort: () => "title",
                     body: (row) => row.title,
                     startWidth: 700
                 },
                 {
                     header: () => "Body",
+                    sort: () => "body",
                     body: (row) => row.body,
                     startWidth: 900
                 },

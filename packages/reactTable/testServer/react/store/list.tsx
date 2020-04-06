@@ -30,7 +30,7 @@ class ListStore {
             this.posts = response.body;
             this.filter = {
                 ...this.filter,
-                rowCount: this.posts.length
+                rowCount: response.header['x-total-count']
             }
         })
     }

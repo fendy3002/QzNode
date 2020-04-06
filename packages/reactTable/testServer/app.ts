@@ -9,7 +9,11 @@ app.use(express.static(path.resolve(__dirname, "public")));
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.get('/api/posts', (req, res) => {
-    res.json(postsData);
+    let page = req.query.page || 1;
+    let limit = req.query.limit || 25;
+    let result = postsData.slice(((page - 1) * limit), limit);
+    res.set("x-total-count", postsData.length);
+    res.json(result);
 });
 
 app.get(['/admin', '/admin/*'], (req, res) => {

@@ -22,6 +22,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         this.state = {
             customColumnWidth: {},
             customRowHeight: {},
+            extendedRow: {},
             resizing: {
                 columnIndex: null,
                 rowIndex: null,
@@ -41,6 +42,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             "trNinjaOnEnter",
             "trNinjaOnLeave",
             "handleChange",
+            "handleExtend"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -58,21 +60,21 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         headerDiv: null,
         bodyDiv: null
     };
-    
+
     resizeStart(evt) {
         const colIndex = evt.currentTarget.dataset.col;
         const rowIndex = evt.currentTarget.dataset.row;
         const direction = evt.currentTarget.dataset.direction;
         const xPos = evt.clientX;
         const yPos = evt.clientY;
-        const {columns} = this.props;
+        const { columns } = this.props;
         let height = (
             this.state.customRowHeight[rowIndex] ||
-                ((rowIndex == "thead") ? this.props.headerHeight : this.props.rowHeight)
+            ((rowIndex == "thead") ? this.props.headerHeight : this.props.rowHeight)
         );
         let width = (
             this.state.customColumnWidth[colIndex] ||
-                columns[colIndex].startWidth
+            columns[colIndex].startWidth
         );
         this.setState((state) => {
             return {
@@ -108,7 +110,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         };
         if (resizeHandler.direction == "horizontal" || resizeHandler.direction == "both") {
             const newWidth = Math.max(50, resizeHandler.width + xPos - resizeHandler.xPos);
-            newState.customColumnWidth= {
+            newState.customColumnWidth = {
                 ...this.state.customColumnWidth,
                 [resizeHandler.columnIndex]: newWidth
             };
@@ -181,6 +183,24 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             onChange(args);
         }
     }
+    handleExtend(evt) {
+        const { onExtend } = this.props;
+        const rowIndex = evt.currentTarget.dataset.row;
+        this.setState((state) => {
+            return {
+                extendedRow: {
+                    ...state.extendedRow,
+                    [rowIndex]: !state.extendedRow[rowIndex]
+                }
+            };
+        });
+        if (onExtend) {
+            let args = {
+                data: this.props.data[rowIndex]
+            };
+            onExtend(args);
+        }
+    }
 
     componentDidMount() {
         if (this.ref.bodyDiv && this.ref.bodyDiv.current) {
@@ -194,8 +214,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     }
 
     render() {
-        const { data, columns, headerHeight, rowHeight, bodyHeight, toolbar } = this.props;
-        const { customColumnWidth, customRowHeight } = this.state;
+        const { data, columns, headerHeight, rowHeight, bodyHeight, extensible, toolbar } = this.props;
+        const { customColumnWidth, customRowHeight, extendedRow } = this.state;
         return <>
             <div style={{ overflow: "hidden" }} ref={this.ref.headerDiv}>
                 <div style={{
@@ -208,6 +228,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                     <BsTable>
                         <BsTHead>
                             <BsTr>
+                                <BsTh key="th_extbutton">
+                                </BsTh>
                                 {columns.map((col, colIndex) => {
                                     const heightOfRow = (customRowHeight["thead"] || headerHeight);
                                     let useColWidth = customColumnWidth[colIndex] || col.startWidth || 120;
@@ -274,9 +296,18 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                     <BsTable>
                         <BsTBody>
                             {(data || []).map((row, rowIndex) => {
+                                let extendPanel = null;
+                                if (extensible) {
+                                    extendPanel = <div>
+                                        <button onClick={this.handleExtend} data-row={rowIndex}>+</button>
+                                    </div>;
+                                }
+                                let totalWidth = 0;
                                 let rowBody = columns.map((col, colIndex) => {
                                     let useColWidth = customColumnWidth[colIndex] || col.startWidth || 120;
                                     const heightOfRow = (customRowHeight[rowIndex] || rowHeight);
+                                    totalWidth += useColWidth;
+
                                     return <BsTd
                                         style={{
                                             paddingRight: "0px",
@@ -297,17 +328,27 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                         ></ResizableDiv>
                                     </BsTd>;
                                 });
-                                return <TrNinjaContainer
-                                    onMouseEnter={this.trNinjaOnEnter}
-                                    onMouseLeave={this.trNinjaOnLeave}
-                                    key={"tr_" + rowIndex}>
-                                    {rowBody}
-                                    <BsTd key={"td_" + rowIndex + "_act"}>
-                                        <DivNinjaPanel data-role="ninjapanel" extend="left">
-                                            {toolbar(row)}
-                                        </DivNinjaPanel>
-                                    </BsTd>
-                                </TrNinjaContainer>;
+                                return <React.Fragment key={"trx_" + rowIndex}>
+                                    <TrNinjaContainer
+                                        onMouseEnter={this.trNinjaOnEnter}
+                                        onMouseLeave={this.trNinjaOnLeave}
+                                        key={"tr_" + rowIndex}>
+                                        <BsTd key={"td_" + rowIndex + "_extbutton"}>{extendPanel}</BsTd>
+                                        {rowBody}
+                                        <BsTd key={"td_" + rowIndex + "_act"}>
+                                            <DivNinjaPanel data-role="ninjapanel" extend="left">
+                                                {toolbar(row)}
+                                            </DivNinjaPanel>
+                                        </BsTd>
+                                    </TrNinjaContainer>
+                                    {extendedRow[rowIndex] &&
+                                        <BsTr key={"tr_" + rowIndex + "_ext"}>
+                                            <BsTd colspan="99" style={{ width: totalWidth + "px" }}>
+                                                {extensible(row)}
+                                            </BsTd>
+                                        </BsTr>
+                                    }
+                                </React.Fragment>;
                             })}
                         </BsTBody>
                     </BsTable>

@@ -42,6 +42,9 @@ export namespace ListTable {
         customRowHeight: {
             [index: number]: number
         }
+        extendedRow: {
+            [index: number]: number
+        }
     };
     export interface ToolbarArgs {
         data: any,
@@ -58,6 +61,8 @@ export namespace ListTable {
         data: any[],
         columns: ColumnProp[],
         toolbar: (data: ToolbarArgs) => any,
+        extensible?: (data: ToolbarArgs) => any,
+        onExtend?: (data: ToolbarArgs) => void,
         rowHeight?: number,
         bodyHeight?: number,
         onChange: (changePayload: ChangeArgs) => void

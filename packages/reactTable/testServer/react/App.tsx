@@ -12,6 +12,10 @@ let { observer, inject } = mobxReact;
 let moduleMap = {
     "list": (props: any) => {
         return <Table
+            bodyHeight={600}
+            extensible={(props) => {
+                return <div>THIS IS DIV</div>;
+            }}
             toolbar={({ data }) => {
                 return <></>;
             }}

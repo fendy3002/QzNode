@@ -8,10 +8,11 @@ const {
     BsTd,
     BsTable,
     TrNinjaContainer,
-    DivNinjaPanel
+    DivNinjaPanel,
+    BsButtonSecondary
 } = require('./styled');
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome'
-import { faSort, faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
+import { faSort, faSortUp, faSortDown, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
 
 import ResizableDiv from './ResizableDiv';
 import * as types from './types';
@@ -153,7 +154,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         ninjapanel.style.display = "block";
         const ninjapanelWidth = ninjapanel.offsetWidth;
         const scrollContainer = evt.currentTarget.closest("[data-role='scroll-container']");
-        const expectedLeft = scrollContainer.offsetWidth - 72 - ninjapanelWidth + scrollContainer.scrollLeft;
+        const tableDom = evt.currentTarget.closest("table");
+        const expectedLeft = Math.min(scrollContainer.offsetWidth, tableDom.offsetWidth) - 72 - ninjapanelWidth + scrollContainer.scrollLeft;
         ninjapanel.style.left = expectedLeft + "px";
         ninjapanel.style.top = ninjapanel.parentElement.offsetTop + 12 + "px";
     }
@@ -228,7 +230,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                     <BsTable>
                         <BsTHead>
                             <BsTr>
-                                <BsTh key="th_extbutton">
+                                <BsTh key="th_extbutton" style={{ width: "25px" }}>
                                 </BsTh>
                                 {columns.map((col, colIndex) => {
                                     const heightOfRow = (customRowHeight["thead"] || headerHeight);
@@ -296,16 +298,22 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                     <BsTable>
                         <BsTBody>
                             {(data || []).map((row, rowIndex) => {
+                                const heightOfRow = (customRowHeight[rowIndex] || rowHeight);
+                                const isExtended = extendedRow[rowIndex];
                                 let extendPanel = null;
                                 if (extensible) {
-                                    extendPanel = <div>
-                                        <button onClick={this.handleExtend} data-row={rowIndex}>+</button>
+                                    extendPanel = <div style={{ display: "block", height: heightOfRow + "px" }}>
+                                        <BsButtonSecondary 
+                                            onClick={this.handleExtend} 
+                                            btntype={isExtended ? "" : "success"}
+                                            data-row={rowIndex} style={{ height: "100%", width: "24px", padding: "0px" }}>
+                                            <FAIcon icon={isExtended ? faMinus : faPlus}></FAIcon>
+                                        </BsButtonSecondary>
                                     </div>;
                                 }
                                 let totalWidth = 0;
                                 let rowBody = columns.map((col, colIndex) => {
                                     let useColWidth = customColumnWidth[colIndex] || col.startWidth || 120;
-                                    const heightOfRow = (customRowHeight[rowIndex] || rowHeight);
                                     totalWidth += useColWidth;
 
                                     return <BsTd
@@ -333,7 +341,9 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                         onMouseEnter={this.trNinjaOnEnter}
                                         onMouseLeave={this.trNinjaOnLeave}
                                         key={"tr_" + rowIndex}>
-                                        <BsTd key={"td_" + rowIndex + "_extbutton"}>{extendPanel}</BsTd>
+                                        <BsTd
+                                            key={"td_" + rowIndex + "_extbutton"}
+                                            style={{ padding: "0px" }}>{extendPanel}</BsTd>
                                         {rowBody}
                                         <BsTd key={"td_" + rowIndex + "_act"}>
                                             <DivNinjaPanel data-role="ninjapanel" extend="left">
@@ -341,7 +351,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                             </DivNinjaPanel>
                                         </BsTd>
                                     </TrNinjaContainer>
-                                    {extendedRow[rowIndex] &&
+                                    {isExtended &&
                                         <BsTr key={"tr_" + rowIndex + "_ext"}>
                                             <BsTd colspan="99" style={{ width: totalWidth + "px" }}>
                                                 {extensible(row)}

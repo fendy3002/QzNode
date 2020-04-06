@@ -21,21 +21,27 @@ let moduleMap = {
             }}
             columns={[
                 {
-                    header: () => "Title",
-                    sort: () => "title",
-                    body: (row) => row.title,
-                    startWidth: 700
+                    header: () => "Name",
+                    sort: () => "name",
+                    body: (row) => row.name,
+                    startWidth: 300
                 },
                 {
-                    header: () => "Body",
-                    sort: () => "body",
-                    body: (row) => row.body,
-                    startWidth: 900
+                    header: () => "Username",
+                    sort: () => "username",
+                    body: (row) => row.username,
+                    startWidth: 300
+                },
+                {
+                    header: () => "Email",
+                    sort: () => "email",
+                    body: (row) => <a href={"mailto:" + row.email}>{row.email}</a>,
+                    startWidth: 300
                 },
             ]}
             headerHeight={32}
             rowHeight={80}
-            data={props.store.posts}
+            data={props.store.users}
             pagination={{
                 page: props.store.filter.page,
                 pageCount: Math.ceil(props.store.filter.rowCount / props.store.filter.limit),

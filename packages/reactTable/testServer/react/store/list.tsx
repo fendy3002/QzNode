@@ -13,11 +13,12 @@ class ListStore {
     }
     name = "list";
     apiPath = {
-        "get": "/api/posts"
+        "getUser": "/api/users",
+        "getPost": "/api/posts"
     };
     mainStore;
     @observable
-    posts = [];
+    users = [];
     @observable
     filter = {
         page: 1,
@@ -26,13 +27,13 @@ class ListStore {
         filter: {}
     }
     onPathChange(pathData) {
-        sa.get(this.apiPath.get).then((response) => {
-            this.posts = response.body;
+        sa.get(this.apiPath.getUser).then((response) => {
+            this.users = response.body;
             this.filter = {
                 ...this.filter,
                 rowCount: response.header['x-total-count']
             }
-        })
+        });
     }
     handlePageChange(evt) {
         this.filter = {

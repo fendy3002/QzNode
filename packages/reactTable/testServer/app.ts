@@ -3,11 +3,19 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 const port = 3000;
+import usersData from './users';
 import postsData from './posts';
 
 app.use(express.static(path.resolve(__dirname, "public")));
 app.get('/', (req, res) => res.send('Hello World!'));
 
+app.get('/api/users', (req, res) => {
+    let page = req.query.page || 1;
+    let limit = req.query.limit || 25;
+    let result = usersData.slice(((page - 1) * limit), limit);
+    res.set("x-total-count", usersData.length);
+    res.json(result);
+});
 app.get('/api/posts', (req, res) => {
     let page = req.query.page || 1;
     let limit = req.query.limit || 25;

@@ -23,6 +23,7 @@ export namespace ListTable {
         body: (row) => any,
         startWidth?: number,
         sort?: () => string,
+        sortOrder?: number
     };
     export interface State {
         columns: ColumnState[]
@@ -35,6 +36,9 @@ export namespace ListTable {
             yPos: number,
             direction: string
         },
+        customColumnWidth: {
+            [index: number]: number
+        }
         customRowHeight: {
             [index: number]: number
         }

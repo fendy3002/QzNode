@@ -20,7 +20,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     constructor(props) {
         super(props);
         this.state = {
-            columns: [],
+            customColumnWidth: {},
             customRowHeight: {},
             resizing: {
                 columnIndex: null,
@@ -40,7 +40,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             "domHandleScroll",
             "trNinjaOnEnter",
             "trNinjaOnLeave",
-            "handleChange"
+            "handleChange",
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -58,38 +58,28 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         headerDiv: null,
         bodyDiv: null
     };
-
-    static getDerivedStateFromProps(props, state) {
-        let returnState = {
-            ...state
-        };
-        if (state.columns.length != props.columns.length) {
-            returnState.columns = props.columns.map(k => {
-                return {
-                    ...k,
-                    width: k.startWidth || 120,
-                };
-            });
-        }
-        return returnState;
-    }
+    
     resizeStart(evt) {
         const colIndex = evt.currentTarget.dataset.col;
         const rowIndex = evt.currentTarget.dataset.row;
         const direction = evt.currentTarget.dataset.direction;
         const xPos = evt.clientX;
         const yPos = evt.clientY;
+        const {columns} = this.props;
         let height = (
             this.state.customRowHeight[rowIndex] ||
-                rowIndex == "thead" ? this.props.headerHeight : this.props.rowHeight
+                ((rowIndex == "thead") ? this.props.headerHeight : this.props.rowHeight)
         );
-
+        let width = (
+            this.state.customColumnWidth[colIndex] ||
+                columns[colIndex].startWidth
+        );
         this.setState((state) => {
             return {
                 resizing: {
                     columnIndex: colIndex,
                     rowIndex: rowIndex,
-                    width: state.columns[colIndex].width,
+                    width: width,
                     height: height,
                     xPos: xPos,
                     yPos: yPos,
@@ -117,16 +107,11 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             }
         };
         if (resizeHandler.direction == "horizontal" || resizeHandler.direction == "both") {
-            newState.columns = this.state.columns.map((k, colIndex) => {
-                let width = k.width;
-                if (colIndex == resizeHandler.columnIndex) {
-                    width = Math.max(50, resizeHandler.width + xPos - resizeHandler.xPos);
-                }
-                return {
-                    ...k,
-                    width: width
-                };
-            });
+            const newWidth = Math.max(50, resizeHandler.width + xPos - resizeHandler.xPos);
+            newState.customColumnWidth= {
+                ...this.state.customColumnWidth,
+                [resizeHandler.columnIndex]: newWidth
+            };
         }
         if (resizeHandler.direction == "vertical" || resizeHandler.direction == "both") {
             const newHeight = Math.max(24, resizeHandler.height + yPos - resizeHandler.yPos)
@@ -144,7 +129,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         const colClickIndex = evt.currentTarget.dataset.col;
         this.setState((state) => {
             return {
-                columns: state.columns.map((col, colIndex) => {
+                columns: this.props.columns.map((col, colIndex) => {
                     let sort = null;
                     if (colIndex == colClickIndex) {
                         sort = col.sortOrder * -1 || 1;
@@ -176,28 +161,25 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     }
     handleChange() {
         const { onChange } = this.props;
-        let changeArgs: any = {};
+
         // assign parameters
         if (onChange) {
-            onChange(changeArgs);
-        }
-    }
-
-    getChangeArgs() {
-        let sort: any = {};
-        let sortIndex = 0;
-        for (let col of this.state.columns) {
-            if (col.sortOrder == 1 || col.sortOrder == -1) {
-                sort[sortIndex] = col.sort();
-                sortIndex++;
+            let sort: any = {};
+            let sortIndex = 0;
+            for (let col of this.props.columns) {
+                if (col.sortOrder == 1 || col.sortOrder == -1) {
+                    sort[sortIndex] = col.sort();
+                    sortIndex++;
+                }
             }
+            let args: types.ListTable.ChangeArgs = {
+                filter: {},
+                limit: 0,
+                page: 0,
+                sort: sort
+            }
+            onChange(args);
         }
-        let args: types.ListTable.ChangeArgs = {
-            filter: {},
-            limit: 0,
-            page: 0,
-            sort: {}
-        };
     }
 
     componentDidMount() {
@@ -212,8 +194,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     }
 
     render() {
-        const { data, headerHeight, rowHeight, bodyHeight, toolbar } = this.props;
-        const { columns, customRowHeight } = this.state;
+        const { data, columns, headerHeight, rowHeight, bodyHeight, toolbar } = this.props;
+        const { customColumnWidth, customRowHeight } = this.state;
         return <>
             <div style={{ overflow: "hidden" }} ref={this.ref.headerDiv}>
                 <div style={{
@@ -228,7 +210,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                             <BsTr>
                                 {columns.map((col, colIndex) => {
                                     const heightOfRow = (customRowHeight["thead"] || headerHeight);
-                                    let colBodyWidth = !col.sort ? col.width : col.width - 24;
+                                    let useColWidth = customColumnWidth[colIndex] || col.startWidth || 120;
+                                    let colBodyWidth = !col.sort ? useColWidth : useColWidth - 24;
                                     let body = !col.sort ? col.header() : <>
                                         <div style={{
                                             display: "inline-block",
@@ -246,8 +229,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                         </div>
                                     </>;
                                     let addProps: any = {}
-                                    if(col.sort){
-                                        addProps.onClick= this.headerClick;
+                                    if (col.sort) {
+                                        addProps.onClick = this.headerClick;
                                     }
 
                                     return <BsTh
@@ -255,7 +238,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                             paddingRight: "0px",
                                             paddingBottom: "0px"
                                         }}
-                                        csswidth={col.width + 10} key={"th_" + colIndex}>
+                                        csswidth={useColWidth + 10} key={"th_" + colIndex}>
                                         <ResizableDiv
                                             body={body}
                                             data={{
@@ -263,7 +246,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                                 "data-col": colIndex
                                             }}
                                             {...addProps}
-                                            width={col.width}
+                                            width={useColWidth}
                                             height={heightOfRow}
                                             onResizeStart={this.resizeStart}
                                             onResizeDrag={this.resizeDrag}
@@ -292,6 +275,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                         <BsTBody>
                             {(data || []).map((row, rowIndex) => {
                                 let rowBody = columns.map((col, colIndex) => {
+                                    let useColWidth = customColumnWidth[colIndex] || col.startWidth || 120;
                                     const heightOfRow = (customRowHeight[rowIndex] || rowHeight);
                                     return <BsTd
                                         style={{
@@ -305,7 +289,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                                 "data-row": rowIndex,
                                                 "data-col": colIndex
                                             }}
-                                            width={col.width}
+                                            width={useColWidth}
                                             height={heightOfRow}
                                             onResizeStart={this.resizeStart}
                                             onResizeDrag={this.resizeDrag}

@@ -36,6 +36,19 @@ class Table extends React.Component<types.Table.Props, any> {
         rowHeight: 24
     };
 
+    handleSortChange(args: types.ListTable.ChangeArgs) {
+        const { onChange, pagination } = this.props;
+        args.page = pagination.page;
+        args.limit = pagination.limit;
+        onChange(args);
+    }
+    handlePageChange() {
+        
+    }
+    handleFilterChange() {
+
+    }
+
     render() {
         const { pagination } = this.props;
         return <div>
@@ -53,7 +66,7 @@ class Table extends React.Component<types.Table.Props, any> {
                     </DivCol6>
                 </DivRow>
             </div>
-            <ListTable {...this.props}/>
+            <ListTable {...this.props} onChange={this.handleSortChange} />
             <div style={{ marginBottom: "8px" }}>
                 {/* <div className="row">
                     <div className="col-6">

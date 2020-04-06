@@ -12,7 +12,7 @@ const {
     BsButtonSecondary
 } = require('./styled');
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome'
-import { faSort, faSortUp, faSortDown, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faSort, faSortUp, faSortDown, faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
 import ResizableDiv from './ResizableDiv';
 import * as types from './types';
@@ -151,6 +151,9 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     }
     trNinjaOnEnter(evt) {
         const ninjapanel = evt.currentTarget.querySelector("[data-role='ninjapanel']");
+        if (!ninjapanel) {
+            return;
+        }
         ninjapanel.style.display = "block";
         const ninjapanelWidth = ninjapanel.offsetWidth;
         const scrollContainer = evt.currentTarget.closest("[data-role='scroll-container']");
@@ -161,6 +164,9 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     }
     trNinjaOnLeave(evt) {
         const ninjapanel = evt.currentTarget.querySelector("[data-role='ninjapanel']");
+        if (!ninjapanel) {
+            return;
+        }
         ninjapanel.style.display = "none";
     }
     handleChange() {
@@ -230,8 +236,10 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                     <BsTable>
                         <BsTHead>
                             <BsTr>
-                                <BsTh key="th_extbutton" style={{ width: "25px" }}>
-                                </BsTh>
+                                {extensible &&
+                                    <BsTh key="th_extbutton" style={{ width: "25px" }}>
+                                    </BsTh>
+                                }
                                 {columns.map((col, colIndex) => {
                                     const heightOfRow = (customRowHeight["thead"] || headerHeight);
                                     let useColWidth = customColumnWidth[colIndex] || col.startWidth || 120;
@@ -303,11 +311,11 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                 let extendPanel = null;
                                 if (extensible) {
                                     extendPanel = <div style={{ display: "block", height: heightOfRow + "px" }}>
-                                        <BsButtonSecondary 
-                                            onClick={this.handleExtend} 
+                                        <BsButtonSecondary
+                                            onClick={this.handleExtend}
                                             btntype={isExtended ? "" : "success"}
                                             data-row={rowIndex} style={{ height: "100%", width: "24px", padding: "0px" }}>
-                                            <FAIcon icon={isExtended ? faMinus : faPlus}></FAIcon>
+                                            <FAIcon icon={isExtended ? faCaretUp : faCaretDown}></FAIcon>
                                         </BsButtonSecondary>
                                     </div>;
                                 }
@@ -346,15 +354,16 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                             style={{ padding: "0px" }}>{extendPanel}</BsTd>
                                         {rowBody}
                                         <BsTd key={"td_" + rowIndex + "_act"}>
-                                            <DivNinjaPanel data-role="ninjapanel" extend="left">
+                                            {toolbar && <DivNinjaPanel data-role="ninjapanel" extend="left">
                                                 {toolbar(row)}
                                             </DivNinjaPanel>
+                                            }
                                         </BsTd>
                                     </TrNinjaContainer>
                                     {isExtended &&
                                         <BsTr key={"tr_" + rowIndex + "_ext"}>
-                                            <BsTd colspan="99" style={{ width: totalWidth + "px" }}>
-                                                {extensible(row)}
+                                            <BsTd colspan="99" style={{ maxWidth: totalWidth + "px", overflowX: "scroll", padding: "0px" }}>
+                                                {extensible({ data: row })}
                                             </BsTd>
                                         </BsTr>
                                     }

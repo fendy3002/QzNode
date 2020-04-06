@@ -6,6 +6,7 @@ const moment = require('moment');
 const lo = require('lodash');
 
 import Table from '../../src/index';
+import ListTable from '../../src/ListTable';
 // import validate from './validate'
 let { observer, inject } = mobxReact;
 
@@ -13,9 +14,31 @@ let moduleMap = {
     "list": (props: any) => {
         return <Table
             bodyHeight={600}
-            extensible={(props) => {
-                return <div>THIS IS DIV</div>;
+            extensible={(args) => {
+                if (!props.store.postByUserid[args.data.id]) {
+                    return null;
+                }
+                else {
+                    return <ListTable
+                        data={props.store.postByUserid[args.data.id]}
+                        bodyHeight={300}
+                        rowHeight={32}
+                        columns={[
+                            {
+                                header: () => "Title",
+                                body: (row) => row.title,
+                                startWidth: 300
+                            },
+                            {
+                                header: () => "Body",
+                                body: (row) => row.body,
+                                startWidth: 400
+                            },
+                        ]}
+                    ></ListTable>;
+                }
             }}
+            onExtend={props.store.handleExtend}
             toolbar={({ data }) => {
                 return <></>;
             }}

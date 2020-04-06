@@ -5,6 +5,7 @@ let { observable, toJS } = mobx;
 class ListStore {
     constructor(mainStore, pathData) {
         [
+            "handleExtend",
             "handlePageChange",
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
@@ -14,11 +15,14 @@ class ListStore {
     name = "list";
     apiPath = {
         "getUser": "/api/users",
+        "getPostByUser": "/api/user/{id}/posts",
         "getPost": "/api/posts"
     };
     mainStore;
     @observable
     users = [];
+    @observable
+    postByUserid = {}
     @observable
     filter = {
         page: 1,
@@ -33,6 +37,12 @@ class ListStore {
                 ...this.filter,
                 rowCount: response.header['x-total-count']
             }
+        });
+    }
+    handleExtend(arg) {
+        let user = arg.data;
+        sa.get(this.apiPath.getPostByUser.replace("{id}", user.id)).then((response) => {
+            this.postByUserid[user.id] = response.body;
         });
     }
     handlePageChange(evt) {

@@ -16,6 +16,13 @@ app.get('/api/users', (req, res) => {
     res.set("x-total-count", usersData.length);
     res.json(result);
 });
+
+app.get('/api/user/:id/posts', (req, res) => {
+    let userid = req.params.id;
+    let posts = postsData.filter(k => k.userId == userid);
+    res.set("x-total-count", posts.length);
+    res.json(posts);
+});
 app.get('/api/posts', (req, res) => {
     let page = req.query.page || 1;
     let limit = req.query.limit || 25;

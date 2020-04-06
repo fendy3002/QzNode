@@ -39,7 +39,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             "headerClick",
             "domHandleScroll",
             "trNinjaOnEnter",
-            "trNinjaOnLeave"
+            "trNinjaOnLeave",
+            "handleChange"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -155,7 +156,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                     };
                 })
             }
-        })
+        });
+        this.handleChange();
     }
     domHandleScroll(evt) {
         this.ref.headerDiv.current.scrollLeft = evt.target.scrollLeft;
@@ -172,6 +174,14 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     trNinjaOnLeave(evt) {
         const ninjapanel = evt.currentTarget.querySelector("[data-role='ninjapanel']");
         ninjapanel.style.display = "none";
+    }
+    handleChange() {
+        const { onChange } = this.props;
+        let changeArgs: any = {};
+        // assign parameters
+        if (onChange) {
+            onChange(changeArgs);
+        }
     }
 
     componentDidMount() {

@@ -366,7 +366,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                     </TrNinjaContainer>
                                     {isExtended &&
                                         <BsTr key={"tr_" + rowIndex + "_ext"}>
-                                            <BsTd colspan="99" style={{ maxWidth: totalWidth + "px", overflowX: "scroll", padding: "0px" }}>
+                                            <BsTd colspan="99" style={{ maxWidth: totalWidth + "px", padding: "0px" }}>
                                                 {extensible({ data: row })}
                                             </BsTd>
                                         </BsTr>

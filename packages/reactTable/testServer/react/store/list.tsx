@@ -41,9 +41,15 @@ class ListStore {
     }
     handleExtend(arg) {
         let user = arg.data;
-        sa.get(this.apiPath.getPostByUser.replace("{id}", user.id)).then((response) => {
-            this.postByUserid[user.id] = response.body;
-        });
+        if (!this.postByUserid[user.id]) {
+            return sa.get(this.apiPath.getPostByUser.replace("{id}", user.id)).then((response) => {
+                this.postByUserid = {
+                    ...this.postByUserid,
+                    [user.id]: response.body
+                };
+            });
+        }
+        return Promise.resolve();
     }
     handlePageChange(evt) {
         this.filter = {

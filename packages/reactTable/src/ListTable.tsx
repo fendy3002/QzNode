@@ -194,20 +194,24 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     handleExtend(evt) {
         const { onExtend } = this.props;
         const rowIndex = evt.currentTarget.dataset.row;
-        this.setState((state) => {
-            return {
-                extendedRow: {
-                    ...state.extendedRow,
-                    [rowIndex]: !state.extendedRow[rowIndex]
-                }
-            };
-        });
+        let doExtend = Promise.resolve();
         if (onExtend) {
             let args = {
-                data: this.props.data[rowIndex]
+                data: this.props.data[rowIndex],
+                direction: this.state.extendedRow[rowIndex] ? "expand" : "shrink",
             };
-            onExtend(args);
+            doExtend = onExtend(args);
         }
+        doExtend.then(() => {
+            this.setState((state) => {
+                return {
+                    extendedRow: {
+                        ...state.extendedRow,
+                        [rowIndex]: !state.extendedRow[rowIndex]
+                    }
+                };
+            });
+        });
     }
 
     componentDidMount() {
@@ -241,9 +245,9 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                     </BsTh>
                                 }
                                 {columns.map((col, colIndex) => {
-                                    const heightOfRow = (customRowHeight["thead"] || headerHeight);
+                                    const heightOfRow = (customRowHeight["thead"] || headerHeight || 24);
                                     let useColWidth = customColumnWidth[colIndex] || col.startWidth || 120;
-                                    let colBodyWidth = !col.sort ? useColWidth : useColWidth - 24;
+                                    let colBodyWidth = !col.sort ? useColWidth : (useColWidth - 24);
                                     let body = !col.sort ? col.header() : <>
                                         <div style={{
                                             display: "inline-block",

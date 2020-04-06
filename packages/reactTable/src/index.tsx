@@ -43,7 +43,7 @@ class Table extends React.Component<types.Table.Props, any> {
         onChange(args);
     }
     handlePageChange() {
-        
+
     }
     handleFilterChange() {
 
@@ -80,3 +80,4 @@ class Table extends React.Component<types.Table.Props, any> {
     }
 };
 export default Table;
+export { ListTable };

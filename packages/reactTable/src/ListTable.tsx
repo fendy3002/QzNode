@@ -214,6 +214,9 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         });
     }
 
+    static getDerivedStateFromProps(props) {
+
+    }
     componentDidMount() {
         if (this.ref.bodyDiv && this.ref.bodyDiv.current) {
             this.ref.bodyDiv.current.addEventListener("scroll", this.domHandleScroll);
@@ -348,6 +351,17 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                         ></ResizableDiv>
                                     </BsTd>;
                                 });
+                                let extendedDom = null;
+                                if (isExtended) {
+                                    let extendedContent = extensible({ data: row });
+                                    if (extendedContent) {
+                                        extendedDom = <BsTr key={"tr_" + rowIndex + "_ext"}>
+                                            <BsTd colspan="99" style={{ maxWidth: totalWidth + "px", padding: "0px" }}>
+                                                {extensible({ data: row })}
+                                            </BsTd>
+                                        </BsTr>;
+                                    }
+                                }
                                 return <React.Fragment key={"trx_" + rowIndex}>
                                     <TrNinjaContainer
                                         onMouseEnter={this.trNinjaOnEnter}
@@ -364,13 +378,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                             }
                                         </BsTd>
                                     </TrNinjaContainer>
-                                    {isExtended &&
-                                        <BsTr key={"tr_" + rowIndex + "_ext"}>
-                                            <BsTd colspan="99" style={{ maxWidth: totalWidth + "px", padding: "0px" }}>
-                                                {extensible({ data: row })}
-                                            </BsTd>
-                                        </BsTr>
-                                    }
+                                    {extendedDom}
                                 </React.Fragment>;
                             })}
                         </BsTBody>

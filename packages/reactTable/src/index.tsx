@@ -27,7 +27,8 @@ class Table extends React.Component<types.Table.Props, any> {
         this.state = {
         };
         [
-            "handleSortChange"
+            "handleSortChange",
+            "handlePageChange"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -36,7 +37,7 @@ class Table extends React.Component<types.Table.Props, any> {
         rowHeight: 24
     };
 
-    handleSortChange(args: types.ListTable.ChangeArgs) {
+    handleSortChange(args) {
         const { onChange, pagination } = this.props;
         onChange({
             ...args,
@@ -44,8 +45,14 @@ class Table extends React.Component<types.Table.Props, any> {
             limit: pagination.limit,
         });
     }
-    handlePageChange() {
-
+    handlePageChange(evt) {
+        const { onChange, pagination, sort } = this.props;
+        let newPage = evt.value;
+        onChange({
+            sort: sort,
+            page: newPage,
+            limit: pagination.limit,
+        });
     }
     handleFilterChange() {
 
@@ -64,7 +71,7 @@ class Table extends React.Component<types.Table.Props, any> {
                                 <FAIcon icon={faFilter}></FAIcon>
                             </BsButtonSecondary>
                         </div>
-                        <Pagination {...pagination}></Pagination>
+                        <Pagination {...pagination} onChange={this.handlePageChange}></Pagination>
                     </DivCol6>
                 </DivRow>
             </div>

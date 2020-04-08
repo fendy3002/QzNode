@@ -70,7 +70,7 @@ class Store {
 
     lastRoute = null;
     onPathChange(data) {
-        if (this.lastRoute && this.lastRoute.label == data.route.label) {
+        if ((this.lastRoute && this.lastRoute.label) == data.route.label) {
         }
         else {
             this.currentStore = this.storeMap[data.route.label](data);
@@ -78,7 +78,7 @@ class Store {
         if (this.currentStore.onPathChange) {
             this.currentStore.onPathChange(data);
         }
-        this.lastRoute = data;
+        this.lastRoute = data.route;
     }
 };
 export default Store;

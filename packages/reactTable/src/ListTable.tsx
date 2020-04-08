@@ -198,7 +198,6 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         if (hashData != state.hashData) {
             returnState = {
                 ...returnState,
-                customColumnWidth: {},
                 customRowHeight: {},
                 extendedRow: {},
             }
@@ -223,7 +222,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             extensible, toolbar, sort } = this.props;
         const { customColumnWidth, customRowHeight, extendedRow } = this.state;
         let sortFields: any = {};
-        for (let sortIndex of Object.keys(sort)) {
+        for (let sortIndex of Object.keys(sort || {})) {
             let sortVal = sort[sortIndex].split(",");
             sortFields[sortVal[0]] = sortVal[1];
         }

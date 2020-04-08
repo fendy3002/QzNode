@@ -3,6 +3,7 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 const port = 3000;
+import lo = require('lodash');
 import usersData from './users';
 import postsData from './posts';
 import commentsData from './comments';
@@ -27,8 +28,15 @@ app.get('/api/user/:id/posts', (req, res) => {
 app.get('/api/posts', (req, res) => {
     let page = req.query.page || 1;
     let limit = req.query.limit || 25;
-    let result = postsData.slice(((page - 1) * limit), limit);
-    res.set("x-total-count", postsData.length);
+    let sourceData: any = postsData;
+    if (req.query["sort.0"]) {
+        let parts = req.query["sort.0"].split(",");
+        sourceData = lo.orderBy(sourceData, [parts[0]], [parts[1] == 1 ? "asc" : "desc"]);
+    }
+
+    let startIndex = ((page - 1) * limit);
+    let result = sourceData.slice(startIndex, startIndex + limit);
+    res.set("x-total-count", sourceData.length);
     res.json(result);
 });
 app.get('/api/post/:id/comments', (req, res) => {

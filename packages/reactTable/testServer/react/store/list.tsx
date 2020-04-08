@@ -34,10 +34,23 @@ class ListStore {
         sort: {}
     }
     onPathChange(pathData) {
-        sa.get(this.apiPath.getPost).then((response) => {
+        let filter: any = {
+            ...this.filter,
+            page: pathData.queryParam.page * 1 || 1,
+            limit: pathData.queryParam.limit * 1 || 25,
+        };
+        for (let query of Object.keys(pathData.queryParam)) {
+            let value = pathData.queryParam[query];
+            if (query.startsWith("sort.")) {
+                let index = query.split(".")[1];
+                filter.sort[index] = value;
+            }
+        }
+
+        sa.get(this.apiPath.getPost + window.location.search).then((response) => {
             this.posts = response.body;
             this.filter = {
-                ...this.filter,
+                ...filter,
                 rowCount: response.header['x-total-count']
             }
         });
@@ -56,11 +69,18 @@ class ListStore {
         return Promise.resolve();
     }
     handleTableChange(args) {
-        this.filter = {
+        let newFilter = {
             ...this.filter,
             ...args
         };
-        console.log(this.filter);
+        let newQueryParams: any = {
+            page: newFilter.page,
+            limit: newFilter.limit,
+        };
+        for (let sortIndex of Object.keys(newFilter.sort)) {
+            newQueryParams["sort." + sortIndex] = newFilter.sort[sortIndex];
+        }
+        this.mainStore.urlRouter.changeQueryParam(newQueryParams);
     }
     handlePageChange(evt) {
         this.filter = {

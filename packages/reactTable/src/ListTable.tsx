@@ -11,6 +11,7 @@ const {
     DivNinjaPanel,
     BsButtonSecondary
 } = require('./styled');
+const hash = require('object-hash');
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome'
 import { faSort, faSortUp, faSortDown, faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons'
 
@@ -24,6 +25,7 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             customColumnWidth: {},
             customRowHeight: {},
             extendedRow: {},
+            hashData: null,
             resizing: {
                 columnIndex: null,
                 rowIndex: null,
@@ -214,8 +216,21 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
         });
     }
 
-    static getDerivedStateFromProps(props) {
+    static getDerivedStateFromProps(props, state) {
+        let hashData = hash(props.data);
+        let returnState: any = {
+            hashData: hashData
+        };
+        if (hashData != state.hashData) {
+            returnState = {
+                ...returnState,
+                customColumnWidth: {},
+                customRowHeight: {},
+                extendedRow: {},
+            }
+        }
 
+        return returnState;
     }
     componentDidMount() {
         if (this.ref.bodyDiv && this.ref.bodyDiv.current) {

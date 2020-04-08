@@ -38,13 +38,14 @@ export namespace ListTable {
         },
         customColumnWidth: {
             [index: number]: number
-        }
+        },
         customRowHeight: {
             [index: number]: number
-        }
+        },
         extendedRow: {
             [index: number]: number
-        }
+        },
+        hashData: string
     };
     export interface ToolbarArgs {
         data: any,

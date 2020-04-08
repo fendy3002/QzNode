@@ -44,7 +44,6 @@ export default class List extends React.Component {
                 page: store.filter.page,
                 pageCount: Math.ceil(store.filter.rowCount / store.filter.limit),
                 limit: store.filter.limit,
-                onChange: store.handlePageChange
             }}
             sort={store.filter.sort}
             toolbar={(row) => {

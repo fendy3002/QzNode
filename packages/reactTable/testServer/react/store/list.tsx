@@ -6,7 +6,6 @@ class ListStore {
     constructor(mainStore, pathData) {
         [
             "handleExtend",
-            "handlePageChange",
             "handleTableChange",
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
@@ -81,12 +80,6 @@ class ListStore {
             newQueryParams["sort." + sortIndex] = newFilter.sort[sortIndex];
         }
         this.mainStore.urlRouter.changeQueryParam(newQueryParams);
-    }
-    handlePageChange(evt) {
-        this.filter = {
-            ...this.filter,
-            page: evt.value
-        };
     }
 };
 export default ListStore;

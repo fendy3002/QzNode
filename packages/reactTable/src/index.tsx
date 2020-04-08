@@ -41,7 +41,7 @@ class Table extends React.Component<types.Table.Props, any> {
         const { onChange, pagination } = this.props;
         onChange({
             ...args,
-            page: pagination.page,
+            page: 1,
             limit: pagination.limit,
         });
     }

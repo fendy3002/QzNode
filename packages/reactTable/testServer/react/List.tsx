@@ -25,27 +25,21 @@ export default class List extends React.Component {
             }}
             columns={[
                 {
-                    header: () => "Name",
-                    sort: () => "name",
-                    body: (row) => row.name,
+                    header: () => "Title",
+                    sort: () => "title",
+                    body: (row) => row.title,
                     startWidth: 300
                 },
                 {
-                    header: () => "Username",
-                    sort: () => "username",
-                    body: (row) => row.username,
-                    startWidth: 300
-                },
-                {
-                    header: () => "Email",
-                    sort: () => "email",
-                    body: (row) => <a href={"mailto:" + row.email}>{row.email}</a>,
-                    startWidth: 300
+                    header: () => "Body",
+                    sort: () => "body",
+                    body: (row) => row.body,
+                    startWidth: 600
                 },
             ]}
             headerHeight={48}
-            rowHeight={32}
-            data={store.users}
+            rowHeight={80}
+            data={store.posts}
             pagination={{
                 page: store.filter.page,
                 pageCount: Math.ceil(store.filter.rowCount / store.filter.limit),

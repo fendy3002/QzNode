@@ -5,6 +5,7 @@ const path = require('path');
 const port = 3000;
 import usersData from './users';
 import postsData from './posts';
+import commentsData from './comments';
 
 app.use(express.static(path.resolve(__dirname, "public")));
 app.get('/', (req, res) => res.send('Hello World!'));
@@ -29,6 +30,12 @@ app.get('/api/posts', (req, res) => {
     let result = postsData.slice(((page - 1) * limit), limit);
     res.set("x-total-count", postsData.length);
     res.json(result);
+});
+app.get('/api/post/:id/comments', (req, res) => {
+    let postid = req.params.id;
+    let comments = commentsData.filter(k => k.postId == postid);
+    res.set("x-total-count", comments.length);
+    res.json(comments);
 });
 
 app.get(['/admin', '/admin/*'], (req, res) => {

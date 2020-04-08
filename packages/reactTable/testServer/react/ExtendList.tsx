@@ -13,18 +13,18 @@ export default class ExtendList extends React.Component {
         const props = this.props;
         const store = this.props.store;
         const id = this.props.id;
-        if (!store.postByUserid[id]) {
+        if (!store.commentByPostId[id]) {
             return <></>;
         }
 
         return <ListTable
-            data={store.postByUserid[id]}
-            bodyHeight={300}
+            data={store.commentByPostId[id]}
+            bodyHeight={250}
             rowHeight={32}
             columns={[
                 {
-                    header: () => "Title",
-                    body: (row) => row.title,
+                    header: () => "Email",
+                    body: (row) => <a href={"mailto:" + row.email}>{row.email}</a>,
                     startWidth: 300
                 },
                 {

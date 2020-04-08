@@ -16,13 +16,14 @@ class ListStore {
     apiPath = {
         "getUser": "/api/users",
         "getPostByUser": "/api/user/{id}/posts",
-        "getPost": "/api/posts"
+        "getPost": "/api/posts",
+        "getCommentByPost": "/api/post/{id}/comments",
     };
     mainStore;
     @observable
-    users = [];
+    posts = [];
     @observable
-    postByUserid = {}
+    commentByPostId = {}
     @observable
     filter = {
         page: 1,
@@ -31,8 +32,8 @@ class ListStore {
         filter: {}
     }
     onPathChange(pathData) {
-        sa.get(this.apiPath.getUser).then((response) => {
-            this.users = response.body;
+        sa.get(this.apiPath.getPost).then((response) => {
+            this.posts = response.body;
             this.filter = {
                 ...this.filter,
                 rowCount: response.header['x-total-count']
@@ -40,12 +41,12 @@ class ListStore {
         });
     }
     handleExtend(arg) {
-        let user = arg.data;
-        if (!this.postByUserid[user.id]) {
-            return sa.get(this.apiPath.getPostByUser.replace("{id}", user.id)).then((response) => {
-                this.postByUserid = {
-                    ...this.postByUserid,
-                    [user.id]: response.body
+        let post = arg.data;
+        if (!this.commentByPostId[post.id]) {
+            return sa.get(this.apiPath.getCommentByPost.replace("{id}", post.id)).then((response) => {
+                this.commentByPostId = {
+                    ...this.commentByPostId,
+                    [post.id]: response.body
                 };
             });
         }

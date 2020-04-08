@@ -7,6 +7,7 @@ class ListStore {
         [
             "handleExtend",
             "handlePageChange",
+            "handleTableChange",
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -29,7 +30,8 @@ class ListStore {
         page: 1,
         rowCount: 0,
         limit: 25,
-        filter: {}
+        filter: {},
+        sort: {}
     }
     onPathChange(pathData) {
         sa.get(this.apiPath.getPost).then((response) => {
@@ -40,6 +42,7 @@ class ListStore {
             }
         });
     }
+
     handleExtend(arg) {
         let post = arg.data;
         if (!this.commentByPostId[post.id]) {
@@ -51,6 +54,13 @@ class ListStore {
             });
         }
         return Promise.resolve();
+    }
+    handleTableChange(args) {
+        this.filter = {
+            ...this.filter,
+            ...args
+        };
+        console.log(this.filter);
     }
     handlePageChange(evt) {
         this.filter = {

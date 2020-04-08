@@ -1,9 +1,9 @@
 export namespace Table {
     export interface Props extends ListTable.Props {
         pagination: {
-            limit ?: number,
+            limit?: number,
             page: number,
-            display ?: number,
+            display?: number,
             pageCount: number,
             paginationOption: number[],
             onChange: (evt: any) => void
@@ -11,22 +11,13 @@ export namespace Table {
     };
 };
 export namespace ListTable {
-    export interface ColumnState {
-        header: () => any,
-        body: (row) => any,
-        width: number,
-        sort?: () => string,
-        sortOrder?: number
-    };
     export interface ColumnProp {
         header: () => any,
         body: (row) => any,
         startWidth?: number,
-        sort?: () => string,
-        sortOrder?: number
+        sort?: () => string
     };
     export interface State {
-        columns: ColumnState[]
         resizing: {
             columnIndex: number,
             rowIndex: number,
@@ -66,14 +57,17 @@ export namespace ListTable {
         onExtend?: (data: ToolbarArgs) => void,
         rowHeight?: number,
         bodyHeight?: number,
+        sort?: {
+            [key: string]: string
+        },
         onChange: (changePayload: ChangeArgs) => void
     };
 };
 export namespace Pagination {
     export interface Props {
-        limit ?: number,
+        limit?: number,
         page: number,
-        display ?: number,
+        display?: number,
         pageCount: number,
         onClick: (evt: any) => void,
         onChange: (evt: any) => void,

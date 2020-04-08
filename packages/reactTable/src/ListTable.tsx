@@ -44,7 +44,6 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             "domHandleScroll",
             "trNinjaOnEnter",
             "trNinjaOnLeave",
-            "handleChange",
             "handleExtend"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
@@ -131,22 +130,19 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     }
 
     headerClick(evt) {
+        const { columns, sort, onChange } = this.props;
         const colClickIndex = evt.currentTarget.dataset.col;
-        this.setState((state) => {
-            return {
-                columns: this.props.columns.map((col, colIndex) => {
-                    let sort = null;
-                    if (colIndex == colClickIndex) {
-                        sort = col.sortOrder * -1 || 1;
-                    }
-                    return {
-                        ...col,
-                        sortOrder: sort
-                    };
-                })
+        const sortField = columns[colClickIndex].sort();
+        let newOrder = 1;
+        if (sort[0] && (sort[0] == sortField + ",1" || sort[0] == sortField + ",asc")) {
+            newOrder = -1;
+        }
+        let args = {
+            sort: {
+                0: sortField + "," + newOrder.toString()
             }
-        });
-        this.handleChange();
+        };
+        onChange(args);
     }
     domHandleScroll(evt) {
         this.ref.headerDiv.current.scrollLeft = evt.target.scrollLeft;
@@ -170,28 +166,6 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
             return;
         }
         ninjapanel.style.display = "none";
-    }
-    handleChange() {
-        const { onChange } = this.props;
-
-        // assign parameters
-        if (onChange) {
-            let sort: any = {};
-            let sortIndex = 0;
-            for (let col of this.props.columns) {
-                if (col.sortOrder == 1 || col.sortOrder == -1) {
-                    sort[sortIndex] = col.sort();
-                    sortIndex++;
-                }
-            }
-            let args: types.ListTable.ChangeArgs = {
-                filter: {},
-                limit: 0,
-                page: 0,
-                sort: sort
-            }
-            onChange(args);
-        }
     }
     handleExtend(evt) {
         const { onExtend } = this.props;
@@ -244,8 +218,15 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
     }
 
     render() {
-        const { data, columns, headerHeight, rowHeight, bodyHeight, extensible, toolbar } = this.props;
+        const { data, columns,
+            headerHeight, rowHeight, bodyHeight,
+            extensible, toolbar, sort } = this.props;
         const { customColumnWidth, customRowHeight, extendedRow } = this.state;
+        let sortFields: any = {};
+        for (let sortIndex of Object.keys(sort)) {
+            let sortVal = sort[sortIndex].split(",");
+            sortFields[sortVal[0]] = sortVal[1];
+        }
         return <>
             <div style={{ overflow: "hidden" }} ref={this.ref.headerDiv}>
                 <div style={{
@@ -265,8 +246,9 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                 {columns.map((col, colIndex) => {
                                     const heightOfRow = (customRowHeight["thead"] || headerHeight || 24);
                                     let useColWidth = customColumnWidth[colIndex] || col.startWidth || 120;
-                                    let colBodyWidth = !col.sort ? useColWidth : (useColWidth - 24);
-                                    let body = !col.sort ? col.header() : <>
+                                    let sortField = col.sort ? col.sort() : null;
+                                    let colBodyWidth = !sortField ? useColWidth : (useColWidth - 24);
+                                    let body = !sortField ? col.header() : <>
                                         <div style={{
                                             display: "inline-block",
                                             width: colBodyWidth + "px"
@@ -277,8 +259,8 @@ class ListTable extends React.Component<types.Table.Props, types.ListTable.State
                                             display: "inline-block"
                                         }}>
                                             <FAIcon icon={(
-                                                col.sortOrder == 1 ? faSortUp :
-                                                    col.sortOrder == -1 ? faSortDown :
+                                                sortFields[sortField] == 1 ? faSortUp :
+                                                    sortFields[sortField] == -1 ? faSortDown :
                                                         faSort)} />
                                         </div>
                                     </>;

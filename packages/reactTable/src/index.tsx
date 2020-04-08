@@ -27,7 +27,7 @@ class Table extends React.Component<types.Table.Props, any> {
         this.state = {
         };
         [
-
+            "handleSortChange"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -38,9 +38,11 @@ class Table extends React.Component<types.Table.Props, any> {
 
     handleSortChange(args: types.ListTable.ChangeArgs) {
         const { onChange, pagination } = this.props;
-        args.page = pagination.page;
-        args.limit = pagination.limit;
-        onChange(args);
+        onChange({
+            ...args,
+            page: pagination.page,
+            limit: pagination.limit,
+        });
     }
     handlePageChange() {
 

@@ -46,9 +46,11 @@ export default class List extends React.Component {
                 limit: store.filter.limit,
                 onChange: store.handlePageChange
             }}
+            sort={store.filter.sort}
             toolbar={(row) => {
                 return <button type="button" className="btn btn-primary">Edit</button>
             }}
+            onChange={store.handleTableChange}
         ></Table>;
     }
 }

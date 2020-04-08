@@ -3,7 +3,7 @@ let mobxReact = require('mobx-react');
 let { observer, inject } = mobxReact;
 
 import Table from '../../src/index';
-import ListTable from '../../src/ListTable';
+import ExtendList from './ExtendList';
 
 @observer
 export default class List extends React.Component {
@@ -13,31 +13,11 @@ export default class List extends React.Component {
     render() {
         const props = this.props;
         const store = this.props.store;
+
         return <Table
             bodyHeight={600}
             extensible={(args) => {
-                if (!store.postByUserid[args.data.id]) {
-                    return null;
-                }
-                else {
-                    return <ListTable
-                        data={store.postByUserid[args.data.id]}
-                        bodyHeight={300}
-                        rowHeight={32}
-                        columns={[
-                            {
-                                header: () => "Title",
-                                body: (row) => row.title,
-                                startWidth: 300
-                            },
-                            {
-                                header: () => "Body",
-                                body: (row) => row.body,
-                                startWidth: 400
-                            },
-                        ]}
-                    ></ListTable>;
-                }
+                return <ExtendList store={store} id={args.data.id} />
             }}
             onExtend={store.handleExtend}
             toolbar={({ data }) => {

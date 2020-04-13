@@ -29,6 +29,11 @@ app.get('/api/posts', (req, res) => {
     let page = req.query.page || 1;
     let limit = req.query.limit || 25;
     let sourceData: any = postsData;
+
+    if (req.query["filter.user"]) {
+        let userid = req.query["filter.user"];
+        sourceData = lo.filter(sourceData, k => k.userId == userid);
+    }
     if (req.query["sort.0"]) {
         let parts = req.query["sort.0"].split(",");
         sourceData = lo.orderBy(sourceData, [parts[0]], [parts[1] == 1 ? "asc" : "desc"]);

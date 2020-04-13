@@ -93,11 +93,11 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                 </BsCardBody>
                 <BsCardFooter
                     style={{ textAlign: "right", paddingLeft: "15px", paddingRight: "15px" }}>
-                    <BsButtonSecondary type="button" onClick={this.handleToggleShowFilter} data-role="apply" btntype="primary" >
-                        <FAIcon icon={faSearch}></FAIcon>&nbsp;Apply
-                    </BsButtonSecondary>&nbsp;
                     <BsButtonSecondary type="button" onClick={this.handleToggleShowFilter} data-role="cancel">
                         <FAIcon icon={faTimes}></FAIcon>&nbsp;Cancel
+                    </BsButtonSecondary>&nbsp;
+                    <BsButtonSecondary type="button" onClick={this.handleToggleShowFilter} data-role="apply" btntype="primary" >
+                        <FAIcon icon={faSearch}></FAIcon>&nbsp;Apply
                     </BsButtonSecondary>
                 </BsCardFooter>
             </BsCard>;

@@ -13,7 +13,10 @@ export default class List extends React.Component {
     render() {
         const props = this.props;
         const store = this.props.store;
-        const { filterInput, users, handleFilterInputChange } = store;
+        const { filterInput, users,
+            handleFilterInputChange,
+            handleFilterInputCancel,
+            handleFilterInputApply } = store;
 
         return <Table
             bodyHeight={480}
@@ -21,6 +24,9 @@ export default class List extends React.Component {
                 return <ExtendList store={store} id={args.data.id} />
             }}
             onExtend={store.handleExtend}
+
+            onFilterCancel={handleFilterInputCancel}
+            onFilterApply={handleFilterInputApply}
             filterPage={() => {
                 return <div className="row">
                     <div className="col-md-6">
@@ -42,6 +48,7 @@ export default class List extends React.Component {
                     </div>
                 </div>;
             }}
+
             columns={[
                 {
                     header: () => "Title",
@@ -54,6 +61,11 @@ export default class List extends React.Component {
                     sort: () => "body",
                     body: (row) => row.body,
                     startWidth: 600
+                },
+                {
+                    header: () => "User",
+                    body: (row) => users[row.userId].username,
+                    startWidth: 200
                 },
             ]}
             headerHeight={48}

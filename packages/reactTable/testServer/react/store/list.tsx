@@ -7,7 +7,9 @@ class ListStore {
         [
             "handleExtend",
             "handleTableChange",
-            "handleFilterInputChange"
+            "handleFilterInputChange",
+            "handleFilterInputApply",
+            "handleFilterInputCancel"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -51,7 +53,15 @@ class ListStore {
                 let index = query.split(".")[1];
                 filter.sort[index] = value;
             }
+            if (query.startsWith("filter.")) {
+                filter.filter[query.replace("filter.", "")] = value;
+            }
         }
+        this.filterInput = {
+            ...this.filterInput,
+            ...this.filter.filter
+        };
+
         let before = Promise.resolve();
         if (!this.userInit) {
             before = sa.get(this.apiPath.getUser)
@@ -107,6 +117,21 @@ class ListStore {
         this.filterInput = {
             ...this.filterInput,
             [target.name]: target.value
+        };
+    }
+    handleFilterInputApply(evt) {
+        let newQueryParams: any = {
+        };
+        let prefix = "filter.";
+        for (let key of Object.keys(this.filterInput)) {
+            newQueryParams[prefix + key] = this.filterInput[key];
+        }
+        this.mainStore.urlRouter.changeQueryParam(newQueryParams);
+    }
+    handleFilterInputCancel(evt) {
+        this.filterInput = {
+            ...this.filterInput,
+            ...this.filter.filter
         };
     }
 };

@@ -350,7 +350,7 @@ export const DivNinjaPanel = styled.div`
     position: absolute;
     //right: 16px;
     background-color: #FFFFFF;
-    padding: 0px 0 4px 0;
+    padding: 4px 4px 4px 4px;
 
     ${props => props.extend == "left" && css`
         padding-left: 32px;

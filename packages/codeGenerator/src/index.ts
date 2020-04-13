@@ -23,6 +23,7 @@ const supportedPrettierFileFormat = [
 const replaceFileName = (original: string, option) => {
     const replacement = {
         "[Model.Name]": option.schema.Model.Name,
+        "[Model.Connection]": option.schema.Model.Connection,
         "[Route.Module.Code]": option.schema.Route.Module.Code,
     };
     let result = original;

@@ -21,9 +21,6 @@ export default class List extends React.Component {
                 return <ExtendList store={store} id={args.data.id} />
             }}
             onExtend={store.handleExtend}
-            toolbar={({ data }) => {
-                return <></>;
-            }}
             filterPage={() => {
                 return <div className="row">
                     <div className="col-md-6">
@@ -69,7 +66,7 @@ export default class List extends React.Component {
             }}
             sort={store.filter.sort}
             toolbar={(row) => {
-                return <button type="button" className="btn btn-primary">Edit</button>
+                return <button type="button" className="btn btn-primary btn-sm">Edit</button>
             }}
             onChange={store.handleTableChange}
         ></Table>;

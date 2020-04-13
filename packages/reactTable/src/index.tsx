@@ -1,17 +1,13 @@
 const React = require('react');
 const lo = require('lodash');
 const {
-    BsTHead,
-    BsTBody,
-    BsTh,
-    BsTr,
-    BsTd,
-    BsTable,
+    BsCard,
+    BsCardHeader,
+    BsCardBody,
+    BsCardFooter,
     BsButtonSecondary,
     DivRow,
     DivCol6,
-    TrNinjaContainer,
-    DivNinjaPanel
 } = require('./styled');
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/react-fontawesome'
 import { faFilter, faTimes, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -87,14 +83,15 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
         const { showFilter } = this.state;
         const { pagination, filterPage, bodyHeight } = this.props;
         if (showFilter) {
-            return <div className="card">
-                <div  className="card-header">
-                </div>
-                <div className="card-body"
+            return <BsCard>
+                <BsCardHeader>
+                    Filter
+                </BsCardHeader>
+                <BsCardBody
                     style={{ minHeight: bodyHeight + "px", overflowY: "auto", padding: "15px" }}>
                     {filterPage()}
-                </div>
-                <div className="card-footer"
+                </BsCardBody>
+                <BsCardFooter
                     style={{ textAlign: "right", paddingLeft: "15px", paddingRight: "15px" }}>
                     <BsButtonSecondary type="button" onClick={this.handleToggleShowFilter} data-role="apply" btntype="primary" >
                         <FAIcon icon={faSearch}></FAIcon>&nbsp;Apply
@@ -102,8 +99,8 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                     <BsButtonSecondary type="button" onClick={this.handleToggleShowFilter} data-role="cancel">
                         <FAIcon icon={faTimes}></FAIcon>&nbsp;Cancel
                     </BsButtonSecondary>
-                </div>
-            </div>;
+                </BsCardFooter>
+            </BsCard>;
         }
         else {
             return <div>
@@ -125,13 +122,13 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
                 </div>
                 <ListTable {...this.props} onChange={this.handleSortChange} />
                 <div style={{ marginBottom: "8px" }}>
-                    {/* <div className="row">
-                    <div className="col-6">
+                    <div className="row">
+                        <div className="col-6">
+                        </div >
+                        <div className="col-6 text-right">
+                            <Pagination {...pagination} onChange={this.handlePageChange}></Pagination>
+                        </div>
                     </div >
-                    <div className="col-6 text-right">
-                        <Pagination page={12} pageCount={25}></Pagination>
-                    </div>
-                </div > */}
                 </div>
             </div>;
         }

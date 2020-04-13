@@ -175,6 +175,63 @@ export const BsButtonSecondary = styled.button`
         box-sizing: border-box;
     }
 `;
+
+export const BsCard = styled.div`
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
+`;
+export const BsCardHeader = styled.div`
+    padding: .75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0,0,0,.03);
+    border-bottom: 1px solid rgba(0,0,0,.125);
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
+`;
+export const BsCardBody = styled.div`
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+    
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
+`;
+export const BsCardFooter = styled.div`
+    padding: .75rem 1.25rem;
+    background-color: rgba(0,0,0,.03);
+    border-top: 1px solid rgba(0,0,0,.125);
+
+    box-sizing: border-box;
+    &::after, &::before {
+        box-sizing: border-box;
+    }
+`;
+
+
+
+
+
+
 export const ResizePanel = styled.div`
     display: inline-block;
     &:hover {

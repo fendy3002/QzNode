@@ -16,7 +16,7 @@ export default class List extends React.Component {
         const { filterInput, users, handleFilterInputChange } = store;
 
         return <Table
-            bodyHeight={600}
+            bodyHeight={480}
             extensible={(args) => {
                 return <ExtendList store={store} id={args.data.id} />
             }}

@@ -151,6 +151,15 @@ export const BsButtonSecondary = styled.button`
         border-color: #6c757d;
     }
 
+    ${props => props.btntype == "primary" && css`
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #ffffff;
+        &:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+    `}
     ${props => props.btntype == "success" && css`
         background-color: #1e7e34;
         border-color: #1c7430;

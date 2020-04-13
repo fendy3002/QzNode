@@ -7,6 +7,7 @@ class ListStore {
         [
             "handleExtend",
             "handleTableChange",
+            "handleFilterInputChange"
         ].forEach((handler) => {
             this[handler] = this[handler].bind(this);
         });
@@ -20,6 +21,8 @@ class ListStore {
         "getCommentByPost": "/api/post/{id}/comments",
     };
     mainStore;
+    userInit = false;
+    users = {};
     @observable
     posts = [];
     @observable
@@ -31,7 +34,11 @@ class ListStore {
         limit: 25,
         filter: {},
         sort: {}
-    }
+    };
+    @observable
+    filterInput = {
+        user: ""
+    };
     onPathChange(pathData) {
         let filter: any = {
             ...this.filter,
@@ -45,14 +52,28 @@ class ListStore {
                 filter.sort[index] = value;
             }
         }
+        let before = Promise.resolve();
+        if (!this.userInit) {
+            before = sa.get(this.apiPath.getUser)
+                .query({
+                    "page": 1,
+                    "limit": 99999
+                }).then((response) => {
+                    for (let user of response.body) {
+                        this.users[user.id] = user;
+                    }
+                });
+        }
 
-        sa.get(this.apiPath.getPost + window.location.search).then((response) => {
-            this.posts = response.body;
-            this.filter = {
-                ...filter,
-                rowCount: response.header['x-total-count']
-            }
-        });
+        before.then(() => {
+            return sa.get(this.apiPath.getPost + window.location.search).then((response) => {
+                this.posts = response.body;
+                this.filter = {
+                    ...filter,
+                    rowCount: response.header['x-total-count']
+                }
+            });
+        })
     }
 
     handleExtend(arg) {
@@ -80,6 +101,13 @@ class ListStore {
             newQueryParams["sort." + sortIndex] = newFilter.sort[sortIndex];
         }
         this.mainStore.urlRouter.changeQueryParam(newQueryParams);
+    }
+    handleFilterInputChange(evt) {
+        let target = evt.currentTarget;
+        this.filterInput = {
+            ...this.filterInput,
+            [target.name]: target.value
+        };
     }
 };
 export default ListStore;

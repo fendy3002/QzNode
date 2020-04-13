@@ -1,4 +1,7 @@
 export namespace Table {
+    export interface State {
+        showFilter: boolean
+    };
     export interface Props extends ListTable.Props {
         pagination: {
             limit?: number,

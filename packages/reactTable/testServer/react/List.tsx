@@ -13,6 +13,7 @@ export default class List extends React.Component {
     render() {
         const props = this.props;
         const store = this.props.store;
+        const { filterInput, users, handleFilterInputChange } = store;
 
         return <Table
             bodyHeight={600}
@@ -22,6 +23,27 @@ export default class List extends React.Component {
             onExtend={store.handleExtend}
             toolbar={({ data }) => {
                 return <></>;
+            }}
+            filterPage={() => {
+                return <div className="row">
+                    <div className="col-md-6">
+                        <div className="row">
+                            <label className="col-md-4 col-form-label">
+                                User
+                            </label>
+                            <div className="col-md-8">
+                                <select className="form-control" type="text"
+                                    name="user" onChange={handleFilterInputChange}
+                                    value={filterInput.user}>
+                                    <option value="">-- ALL USER -- </option>
+                                    {Object.keys(users).map(userId => {
+                                        return <option key={userId} value={userId}>{users[userId].username}</option>;
+                                    })}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>;
             }}
             columns={[
                 {

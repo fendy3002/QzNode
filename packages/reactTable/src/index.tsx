@@ -135,4 +135,4 @@ class Table extends React.Component<types.Table.Props, types.Table.State> {
     }
 };
 export default Table;
-export { ListTable };
+export { ListTable, types };

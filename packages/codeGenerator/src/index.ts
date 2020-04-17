@@ -25,6 +25,7 @@ const replaceFileName = (original: string, option) => {
         "[Model.Name]": option.schema.Model.Name,
         "[Model.Connection]": option.schema.Model.Connection,
         "[Route.Module.Code]": option.schema.Route.Module.Code,
+        "[Route.Module.UrlPrefix]": option.schema.Route.Module.UrlPrefix,
     };
     let result = original;
     for (const key of Object.keys(replacement)) {

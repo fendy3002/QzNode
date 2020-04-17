@@ -28,7 +28,8 @@ const getHelper = async (context: types.Context) => {
         return renderer.render(path.join(context.path.helper, helperName), {
             _helper: helper,
             _data: data,
-            ...extensions
+            schema: context.schema,
+            ...extensions,
         }).replace(/\n\s*\n/g, '\n');
     };
     const isArr = (val: any) => {

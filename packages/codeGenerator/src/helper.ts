@@ -29,7 +29,6 @@ const getHelper = async (context: types.Context) => {
             _helper: helper,
             _data: data,
             schema: context.schema,
-            ...extensions,
         }).replace(/\n\s*\n/g, '\n');
     };
     const isArr = (val: any) => {
@@ -59,6 +58,7 @@ const getHelper = async (context: types.Context) => {
         inArray,
         isObj,
         appendObj,
+        ...extensions,
         print: {
             open: "{{",
             close: "}}"

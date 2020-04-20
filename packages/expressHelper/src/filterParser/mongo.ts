@@ -28,6 +28,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                 if (typeof (schemaType) == "string") {
                     return {
                         key: schemaType,
+                        type: "any",
                         value: (val) => val
                     };
                 } else {
@@ -74,6 +75,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                     }
                     return {
                         key: schemaType.key,
+                        type: schemaTypeObj.type,
                         value: valConverter
                     };
                 }
@@ -89,12 +91,17 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
         }
         return {
             key: key,
+            type: "any",
             value: (val) => val
         };
     };
     let keyOperation = (operation, code) => (key, value) => {
         let crossCheckResult = crossCheckSchema(key, code);
         if (crossCheckResult) {
+            const crossCheckResultValue = crossCheckResult.value(value);
+            if (crossCheckResultValue == null && (crossCheckResult.type == "boolean" || crossCheckResult.type == "bool")) {
+                return null;
+            }
             return {
                 [crossCheckResult.key]: {
                     [operation]: crossCheckResult.value(value)

@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/express-helper",
-  "version": "0.1.20",
+  "version": "0.2.0",
   "description": "",
   "main": "dist/index.js",
   "publishConfig": {

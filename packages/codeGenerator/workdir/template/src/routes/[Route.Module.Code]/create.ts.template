@@ -25,13 +25,14 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         }).validate<any>(body);
     };
     const getSupplement = async (req) => {
-        return {
-        };
+        let supplement: any = {};
+        {{ _helper.renderHelper("listsupplement.template", Model.Fields) | safe }}
+        return supplement;
     };
     // create
     router.get("/create",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = "Add " + moduleInfo.title;
+            res.locals._title = "Add " + req.moduleInfo.title;
 
             let modalData = null;
             if (req.query._form_id) {
@@ -44,25 +45,25 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 _form_id: newFormId
             };
 
-            return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+            return res.render(`${req.moduleInfo.urlPrefix}/edit.html`, {
                 data: data,
                 modal: modalData,
                 supplement: await getSupplement(req),
                 operation: "I",
-                moduleInfo: moduleInfo
+                moduleInfo: req.moduleInfo
             });
         })
     );
     // create post
     router.post("/create",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = "Add " + moduleInfo.title;
+            res.locals._title = "Add " + req.moduleInfo.title;
             const changeRequestModel = req.mongoose.model("change_request");
             let notificationManager = await notificationManagerRaw(config, req.notificator, req.lang);
             
             let validateResult = await validatePostData(req.body);
             if (!validateResult.isValid) {
-                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+                return res.render(`${req.moduleInfo.urlPrefix}/edit.html`, {
                     data: req.body,
                     modal: {
                         "type": "error",
@@ -77,7 +78,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 let changePayload = {
                     _id: changeRequestId,
                     TransactionStatusCode: "20",
-                    ModuleCode: moduleInfo.code,
+                    ModuleCode: req.moduleInfo.code,
                     Operation: "I",
                     RecordId: modelId,
                     CurrentValue: null,
@@ -117,11 +118,11 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 if (approval) {
                     await notificationManager.submitApproval({
                         operation: "I",
-                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
+                        viewUrl: `${req.fullHostUrl}/${req.moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
                         approvalUrl: `${req.fullHostUrl}/approval/` + approvalId.lineId,
                         firstApproverId: approval.ApproverTransactionJSON["1"].UserAccountKey,
                         requestId: changeRequestId,
-                        moduleName: moduleInfo.title,
+                        moduleName: req.moduleInfo.title,
                         timestamp: new Date().getTime(),
                         userId: req.session.user.id,
                         submitterEmail: req.session.user.email
@@ -130,7 +131,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         "type": "success",
                         "message": req.lang._("general.successApproval", "", {
                             subject: req.lang.text("general.create.successApproval", "", {
-                                module: moduleInfo.title
+                                module: req.moduleInfo.title
                             }),
                             transaction_id: changeRequestId.toUpperCase(),
                             timestamp: moment(changePayload.LastModifiedAtTimeStamp).format(config.dateTimeFullFormat)
@@ -141,9 +142,9 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                     let newRecord = await helper.onFullyApprove(req, changeRequestId, "I");
                     await notificationManager.submitNoApproval({
                         operation: "I",
-                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
+                        viewUrl: `${req.fullHostUrl}/${req.moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
                         requestId: changeRequestId,
-                        moduleName: moduleInfo.title,
+                        moduleName: req.moduleInfo.title,
                         timestamp: new Date().getTime(),
                         userId: req.session.user.id,
                         submitterEmail: req.session.user.email
@@ -152,14 +153,14 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         "type": "success",
                         "message": req.lang._("general.successNoApproval", "", {
                             subject: req.lang.text("general.create.successNoApproval", "", {
-                                module: moduleInfo.title
+                                module: req.moduleInfo.title
                             }),
                             record_id: modelId.toUpperCase(),
                             timestamp: moment(changePayload.LastModifiedAtTimeStamp).format(config.dateTimeFullFormat)
                         })
                     });
                 }
-                return res.redirect(`/${moduleInfo.urlPrefix}/create?_form_id=${req.body._form_id}`);
+                return res.redirect(`/${req.moduleInfo.urlPrefix}/create?_form_id=${req.body._form_id}`);
             }
         })
     );

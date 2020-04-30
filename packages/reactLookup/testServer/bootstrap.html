@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" /> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <div data-role="lookup">
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <td data-field="$username"></td>
+                <td data-field="$name"></td>
+                <td data-field="$email" data-field-format="email"></td>
+                <td data-field="$address"></td>
+            </tbody>
+        </table>
+    </div>
+    <div id="react-app"></div>
+    <script src="/js/bin/index.js"></script>
+    <script>
+        app(document.getElementById("react-app"), {
+            root: "bsadmin"
+        })
+    </script>
+</body>
+
+</html>

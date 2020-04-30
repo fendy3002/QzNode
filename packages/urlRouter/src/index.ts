@@ -115,6 +115,12 @@ const urlRouter = (init: initPayload) => {
         }
 
         window.history.pushState({}, '', redirectTo);
+        const pushStateEvent = new CustomEvent("_pushstate", {
+            detail: {
+                location: window.location
+            }
+        });
+        window.dispatchEvent(pushStateEvent);
         return onChange(window.location);
     };
 

@@ -135,8 +135,9 @@ export const schema = (schema: any) => {
         }
         else if (schema.type == "boolean") {
             data = val;
-            if (schema.required) {
-                if (data == null || data == "") {
+
+            if (isValid && schema.required) {
+                if ((data == null || data == "") && data !== false) {
                     isValid = false;
 
                     errors.push({
@@ -146,18 +147,18 @@ export const schema = (schema: any) => {
                     });
                 }
             }
-            if (isValid && typeof (data) == "string") {
-                if (data && data != "") {
-                    if (data == "true") { data = true; }
-                    else if (data == "false") { data = false; }
-                    else {
-                        isValid = false;
-                        errors.push({
-                            name: schema.name ? schema.name : path,
-                            property: path,
-                            message: "is not a boolean"
-                        });
-                    }
+            if (isValid && data
+                && typeof (data) == "string" && data != ""
+            ) {
+                if (data == "true") { data = true; }
+                else if (data == "false") { data = false; }
+                else {
+                    isValid = false;
+                    errors.push({
+                        name: schema.name ? schema.name : path,
+                        property: path,
+                        message: "is not a boolean"
+                    });
                 }
             }
         }

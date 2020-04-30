@@ -7,7 +7,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
 
     router.get("/:id/view-log",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = moduleInfo.title + " Log";
+            res.locals._title = req.moduleInfo.title + " Log";
             const changeRequestModel = req.mongoose.model("change_request");
             const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
             let id = req.params.id;
@@ -26,7 +26,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 modalData = req.flash('modal_' + oldFormId)[0];
             }
 
-            return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+            return res.render(`${req.moduleInfo.urlPrefix}/edit.html`, {
                 data: {
                     ...result.CurrentValue,
                     ...result.NextValue,
@@ -34,7 +34,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 },
                 operation: "V",
                 modal: modalData,
-                moduleInfo: moduleInfo
+                moduleInfo: req.moduleInfo
             });
         })
     );

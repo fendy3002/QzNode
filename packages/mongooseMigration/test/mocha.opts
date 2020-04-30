@@ -1,0 +1,4 @@
+--require ts-node/register 
+--trace-warnings
+--reporter mochawesome
+--exit

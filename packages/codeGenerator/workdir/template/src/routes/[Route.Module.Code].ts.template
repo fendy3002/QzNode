@@ -19,11 +19,15 @@ import approval from './{{ Route.Module.Code | safe }}/approval';
 
 export default async (config: types.config.app) => {
     let moduleInfo: types.moduleInfo = {
-        code: "{{ Route.Module.Code | safe }}",
+        code: "{{ Route.Module.Code | upper | safe }}",
         urlPrefix: "{{ Route.Module.UrlPrefix | safe }}",
         title: "{{ Route.Module.Title | safe }}",
-        statusField: "{{ Route.Module.Code | safe }}"
+        statusField: "{{ Route.Module.Code | lower | safe }}"
     };
+    router.use((req, res, next) => {
+        req.moduleInfo = moduleInfo;
+        next();
+    });
 
     const getApproval = await getApprovalRaw(config);
     const evalApproval = await evalApprovalRaw(config, moduleInfo.code);
@@ -40,7 +44,7 @@ export default async (config: types.config.app) => {
 
     router.get("/:id/log",
         errorHandler.handled(async (req, res, next) => {
-            return res.redirect(`/${moduleInfo.urlPrefix}/transaction-order?filter.RecordId.contains=${req.params.id}&search=1`)
+            return res.redirect(`/${req.moduleInfo.urlPrefix}/transaction-order?filter.RecordId.contains=${req.params.id}&search=1`)
         })
     );
     await approval(router, config, moduleInfo, getApproval);

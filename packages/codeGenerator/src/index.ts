@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import fs = require('fs');
 import path = require('path');
 import commandLineArgs = require('command-line-args');
@@ -5,6 +7,7 @@ import commandLineArgs = require('command-line-args');
 import nunjucks = require('nunjucks');
 import prettier = require("prettier");
 import getHelper from './helper';
+import * as types from './types';
 
 const optionDefinitions = [
     { name: 'schema', alias: 's', type: String, defaultOption: true },
@@ -20,7 +23,9 @@ const supportedPrettierFileFormat = [
 const replaceFileName = (original: string, option) => {
     const replacement = {
         "[Model.Name]": option.schema.Model.Name,
+        "[Model.Connection]": option.schema.Model.Connection,
         "[Route.Module.Code]": option.schema.Route.Module.Code,
+        "[Route.Module.UrlPrefix]": option.schema.Route.Module.UrlPrefix,
     };
     let result = original;
     for (const key of Object.keys(replacement)) {
@@ -29,6 +34,18 @@ const replaceFileName = (original: string, option) => {
     result = result.replace(".template", "");
     return result;
 };
+
+let htmlNunjucks = nunjucks.configure({
+    tags: {
+        blockStart: '|%',
+        blockEnd: '%|',
+        variableStart: '|$',
+        variableEnd: '$|',
+        commentStart: '|#',
+        commentEnd: '#|'
+    }
+});
+let defaultNunjucks = nunjucks.configure({});
 
 const renderPath = async (currentPath: string, option) => {
     const replacedCurrentPath = replaceFileName(currentPath, option);
@@ -40,11 +57,22 @@ const renderPath = async (currentPath: string, option) => {
 
         if (fileStat.isFile()) {
             console.log("processing file: ", itemPath);
-            let fileContent = nunjucks.render(itemPath, {
-                _helper: option.helper,
-                ...option.schema
-            }).replace(/\n\s*\n/g, '\n');
             let realExtension = path.extname(replaceFileName(item, option));
+            let fileContent = "";
+            if (realExtension != ".html") {
+                fileContent = defaultNunjucks.render(itemPath, {
+                    _helper: option.helper,
+                    ...option.schema
+                });
+            }
+            else {
+                fileContent = htmlNunjucks.render(itemPath, {
+                    _helper: option.helper,
+                    ...option.schema
+                });
+            }
+            fileContent = fileContent.replace(/\n\s*\n/g, '\n');
+
             let prettierFormat = supportedPrettierFileFormat.filter(k => k.ext == realExtension)
             if (
                 option.schema.Prettier &&
@@ -79,12 +107,14 @@ const doTask = async () => {
     const helperDir = path.join(process.cwd(), option.template, "helper");
     const templateDir = path.join(process.cwd(), option.template, "template");
     const outputDir = path.join(process.cwd(), option.template, "output");
+    const extensionDir = path.join(process.cwd(), option.template, "extension");
     const schemaPath = path.join(process.cwd(), option.schema);
     const schemaStat = fs.statSync(schemaPath);
     console.log({
         helperDir,
         templateDir,
         outputDir,
+        extensionDir,
         schemaPath
     });
     const processingSchema = [];
@@ -111,16 +141,21 @@ const doTask = async () => {
         }
 
         console.log("schema", schemaObj)
-        let context: any = {
+        let context: types.Context = {
             ...option,
             path: {
                 helper: helperDir,
                 template: templateDir,
-                output: outputDir
+                output: outputDir,
+                extension: extensionDir
             },
-            schema: schemaObj
+            schema: schemaObj,
+            nunjucks: {
+                default: defaultNunjucks,
+                html: htmlNunjucks
+            }
         };
-        const helper = getHelper(context);
+        const helper = await getHelper(context);
         context.helper = helper;
         await renderPath("", context);
     }

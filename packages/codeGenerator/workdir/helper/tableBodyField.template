@@ -1,5 +1,0 @@
-{% for field in _data %}
-{% if field.Type != "_object" and field.Type != "" %}
-                                        <td>{{ _helper.print.open }} each["{{ field.Name | safe }}"] {{ _helper.print.close }}</td>
-{% endif %}
-{% endfor %}                                        

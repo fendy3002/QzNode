@@ -25,18 +25,19 @@ export default async (router, config: types.config.app, moduleInfo: types.module
         }).validate<any>(body);
     };
     const getSupplement = async (req) => {
-        return {
-        };
+        let supplement: any = {};
+        {{ _helper.renderHelper("listsupplement.template", Model.Fields) | safe }}
+        return supplement;
     };
     router.get("/:id/delete",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = "Delete " + moduleInfo.title;
+            res.locals._title = "Delete " + req.moduleInfo.title;
             const changeRequestModel = req.mongoose.model("change_request");
-            const currentModuleModel = req.mongoose.model("{{ ModuleInfo.urlPrefix }}");
+            const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
             let id = req.params.id;
 
             if (await changeRequestModel.findOne({
-                ModuleCode: moduleInfo.code,
+                ModuleCode: req.moduleInfo.code,
                 "NextValue._id": id,
                 TransactionStatusCode: "10"
             })) {
@@ -60,14 +61,14 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 modal: modalData,
                 supplement: await getSupplement(req),
                 operation: "D",
-                moduleInfo: moduleInfo
+                moduleInfo: req.moduleInfo
             });
         })
     );
     // delete post
     router.post("/:id/delete",
         errorHandler.handled(async (req, res, next) => {
-            res.locals._title = "Delete " + moduleInfo.title;
+            res.locals._title = "Delete " + req.moduleInfo.title;
             const changeRequestModel = req.mongoose.model("change_request");
             const currentModuleModel = req.mongoose.model("{{ Model.Name }}");
 
@@ -83,29 +84,29 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 ...req.body,
             };
             if (!reasonForChanging) {
-                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+                return res.render(`${req.moduleInfo.urlPrefix}/edit.html`, {
                     data: data,
                     modal: {
                         type: "error",
                         message: "Reason for Changing is Required".bold()
                     },
                     operation: "D",
-                    moduleInfo:moduleInfo
+                    moduleInfo: req.moduleInfo
                 });
             }
             else if (await changeRequestModel.findOne({
-                ModuleCode: moduleInfo.code,
+                ModuleCode: req.moduleInfo.code,
                 "NextValue._id": modelId,
                 TransactionStatusCode: "10"
             })) {
-                return res.render(`${moduleInfo.urlPrefix}/edit.html`, {
+                return res.render(`${req.moduleInfo.urlPrefix}/edit.html`, {
                     data: data,
                     modal: {
                         "type": "error",
                         "message": (req.lang._("general.delete.pendingApproval", "")).bold()
                     },
                     operation: "D",
-                    moduleInfo:moduleInfo
+                    moduleInfo: req.moduleInfo
                 });
             }
             else {
@@ -113,11 +114,11 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 let changePayload = {
                     _id: changeRequestId,
                     TransactionStatusCode: "20",
-                    ModuleCode: moduleInfo.code,
+                    ModuleCode: req.moduleInfo.code,
                     Operation: "D",
                     RecordId: modelId,
-                    CurrentValue: currentModuleData,
-                    NextValue: null,
+                    CurrentValue: null,
+                    NextValue: currentModuleData,
                     ReasonForChanging: reasonForChanging,
                     Log: [],
                     LastModifiedAtTimeStamp: new Date().getTime(),
@@ -147,11 +148,11 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 if (approval) {
                     await notificationManager.submitApproval({
                         operation: "D",
-                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
+                        viewUrl: `${req.fullHostUrl}/${req.moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
                         approvalUrl: `${req.fullHostUrl}/approval/` + approvalId.lineId,
                         firstApproverId: approval.ApproverTransactionJSON["1"].UserAccountKey,
                         requestId: changeRequestId,
-                        moduleName: moduleInfo.title,
+                        moduleName: req.moduleInfo.title,
                         timestamp: new Date().getTime(),
                         userId: req.session.user.id,
                         submitterEmail: req.session.user.email
@@ -160,7 +161,7 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         "type": "success",
                         "message": req.lang._("general.successApproval", "", {
                             subject: req.lang.text("general.delete.successApproval", "", {
-                                module: moduleInfo.title
+                                module: req.moduleInfo.title
                             }),
                             transaction_id: changeRequestId.toUpperCase(),
                             timestamp: moment(changePayload.LastModifiedAtTimeStamp).format(config.dateTimeFullFormat)
@@ -170,9 +171,9 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                 else {
                     await notificationManager.submitNoApproval({
                         operation: "D",
-                        viewUrl: `${req.fullHostUrl}/${moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
+                        viewUrl: `${req.fullHostUrl}/${req.moduleInfo.urlPrefix}/${changeRequestId}/view-log` ,
                         requestId: changeRequestId,
-                        moduleName: moduleInfo.title,
+                        moduleName: req.moduleInfo.title,
                         timestamp: new Date().getTime(),
                         userId: req.session.user.id,
                         submitterEmail: req.session.user.email
@@ -182,14 +183,14 @@ export default async (router, config: types.config.app, moduleInfo: types.module
                         "type": "success",
                         "message": req.lang._("general.successNoApproval", "", {
                             subject: req.lang.text("general.delete.successNoApproval", "", {
-                                module: moduleInfo.title
+                                module: req.moduleInfo.title
                             }),
                             record_id: modelId.toUpperCase(),
                             timestamp: moment(changePayload.LastModifiedAtTimeStamp).format(config.dateTimeFullFormat)
                         })
                     });
                 }
-                return res.redirect(`/${moduleInfo.urlPrefix}/${changeRequestId}/view-log?_form_id=${req.body._form_id}`);
+                return res.redirect(`/${req.moduleInfo.urlPrefix}/${changeRequestId}/view-log?_form_id=${req.body._form_id}`);
             }
         })
     );

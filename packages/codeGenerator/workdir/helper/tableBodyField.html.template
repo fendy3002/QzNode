@@ -1,0 +1,11 @@
+|% macro supplement(field) %|
+{{ _supplement["|$ field.Name | safe $|"][each["|$ field.Name | safe $|"]].|$ field.Gui.Supplement.Value $| }}
+|% endmacro %|
+
+|% for field in _data %|
+|% if field.Gui and field.Gui.Type == "select" %|
+                                        <td>|$ supplement(field) $|</td>
+|% elif field.Type != "_object" and field.Type != "" %|
+                                        <td>{{ each["|$ field.Name | safe $|"] }}</td>
+|% endif %|
+|% endfor %|                                        

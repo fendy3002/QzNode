@@ -1,0 +1,108 @@
+|% macro renderLabel(field, readOnly) %|
+    |% if readOnly %|
+    |% set requiredClause = "false" %|
+    |% elif field.Required == true %|
+    |% set requiredClause = 'operation != "V" and operation != "A"' %|
+    |% else %|
+    |% set requiredClause = "false" %|
+    |% endif %|
+    
+                {{
+                    _form.label("|$ field.Gui.Label $|", {
+                        "cssClass": "col-form-label",
+                        "required": |$ requiredClause $|,
+                        "attr": {
+                            "for": "|$ field.Gui.Name $|"
+                        }
+                    }) | safe
+                }}
+|% endmacro %|
+|% macro renderReadonly(readOnly) %|
+    |% if _data._readOnly %|
+    {{ "readonly" }}
+    |% else %|
+    {{ "readonly" if operation == "V" or operation == "A" }}
+    |% endif %|
+|% endmacro %|
+|% macro renderDisabled(readOnly) %|
+    |% if _data._readOnly %|
+    {{ "disabled" }}
+    |% else %|
+    {{ "disabled" if operation == "V" or operation == "A" }}
+    |% endif %|
+|% endmacro %|
+
+|% set col = 0 %|
+|% for field in _data.Fields %|
+
+|% if col == 0 %|
+<div class="row">
+|% endif %|
+
+|% if field.Gui.Type == "text" %|
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group row">
+            <div class="col-md-4 text-right">
+                |$ renderLabel(field, _data._readOnly) | safe $|
+            </div>
+            <div class="col-md-8">
+                <input class="form-control" type="text" name="|$ field.Gui.Name $|"
+                    value="{{ data.|$ field.Gui.Name $| }}" |$ renderReadonly(_data._readOnly) | safe $| />
+            </div>
+        </div>
+    </div>
+|% elif field.Gui.Type == "select" %|
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group row">
+            <div class="col-md-4 text-right">
+                |$ renderLabel(field, _data._readOnly) | safe $|
+            </div>
+            <div class="col-md-8">
+                <select class="form-control" name="|$ field.Gui.Name $|" data-role="select2"
+                    |$ renderDisabled(_data._readOnly) | safe $| >
+                    {% for key, obj in _supplement["|$ field.Name | safe $|"] %}
+                        <option value="{{ key }}" {{ "selected" if key == _data["|$ field.Gui.Name $|"] }}>
+                            {{ obj["|$ field.Gui.Supplement.Value $|"] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+|% elif field.Gui.Type == "checkbox" %|
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group row">
+            <div class="col-md-4 text-right">
+                |$ renderLabel(field, _data._readOnly) | safe $|
+            </div>
+            <div class="col-md-8">
+                <input class="form-control" type="checkbox" name="|$ field.Gui.Name $|"
+                    value="true" {{ "checked" if data.|$ field.Gui.Name $| == "true" }} |$ renderDisabled(_data._readOnly) | safe $| />
+            </div>
+        </div>
+    </div>
+|% elif field.Gui.Type == "number" %|
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group row">
+            <div class="col-md-4 text-right">
+                |$ renderLabel(field, _data._readOnly) | safe $|
+            </div>
+            <div class="col-md-8">
+                <input class="form-control text-right" type="text" name="|$ field.Gui.Name $|" data-role="number"
+                    value="{{ data.|$ field.Gui.Name $| }}" |$ renderReadonly(_data._readOnly) | safe $| />
+            </div>
+        </div>
+    </div>
+|% endif %|
+
+|% if col == 1 %|
+</div>
+|% set col = 0 %|
+|% else %|
+|% set col = 1 %|
+|% endif %|
+
+|% endfor %|
+|% if col == 1 %|
+</div>
+|% endif %|

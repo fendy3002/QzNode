@@ -8,8 +8,7 @@ const retryable = (handle: Handle) => {
         let throwEx = null;
         while (tryingTimes <= number) {
             try {
-                await handle();
-                return;
+                return await handle();
             } catch (ex) {
                 throwEx = ex;
                 tryingTimes++;
@@ -22,8 +21,7 @@ const retryable = (handle: Handle) => {
         let throwEx = null;
         while (new Date().getTime() - tsNow <= duration) {
             try {
-                await handle();
-                return;
+                return await handle();
             } catch (ex) {
                 throwEx = ex;
             }

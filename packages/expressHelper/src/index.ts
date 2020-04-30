@@ -2,7 +2,7 @@ import * as errorHandler from './errorHandler';
 import * as filterParser from './filterParser';
 import * as sortParser from './sortParser';
 import * as validator from './validator';
-import * as retryable from './retryable';
+import retryable from './retryable';
 
 export { default as healthcheck } from './healthcheck';
 export { errorHandler };

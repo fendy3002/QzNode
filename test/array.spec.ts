@@ -2,7 +2,7 @@ import * as mocha from 'mocha';
 import * as QzArray from '../src/array';
 var assert = require('assert');
 const util = require('util');
-mocha.describe('DataSet', function () {
+mocha.describe('Array', function () {
     mocha.it('should convert array to key boolean object', function (done) {
         let arr = ['hello', 'world', 'this', 'day'];
         let actual = QzArray.toSet(arr);

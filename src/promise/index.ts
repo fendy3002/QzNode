@@ -1,12 +1,34 @@
+import * as types from '../types';
 import * as rethrow from '../error/rethrow';
-interface Handle {
-    (): Promise<void | any>
-}
-interface Options {
-    delay?: number
-}
-const retryable = (handle: Handle, opts?: Options) => {
-    const times = async (number: number) => {
+
+const limit: types.Qz.Promise.Limit = async (handler, limit: number, opts?: types.Qz.Promise.LimitOptions) => {
+    let result: any[] = [];
+    let batch: (() => Promise<any | void>)[] = [];
+    for (let i = 1; i <= handler.length; i++) {
+        batch.push(handler[i - 1]);
+        if (i > 1 && i % limit == 0) {
+            const batchResult = await Promise.all(
+                batch.map(k => {
+                    return k();
+                })
+            );
+            result = result.concat(batchResult);
+            if (opts?.onLoop) {
+                await opts.onLoop(batchResult);
+            }
+            batch = [];
+        }
+    }
+    if (batch.length > 0) {
+        result = result.concat(
+            await Promise.all(batch.map(k => k()))
+        );
+        batch = [];
+    }
+    return result;
+};
+const retryable: types.Qz.Promise.Retryable = (handle: types.Qz.Promise.RetryableHandle) => {
+    const times = async (number: number, opts?: types.Qz.Promise.RetryableOptions) => {
         let tryingTimes = 0;
         let throwEx = null;
         while (tryingTimes <= number) {
@@ -26,7 +48,7 @@ const retryable = (handle: Handle, opts?: Options) => {
         }
         throw rethrow.from(throwEx).message(`Error after retrying for ${number} times`);
     };
-    const forLong = async (duration: number, opts?: Options) => {
+    const forLong = async (duration: number, opts?: types.Qz.Promise.RetryableOptions) => {
         const tsNow = new Date().getTime();
         let throwEx = null;
         let isRetry = false;
@@ -52,5 +74,7 @@ const retryable = (handle: Handle, opts?: Options) => {
         forLong
     }
 };
-
-export default retryable;
+export {
+    limit,
+    retryable
+};

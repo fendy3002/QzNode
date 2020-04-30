@@ -49,6 +49,26 @@ export namespace Qz {
             isBetweenTime: (from: string, to: string) => boolean
         };
     }
+    export namespace Promise {
+        export interface LimitOptions {
+            onLoop?: (data) => Promise<any | void>
+        }
+        export interface Limit {
+            (handler: (() => Promise<any | void>)[], limit: number, opts?: LimitOptions): Promise<any[] | void[]>
+        }
+        export interface RetryableHandle {
+            (): Promise<void | any>
+        }
+        export interface RetryableOptions {
+            delay?: number
+        }
+        export interface Retryable {
+            (handle: RetryableHandle): {
+                times: (number: number, opts?: RetryableOptions) => Promise<any | void>,
+                forLong: (duration: number, opts?: RetryableOptions) => Promise<any | void>
+            }
+        }
+    }
 }
 // declare namespace qz.Logs{
 //     interface LogService{

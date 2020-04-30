@@ -1,16 +1,15 @@
 let lo = require('lodash');
 import * as types from '../types'
 
-let arrToSet: types.DataSet.ArrToSet = function(
+let toSet: types.Qz.Array.ToSet = function (
     arr,
     valHandler?,
     keyHandler?
-)
-{
-    if(!valHandler){
+) {
+    if (!valHandler) {
         valHandler = (val, index) => true;
     }
-    if(!keyHandler){
+    if (!keyHandler) {
         keyHandler = (val, index) => {
             return val as string;
         };
@@ -19,21 +18,20 @@ let arrToSet: types.DataSet.ArrToSet = function(
     let result: object = {};
     arr.forEach((ele, index: number) => {
         let key = keyHandler(ele, index);
-        if(!result[key]){
+        if (!result[key]) {
             result[key] = valHandler(ele, index);
         }
-        else if(result[key] && Array.isArray(result[key])){
+        else if (result[key] && Array.isArray(result[key])) {
             result[key] = result[key].concat(valHandler(ele, index));
         }
     });
     return result;
 };
 
-let setToArr: types.DataSet.SetToArr = function<T>(
+let fromSet: types.Qz.Array.FromSet = function <T>(
     data,
     handler = (val, key) => val
-)
-{
+) {
     let result: T[] = [];
     lo.forOwn(data, (value, key) => {
         result.push(handler(value, key));
@@ -41,9 +39,7 @@ let setToArr: types.DataSet.SetToArr = function<T>(
     return result;
 };
 
-let Service: types.DataSet.Service = {
-    arrToSet,
-    setToArr
+export {
+    toSet,
+    fromSet
 };
-
-export = Service;

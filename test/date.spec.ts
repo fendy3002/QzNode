@@ -34,5 +34,17 @@ mocha.describe('Date', function () {
             assert.equal(result, true);
             done();
         });
+        mocha.it('between time false', function (done) {
+            let result = qzDate.fromMoment(moment("2000-01-01 13:00"))
+                .isBetweenTime("00:00", "12:00");
+            assert.equal(result, false);
+            done();
+        });
+        mocha.it('between time around', function (done) {
+            let result = qzDate.fromMoment(moment("2000-01-01 13:00"))
+                .isBetweenTime("12:00", "23:59");
+            assert.equal(result, true);
+            done();
+        });
     });
 });

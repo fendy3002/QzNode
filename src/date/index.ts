@@ -44,6 +44,9 @@ const Service = (source: moment.Moment): types.Qz.Date.Service => {
         isBetweenTime: (from: string, to: string) => {
             let momentFrom = moment(source.format("YYYY-MM-DD ") + from);
             let momentTo = moment(source.format("YYYY-MM-DD ") + to);
+            if (momentTo.diff(momentFrom, "seconds") < 0) {
+                momentTo = momentTo.add(1, "days");
+            }
 
             return isBetween(momentFrom, momentTo);
         }

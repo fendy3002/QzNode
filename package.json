@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/qz-node",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -13,7 +13,6 @@
     "dist/**/*",
     "src/**/*"
   ],
-  "typings": "dist/types.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fendy3002/QzNode.git"

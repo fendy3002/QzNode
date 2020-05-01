@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/express-helper",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "",
   "main": "dist/index.js",
   "publishConfig": {
@@ -37,6 +37,7 @@
     "typescript": "^3.6.4"
   },
   "dependencies": {
+    "@fendy3002/qz-node": "^2.0.2",
     "express": "^4.17.1",
     "http-errors": "^1.7.3",
     "jsonschema": "^1.2.5",

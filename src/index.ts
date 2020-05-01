@@ -3,12 +3,9 @@ import date = require("./date");
 import error = require("./error");
 import promise = require("./promise");
 
-import * as types from './types';
-
-let Service = {
+export = {
     array,
     date,
     error,
     promise,
 };
-export = Service;

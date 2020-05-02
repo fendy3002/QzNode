@@ -15,97 +15,104 @@ const sync = (pageCode, syncOption?: SyncOption) => {
     const showConfirmation = () => {
 
     };
+    let watchChange = null;
     const load = () => {
 
-    }
+        watchChange();
+    };
     const urlMd5 = crypto.MD5(syncOption?.urlToHash ?? window.location.pathname);
     const storageCode = "_qzsister_" + pageCode + "_default_" + urlMd5;
     let savedDataStr = window.localStorage.getItem(storageCode);
     let savedData: SavePayload = null;
     if (savedDataStr) {
         savedData = JSON.parse(savedDataStr);
-
+        showConfirmation();
     }
-    let savingHandler = null;
-    const onSavingData = () => {
-        savingHandler = setTimeout(() => {
-            window.localStorage.setItem(storageCode, JSON.stringify(savedData));
-            clearTimeout(savingHandler);
-        }, 300);
-    };
-    const inputElements = document.querySelectorAll('[data-qzsister]');
-    if (!savedData) {
-        savedData = {
-            data: {},
-            timestamp: new Date().getTime()
+    watchChange = () => {
+        let savingHandler = null;
+        const onSavingData = () => {
+            savingHandler = setTimeout(() => {
+                window.localStorage.setItem(storageCode, JSON.stringify(savedData));
+                clearTimeout(savingHandler);
+            }, 300);
         };
-    }
-
-    const listener = {
-        "check": (inputElement) => {
-            inputElement.addEventListener("change", (evt) => {
-                savedData.data[inputElement.name] = {
-                    type: "check",
-                    value: inputElement.checked
-                };
-                onSavingData();
-            });
-        },
-        "select": (inputElement) => {
-            inputElement.addEventListener("change", (evt) => {
-                savedData.data[inputElement.name] = {
-                    type: "select",
-                    value: inputElement.value
-                };
-                onSavingData();
-            });
-        },
-        "select2": (inputElement) => {
-            inputElement.addEventListener("change", (evt) => {
-                savedData.data[inputElement.name] = {
-                    type: "select",
-                    value: inputElement.value
-                };
-                onSavingData();
-            });
-        },
-        "text": (inputElement) => {
-            inputElement.addEventListener("change", (evt) => {
-                savedData.data[inputElement.name] = {
-                    type: "text",
-                    value: inputElement.value
-                };
-                onSavingData();
-            });
+        const inputElements = document.querySelectorAll('[data-qzsister]');
+        if (!savedData) {
+            savedData = {
+                data: {},
+                timestamp: new Date().getTime()
+            };
         }
-    };
 
-    inputElements.forEach((inputElement: any) => {
-        let qzsisterAttr = inputElement.dataset.qzsister;
-        if (qzsisterAttr == "check" || qzsisterAttr == "checkbox") {
-            listener.check(inputElement);
-            // } else if (qzsisterAttr == "radio") {
-            //     inputElement.addEventListener("change", (evt) => {
+        const listener = {
+            "check": (inputElement) => {
+                inputElement.addEventListener("change", (evt) => {
+                    savedData.data[inputElement.name] = {
+                        type: "check",
+                        value: inputElement.checked
+                    };
+                    onSavingData();
+                });
+            },
+            "select": (inputElement) => {
+                inputElement.addEventListener("change", (evt) => {
+                    savedData.data[inputElement.name] = {
+                        type: "select",
+                        value: inputElement.value
+                    };
+                    onSavingData();
+                });
+            },
+            "select2": (inputElement) => {
+                inputElement.addEventListener("change", (evt) => {
+                    savedData.data[inputElement.name] = {
+                        type: "select",
+                        value: inputElement.value
+                    };
+                    onSavingData();
+                });
+            },
+            "text": (inputElement) => {
+                inputElement.addEventListener("change", (evt) => {
+                    savedData.data[inputElement.name] = {
+                        type: "text",
+                        value: inputElement.value
+                    };
+                    onSavingData();
+                });
+            }
+        };
 
-            //     });
-        } else if (qzsisterAttr == "select") {
-            listener.select(inputElement);
-        } else if (qzsisterAttr == "select2") {
-            listener.select2(inputElement);
-        } else if (qzsisterAttr == "text" || qzsisterAttr == "hidden") {
-            listener.text(inputElement);
-        } else if (!qzsisterAttr) {
-            if (inputElement.tagName == "select") {
+        inputElements.forEach((inputElement: any) => {
+            let qzsisterAttr = inputElement.dataset.qzsister;
+            if (qzsisterAttr == "check" || qzsisterAttr == "checkbox") {
+                listener.check(inputElement);
+                // } else if (qzsisterAttr == "radio") {
+                //     inputElement.addEventListener("change", (evt) => {
+
+                //     });
+            } else if (qzsisterAttr == "select") {
                 listener.select(inputElement);
-            } else if (inputElement.tagName == "input") {
-                if (inputElement.type == "text" || !inputElement.type || inputElement.type == "hidden") {
-                    listener.text(inputElement);
-                } else if (inputElement.type == "check") {
-                    listener.check(inputElement);
+            } else if (qzsisterAttr == "select2") {
+                listener.select2(inputElement);
+            } else if (qzsisterAttr == "text" || qzsisterAttr == "hidden") {
+                listener.text(inputElement);
+            } else if (!qzsisterAttr) {
+                if (inputElement.tagName == "select") {
+                    listener.select(inputElement);
+                } else if (inputElement.tagName == "input") {
+                    if (inputElement.type == "text" || !inputElement.type || inputElement.type == "hidden") {
+                        listener.text(inputElement);
+                    } else if (inputElement.type == "check") {
+                        listener.check(inputElement);
+                    }
                 }
             }
-        }
-    });
+        });
+    };
+    if (!savedData) {
+        watchChange();
+    }
 };
 export {
     sync

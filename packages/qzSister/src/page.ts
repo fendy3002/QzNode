@@ -34,7 +34,7 @@ const sync = (pageCode, syncOption?: SyncOption) => {
         }, 300);
     };
     const inputElements = document.querySelectorAll('[data-qzsister]');
-    if (savedData) {
+    if (!savedData) {
         savedData = {
             data: {},
             timestamp: new Date().getTime()

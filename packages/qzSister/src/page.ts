@@ -1,9 +1,11 @@
 const deepEqual = require('deep-equal');
 const crypto = require('crypto-js');
+const moment = require('moment').default;
 const getInitialDataRaw = require('./page/getInitialData').default;
 export interface SyncOption {
     urlToHash?: string,
-    expire?: number
+    expire?: number,
+    loadMode ?: string
 };
 export interface SavePayload {
     timestamp: number,
@@ -34,7 +36,7 @@ const sync = (pageCode, syncOption?: SyncOption) => {
     let watchChange = null;
     let load = null;
     const showConfirmation = () => {
-        if (confirm("Load?")) {
+        if (confirm(`An unfinished modification from ${moment(savedData.timestamp).fromNow()} is detected, do you want to recover?`)) {
             load();
         }
         else {

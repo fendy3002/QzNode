@@ -1,4 +1,4 @@
-import crypto = require('crypto-js');
+const crypto = require('crypto-js');
 export interface SyncOption {
     urlToHash?: string
 };

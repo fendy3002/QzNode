@@ -1,9 +1,7 @@
 const data = (pageCode) => {
 
 };
-const page = (pageCode) => {
-    
-};
+import * as page from './page';
 export {
     data,
     page

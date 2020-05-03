@@ -147,7 +147,12 @@ const sync = (pageCode, syncOption?: SyncOption) => {
 
     if (savedData) {
         savedData.initialData = getInitialData()();
+        savedData.data = {
+            ...savedData.initialData,
+            ...savedData.data
+        };
         savedData.hasChange = !deepEqual(savedData.initialData, savedData.data);
+
         if (savedData.hasChange) {
             showConfirmation();
         }
@@ -156,7 +161,7 @@ const sync = (pageCode, syncOption?: SyncOption) => {
         }
     } else {
         savedData = {
-            data: {},
+            data: getInitialData()(),
             hasChange: false,
             initialData: getInitialData()(),
             timestamp: new Date().getTime()

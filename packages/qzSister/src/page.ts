@@ -78,6 +78,10 @@ const sync = (pageCode, syncOption?: SyncOption) => {
                         }
                     }
                 });
+            console.log(toastHandler[0]);
+            setTimeout(() => {
+                toastHandler[0].style.opacity = "1";
+            }, 600);
         }
     };
     load = () => {

@@ -118,8 +118,10 @@ const sync = (pageCode, syncOption?: SyncOption) => {
             let currentFormIndex = formIndex;
             savedData.data[formIndex] = savedData.data[formIndex] ?? {};
             formElement.addEventListener("submit", (evt) => {
-                savedData.data[currentFormIndex] = getInitialData(currentFormIndex);
-                onSavingData();
+                savedData.data[currentFormIndex] = savedData.initialData[currentFormIndex];
+                savedData.hasChange = false;
+                savedData.timestamp = new Date().getTime();
+                window.localStorage.setItem(storageCode, JSON.stringify(savedData));
             });
             const inputElements = formElement.querySelectorAll("[data-qzsister]");
             const listener = {

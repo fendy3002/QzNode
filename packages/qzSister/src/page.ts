@@ -63,15 +63,19 @@ const sync = (pageCode, syncOption?: SyncOption) => {
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
             };
+            let isLoaded = false;
             let toastHandler = toastr.info(`An unfinished modification from ${moment(savedData.timestamp).fromNow()} is detected, click here to recover`,
                 null,
                 {
                     "onclick": () => {
                         load();
+                        isLoaded = true;
                     },
                     "onHidden": () => {
-                        savedData.data = savedData.initialData;
-                        watchChange();
+                        if (!isLoaded) {
+                            savedData.data = savedData.initialData;
+                            watchChange();
+                        }
                     }
                 });
         }

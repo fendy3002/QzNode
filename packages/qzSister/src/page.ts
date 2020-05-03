@@ -1,11 +1,14 @@
 const deepEqual = require('deep-equal');
 const crypto = require('crypto-js');
 const moment = require('moment').default;
+const toastr = require('toastr');
+
+import "toastr/build/toastr.min.css";
 const getInitialDataRaw = require('./page/getInitialData').default;
 export interface SyncOption {
     urlToHash?: string,
     expire?: number,
-    loadMode ?: string
+    loadMode?: string
 };
 export interface SavePayload {
     timestamp: number,
@@ -36,11 +39,41 @@ const sync = (pageCode, syncOption?: SyncOption) => {
     let watchChange = null;
     let load = null;
     const showConfirmation = () => {
-        if (confirm(`An unfinished modification from ${moment(savedData.timestamp).fromNow()} is detected, do you want to recover?`)) {
-            load();
-        }
-        else {
-            watchChange();
+        if (syncOption?.loadMode == "confirm") {
+            if (confirm(`An unfinished modification from ${moment(savedData.timestamp).fromNow()} is detected, do you want to recover?`)) {
+                load();
+            }
+            else {
+                watchChange();
+            }
+        } else if (!syncOption?.loadMode || syncOption?.loadMode == "toastr") {
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": true,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "15000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+            let toastHandler = toastr.info(`An unfinished modification from ${moment(savedData.timestamp).fromNow()} is detected, click here to recover`,
+                null,
+                {
+                    "onclick": () => {
+                        load();
+                    },
+                    "onHidden": () => {
+                        savedData.data = savedData.initialData;
+                        watchChange();
+                    }
+                });
         }
     };
     load = () => {

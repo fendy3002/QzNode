@@ -7,6 +7,7 @@ import "toastr/build/toastr.min.css";
 const getInitialDataRaw = require('./page/getInitialData').default;
 export interface SyncOption {
     urlToHash?: string,
+    exitReminder?: boolean,
     expire?: number,
     loadMode?: string
 };
@@ -118,10 +119,12 @@ const sync = (pageCode, syncOption?: SyncOption) => {
     watchChange = () => {
         const formElements = document.querySelectorAll('form[data-qzsister]');
         let formIndex = 0;
+        let isFormSubmit = false;
         formElements.forEach((formElement) => {
             let currentFormIndex = formIndex;
             savedData.data[formIndex] = savedData.data[formIndex] ?? {};
             formElement.addEventListener("submit", (evt) => {
+                isFormSubmit = true;
                 savedData.data[currentFormIndex] = savedData.initialData[currentFormIndex];
                 savedData.hasChange = false;
                 savedData.timestamp = new Date().getTime();
@@ -208,7 +211,15 @@ const sync = (pageCode, syncOption?: SyncOption) => {
                 }
             });
             formIndex++;
-        })
+        });
+        window.addEventListener('beforeunload', (event) => {
+            if (savedData.hasChange && !isFormSubmit) {
+                // Cancel the event as stated by the standard.
+                event.preventDefault();
+                event.returnValue = 'change'; // chrome
+                return 'change';
+            }
+        });
     };
 
     if (savedData) {

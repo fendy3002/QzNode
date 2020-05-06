@@ -3,13 +3,16 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "mocha 'test/**/*.spec.ts'",
-    "compile": "tsc && webpack",
-    "js:compile": "webpack",
+    "compile": "yarn js:compile",
+    "js:compile": "webpack --mode=production",
     "js:compileWatch": "webpack --watch --mode=development",
     "compileWatch": "tsc --watch",
-    "prepublish": "npm run compile"
+    "prepublish": "yarn compile"
   },
   "files": [
     "dist/**/*",

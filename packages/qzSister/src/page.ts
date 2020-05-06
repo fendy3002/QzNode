@@ -11,27 +11,19 @@ export interface SyncOption {
     expire?: number,
     loadMode?: string
 };
-export interface SavePayload {
-    timestamp: number,
-    hasChange: boolean,
-    data: {
+export interface FormsDataModel {
+    [key: string]: {
         [key: string]: {
-            [key: string]: {
-                value: string,
-                type: string
-            }
-        }
-    },
-    initialData: {
-        [key: string]: {
-            [key: string]: {
-                value: string,
-                type: string
-            }
+            value: string,
+            type: string
         }
     }
 };
-const sync = (pageCode, syncOption?: SyncOption) => {
+export interface SavePayload {
+    timestamp: number,
+    data: FormsDataModel
+};
+const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
     const getInitialData = getInitialDataRaw();
     const urlMd5 = crypto.MD5(syncOption?.urlToHash ?? window.location.pathname);
     const storageCode = "_qzsister_" + pageCode + "_default_" + urlMd5;
@@ -39,6 +31,8 @@ const sync = (pageCode, syncOption?: SyncOption) => {
     let savedData: SavePayload = null;
     let watchChange = null;
     let load = null;
+    const initialData: FormsDataModel = getInitialData();
+
     const showConfirmation = () => {
         if (syncOption?.loadMode == "confirm") {
             if (confirm(`An unfinished modification from ${moment(savedData.timestamp).fromNow()} is detected, do you want to recover?`)) {
@@ -74,7 +68,7 @@ const sync = (pageCode, syncOption?: SyncOption) => {
                     },
                     "onHidden": () => {
                         if (!isLoaded) {
-                            savedData.data = savedData.initialData;
+                            savedData.data = initialData;
                             watchChange();
                         }
                     }
@@ -106,13 +100,23 @@ const sync = (pageCode, syncOption?: SyncOption) => {
     };
     if (savedDataStr) {
         savedData = JSON.parse(savedDataStr);
+        let decodedDataStr = crypto.AES.decrypt(savedData.data, secretKey).toString(crypto.enc.Utf8);
+        if (decodedDataStr) {
+            savedData.data = JSON.parse(decodedDataStr);
+        }
+        else {
+            savedData.data = null;
+        }
     }
     let savingHandler = null;
     const onSavingData = () => {
         savingHandler = setTimeout(() => {
-            savedData.hasChange = !deepEqual(savedData.data, savedData.initialData);
             savedData.timestamp = new Date().getTime();
-            window.localStorage.setItem(storageCode, JSON.stringify(savedData));
+            let encodedData = crypto.AES.encrypt(JSON.stringify(savedData.data), secretKey).toString();
+            window.localStorage.setItem(storageCode, JSON.stringify({
+                ...savedData,
+                data: encodedData
+            }));
             clearTimeout(savingHandler);
         }, 300);
     };
@@ -125,10 +129,10 @@ const sync = (pageCode, syncOption?: SyncOption) => {
             savedData.data[formIndex] = savedData.data[formIndex] ?? {};
             formElement.addEventListener("submit", (evt) => {
                 isFormSubmit = true;
-                savedData.data[currentFormIndex] = savedData.initialData[currentFormIndex];
-                savedData.hasChange = false;
-                savedData.timestamp = new Date().getTime();
-                window.localStorage.setItem(storageCode, JSON.stringify(savedData));
+                // savedData.data[currentFormIndex] = initialData[currentFormIndex];
+                // savedData.timestamp = new Date().getTime();
+                // window.localStorage.setItem(storageCode, JSON.stringify(savedData));
+                window.localStorage.removeItem(storageCode);
             });
             const inputElements = formElement.querySelectorAll("[data-qzsister]");
             const listener = {
@@ -213,7 +217,8 @@ const sync = (pageCode, syncOption?: SyncOption) => {
             formIndex++;
         });
         window.addEventListener('beforeunload', (event) => {
-            if (savedData.hasChange && !isFormSubmit) {
+            let hasChange = !deepEqual(initialData, savedData.data);
+            if (hasChange && !isFormSubmit) {
                 // Cancel the event as stated by the standard.
                 event.preventDefault();
                 event.returnValue = 'change'; // chrome
@@ -222,16 +227,15 @@ const sync = (pageCode, syncOption?: SyncOption) => {
         });
     };
 
-    if (savedData) {
-        savedData.initialData = getInitialData();
+    if (savedData && savedData.data) {
         savedData.data = {
-            ...savedData.initialData,
+            ...initialData,
             ...savedData.data
         };
-        savedData.hasChange = !deepEqual(savedData.initialData, savedData.data);
+        let hasChange = !deepEqual(initialData, savedData.data);
 
         const expire = (syncOption?.expire ?? 3 * 24 * 60 * 60 * 1000); // default 3 days
-        if (savedData.hasChange && savedData.timestamp > new Date().getTime() - expire) {
+        if (hasChange && savedData.timestamp > new Date().getTime() - expire) {
             showConfirmation();
         }
         else {
@@ -240,8 +244,6 @@ const sync = (pageCode, syncOption?: SyncOption) => {
     } else {
         savedData = {
             data: getInitialData(),
-            hasChange: false,
-            initialData: getInitialData(),
             timestamp: new Date().getTime()
         };
         watchChange();

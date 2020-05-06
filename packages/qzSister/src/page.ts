@@ -92,6 +92,9 @@ const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
                     elem.checked = elemData.value;
                 } else if (elemData.type == "select") {
                     elem.value = elemData.value;
+                } else if (elemData.type == "select2") {
+                    elem.value = elemData.value;
+                    elem.onchange();
                 }
             }
         }
@@ -206,7 +209,8 @@ const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
                     if (tagName == "select") {
                         listener.select(inputElement);
                     } else if (tagName == "input") {
-                        if (inputType == "text" || !inputType || inputType == "hidden") {
+                        if (inputType == "text" || !inputType || inputType == "hidden"
+                            || inputType == "textarea") {
                             listener.text(inputElement);
                         } else if (inputType == "checkbox") {
                             listener.check(inputElement);

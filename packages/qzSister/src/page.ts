@@ -73,7 +73,6 @@ const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
                         }
                     }
                 });
-            console.log(toastHandler[0]);
             setTimeout(() => {
                 toastHandler[0].style.opacity = "1";
             }, 600);
@@ -187,7 +186,7 @@ const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
                 },
                 "bs-date": (inputElement) => {
                     if (!inputElement.qzsisterWatch) {
-                        inputElement.qzsisterWatch = inputElement.addEventListener("changeDate", (evt) => {
+                        inputElement.qzsisterWatch = inputElement.addEventListener("qz_changeDate", (evt) => {
                             savedData.data[currentFormIndex][inputElement.name] = {
                                 type: "bs-date",
                                 value: inputElement.value

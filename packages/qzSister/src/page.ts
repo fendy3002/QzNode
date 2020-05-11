@@ -95,6 +95,8 @@ const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
                 } else if (elemData.type == "select2") {
                     elem.value = elemData.value;
                     elem.onchange();
+                } else if (elemData.type == "bs-date") {
+                    elem.value = elemData.value;
                 }
             }
         }
@@ -153,8 +155,6 @@ const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
                 "select": (inputElement) => {
                     if (!inputElement.qzsisterWatch) {
                         inputElement.qzsisterWatch = inputElement.addEventListener("change", (evt) => {
-                            console.log(savedData.data);
-                            console.log(formIndex);
                             savedData.data[currentFormIndex][inputElement.name] = {
                                 type: "select",
                                 value: inputElement.value
@@ -177,9 +177,19 @@ const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
                 "text": (inputElement) => {
                     if (!inputElement.qzsisterWatch) {
                         inputElement.qzsisterWatch = inputElement.addEventListener("change", (evt) => {
-                            console.log("change");
                             savedData.data[currentFormIndex][inputElement.name] = {
                                 type: "text",
+                                value: inputElement.value
+                            };
+                            onSavingData();
+                        });
+                    }
+                },
+                "bs-date": (inputElement) => {
+                    if (!inputElement.qzsisterWatch) {
+                        inputElement.qzsisterWatch = inputElement.addEventListener("changeDate", (evt) => {
+                            savedData.data[currentFormIndex][inputElement.name] = {
+                                type: "bs-date",
                                 value: inputElement.value
                             };
                             onSavingData();
@@ -205,6 +215,8 @@ const sync = (pageCode, secretKey, syncOption?: SyncOption) => {
                     listener.select2(inputElement);
                 } else if (qzsisterAttr == "text" || qzsisterAttr == "hidden") {
                     listener.text(inputElement);
+                } else if (qzsisterAttr == "bs-date") {
+                    listener['bs-date'](inputElement);
                 } else if (!qzsisterAttr) {
                     if (tagName == "select") {
                         listener.select(inputElement);

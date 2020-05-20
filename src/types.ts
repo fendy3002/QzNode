@@ -60,7 +60,8 @@ export namespace Qz {
             (): Promise<void | any>
         }
         export interface RetryableOptions {
-            delay?: number
+            delay?: number,
+            when?: (err: Error | any) => Promise<boolean>
         }
         export interface Retryable {
             (handle: RetryableHandle): {

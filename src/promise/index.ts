@@ -31,7 +31,8 @@ const retryable: types.Qz.Promise.Retryable = (handle: types.Qz.Promise.Retryabl
     const times = async (number: number, opts?: types.Qz.Promise.RetryableOptions) => {
         let tryingTimes = 0;
         let throwEx = null;
-        while (tryingTimes <= number) {
+        let canRetry = true;
+        while (canRetry && tryingTimes <= number) {
             if (tryingTimes > 0 && opts?.delay > 0) {
                 await new Promise((resolve) => {
                     setTimeout(() => {
@@ -44,15 +45,20 @@ const retryable: types.Qz.Promise.Retryable = (handle: types.Qz.Promise.Retryabl
             } catch (ex) {
                 throwEx = ex;
                 tryingTimes++;
+                if (opts?.when && !(await opts.when(ex))) {
+                    canRetry = false;
+                }
             }
         }
-        throw rethrow.from(throwEx).message(`Error after retrying for ${number} times`);
+        throw rethrow.from(throwEx).original().message(`Error after retrying for ${tryingTimes - 1} time(s)`);
     };
     const forLong = async (duration: number, opts?: types.Qz.Promise.RetryableOptions) => {
         const tsNow = new Date().getTime();
         let throwEx = null;
         let isRetry = false;
-        while (new Date().getTime() - tsNow <= duration) {
+        let canRetry = true;
+        let lastRetry = new Date().getTime();
+        while (canRetry && (lastRetry = new Date().getTime()) - tsNow <= duration) {
             if (isRetry && opts?.delay > 0) {
                 await new Promise((resolve) => {
                     setTimeout(() => {
@@ -65,9 +71,12 @@ const retryable: types.Qz.Promise.Retryable = (handle: types.Qz.Promise.Retryabl
             } catch (ex) {
                 throwEx = ex;
                 isRetry = true;
+                if (opts?.when && !(await opts.when(ex))) {
+                    canRetry = false;
+                }
             }
         }
-        throw rethrow.from(throwEx).message(`Error after retrying for ${(duration / 1000).toFixed(2)} second(s)`);
+        throw rethrow.from(throwEx).original().message(`Error after retrying for ${((lastRetry - tsNow) / 1000).toFixed(2)} second(s)`);
     };
     return {
         times,

@@ -1,5 +1,6 @@
 import Redlock = require("redlock");
 import lo = require('lodash');
+const debug = require('debug')("QzNode:promise:lockable");
 
 import * as types from '../types';
 
@@ -28,7 +29,7 @@ const lockableSpawner : types.Qz.Promise.LockableSpawner = (redisClient, option)
                 lockArr.push(lock);
             }
             if (keysArr.length > 0) {
-                console.log(keysArr.join(",") + " locked", lockArr.length);
+                debug(keysArr.join(",") + " locked", lockArr.length);
             }
             try {
                 await handle();
@@ -37,7 +38,7 @@ const lockableSpawner : types.Qz.Promise.LockableSpawner = (redisClient, option)
                     await lock.unlock();
                 }
                 if (keysArr.length > 0) {
-                    console.log(keysArr.join(",") + " released");
+                    debug(keysArr.join(",") + " released");
                 }
             }
         }

@@ -12,7 +12,7 @@ const lockableSpawner : types.Qz.Promise.LockableSpawner = (redisClient, option)
         clients = [redisClient];
     }
 
-    let redlock = new Redlock([clients], {
+    let redlock = new Redlock(clients, {
         driftFactor: option?.redlock?.driftFactor ?? 0.01,
         retryCount: option?.redlock?.retryCount ?? 20,
         retryDelay: option?.redlock?.retryDelay ?? 2000,

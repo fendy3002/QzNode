@@ -1,5 +1,6 @@
 import * as types from '../types';
 import * as rethrow from '../error/rethrow';
+import lockable from './lockable';
 
 const limit: types.Qz.Promise.Limit = async (handler, limit: number, opts?: types.Qz.Promise.LimitOptions) => {
     let result: any[] = [];
@@ -85,5 +86,6 @@ const retryable: types.Qz.Promise.Retryable = (handle: types.Qz.Promise.Retryabl
 };
 export {
     limit,
-    retryable
+    retryable,
+    lockable
 };

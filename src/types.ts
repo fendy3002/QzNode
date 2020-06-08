@@ -69,5 +69,23 @@ export namespace Qz {
                 forLong: (duration: number, opts?: RetryableOptions) => Promise<any | void>
             }
         }
+
+        export interface LockableSpawnerOption {
+            redlock?: {
+                driftFactor?: number,
+                retryCount?: number,
+                retryDelay?: number,
+                retryJitter?: number,
+                ttl?: number
+            }
+        }
+        export interface LockableSpawner {
+            (redisClient: any, option?: LockableSpawnerOption):
+                (handle: RetryableHandle) => Lockable
+        }
+        export interface Lockable {
+            withLock: (key: string) => Lockable,
+            exec: () => Promise<void>
+        }
     }
 }

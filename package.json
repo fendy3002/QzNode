@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/qz-node",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -42,6 +42,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.28",
+    "redlock": "^4.1.0",
     "uuid": "^8.0.0"
   }
 }

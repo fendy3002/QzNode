@@ -1,10 +1,11 @@
 import Redlock = require("redlock");
 import lo = require('lodash');
 const debug = require('debug')("QzNode:promise:lockable");
+const debugError = require('debug')("QzNode:promise:lockable/error");
 
 import * as types from '../types';
 
-const lockableSpawner : types.Qz.Promise.LockableSpawner = (redisClient, option) => {
+const lockableSpawner: types.Qz.Promise.LockableSpawner = (redisClient, option) => {
     let clients = [];
     if (Array.isArray(redisClient)) {
         clients = redisClient;
@@ -19,6 +20,10 @@ const lockableSpawner : types.Qz.Promise.LockableSpawner = (redisClient, option)
         retryDelay: option?.redlock?.retryDelay ?? 2000,
         retryJitter: option?.redlock?.retryJitter ?? 200
     });
+    redlock.on('clientError', function (err) {
+        debugError(err);
+    });
+
     let ttl = option?.redlock?.ttl ?? 30000; // 30 secs
 
     let exec = (handle, keysArr) => {

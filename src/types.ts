@@ -54,10 +54,11 @@ export namespace Qz {
             unlock: () => Promise<void>
         };
         export interface LockEngine {
-            lock: (key: string) => Promise<Lock>
+            lock: (key: string, ttl: number) => Promise<Lock>
         };
         export interface SingleOption {
-            lockEngine: any,
+            lockEngine: LockEngine,
+            lockTTL: number
 
         }
 

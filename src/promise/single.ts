@@ -2,6 +2,7 @@ import lo = require('lodash');
 const debug = require('debug')("QzNode:promise:lockable");
 const debugError = require('debug')("QzNode:promise:lockable/error");
 
+import memoryEngine from './memoryEngine';
 import * as qzPromise from './index';
 import * as types from '../types';
 
@@ -60,12 +61,20 @@ class SinglePromise {
         }
 
         let lockHandle = async () => {
-            
+            let locks = [];
+            for (let key of lo.sortBy(this.locks)) {
+                let lock = await this.option.lockEngine.lock(key, this.option.lockTTL);
+                locks.push(lock);
+            }
+
         };
     }
 }
 
-const singleFactory = (option) => {
+const singleFactory = async (option) => {
+    let context = {
+        engine: await memoryEngine()
+    };
     let handle = (handler) => {
         let context = {
             delay: 0,

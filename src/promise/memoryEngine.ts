@@ -1,11 +1,14 @@
 import * as types from '../types';
 let construct = async () => {
     let locks = {};
-    let lock = async (key: string) => {
+    let lock = async (key: string, ttl:number) => {
         if (locks[key]) {
             let oldLock = locks[key];
             let unlock = null;
             locks[key] = new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, ttl);
                 unlock = async () => {
                     resolve();
                 };
@@ -18,6 +21,9 @@ let construct = async () => {
         else {
             let unlock = null;
             locks[key] = new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve();
+                }, ttl);
                 unlock = async () => {
                     resolve();
                 };

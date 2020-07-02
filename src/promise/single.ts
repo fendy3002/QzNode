@@ -19,7 +19,7 @@ let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
         },
         withTimeout: (timeout) => {
             if (timeout < 0) {
-                throw new Error("Delay must be greater or equal 0");
+                throw new Error("Timeout must be greater or equal 0");
             }
             return singlePromise({
                 ...option,
@@ -30,7 +30,7 @@ let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
             if (![
                 "times",
                 "ms"
-            ].find(type)) {
+            ].find(k => k == type)) {
                 throw new Error("Retry type must be either 'times' or 'ms' ");
             }
             if (amount <= 0) {
@@ -75,20 +75,6 @@ let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
                 })
             }
 
-            let timeoutHandle = () => {
-                if (option.delay > 0) {
-                    return Promise.race([
-                        handler(),
-                        new Promise(function (resolve, reject) {
-                            setTimeout(function () {
-                                reject('Timed out');
-                            }, option.delay);
-                        })
-                    ]);
-                } else {
-                    return handler();
-                }
-            };
             let lockHandle = async () => {
                 let locks = [];
                 for (let key of lo.sortBy(option.locks)) {
@@ -96,7 +82,7 @@ let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
                     locks.push(lock);
                 }
                 try {
-                    await timeoutHandle();
+                    await handler();
                 } finally {
                     for (let lock of locks) {
                         await lock.unlock();
@@ -106,15 +92,29 @@ let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
                     }
                 }
             };
+            let timeoutHandle = async () => {
+                if (option.timeout > 0) {
+                    return await Promise.race([
+                        lockHandle(),
+                        new Promise(function (resolve, reject) {
+                            setTimeout(function () {
+                                reject(new Error('Timed out'));
+                            }, option.timeout);
+                        })
+                    ]);
+                } else {
+                    return await lockHandle();
+                }
+            };
             let retryHandle = async () => {
                 if (option.retry.type == "times") {
-                    return await qzPromise.retryable(lockHandle).times(option.retry.amount, option.retry.option);
+                    return await qzPromise.retryable(timeoutHandle).times(option.retry.amount, option.retry.option);
                 }
                 else if (option.retry.type == "ms") {
-                    return await qzPromise.retryable(lockHandle).times(option.retry.amount, option.retry.option);
+                    return await qzPromise.retryable(timeoutHandle).forLong(option.retry.amount, option.retry.option);
                 }
                 else if (!option.retry.type) {
-                    return lockHandle();
+                    return timeoutHandle();
                 }
             };
             return retryHandle();

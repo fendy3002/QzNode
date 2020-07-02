@@ -58,8 +58,15 @@ export namespace Qz {
         };
         export interface SingleOption {
             lockEngine: LockEngine,
-            lockTTL: number
-
+            lockTTL: number,
+            delay: number,
+            timeout: number,
+            retry: {
+                type: string,
+                amount: number,
+                option: RetryableOptions
+            },
+            locks: string[]
         }
 
         export interface LimitOptions {

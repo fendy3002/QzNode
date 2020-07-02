@@ -50,6 +50,17 @@ export namespace Qz {
         };
     }
     export namespace Promise {
+        export interface Lock {
+            unlock: () => Promise<void>
+        };
+        export interface LockEngine {
+            lock: (key: string) => Promise<Lock>
+        };
+        export interface SingleOption {
+            lockEngine: any,
+
+        }
+
         export interface LimitOptions {
             onLoop?: (data) => Promise<any | void>
         }

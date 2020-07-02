@@ -78,7 +78,7 @@ let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
             let lockHandle = async () => {
                 let locks = [];
                 for (let key of lo.sortBy(option.locks)) {
-                    let lock = await option.lockEngine.lock(key, option.lockTTL);
+                    let lock = await option.lockEngine.lock("_lock:" + key, option.lockTTL);
                     locks.push(lock);
                 }
                 try {

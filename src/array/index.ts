@@ -39,7 +39,17 @@ let fromSet: types.Qz.Array.FromSet = function <T>(
     return result;
 };
 
+let asArray = function (value: any) {
+    if (Array.isArray(value)) {
+        return value;
+    }
+    else {
+        return [value];
+    }
+}
+
 export {
+    asArray,
     toSet,
     fromSet
 };

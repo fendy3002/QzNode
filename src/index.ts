@@ -3,6 +3,7 @@ import date = require("./date");
 import math = require("./math");
 import error = require("./error");
 import json = require("./json");
+import string = require("./string");
 import promise = require("./promise");
 
 export = {
@@ -11,5 +12,6 @@ export = {
     math,
     json,
     error,
+    string,
     promise,
 };

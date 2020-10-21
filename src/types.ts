@@ -75,11 +75,8 @@ export namespace Qz {
         export interface Limit {
             (handler: (() => Promise<any | void>)[], limit: number, opts?: LimitOptions): Promise<any[] | void[]>
         }
-        export interface RetryableHandleLock {
-            extend: (ms: number) => Promise<void>
-        }
         export interface RetryableHandle {
-            (lock: RetryableHandleLock): Promise<void | any>
+            (): Promise<void | any>
         }
         export interface RetryableOptions {
             delay?: number,
@@ -92,6 +89,12 @@ export namespace Qz {
             }
         }
 
+        export interface LockableHandleTool {
+            extend: (ms: number) => Promise<void>
+        }
+        export interface LockableHandle {
+            (lock: LockableHandleTool): Promise<void | any>
+        }
         export interface LockableSpawnerOption {
             redlock?: {
                 driftFactor?: number,
@@ -103,7 +106,7 @@ export namespace Qz {
         }
         export interface LockableSpawner {
             (redisClient: any, option?: LockableSpawnerOption):
-                (handle: RetryableHandle) => Lockable
+                (handle: LockableHandle) => Lockable
         }
         export interface Lockable {
             withLock: (key: string) => Lockable,

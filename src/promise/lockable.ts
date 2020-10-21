@@ -33,15 +33,27 @@ const lockableSpawner: types.Qz.Promise.LockableSpawner = (redisClient, option) 
                 let lock = await redlock.lock(`_L_${key}`, ttl);
                 lockArr.push(lock);
             }
+            let unlock = async () => {
+                for (let lock of lockArr) {
+                    await lock.unlock();
+                }
+            };
+            let extend = async (ms: number) => {
+                let newLockArr = []
+                for (let lock of lockArr) {
+                    newLockArr.push(await lock.extend(ms));
+                }
+                lockArr = newLockArr;
+            };
             if (keysArr.length > 0) {
                 debug(keysArr.join(",") + " locked", lockArr.length);
             }
             try {
-                await handle();
+                await handle({
+                    extend
+                });
             } finally {
-                for (let lock of lockArr) {
-                    await lock.unlock();
-                }
+                await unlock();
                 if (keysArr.length > 0) {
                     debug(keysArr.join(",") + " released");
                 }

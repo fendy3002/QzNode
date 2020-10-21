@@ -75,8 +75,11 @@ export namespace Qz {
         export interface Limit {
             (handler: (() => Promise<any | void>)[], limit: number, opts?: LimitOptions): Promise<any[] | void[]>
         }
+        export interface RetryableHandleLock {
+            extend: (ms: number) => Promise<void>
+        }
         export interface RetryableHandle {
-            (): Promise<void | any>
+            (lock: RetryableHandleLock): Promise<void | any>
         }
         export interface RetryableOptions {
             delay?: number,

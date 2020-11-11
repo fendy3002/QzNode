@@ -68,9 +68,14 @@ export namespace Qz {
             },
             locks: string[]
         }
+        export interface DelayOption {
+            delay: number,
+            onElapsed?: () => Promise<any | void>
+        }
 
         export interface LimitOptions {
-            onLoop?: (data) => Promise<any | void>
+            onLoop?: (data) => Promise<any | void>,
+            stopSignal?: () => boolean
         }
         export interface Limit {
             (handler: (() => Promise<any | void>)[], limit: number, opts?: LimitOptions): Promise<any[] | void[]>

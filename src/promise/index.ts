@@ -7,6 +7,8 @@ import delay from './delay';
 const limit: types.Qz.Promise.Limit = async (handler, limit: number, opts?: types.Qz.Promise.LimitOptions) => {
     let result: any[] = [];
     let batch: (() => Promise<any | void>)[] = [];
+    let isCancelling = false;
+
     for (let i = 1; i <= handler.length; i++) {
         batch.push(handler[i - 1]);
         if (i > 1 && i % limit == 0) {
@@ -20,9 +22,13 @@ const limit: types.Qz.Promise.Limit = async (handler, limit: number, opts?: type
                 await opts.onLoop(batchResult);
             }
             batch = [];
+            isCancelling = opts?.stopSignal?.() ?? false;
+            if (isCancelling) {
+                break;
+            }
         }
     }
-    if (batch.length > 0) {
+    if (batch.length > 0 && !isCancelling) {
         result = result.concat(
             await Promise.all(batch.map(k => k()))
         );

@@ -37,5 +37,30 @@ mocha.describe('Limit', function () {
         assert.equal(100, result.length);
         assert.deepEqual(expected, result);
     });
+    mocha.it('should execute 5 promises then stopping', async function () {
+        const promises = [];
+        const expected = [];
+
+        let cancelSignal = false;
+        let cancelHandler = () => {
+            return cancelSignal;
+        };
+        for (let i = 0; i < 100; i++) {
+            if(i <= 14) {
+                expected.push(i);
+            }
+            promises.push(async () => {
+                if(i == 14) {
+                    cancelSignal = true;
+                }
+                return i;
+            });
+        }
+        const result = await QzPromise.limit(promises, 5, {
+            stopSignal: cancelHandler
+        });
+        assert.equal(15, result.length);
+        assert.deepEqual(expected, result);
+    });
 
 });

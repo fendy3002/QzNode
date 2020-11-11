@@ -2,6 +2,7 @@ import * as types from '../types';
 import * as rethrow from '../error/rethrow';
 import lockable from './lockable';
 import single from './single';
+import delay from './delay';
 
 const limit: types.Qz.Promise.Limit = async (handler, limit: number, opts?: types.Qz.Promise.LimitOptions) => {
     let result: any[] = [];
@@ -89,5 +90,6 @@ export {
     limit,
     retryable,
     lockable,
+    delay,
     single
 };

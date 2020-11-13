@@ -16,7 +16,13 @@ let toSet: types.Qz.Array.ToSet = function (
     }
 
     let result: object = {};
-    arr.forEach((ele, index: number) => {
+    if (!arr) {
+        return null;
+    } else if (arr.length == 0) {
+        return {};
+    }
+    let index = 0;
+    for(let ele of arr){
         let key = keyHandler(ele, index);
         if (!result[key]) {
             result[key] = valHandler(ele, index);
@@ -24,7 +30,8 @@ let toSet: types.Qz.Array.ToSet = function (
         else if (result[key] && Array.isArray(result[key])) {
             result[key] = result[key].concat(valHandler(ele, index));
         }
-    });
+        index++;
+    }
     return result;
 };
 

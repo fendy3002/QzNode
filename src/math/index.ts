@@ -8,11 +8,11 @@ const safeParseInt: SafeParse = (value: any) => {
         return Math.floor(value);
     }
     else if (typeof value == "string") {
-        try {
-            return parseInt(value);
-        } catch (ex) {
+        let parseResult = Number(value);
+        if (isNaN(parseResult)) {
             return null;
         }
+        return Math.floor(parseResult);
     }
     else {
         return value * 1;
@@ -23,11 +23,11 @@ const safeParseFloat: SafeParse = (value: any) => {
         return value;
     }
     else if (typeof value == "string") {
-        try {
-            return parseFloat(value);
-        } catch (ex) {
+        let parseResult = Number(value);
+        if (isNaN(parseResult)) {
             return null;
         }
+        return parseResult;
     }
     else {
         return value * 1;

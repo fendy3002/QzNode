@@ -7,6 +7,17 @@ const replaceAll = (str, find, replace) => {
     return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 };
 
+const base64 = {
+    encode: (val: string) => {
+        let buff = new Buffer(val);
+        return buff.toString('base64');
+    },
+    decode: (val: string) => {
+        let buff = new Buffer(val, "base64");
+        return buff.toString('ascii');
+    },
+}
 export {
+    base64,
     replaceAll
 };

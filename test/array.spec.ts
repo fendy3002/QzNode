@@ -91,4 +91,19 @@ mocha.describe('Array', function () {
         assert.deepEqual(expected, actual);
         done();
     });
+    mocha.it('should loop batch', async function () {
+        let source = [];
+        for (let i = 0; i < 1000; i++) {
+            source.push(i);
+        }
+        let loopNumber = 0;
+        await QzArray.batchLoop(source, 50).exec(async (batch) => {
+            assert.equal(batch.length, 50);
+            assert.deepEqual(batch, source.slice(loopNumber * 50, loopNumber * 50 + 50));
+            loopNumber++;
+        });
+
+        let expectedLoopNumber = 20;
+        assert.equal(expectedLoopNumber, loopNumber);
+    });
 });

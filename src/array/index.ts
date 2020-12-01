@@ -22,7 +22,7 @@ let toSet: types.Qz.Array.ToSet = function (
         return {};
     }
     let index = 0;
-    for(let ele of arr){
+    for (let ele of arr) {
         let key = keyHandler(ele, index);
         if (!result[key]) {
             result[key] = valHandler(ele, index);
@@ -53,10 +53,34 @@ let asArray = function (value: any) {
     else {
         return [value];
     }
-}
+};
+
+let batchLoop = function (value: any[], batchSize: number) {
+    let get = () => {
+        let result = [];
+        for (let i = 0; i < value.length; i += batchSize) {
+            result.push(value.slice(i, i + batchSize));
+        }
+        return result;
+    };
+    return {
+        get,
+        exec: async (handler: any) => {
+            let batches = get();
+            let result = [];
+            for (let batch of batches) {
+                result.push(
+                    await handler(batch)
+                );
+            }
+            return result;
+        }
+    }
+};
 
 export {
     asArray,
     toSet,
-    fromSet
+    fromSet,
+    batchLoop
 };

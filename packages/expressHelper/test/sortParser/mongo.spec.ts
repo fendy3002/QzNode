@@ -16,7 +16,7 @@ mocha.describe("sortParser mongo", function (this) {
       }, {
         prefix: "sort"
       }).array();
-  
+
       let expected = [
         ["userAge", 1],
         ["userName", -1]
@@ -35,14 +35,14 @@ mocha.describe("sortParser mongo", function (this) {
       }, {
         prefix: "sort"
       }).string();
-  
+
       let expected = "userAge -userName";
       assert.deepEqual(expected, result);
     });
   });
 
   mocha.it("should throw key not found error", async function () {
-    assert.rejects(async() => {
+    assert.rejects(async () => {
       let result = await mongoSort({
         "sort.0": "age",
         "sort.1": "name,desc"

@@ -7,7 +7,7 @@ import retryable from '../../src/retryable';
 mocha.describe("retryable times", function (this) {
     mocha.it("should retry 1 seconds and error", async function () {
         const handle = async () => {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
                 }, 80);
@@ -24,7 +24,7 @@ mocha.describe("retryable times", function (this) {
     mocha.it("should retry success after 300ms", async function () {
         let startTime = new Date().getTime();
         const handle = async () => {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
                 }, 100);

@@ -2,7 +2,7 @@ import * as mocha from 'mocha';
 // assert cannot be defaulted import
 import assert = require('assert');
 import addContext = require('mochawesome/addContext');
-import * as jsonValidator from '../../src/validator/json';
+import * as jsonValidator from '../../../src/validator/json';
 
 mocha.describe("validator json", function (this) {
   let schema = {

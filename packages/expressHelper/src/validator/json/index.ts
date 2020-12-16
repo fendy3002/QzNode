@@ -24,6 +24,28 @@ export const schema = (schema: any) => {
             data = {};
             for (let prop of Object.keys(schema.properties)) {
                 let newPath = path + "." + prop;
+                let propVal = val[prop];
+                if (typeof propVal == "undefined" || propVal == null) {
+                    //console.log(
+                    //    propVal,
+                    //    prop,
+                    //    schema.required,
+                    //    schema.required?.some(k => k == prop),
+                    //    path);
+                    if (schema.required?.some(k => k == prop)) {
+                        isValid = false;
+                        errors.push({
+                            property: path,
+                            name: schema.name ? schema.name : path,
+                            message: "is required"
+                        });
+                    }
+                    else if (schema.type == "array") {
+                        data[prop] = [];
+                    }
+                    continue;
+                }
+
                 let validateResult = await validateObj(val[prop], schema.properties[prop], newPath);
                 isValid = isValid && validateResult.isValid;
                 errors = errors.concat(validateResult.errors);
@@ -175,6 +197,7 @@ export const schema = (schema: any) => {
             let jsonSchemaValidator = new jsonSchema();
             let jsonSchemaValidation = jsonSchemaValidator.validate(result.data, schema);
             if (jsonSchemaValidation.errors && jsonSchemaValidation.errors.length > 0) {
+                //console.log(jsonSchemaValidation.errors);
                 result.isValid = false;
                 result.errors = result.errors.concat(jsonSchemaValidation.errors.map(k => {
                     return {
@@ -185,6 +208,7 @@ export const schema = (schema: any) => {
                 }))
             }
         }
+        //console.log("result", result);
         return result;
     };
     return {

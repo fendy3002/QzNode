@@ -56,7 +56,7 @@ mocha.describe("healthcheck", function(this) {
         return;
       },
       mongo: () => {
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
           setTimeout(() => {
             resolve();
           }, 1000);

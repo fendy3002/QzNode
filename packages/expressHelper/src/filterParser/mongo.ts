@@ -42,13 +42,13 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                     }
                     else if (schemaTypeObj.type == "date") {
                         schemaTypeObj.formatFrom = schemaTypeObj.formatFrom || "YYYY-MM-DD";
-                        schemaTypeObj.formatTo = schemaTypeObj.formatTo || "YYYY-MM-DD";
+                        //schemaTypeObj.formatTo = schemaTypeObj.formatTo || "YYYY-MM-DD";
                         schemaTypeObj.endOfDay = schemaTypeObj.endOfDay || false;
                         if (schemaTypeObj.endOfDay && (operation == "lte" || operation == "to")) {
-                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).endOf('day').format(schemaTypeObj.formatTo);
+                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).endOf('day').toDate();
                         }
                         else {
-                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).format(schemaTypeObj.formatTo);
+                            valConverter = (val) => moment(val, schemaTypeObj.formatFrom).toDate();
                         }
                     }
                     else if (schemaTypeObj.type == "timestamp") {

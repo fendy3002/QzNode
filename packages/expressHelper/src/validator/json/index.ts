@@ -114,31 +114,41 @@ export const schema = (schema: any) => {
             }
         }
         else if (schema.type == "number") {
-            isValid = native.isNumeric(val);
-            if (!isValid) {
-                errors.push({
-                    property: path,
-                    name: schema.name ? schema.name : path,
-                    message: "is not a number"
-                });
-                data = null;
+            if (typeof val == "undefined" || val == null) {
+
             }
             else {
-                data = parseFloat(val);
+                isValid = native.isNumeric(val);
+                if (!isValid) {
+                    errors.push({
+                        property: path,
+                        name: schema.name ? schema.name : path,
+                        message: "is not a number"
+                    });
+                    data = null;
+                }
+                else {
+                    data = parseFloat(val);
+                }
             }
         }
         else if (schema.type == "integer") {
-            isValid = native.isInteger(val);
-            if (!isValid) {
-                errors.push({
-                    name: path,
-                    property: schema.name ? schema.name : path,
-                    message: "is not an integer"
-                });
-                data = null;
+            if (typeof val == "undefined" || val == null) {
+
             }
             else {
-                data = parseInt(val);
+                isValid = native.isInteger(val);
+                if (!isValid) {
+                    errors.push({
+                        name: path,
+                        property: schema.name ? schema.name : path,
+                        message: "is not an integer"
+                    });
+                    data = null;
+                }
+                else {
+                    data = parseInt(val);
+                }
             }
         }
         else if (schema.type == "string") {

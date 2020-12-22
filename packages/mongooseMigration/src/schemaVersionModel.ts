@@ -5,7 +5,7 @@ export default async (migrateConfig: types.MigrateConfig<any>) => {
     const modelName = migrateConfig.schemaVersion.collectionName;
     try {
         // if already defined, return 
-        return migrateConfig.mongoose.model(modelName);
+        return migrateConfig.mongoose.model<any>(modelName);
     } catch (ex) {
         const Schema = Mongoose.Schema;
         const definedSchema = new Schema({
@@ -25,6 +25,6 @@ export default async (migrateConfig: types.MigrateConfig<any>) => {
                 virtuals: false
             }
         });
-        return migrateConfig.mongoose.model(modelName, definedSchema);
+        return migrateConfig.mongoose.model<any>(modelName, definedSchema);
     }
 };

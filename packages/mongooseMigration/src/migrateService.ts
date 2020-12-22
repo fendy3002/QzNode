@@ -49,7 +49,7 @@ let service: types.MigrateServiceConstructor<any> = (config: types.MigrateConfig
                         version: trimVersion(paddedVersion),
                         fileName: migrationFile,
                         status: "pending",
-                        migratedAt: new Date().getTime()
+                        migratedAt: new Date().getTime(),
                     });
                     try {
                         await migrateRequest.migrate({

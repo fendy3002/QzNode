@@ -5,8 +5,8 @@ import addContext = require('mochawesome/addContext');
 import Sequelize = require('sequelize');
 import sequelizeFilter from '../../src/filterParser/sequelize';
 
-mocha.describe("filterParser mongo", function (this) {
-  mocha.it("should parse query to mongo filter", async function () {
+mocha.describe("filterParser sequelize", function (this) {
+  mocha.it("should parse query to sequelize filter", async function () {
     let result = await sequelizeFilter({
       "filter.name": "Luke Skywalker",
       "filter.age.from": "20"
@@ -53,5 +53,36 @@ mocha.describe("filterParser mongo", function (this) {
     },
       Error
     );
+  });
+  mocha.it("should parse date end", async function () {
+    let result = await sequelizeFilter({
+      "filter.name": "Luke Skywalker",
+      "filter.birth.from": "2020-01-01"
+    }, {
+      "birth": {
+        key: "birth",
+        type: "date",
+        formatTo: "YYYY-MM-DD HH:mm:ss",
+        endOfDay: true
+      }
+    }, {
+      prefix: "filter"
+    });
+
+    let expected = {
+      [Sequelize.Op.and]: [
+        {
+          "name": {
+            [Sequelize.Op.eq]: "Luke Skywalker"
+          }
+        },
+        {
+          "birth": {
+            [Sequelize.Op.gte]: "2020-01-01 23:59:59"
+          }
+        }
+      ]
+    };
+    assert.deepEqual(expected, result);
   });
 });

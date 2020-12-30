@@ -40,6 +40,44 @@ mocha.describe("sortParser mongo", function (this) {
       assert.deepEqual(expected, result);
     });
   });
+  mocha.describe("object", function (this) {
+    mocha.it("should parse query to mongo sort", async function () {
+      let result = await mongoSort({
+        "sort.1": "name,desc",
+        "sort.0": "age",
+      }, {
+        "age": "userAge",
+        "name": "userName"
+      }, {
+        prefix: "sort"
+      }).object();
+
+      let expected = {
+        "userAge": 1,
+        "userName": -1
+      };
+      assert.deepEqual(expected, result);
+      assert.deepEqual(Object.keys(expected), Object.keys(result));
+    });
+    mocha.it("should parse query to mongo sort with different order", async function () {
+      let result = await mongoSort({
+        "sort.0": "name,desc",
+        "sort.1": "age",
+      }, {
+        "age": "userAge",
+        "name": "userName"
+      }, {
+        prefix: "sort"
+      }).object();
+
+      let expected = {
+        "userName": -1,
+        "userAge": 1,
+      };
+      assert.deepEqual(expected, result);
+      assert.deepEqual(Object.keys(expected), Object.keys(result));
+    });
+  });
 
   mocha.it("should throw key not found error", async function () {
     assert.rejects(async () => {

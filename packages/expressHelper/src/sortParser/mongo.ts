@@ -117,7 +117,17 @@ let service = (content: type.content, schema: type.schema = null, option: type.o
 
             return arr;
         },
-        object: getSortObj
+        object: async() => {
+            let sort = await getSortObj();
+            let result: any = {};
+            for (let key of lo.orderBy(Object.keys(sort))) {
+                let sortField = sort[key][0];
+                let sortOrder = sort[key][1];
+                result[sortField] = sortOrder;
+            }
+
+            return result;
+        }
     };
 };
 export default service;

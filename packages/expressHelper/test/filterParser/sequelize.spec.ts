@@ -3,6 +3,8 @@ import * as mocha from 'mocha';
 import assert = require('assert');
 import addContext = require('mochawesome/addContext');
 import Sequelize = require('sequelize');
+import moment = require('moment');
+
 import sequelizeFilter from '../../src/filterParser/sequelize';
 
 mocha.describe("filterParser sequelize", function (this) {
@@ -119,7 +121,41 @@ mocha.describe("filterParser sequelize", function (this) {
     };
     assert.deepEqual(expected, result);
     assert.equal(
-      expected[Sequelize.Op.and][1].birth[Sequelize.Op.gte],
-      result[Sequelize.Op.and][1].birth[Sequelize.Op.gte]);
+      expected[Sequelize.Op.and][1].birth[Sequelize.Op.lte],
+      result[Sequelize.Op.and][1].birth[Sequelize.Op.lte]);
+  });
+  mocha.it("should parse timestamp end", async function () {
+    let result = await sequelizeFilter({
+      "filter.name": "Luke Skywalker",
+      "filter.birth.to": "2020-01-01"
+    }, {
+      "birth": {
+        key: "birth",
+        type: "timestamp",
+        formatFrom: "YYYY-MM-DD",
+        endOfDay: true
+      }
+    }, {
+      prefix: "filter"
+    });
+
+    let expected = {
+      [Sequelize.Op.and]: [
+        {
+          "name": {
+            [Sequelize.Op.eq]: "Luke Skywalker"
+          }
+        },
+        {
+          "birth": {
+            [Sequelize.Op.lte]: moment("2020-01-01").endOf("day").valueOf()
+          }
+        }
+      ]
+    };
+    assert.deepEqual(expected, result);
+    assert.equal(
+      expected[Sequelize.Op.and][1].birth[Sequelize.Op.lte],
+      result[Sequelize.Op.and][1].birth[Sequelize.Op.lte]);
   });
 });

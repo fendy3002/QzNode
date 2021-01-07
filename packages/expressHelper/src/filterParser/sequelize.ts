@@ -22,7 +22,7 @@ export namespace type {
     };
 };
 let operationConverterRaw = (option: type.option = null, schema: type.schema = null, ) => {
-    let crossCheckSchema = (key, operation: string) => {
+    let crossCheckSchema = (key, operation: any) => {
         if (schema) {
             if (schema[key]) {
                 let schemaType = schema[key];
@@ -43,7 +43,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                     else if (schemaTypeObj.type == "date") {
                         schemaTypeObj.formatFrom = schemaTypeObj.formatFrom || "YYYY-MM-DD";
                         schemaTypeObj.formatTo = schemaTypeObj.formatTo || "YYYY-MM-DD";
-                        if (schemaTypeObj.endOfDay && (operation == "lte" || operation == "to")) {
+                        if (schemaTypeObj.endOfDay && (operation == "lte" || operation == "to" || operation == Sequelize.Op.lte)) {
                             valConverter = (val) => moment(val, schemaTypeObj.formatFrom).endOf('day').format(schemaTypeObj.formatTo);
                         }
                         else {
@@ -56,7 +56,7 @@ let operationConverterRaw = (option: type.option = null, schema: type.schema = n
                             formatToConverter = (val) => val.unix();
                         }
                         let formatDay = formatToConverter;
-                        if (schemaTypeObj.endOfDay && (operation == "lte" || operation == "to")) {
+                        if (schemaTypeObj.endOfDay && (operation == "lte" || operation == "to" || operation == Sequelize.Op.lte)) {
                             formatDay = (val) => formatToConverter(val.endOf('day'));
                         }
 

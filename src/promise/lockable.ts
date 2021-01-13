@@ -1,3 +1,4 @@
+import { rethrow } from '../error/index';
 import Redlock = require("redlock");
 import lo = require('lodash');
 const debug = require('debug')("QzNode:promise:lockable");
@@ -48,12 +49,20 @@ const lockableSpawner: types.Qz.Promise.LockableSpawner = (redisClient, option) 
             if (keysArr.length > 0) {
                 debug(keysArr.join(",") + " locked", lockArr.length);
             }
+            let handleException = null;
             try {
                 await handle({
                     extend
                 });
+            } catch (ex) {
+                handleException = ex;
+                throw rethrow.from(ex).original().asIs();
             } finally {
-                await unlock();
+                try {
+                    await unlock();
+                } catch (ex) {
+                    throw rethrow.from(ex).error(handleException);
+                }
                 if (keysArr.length > 0) {
                     debug(keysArr.join(",") + " released");
                 }
@@ -70,11 +79,16 @@ const lockableSpawner: types.Qz.Promise.LockableSpawner = (redisClient, option) 
         };
     };
 
-    return (handle) => {
-        return {
-            withLock: andLock(handle, []),
-            exec: exec(handle, [])
-        };
+    return {
+        process: (handle) => {
+            return {
+                withLock: andLock(handle, []),
+                exec: exec(handle, [])
+            };
+        },
+        close: async () => {
+            await redlock.close();
+        }
     };
 };
 export default lockableSpawner;

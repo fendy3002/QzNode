@@ -110,8 +110,10 @@ export namespace Qz {
             }
         }
         export interface LockableSpawner {
-            (redisClient: any, option?: LockableSpawnerOption):
-                (handle: LockableHandle) => Lockable
+            (redisClient: any, option?: LockableSpawnerOption): {
+                close: () => Promise<void>,
+                process: (handle: LockableHandle) => Lockable
+            }
         }
         export interface Lockable {
             withLock: (key: string) => Lockable,

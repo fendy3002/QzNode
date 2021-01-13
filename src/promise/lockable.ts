@@ -85,9 +85,6 @@ const lockableSpawner: types.Qz.Promise.LockableSpawner = (redisClient, option) 
                 withLock: andLock(handle, []),
                 exec: exec(handle, [])
             };
-        },
-        close: async () => {
-            await redlock.close();
         }
     };
 };

@@ -111,7 +111,6 @@ export namespace Qz {
         }
         export interface LockableSpawner {
             (redisClient: any, option?: LockableSpawnerOption): {
-                close: () => Promise<void>,
                 process: (handle: LockableHandle) => Lockable
             }
         }

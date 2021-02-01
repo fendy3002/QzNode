@@ -21,9 +21,18 @@ export namespace Qz {
                     (val: any, key: string) => T
             ): T[]
         }
+        export interface BatchLoop {
+            <T>(value: T[], batchSize: number): {
+                get: () => Array<Array<T>>,
+                exec: (handler: {
+                    (batch: T[]): Promise<any>
+                }) => Promise<any | void>
+            }
+        }
         export interface Service {
             toSet: ToSet,
-            fromSet: FromSet
+            fromSet: FromSet,
+            batchLoop: BatchLoop
         }
     }
     export namespace Date {

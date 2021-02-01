@@ -92,7 +92,7 @@ mocha.describe('Array', function () {
         done();
     });
     mocha.it('should loop batch', async function () {
-        let source = [];
+        let source: number[] = [];
         for (let i = 0; i < 1000; i++) {
             source.push(i);
         }

@@ -55,7 +55,7 @@ let asArray = function (value: any) {
     }
 };
 
-let batchLoop = function (value: any[], batchSize: number) {
+let batchLoop: types.Qz.Array.BatchLoop = function (value, batchSize) {
     let get = () => {
         let result = [];
         for (let i = 0; i < value.length; i += batchSize) {
@@ -65,7 +65,7 @@ let batchLoop = function (value: any[], batchSize: number) {
     };
     return {
         get,
-        exec: async (handler: any) => {
+        exec: async (handler) => {
             let batches = get();
             let result = [];
             for (let batch of batches) {
@@ -77,7 +77,6 @@ let batchLoop = function (value: any[], batchSize: number) {
         }
     }
 };
-
 export {
     asArray,
     toSet,

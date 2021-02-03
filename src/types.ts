@@ -131,8 +131,13 @@ export namespace Qz {
     export namespace Excel {
         export interface RowObject {
             cell: (columnCode: string) => {
-
+                v: any
             }
+        };
+        export interface SheetObject {
+            name: string,
+            row: (row: number) => RowObject,
+            readAllRows: ReadAllRows
         };
 
         export interface ReadAllRowsSchema {
@@ -153,15 +158,10 @@ export namespace Qz {
             (schema: ReadAllRowsSchema, option?: ReadAllRowsOption): Array<Array<unknown>>
         };
 
-        export interface SheetObject {
-            name: string,
-            row: (row: number) => RowObject
-        };
-
         export interface QzExcel {
             wb: any,
             getSheets: () => SheetObject[],
-            readAllRows: ReadAllRows
+            getSheetByName: (name: string) => SheetObject,
         };
     }
 }

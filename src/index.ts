@@ -6,6 +6,7 @@ import json = require("./json");
 import string = require("./string");
 import promise = require("./promise");
 import func = require("./func");
+import * as types from './types';
 
 export = {
     array,
@@ -15,5 +16,6 @@ export = {
     error,
     string,
     promise,
-    func
+    func,
+    types
 };

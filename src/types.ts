@@ -128,4 +128,40 @@ export namespace Qz {
             exec: () => Promise<void>
         }
     }
+    export namespace Excel {
+        export interface RowObject {
+            cell: (columnCode: string) => {
+
+            }
+        };
+
+        export interface ReadAllRowsSchema {
+            [fieldKey: string]: string | {
+                (row: RowObject): any
+            }
+        };
+        export interface ReadAllRowsOption {
+            rowHasNext?: (row: RowObject) => boolean,
+            skipRow?: number
+        };
+        export interface ReadAllRowsRecord {
+            _row: number,
+            _excelRow: number,
+            [key: string]: any
+        };
+        export interface ReadAllRows {
+            (schema: ReadAllRowsSchema, option?: ReadAllRowsOption): Array<Array<unknown>>
+        };
+
+        export interface SheetObject {
+            name: string,
+            row: (row: number) => RowObject
+        };
+
+        export interface QzExcel {
+            wb: any,
+            getSheets: () => SheetObject[],
+            readAllRows: ReadAllRows
+        };
+    }
 }

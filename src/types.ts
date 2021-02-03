@@ -155,7 +155,7 @@ export namespace Qz {
             [key: string]: any
         };
         export interface ReadAllRows {
-            (schema: ReadAllRowsSchema, option?: ReadAllRowsOption): Array<Array<unknown>>
+            (schema: ReadAllRowsSchema, option?: ReadAllRowsOption): Promise<Array<any>>
         };
 
         export interface QzExcel {

@@ -33,8 +33,8 @@ class QzExcel implements types.Qz.Excel.QzExcel {
         return new QzExcel(wb);
     }
     getSheets() {
-        let result = [];
-        for (let sheetName of this.wb.Sheets) {
+        let result: types.Qz.Excel.SheetObject[] = [];
+        for (let sheetName of this.wb.SheetNames) {
             result.push(
                 sheetObject(this, this.wb.Sheets[sheetName], sheetName)
             );

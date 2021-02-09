@@ -39,4 +39,11 @@ mocha.describe('Math', function () {
             assert.equal(true, result - Math.floor(result) == 0);
         }
     });
+    mocha.it('should format thousand separator correctly', async function() {
+        assert.equal(QzMath.thousandSeparator(100), "100");
+        assert.equal(QzMath.thousandSeparator(1000), "1,000");
+        assert.equal(QzMath.thousandSeparator(1000.9999), "1,000.9999");
+        assert.equal(QzMath.thousandSeparator(-1000.9999), "-1,000.9999");
+        assert.equal(QzMath.thousandSeparator(-100.9999), "-100.9999");
+    });
 });

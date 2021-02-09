@@ -32,10 +32,21 @@ const safeParseFloat: SafeParse = (value: any) => {
     else {
         return value * 1;
     }
-}
+};
+const thousandSeparator = (value: number | string) => {
+    let sourceToFormat: string = null;
+    if (typeof value == "string") {
+        sourceToFormat = value;
+    }
+    else {
+        sourceToFormat = value.toString();
+    }
+    return sourceToFormat.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+};
 export {
     safeParseInt,
     safeParseFloat,
+    thousandSeparator,
     randBetween,
     randBetweenInt
 };

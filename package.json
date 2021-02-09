@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/qz-node",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "",
   "main": "dist/index.js",
   "scripts": {

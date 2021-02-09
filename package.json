@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/qz-node",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -33,8 +33,7 @@
     "debug": "^4.1.1",
     "mocha": "^5.2.0",
     "ts-node": "^8.9.1",
-    "typescript": "^3.8.3",
-    "xlsx": "^0.16.9"
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "chalk": "^4.0.0",
@@ -45,6 +44,7 @@
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.28",
     "redlock": "^4.1.0",
-    "uuid": "^8.0.0"
+    "uuid": "^8.0.0",
+    "xlsx": "^0.16.9"
   }
 }

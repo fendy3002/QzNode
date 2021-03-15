@@ -7,6 +7,7 @@ import winston = require('winston');
 
 import nunjucks = require('nunjucks');
 import prettier = require("prettier");
+import lo = require("lodash");
 import fileNameReplacer from './fileNameReplacer';
 import getHelper from './helper';
 import * as types from './types';
@@ -78,16 +79,16 @@ const renderPath = async (currentPath: string, option) => {
 
             let prettierFormat = supportedPrettierFileFormat.filter(k => k.ext == realExtension)
             if (
-                option.schema.Prettier &&
+                option.schemaOption.prettier &&
                 prettierFormat.length > 0 &&
-                !option.schema.ExcludePrettier.some(k => k == realExtension)
+                !option.schemaOption.excludePrettier.some(k => k == realExtension)
             ) {
                 fileContent = prettier.format(fileContent, {
                     parser: prettierFormat[0].parser,
                     arrowParens: "always",
                     tabWidth: 4,
                     proseWrap: "never",
-                    ...option.schema.Prettier
+                    ...option.schemaOption.prettier
                 });
             }
             fs.writeFileSync(itemOutputPath, fileContent);
@@ -152,7 +153,14 @@ const doTask = async () => {
                 output: outputDir,
                 extension: extensionDir
             },
-            schema: schemaObj,
+            schemaOption: lo.merge(
+                {
+                    prettier: null,
+                    excludePrettier: []
+                },
+                schemaObj.option
+            ),
+            schema: schemaObj.schema,
             nunjucks: {
                 default: defaultNunjucks,
                 html: htmlNunjucks

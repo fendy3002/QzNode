@@ -1,90 +1,94 @@
 {
-    "Model": {
-        "Name": "test_model",
-        "_idType": "String",
-        "Fields": [
-            {
-                "Name": "Name",
-                "Type": "String",
-                "Required": true,
-                "Gui": {
+    "option": {
+        "prettier": {
+            "tabWidth": 4
+        },
+        "excludePrettier": []
+    },
+    "schema": {
+        "Model": {
+            "Name": "test_model",
+            "_idType": "String",
+            "Fields": [
+                {
                     "Name": "Name",
-                    "Type": "text",
-                    "ValidateType": "string",
-                    "Label": "Test Name"
-                }
-            },
-            {
-                "Name": "Address",
-                "Type": "_object",
-                "Required": true,
-                "Properties": [
-                    {
-                        "Name": "StreetName",
-                        "Type": "String",
-                        "required": true,
-                        "Gui": {
-                            "Name": "StreetName",
-                            "Type": "text",
-                            "ValidateType": "string",
-                            "Label": "Street Name"
-                        }
-                    },
-                    {
-                        "Name": "BuildingName",
-                        "Type": "String",
-                        "required": false,
-                        "Gui": {
-                            "Name": "BuildingName",
-                            "Type": "text",
-                            "ValidateType": "string",
-                            "Label": "Building Name"
-                        }
+                    "Type": "String",
+                    "Required": true,
+                    "Gui": {
+                        "Name": "Name",
+                        "Type": "text",
+                        "ValidateType": "string",
+                        "Label": "Test Name"
                     }
-                ],
-                "Gui": {
+                },
+                {
                     "Name": "Address",
-                    "ValidateType": "object"
-                }
-            },
-            {
-                "Name": "Height",
-                "Type": "String",
-                "required": true,
-                "Gui": {
+                    "Type": "_object",
+                    "Required": true,
+                    "Properties": [
+                        {
+                            "Name": "StreetName",
+                            "Type": "String",
+                            "required": true,
+                            "Gui": {
+                                "Name": "StreetName",
+                                "Type": "text",
+                                "ValidateType": "string",
+                                "Label": "Street Name"
+                            }
+                        },
+                        {
+                            "Name": "BuildingName",
+                            "Type": "String",
+                            "required": false,
+                            "Gui": {
+                                "Name": "BuildingName",
+                                "Type": "text",
+                                "ValidateType": "string",
+                                "Label": "Building Name"
+                            }
+                        }
+                    ],
+                    "Gui": {
+                        "Name": "Address",
+                        "ValidateType": "object"
+                    }
+                },
+                {
                     "Name": "Height",
-                    "Type": "number",
-                    "ValidateType": "number",
-                    "Label": "Height (cm)"
-                }
-            },
-            {
-                "Name": "City",
-                "Type": "String",
-                "required": true,
-                "Gui": {
+                    "Type": "String",
+                    "required": true,
+                    "Gui": {
+                        "Name": "Height",
+                        "Type": "number",
+                        "ValidateType": "number",
+                        "Label": "Height (cm)"
+                    }
+                },
+                {
                     "Name": "City",
-                    "Type": "select",
-                    "Label": "City",
-                    "Supplement": {
-                        "ModelName": "city",
-                        "Key": "_id",
-                        "Value": "CityName"
+                    "Type": "String",
+                    "required": true,
+                    "Gui": {
+                        "Name": "City",
+                        "Type": "select",
+                        "Label": "City",
+                        "Supplement": {
+                            "ModelName": "city",
+                            "Key": "_id",
+                            "Value": "CityName"
+                        }
                     }
                 }
+            ],
+            "Uniques": []
+        },
+        "Route": {
+            "Module": {
+                "Code": "test_module",
+                "UrlPrefix": "test-module",
+                "Title": "Test"
             }
-        ],
-        "Uniques": []
-    },
-    "Route": {
-        "Module": {
-            "Code": "test_module",
-            "UrlPrefix": "test-module",
-            "Title": "Test"
         }
-    },
-    "Prettier": {
-        "tabWidth": 4
-    },
-    "ExcludePrettier": []
+    }
 }

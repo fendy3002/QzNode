@@ -3,6 +3,7 @@
 import fs = require('fs');
 import path = require('path');
 import commandLineArgs = require('command-line-args');
+import winston = require('winston');
 
 import nunjucks = require('nunjucks');
 import prettier = require("prettier");
@@ -46,6 +47,22 @@ let htmlNunjucks = nunjucks.configure({
     }
 });
 let defaultNunjucks = nunjucks.configure({});
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.json({
+            space: 2
+        })
+    ),
+    transports: [
+        //
+        // - Write all logs with level `error` and below to `error.log`
+        // - Write all logs with level `info` and below to `combined.log`
+        //
+        new winston.transports.Console({})
+    ],
+});
+
 
 const renderPath = async (currentPath: string, option) => {
     const replacedCurrentPath = replaceFileName(currentPath, option);
@@ -56,7 +73,7 @@ const renderPath = async (currentPath: string, option) => {
         const fileStat = fs.lstatSync(itemPath);
 
         if (fileStat.isFile()) {
-            console.log("processing file: ", itemPath);
+            logger.info({ message: "processing file: " + itemPath });
             let realExtension = path.extname(replaceFileName(item, option));
             let fileContent = "";
             if (realExtension != ".html") {
@@ -103,14 +120,14 @@ const renderPath = async (currentPath: string, option) => {
 const doTask = async () => {
     const option = commandLineArgs(optionDefinitions)
     option.template = option.template || "";
-    console.log("process.cwd(): ", process.cwd());
+    logger.info("process.cwd(): ", process.cwd());
     const helperDir = path.join(process.cwd(), option.template, "helper");
     const templateDir = path.join(process.cwd(), option.template, "template");
     const outputDir = path.join(process.cwd(), option.template, "output");
     const extensionDir = path.join(process.cwd(), option.template, "extension");
     const schemaPath = path.join(process.cwd(), option.schema);
     const schemaStat = fs.statSync(schemaPath);
-    console.log({
+    logger.info({
         helperDir,
         templateDir,
         outputDir,
@@ -140,7 +157,7 @@ const doTask = async () => {
             schemaObj = require(schemaFilePath).default;
         }
 
-        console.log("schema", schemaObj)
+        logger.info("schema", schemaObj)
         let context: types.Context = {
             ...option,
             path: {

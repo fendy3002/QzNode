@@ -12,6 +12,7 @@
   },
   "scripts": {
     "compile": "ts-node src/index.ts -t ./workdir ./workdir/schema",
+    "test": "mocha 'test/**/*.spec.ts'",
     "build": "tsc",
     "prepublish": "yarn build"
   },
@@ -21,6 +22,7 @@
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.12",
     "dotenv": "^8.1.0",
+    "mocha": "^5.2.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"
   },
@@ -29,6 +31,7 @@
     "command-line-args": "^5.1.1",
     "lodash": "^4.17.15",
     "nunjucks": "^3.2.0",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "winston": "^3.3.3"
   }
 }

@@ -1,4 +1,4 @@
-{% for supplement in _GroupSupplement() %}
+{% for supplement in _helper._GroupSupplement() %}
     let {{ supplement.ModelName }}Model = req.mongoose.model("{{ supplement.ModelName }}");
     let {{ supplement.ModelName }}Data = await {{ supplement.ModelName }}Model.find({});
     {% for fieldName, pair in supplement.Pair %}

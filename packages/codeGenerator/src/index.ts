@@ -7,6 +7,7 @@ import winston = require('winston');
 
 import nunjucks = require('nunjucks');
 import prettier = require("prettier");
+import fileNameReplacer from './fileNameReplacer';
 import getHelper from './helper';
 import * as types from './types';
 
@@ -20,21 +21,6 @@ const supportedPrettierFileFormat = [
     { ext: ".js", parser: "babel" },
     //    { ext: ".html", parser: "html" }
 ];
-
-const replaceFileName = (original: string, option) => {
-    const replacement = {
-        "[Model.Name]": option.schema.Model.Name,
-        "[Model.Connection]": option.schema.Model.Connection,
-        "[Route.Module.Code]": option.schema.Route.Module.Code,
-        "[Route.Module.UrlPrefix]": option.schema.Route.Module.UrlPrefix,
-    };
-    let result = original;
-    for (const key of Object.keys(replacement)) {
-        result = result.replace(key, replacement[key]);
-    }
-    result = result.replace(".template", "");
-    return result;
-};
 
 let htmlNunjucks = nunjucks.configure({
     tags: {
@@ -65,16 +51,16 @@ const logger = winston.createLogger({
 
 
 const renderPath = async (currentPath: string, option) => {
-    const replacedCurrentPath = replaceFileName(currentPath, option);
+    const replacedCurrentPath = fileNameReplacer.replace(currentPath, option.schema);
     const dirs = fs.readdirSync(path.join(option.path.template, currentPath));
     for (const item of dirs) {
         const itemPath = path.join(option.path.template, currentPath, item);
-        const itemOutputPath = path.join(option.path.output, replacedCurrentPath, replaceFileName(item, option));
+        const itemOutputPath = path.join(option.path.output, replacedCurrentPath, fileNameReplacer.replace(item, option.schema));
         const fileStat = fs.lstatSync(itemPath);
 
         if (fileStat.isFile()) {
             logger.info({ message: "processing file: " + itemPath });
-            let realExtension = path.extname(replaceFileName(item, option));
+            let realExtension = path.extname(fileNameReplacer.replace(item, option.schema));
             let fileContent = "";
             if (realExtension != ".html") {
                 fileContent = defaultNunjucks.render(itemPath, {

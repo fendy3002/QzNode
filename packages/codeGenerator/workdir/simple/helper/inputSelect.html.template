@@ -5,11 +5,11 @@
         </div>
         <div class="col-md-8">
             <select class="form-control" name="|$ _data.Name $|" data-role="select2">
-                |$ for key, obj in _data.Options $|
-                    <option value="|$ key $|" {{ "selected" if key == data["|$ _data.Name $|"] }}>
+                |% for key, obj in _data.Options %|
+                    <option value="|$ key $|" {{ "selected" if key == data["|$ _data.Name $|"] else "" }}>
                         |$ _data.Value $|
                     </option>
-                |$ endfor $|
+                |% endfor %|
             </select>
         </div>
     </div>

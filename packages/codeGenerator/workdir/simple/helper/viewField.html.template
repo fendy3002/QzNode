@@ -6,11 +6,11 @@
 |% endif %|
 
 |% if field.Type == "text" %|
-    |$ _helper.renderHelper("inputText.html", field) $|
+    |$ _helper.renderHelper("inputText.html.template", field) | safe $|
 |% elif field.Type == "select" %|
-    |$ _helper.renderHelper("inputSelect.html", field) $|
+    |$ _helper.renderHelper("inputSelect.html.template", field) | safe $|
 |% elif field.Type == "checkbox" %|
-    |$ _helper.renderHelper("inputCheckbox.html", field) $|
+    |$ _helper.renderHelper("inputCheckbox.html.template", field) | safe $|
 |% endif %|
 
 |% if col == 1 %|

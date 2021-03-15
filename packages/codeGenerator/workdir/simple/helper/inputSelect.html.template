@@ -1,0 +1,16 @@
+<div class="col-sm-12 col-md-6">
+    <div class="form-group row">
+        <div class="col-md-4 text-right">
+            <label>|$ _data.Label $|</label>
+        </div>
+        <div class="col-md-8">
+            <select class="form-control" name="|$ _data.Name $|" data-role="select2">
+                |$ for key, obj in _data.Options $|
+                    <option value="|$ key $|" {{ "selected" if key == data["|$ _data.Name $|"] }}>
+                        |$ _data.Value $|
+                    </option>
+                |$ endfor $|
+            </select>
+        </div>
+    </div>
+</div>

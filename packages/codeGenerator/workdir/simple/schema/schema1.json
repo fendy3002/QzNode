@@ -1,0 +1,31 @@
+{
+    "option": {
+    },
+    "schema": {
+        "Fields": [
+            {
+                "Name": "field_string",
+                "Label": "String",
+                "Type": "text"
+            },
+            {
+                "Name": "field_select",
+                "Label": "Select",
+                "Type": "select",
+                "Options": {
+                    "val1": "Value1",
+                    "val2": "Value2"
+                }
+            },
+            {
+                "Name": "field_check",
+                "Label": "Check",
+                "Type": "checkbox"
+            }
+        ],
+        "Route": {
+            "Prefix": "my-page",
+            "title": "My Page"
+        }
+    }
+}

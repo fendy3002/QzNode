@@ -1,17 +1,9 @@
 import * as mocha from 'mocha';
 // assert cannot be defaulted import
 import assert = require('assert');
-import { string } from '@fendy3002/qz-node';
 import addContext = require('mochawesome/addContext');
 import fromKendoGrid from '../../src/filterParser/fromKendoGrid';
-import odataParser from '../../src/odataParser';
 
-let clean = (source: string) => {
-    return string.replaceAll(source, "+", " ").trimLeft().trimRight();
-};
-let replaceLast = (source: string, find: string, replace: string) => {
-    return source.replace(new RegExp(find + '$'), replace);
-}
 mocha.describe("filterParser fromKendoGrid", function (this) {
     mocha.it.only("should", async function () {
         let $filter = [
@@ -32,7 +24,7 @@ mocha.describe("filterParser fromKendoGrid", function (this) {
                 {
                     "propertyName": "OrderDate",
                     "operation": "gt",
-                    "value": "1997-02-05T17:00:00.000Z"
+                    "value": new Date("1997-02-05T17:00:00.000Z")
                 }
             ],
             // 1
@@ -45,7 +37,7 @@ mocha.describe("filterParser fromKendoGrid", function (this) {
                 {
                     "propertyName": "OrderDate",
                     "operation": "gt",
-                    "value": "1997-02-05T17:00:00.000Z"
+                    "value": new Date("1997-02-05T17:00:00.000Z")
                 },
                 {
                     "propertyName": "Freight",
@@ -84,24 +76,12 @@ mocha.describe("filterParser fromKendoGrid", function (this) {
                     "value": 1
                 }
             ]
-        ]
+        ];
 
         let index = 0;
         for (let each of $filter) {
-            let source = replaceLast(each.replace("(", ""), "\\)", "");
-            console.log(index, source);
-            // console.log(
-            //     JSON.stringify(
-            //         odataParser.parse('$filter=' + clean(source))
-            //         , null, 2
-            //     )
-            // );
-            console.log(
-                JSON.stringify(
-                    fromKendoGrid.toFilterObj(source)
-                    , null, 2
-                )
-            );
+            let source = each;
+            assert.deepEqual(fromKendoGrid.toFilterObj(source), expectation[index]);
             // console.log(source.split("and").map(k => k.split("or").map(l => clean(l))))
             // console.log(index, source, source.split("(").map(k => clean(k)))
             // console.log(index, source, source.split(/[()]+/));

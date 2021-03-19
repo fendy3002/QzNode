@@ -5,7 +5,7 @@ import addContext = require('mochawesome/addContext');
 import fromKendoGrid from '../../src/filterParser/fromKendoGrid';
 
 mocha.describe("filterParser fromKendoGrid", function (this) {
-    mocha.it.only("should parse to filter obj", async function () {
+    mocha.it("should parse to filter obj", async function () {
         let $filter = [
             `(startswith(ShipName,'toms')+and+OrderDate+gt+datetime'1997-02-06T00:00:00')`,
             `(startswith(ShipName,'toms')+and+OrderDate+gt+datetime'1997-02-06T00:00:00'+and+(Freight+ge+8.24+and+Freight+le+27.79))`,

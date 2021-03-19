@@ -12,3 +12,11 @@ export namespace healthCheck {
         checkTimeout?: number
     }
 }
+
+export namespace filterParser {
+    export interface filterObj {
+        propertyName: string,
+        operation: string,
+        value: string | Date | number
+    }
+}

@@ -10,3 +10,4 @@ export { filterParser };
 export { sortParser };
 export { validator };
 export { retryable };
+export { default as odataParser } from './odataParser';

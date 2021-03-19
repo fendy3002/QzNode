@@ -15,8 +15,9 @@ export namespace healthCheck {
 
 export namespace filterParser {
     export interface filterObj {
-        propertyName: string,
-        operation: string,
-        value: string | Date | number
+        [operation: string]: filterObj[] | {
+            propertyName: string,
+            value: string | Date | number
+        }
     }
 }

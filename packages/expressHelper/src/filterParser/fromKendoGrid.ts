@@ -5,7 +5,7 @@ import odataParser from '../odataParser';
 import * as types from '../types';
 
 interface toFilterObj {
-    (source: string): types.filterParser.filterObj[]
+    (source: string): types.filterParser.filterObj
 }
 let clean = (source: string) => {
     return string.replaceAll(source, "+", " ").trimLeft().trimRight();
@@ -23,23 +23,27 @@ let parseAnd = (sourceObj) => {
     }
     return result;
 }
+let functionMap = {
+    "startswith": "starts_with",
+    "endswith": "ends_with",
+    "contains": "contains",
+}
 let parseFunctionCall = (sourceObj) => {
-    if (sourceObj.func == "startswith") {
+    if ([
+        "startswith",
+        "endswith",
+        "contains",
+    ].indexOf(sourceObj.func) > -1) {
         return [
             {
-                "propertyName": sourceObj.args[0].name,
-                "operation": "starts_with",
-                "value": sourceObj.args[1].value
+                [functionMap[sourceObj.func]]: {
+                    "propertyName": sourceObj.args[0].name,
+                    "value": sourceObj.args[1].value
+                }
             },
         ];
-    } else if (sourceObj.func == "contains") {
-        return [
-            {
-                "propertyName": sourceObj.args[0].name,
-                "operation": "contains",
-                "value": sourceObj.args[1].value
-            },
-        ];
+    } else {
+        throw new Error(`Func ${sourceObj.func} not supported`);
     }
 };
 
@@ -48,17 +52,19 @@ let parseEq = (sourceObj) => {
         sourceObj.left.func == "indexof") {
         return [
             {
-                "propertyName": sourceObj.left.args[0].name,
-                "operation": "not_contains",
-                "value": sourceObj.left.args[1].value,
+                "not_contains": {
+                    "propertyName": sourceObj.left.args[0].name,
+                    "value": sourceObj.left.args[1].value,
+                }
             }
         ];
     } else {
         return [
             {
-                "propertyName": sourceObj.left.name,
-                "operation": "eq",
-                "value": sourceObj.right.value,
+                "eq": {
+                    "propertyName": sourceObj.left.name,
+                    "value": sourceObj.right.value,
+                }
             }
         ];
     }
@@ -69,16 +75,18 @@ let operationMap = {
     "ge": "ge",
     "lt": "lt",
     "le": "le",
+    "ne": "ne"
 }
 let parseOperation = (sourceObj) => {
     return [
         {
-            "propertyName": sourceObj.left.name,
-            "operation": operationMap[sourceObj.type],
-            "value": sourceObj.right.value
+            [operationMap[sourceObj.type]]: {
+                "propertyName": sourceObj.left.name,
+                "value": sourceObj.right.value
+            }
         }
-    ]
-}
+    ];
+};
 
 let parseObj = (sourceObj) => {
     // console.log(sourceObj.type, sourceObj);
@@ -88,16 +96,20 @@ let parseObj = (sourceObj) => {
         return parseFunctionCall(sourceObj);
     } else if (["eq"].indexOf(sourceObj.type) > -1) {
         return parseEq(sourceObj);
-    } else if (["gt", "ge", "lt", "le"].indexOf(sourceObj.type) > -1) {
+    } else if (["gt", "ge", "lt", "le", "ne"].indexOf(sourceObj.type) > -1) {
         return parseOperation(sourceObj);
     } else {
+        throw new Error(`Type ${sourceObj.type} not supported`)
         return [];
     }
-}
+};
 
+let toFilterObj: toFilterObj = (source: string) => {
+    let parsed = odataParser.parse('$filter=' + clean(source)).$filter;
+    return {
+        "and": parseObj(parsed)
+    };
+};
 export default {
-    toFilterObj: (source: string) => {
-        let parsed = odataParser.parse('$filter=' + clean(source)).$filter;
-        return parseObj(parsed);
-    }
+    toFilterObj: toFilterObj
 };

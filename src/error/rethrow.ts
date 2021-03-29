@@ -1,4 +1,7 @@
 export const append = (innerErr, newErr) => {
+    if (!newErr) {
+        return innerErr;
+    }
     newErr.original = innerErr;
     if (innerErr.stack) {
         newErr.stack = newErr.stack.split('\n').slice(0, 2).join('\n') + '\n' +

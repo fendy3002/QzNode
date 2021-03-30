@@ -116,6 +116,10 @@ export namespace Qz {
                 retryDelay?: number,
                 retryJitter?: number,
                 ttl?: number
+            },
+            unlock?: {
+                onWarning?: (err: Error | any) => Promise<void>,
+                onError?: (err: Error | any) => Promise<void>
             }
         }
         export interface LockableSpawner {

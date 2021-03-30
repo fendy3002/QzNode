@@ -3,6 +3,7 @@ import Redlock = require("redlock");
 import lo = require('lodash');
 const debug = require('debug')("QzNode:promise:lockable");
 const debugError = require('debug')("QzNode:promise:lockable/error");
+const { promisify } = require("util");
 
 import * as types from '../types';
 
@@ -13,6 +14,16 @@ const lockableSpawner: types.Qz.Promise.LockableSpawner = (redisClient, option) 
     }
     else {
         clients = [redisClient];
+    }
+    let clientsGet = async (keys) => {
+        let result = [];
+        for (let client of clients) {
+            const getAsync = promisify(client.get).bind(client);
+            for (let key of keys) {
+                result.push(await getAsync(key));
+            }
+        }
+        return result.filter(k => k);
     }
 
     let redlock = new Redlock(clients, {
@@ -61,7 +72,11 @@ const lockableSpawner: types.Qz.Promise.LockableSpawner = (redisClient, option) 
                 try {
                     await unlock();
                 } catch (ex) {
-                    throw rethrow.from(ex).error(handleException);
+                    await option?.unlock?.onWarning?.(ex);
+                    let existingKeys = await clientsGet(keysArr);
+                    if (existingKeys && existingKeys.length > 0) {
+                        await option?.unlock?.onError?.(ex);
+                    }
                 }
                 if (keysArr.length > 0) {
                     debug(keysArr.join(",") + " released");

@@ -4,7 +4,7 @@ let assert = require('assert');
 import moment = require('moment');
 let path = require('path');
 
-mocha.describe.only('Excel', function () {
+mocha.describe('Excel', function () {
     mocha.describe('readAllRows', function () {
         mocha.it('return all record from sheet', async function () {
             let filePath = path.join(__dirname, "/excelsheet1.xlsx");

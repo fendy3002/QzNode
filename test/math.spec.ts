@@ -27,8 +27,12 @@ mocha.describe('Math', function () {
     mocha.it('should random correctly', async function () {
         for (let i = 0; i < 100; i++) {
             const result = QzMath.randBetween(1, 999);
-            assert.equal(true, result >= 1);
-            assert.equal(true, result <= 999);
+            let resultAssertion = result >= 1 && result <= 999;
+
+            if(!resultAssertion){
+                console.log(result);
+            }
+            assert.equal(true, resultAssertion);
         }
     });
     mocha.it('should random int correctly', async function () {

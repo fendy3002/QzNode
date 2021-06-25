@@ -22,76 +22,81 @@ export const schema = (schema: any) => {
         let data: any = null;
         if (schema.type == "object") {
             data = {};
-            for (let prop of Object.keys(schema.properties)) {
-                let newPath = path + "." + prop;
-                let propVal = val[prop];
-                if (typeof propVal == "undefined" || propVal == null) {
-                    //console.log(
-                    //    propVal,
-                    //    prop,
-                    //    schema.required,
-                    //    schema.required?.some(k => k == prop),
-                    //    path);
-                    if (schema.required?.some(k => k == prop)) {
-                        isValid = false;
-                        errors.push({
-                            property: path,
-                            name: schema.name ? schema.name : path,
-                            message: "is required"
-                        });
+            if (schema.properties) {
+                for (let prop of Object.keys(schema.properties)) {
+                    let newPath = path + "." + prop;
+                    let propVal = val[prop];
+                    if (typeof propVal == "undefined" || propVal == null) {
+                        //console.log(
+                        //    propVal,
+                        //    prop,
+                        //    schema.required,
+                        //    schema.required?.some(k => k == prop),
+                        //    path);
+                        if (schema.required?.some(k => k == prop)) {
+                            isValid = false;
+                            errors.push({
+                                property: path,
+                                name: schema.name ? schema.name : path,
+                                message: "is required"
+                            });
+                        }
+                        else if (schema.type == "array") {
+                            data[prop] = [];
+                        }
+                        continue;
                     }
-                    else if (schema.type == "array") {
-                        data[prop] = [];
+    
+                    let validateResult = await validateObj(val[prop], schema.properties[prop], newPath);
+                    isValid = isValid && validateResult.isValid;
+                    errors = errors.concat(validateResult.errors);
+                    let propData = validateResult.data;
+                    if (!validateResult.isValid) {
+                        data[prop] = propData;
+                        continue;
                     }
-                    continue;
-                }
-
-                let validateResult = await validateObj(val[prop], schema.properties[prop], newPath);
-                isValid = isValid && validateResult.isValid;
-                errors = errors.concat(validateResult.errors);
-                let propData = validateResult.data;
-                if (!validateResult.isValid) {
-                    data[prop] = propData;
-                    continue;
-                }
-                if (schema.properties[prop].type == "string" &&
-                    (schema.required && schema.required.some(k => k == prop))
-                ) {
-                    if (propData == "" || propData == null) {
-                        isValid = false;
-                        errors.push({
-                            property: newPath,
-                            name: schema.properties[prop].name ? schema.properties[prop].name : newPath,
-                            message: "is required"
-                        });
-                    }
-                    data[prop] = propData;
-                }
-                else if (schema.properties[prop].type == "string" &&
-                    (propData == null || propData == "")
-                ) {
-                    if (
-                        !(schema.required && schema.required.some(k => k == prop))
-                        && !schema.properties[prop].required
+                    if (schema.properties[prop].type == "string" &&
+                        (schema.required && schema.required.some(k => k == prop))
                     ) {
-                        delete data[prop];
+                        if (propData == "" || propData == null) {
+                            isValid = false;
+                            errors.push({
+                                property: newPath,
+                                name: schema.properties[prop].name ? schema.properties[prop].name : newPath,
+                                message: "is required"
+                            });
+                        }
+                        data[prop] = propData;
+                    }
+                    else if (schema.properties[prop].type == "string" &&
+                        (propData == null || propData == "")
+                    ) {
+                        if (
+                            !(schema.required && schema.required.some(k => k == prop))
+                            && !schema.properties[prop].required
+                        ) {
+                            delete data[prop];
+                        }
+                        else {
+                            data[prop] = propData;
+                        }
+                    }
+                    else if (schema.properties[prop].type == "boolean" && typeof (propData) != "boolean") {
+                        if ((!schema.required || !schema.required.some(k => k == prop))
+                            && !schema.properties[prop].required) {
+                            delete data[prop];
+                        }
+                        else {
+                            data[prop] = propData;
+                        }
                     }
                     else {
                         data[prop] = propData;
                     }
                 }
-                else if (schema.properties[prop].type == "boolean" && typeof (propData) != "boolean") {
-                    if ((!schema.required || !schema.required.some(k => k == prop))
-                        && !schema.properties[prop].required) {
-                        delete data[prop];
-                    }
-                    else {
-                        data[prop] = propData;
-                    }
-                }
-                else {
-                    data[prop] = propData;
-                }
+            }
+            else {
+                data = val;
             }
         }
         else if (schema.type == "array") {

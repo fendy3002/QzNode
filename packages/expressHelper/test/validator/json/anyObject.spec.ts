@@ -4,7 +4,7 @@ import assert = require('assert');
 import addContext = require('mochawesome/addContext');
 import * as jsonValidator from '../../../src/validator/json';
 
-mocha.describe.only("validator json any object", function (this) {
+mocha.describe("validator json any object", function (this) {
   let schema = {
     "type": "object",
     "properties": {

@@ -5,6 +5,7 @@ import error = require("./error");
 import excel from "./excel";
 import json = require("./json");
 import string = require("./string");
+import number = require("./number");
 import promise = require("./promise");
 import func = require("./func");
 import * as types from './types';
@@ -17,6 +18,7 @@ export = {
     error,
     excel,
     string,
+    number,
     promise,
     func,
     types

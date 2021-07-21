@@ -100,7 +100,7 @@ mocha.describe("validator dynamic object", function (this) {
       }
     }
   };
-  mocha.it.only("validate json schema", async function () {
+  mocha.it("validate json schema", async function () {
     let result = await jsonValidator.schema(schema).validate<any>({
       Summary: 'Pengajuan Perubahan Project X',
       StatusCode: '10',
@@ -127,6 +127,6 @@ mocha.describe("validator dynamic object", function (this) {
       value: result
     });
     assert.equal(true, result.isValid);
-    assert.equal(1600, result.data.votes);
+    assert.equal("c9051329-b275-4915-96f1-b9d8a6adfdef", result.data.Key);
   });
 });

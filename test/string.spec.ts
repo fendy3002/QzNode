@@ -13,4 +13,11 @@ mocha.describe('String', function () {
         assert.deepEqual(replacedText, expectedText);
         done();
     });
+    mocha.it('should encode and decode base64', function (done) {
+        const sourceText = 'This is source text';
+        let encoded = QzString.base64.encode(sourceText);
+        let decoded = QzString.base64.decode(encoded);
+        assert.deepEqual(sourceText, decoded);
+        done();
+    });
 });

@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "mocha --config ./test/.mocharc.js 'test/**/*.spec.ts'",
+    "test": "nyc mocha --config ./test/.mocharc.js 'test/**/*.spec.ts'",
     "compile": "tsc",
     "compileWatch": "tsc --watch",
     "prepublish": "npm run compile"
@@ -32,6 +32,7 @@
     "@types/node": "^16.7.10",
     "debug": "^4.1.1",
     "mocha": "^9.1.1",
+    "nyc": "^15.1.0",
     "redis": "^3.0.2",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.2"

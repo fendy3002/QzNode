@@ -68,7 +68,7 @@ let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
         },
         exec: async () => {
             if (option.delay > 0) {
-                await new Promise((resolve) => {
+                await new Promise<void>((resolve) => {
                     setTimeout(() => {
                         resolve();
                     }, option.delay);

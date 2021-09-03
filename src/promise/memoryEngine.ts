@@ -5,7 +5,7 @@ let construct = async () => {
         if (locks[key]) {
             let oldLock = locks[key];
             let unlock = null;
-            locks[key] = new Promise((resolve) => {
+            locks[key] = new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
                 }, ttl);
@@ -20,7 +20,7 @@ let construct = async () => {
         }
         else {
             let unlock = null;
-            locks[key] = new Promise((resolve) => {
+            locks[key] = new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
                 }, ttl);

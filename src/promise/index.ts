@@ -43,7 +43,7 @@ const retryable: types.Qz.Promise.Retryable = (handle: types.Qz.Promise.Retryabl
         let canRetry = true;
         while (canRetry && tryingTimes <= number) {
             if (tryingTimes > 0 && opts?.delay > 0) {
-                await new Promise((resolve) => {
+                await new Promise<void>((resolve) => {
                     setTimeout(() => {
                         resolve();
                     }, opts.delay);
@@ -69,7 +69,7 @@ const retryable: types.Qz.Promise.Retryable = (handle: types.Qz.Promise.Retryabl
         let lastRetry = new Date().getTime();
         while (canRetry && (lastRetry = new Date().getTime()) - tsNow <= duration) {
             if (isRetry && opts?.delay > 0) {
-                await new Promise((resolve) => {
+                await new Promise<void>((resolve) => {
                     setTimeout(() => {
                         resolve();
                     }, opts.delay);

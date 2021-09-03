@@ -48,7 +48,7 @@ mocha.describe('Promise lockable', function () {
             }
         });
         let task = lockable.process(() => {
-            return new Promise((resolve) => {
+            return new Promise<void>((resolve) => {
                 setTimeout(() => {
                     taskContext.times++;
                     resolve();

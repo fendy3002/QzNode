@@ -9,7 +9,7 @@ let delayPromise = (option: types.Qz.Promise.DelayOption) => {
             });
         },
         exec: async () => {
-            await new Promise((resolve, reject) => {
+            await new Promise<void>((resolve, reject) => {
                 setTimeout(() => {
                     resolve();
                 }, option.delay);

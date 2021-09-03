@@ -67,7 +67,7 @@ mocha.describe("retryable", function (this) {
     });
     mocha.it("should retry 1 seconds and error", async function () {
         const handle = async () => {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
                 }, 80);
@@ -84,7 +84,7 @@ mocha.describe("retryable", function (this) {
     mocha.it("should retry 1 seconds and error because condition", async function () {
         let now = new Date().getTime();
         const handle = async () => {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
                 }, 80);
@@ -106,7 +106,7 @@ mocha.describe("retryable", function (this) {
     mocha.it("should retry success after 300ms", async function () {
         let startTime = new Date().getTime();
         const handle = async () => {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
                 }, 100);
@@ -121,7 +121,7 @@ mocha.describe("retryable", function (this) {
     mocha.it("should retry success after 300ms with when", async function () {
         let startTime = new Date().getTime();
         const handle = async () => {
-            await new Promise((resolve) => {
+            await new Promise<void>((resolve) => {
                 setTimeout(() => {
                     resolve();
                 }, 100);

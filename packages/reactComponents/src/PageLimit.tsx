@@ -1,6 +1,6 @@
-const React = require('react');
-const lo = require('lodash');
-const PropTypes = require('prop-types');
+import * as React from 'react';
+import * as lo from 'lodash';
+import * as PropTypes from 'prop-types';
 
 export class PageLimit extends React.Component<any, any> {
     constructor(props) {

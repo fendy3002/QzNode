@@ -1,6 +1,5 @@
-let React = require('react');
-let lo = require('lodash');
-const PropTypes = require('prop-types');
+import * as React from 'react';
+import * as PropTypes from 'prop-types';
 
 export class Pagination extends React.Component<any, any> {
     constructor(props) {

@@ -26,7 +26,7 @@ const server = http.createServer(app);
 const port = process.argv[2] || 3000;
 const listener = server.listen(port, () => {
     console.log("server running on: http://127.0.0.1:" + listener.address().port);
-    webpack(require('../webpack.config').map(k => {
+    webpack(require('../webpack.dev.js').map(k => {
         return {
             ...k,
             mode: "development"

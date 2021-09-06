@@ -33,13 +33,13 @@ export class Pagination extends React.Component<any, any> {
 
         if(minRange > 1){
             pageItems.push(<li className="page-item" key="first">
-                <a className="page-link" href="javascript:void(0)" onClick={this.handleOnClick} data-page={1}> &lt;&lt; </a>
+                <a className="page-link" href={void(0)} onClick={this.handleOnClick} data-page={1}> &lt;&lt; </a>
             </li>
             );
         }
         if(page > 1){
             pageItems.push(<li className="page-item" key="prev">
-                <a className="page-link" href="javascript:void(0)" onClick={this.handleOnClick} data-page={page - 1}> &lt; </a>
+                <a className="page-link" href={void(0)} onClick={this.handleOnClick} data-page={page - 1}> &lt; </a>
             </li>
             );
         }
@@ -47,20 +47,20 @@ export class Pagination extends React.Component<any, any> {
         for(let i = minRange; i <= maxRange; i++){
             const active = i == page ? " active" : "";
             pageItems.push(<li className={"page-item" + active } key={i}>
-                <a className={"page-link"} href="javascript:void(0)" onClick={this.handleOnClick} data-page={i}> {i} </a>
+                <a className={"page-link"} href={void(0)} onClick={this.handleOnClick} data-page={i}> {i} </a>
             </li>
             );
         }
         
         if(page < maxPage){
             pageItems.push(<li className="page-item" key="next">
-                <a className="page-link" href="javascript:void(0)" onClick={this.handleOnClick} data-page={page + 1}> &gt; </a>
+                <a className="page-link" href={void(0)} onClick={this.handleOnClick} data-page={page + 1}> &gt; </a>
             </li>
             );
         }
         if(maxRange < maxPage){
             pageItems.push(<li className="page-item" key="last">
-                <a className="page-link" href="javascript:void(0)" onClick={this.handleOnClick} data-page={maxPage}> &gt;&gt; </a>
+                <a className="page-link" href={void(0)} onClick={this.handleOnClick} data-page={maxPage}> &gt;&gt; </a>
             </li>
             );
         }

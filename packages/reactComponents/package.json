@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/react-components",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
   "files": [
@@ -12,7 +12,7 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "compile": "webpack --mode=production",
+    "compile": "webpack --mode=production --config webpack.prod.js",
     "compile-dev": "webpack --config webpack.dev.js --watch",
     "prepublish": "npm run compile",
     "testServer": "node test/app.js"

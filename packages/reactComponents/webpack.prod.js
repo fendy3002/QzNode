@@ -4,9 +4,11 @@ const common = require('./webpack.common.js');
 
 const sourceCodes = [{
     entry: {
-        index: path.resolve(__dirname, "src/index.tsx"),
         ConfirmButton: path.resolve(__dirname, "src/ConfirmButton.tsx"),
         EditableLabel: path.resolve(__dirname, "src/EditableLabel.tsx"),
+        NumericInput: path.resolve(__dirname, "src/NumericInput.tsx"),
+        PageLimit: path.resolve(__dirname, "src/PageLimit.tsx"),
+        Pagination: path.resolve(__dirname, "src/Pagination.tsx"),
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -17,7 +19,5 @@ const sourceCodes = [{
 module.exports = sourceCodes.map(k => {
     return merge(common, {
         ...k,
-        mode: 'development',
-        devtool: 'inline-source-map',
     })
 });

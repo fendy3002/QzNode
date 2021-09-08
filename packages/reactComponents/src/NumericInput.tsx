@@ -103,6 +103,10 @@ class NumericInput extends React.Component {
             overrideBaseNumber.className = this.props.className;
             overrideBaseDisplay.className = this.props.className;
         }
+        if (this.props.readOnly) {
+            overrideBaseNumber.readOnly = this.props.readOnly;
+            overrideBaseDisplay.readOnly = this.props.readOnly;
+        }
 
         let InputComponent = React.cloneElement(
             baseInputComponent,

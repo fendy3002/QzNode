@@ -213,7 +213,10 @@ class NumericInputPage extends React.Component {
         });
     }
     render() {
-        return <NumericInput value={this.state.number} onChange={this.onChange}/>;
+        return <>
+            <NumericInput value={this.state.number} onChange={this.onChange}/>
+            <NumericInput value={this.state.number} readOnly={true} onChange={this.onChange}/>
+        </>;
     }
 }
 ReactDOM.render(

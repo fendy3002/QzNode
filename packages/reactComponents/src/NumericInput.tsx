@@ -39,6 +39,8 @@ class NumericInput extends React.Component {
 
     componentDidMount() {
         let { onChange, allowEmpty } = this.props;
+        console.log("ref", this.inputRef, this.displayRef)
+
         this.inputRef.current.style.display = "none";
         this.displayRef.current.addEventListener("mousedown", () => {
             this.displayRef.current.eventTrigger = "mousedown";
@@ -52,7 +54,7 @@ class NumericInput extends React.Component {
             if (this.inputRef.current.value == "0") {
                 this.inputRef.current.setSelectionRange(0, 1);
             }
-            else if (validate.string.isNumeric(this.inputRef.current.value)) {                
+            else if (validate.string.isNumeric(this.inputRef.current.value)) {
                 let selectionStart = getSelectionIndexFromValue(this.displayRef.current.value, this.displayRef.current.selectionStart);
                 let selectionEnd = this.displayRef.current.selectionEnd - this.displayRef.current.selectionStart + selectionStart;
                 this.inputRef.current.setSelectionRange(selectionStart, selectionEnd);
@@ -85,14 +87,46 @@ class NumericInput extends React.Component {
         });
     }
     render() {
-        let InputComponent = this.props.inputComponent ?? DefaultInput;
-        let NumberComponent = this.props.numberComponent ?? DefaultInput;
+        let baseInputComponent = this.props.inputComponent ?? <DefaultInput />;
+        let baseNumberComponent = this.props.numberComponent ?? <DefaultInput />;
 
         let { value, onChange } = this.props;
+        let overrideBaseDisplay: any = {};
+        let overrideBaseNumber: any = {};
+        if (this.props.name) {
+            overrideBaseNumber.name = this.props.name;
+        }
+        if (this.props.placeholder) {
+            overrideBaseNumber.placeholder = this.props.placeholder;
+            overrideBaseDisplay.placeholder = this.props.placeholder;
+        }
+        if (this.props.className) {
+            overrideBaseNumber.className = this.props.className;
+            overrideBaseDisplay.className = this.props.className;
+        }
+
+        let InputComponent = React.cloneElement(
+            baseInputComponent,
+            {
+                ref: this.displayRef,
+                value: format.number(value),
+                onChange: () => { },
+                ...overrideBaseDisplay
+            }
+        );
+        let NumberComponent = React.cloneElement(
+            baseNumberComponent,
+            {
+                ref: this.inputRef,
+                value: value,
+                onChange: onChange,
+                ...overrideBaseNumber,
+            }
+        );
 
         return <>
-            <InputComponent ref={this.displayRef} value={format.number(value)} onChange={() => { }}></InputComponent>
-            <NumberComponent ref={this.inputRef} value={value} onChange={onChange}></NumberComponent>
+            {InputComponent}
+            {NumberComponent}
         </>;
     }
 }

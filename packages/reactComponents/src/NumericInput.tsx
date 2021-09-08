@@ -39,7 +39,6 @@ class NumericInput extends React.Component {
 
     componentDidMount() {
         let { onChange, allowEmpty } = this.props;
-        console.log("ref", this.inputRef, this.displayRef)
 
         this.inputRef.current.style.display = "none";
         this.displayRef.current.addEventListener("mousedown", () => {

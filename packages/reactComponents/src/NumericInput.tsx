@@ -52,9 +52,14 @@ class NumericInput extends React.Component {
             if (this.inputRef.current.value == "0") {
                 this.inputRef.current.setSelectionRange(0, 1);
             }
-            else {
+            else if (validate.string.isNumeric(this.inputRef.current.value)) {                
                 let selectionStart = getSelectionIndexFromValue(this.displayRef.current.value, this.displayRef.current.selectionStart);
-                this.inputRef.current.setSelectionRange(selectionStart, selectionStart);
+                let selectionEnd = this.displayRef.current.selectionEnd - this.displayRef.current.selectionStart + selectionStart;
+                this.inputRef.current.setSelectionRange(selectionStart, selectionEnd);
+            } else {
+                this.inputRef.current.setSelectionRange(
+                    this.displayRef.current.selectionStart, this.displayRef.current.selectionEnd
+                );
             }
         });
         this.displayRef.current.addEventListener("focus", () => {

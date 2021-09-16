@@ -37,9 +37,15 @@ class NumericInput extends React.Component {
     inputRef;
     displayRef;
 
+    componentDidUpdate() {
+        let { allowEmpty } = this.props;
+        this.inputRef.current.allowEmpty = allowEmpty;
+    }
+
     componentDidMount() {
         let { onChange, allowEmpty } = this.props;
 
+        this.inputRef.current.allowEmpty = allowEmpty;
         this.inputRef.current.style.display = "none";
         this.displayRef.current.addEventListener("mousedown", () => {
             this.displayRef.current.eventTrigger = "mousedown";
@@ -76,7 +82,7 @@ class NumericInput extends React.Component {
         this.inputRef.current.addEventListener("blur", (evt) => {
             this.displayRef.current.style.display = "";
             this.inputRef.current.style.display = "none";
-            if (this.inputRef.current.value == "" && !allowEmpty) {
+            if (this.inputRef.current.value == "" && !this.inputRef.current.allowEmpty) {
                 this.inputRef.current.value = "0";
                 onChange(evt);
             } else if (validate.string.isNumeric(this.inputRef.current.value)) {
@@ -89,7 +95,7 @@ class NumericInput extends React.Component {
         let baseInputComponent = this.props.inputComponent ?? <DefaultInput />;
         let baseNumberComponent = this.props.numberComponent ?? <DefaultInput />;
 
-        let { value, onChange } = this.props;
+        let { value, fixedDecimal, onChange } = this.props;
         let overrideBaseDisplay: any = {};
         let overrideBaseNumber: any = {};
         if (this.props.name) {
@@ -108,11 +114,15 @@ class NumericInput extends React.Component {
             overrideBaseDisplay.readOnly = this.props.readOnly;
         }
 
+        let renderValue = value;
+        if (validate.string.isNumeric(renderValue) && fixedDecimal > 0) {
+            renderValue = parseFloat(value).toFixed(fixedDecimal);
+        }
         let InputComponent = React.cloneElement(
             baseInputComponent,
             {
                 ref: this.displayRef,
-                value: format.number(value),
+                value: format.number(renderValue),
                 onChange: () => { },
                 ...overrideBaseDisplay
             }

@@ -33,7 +33,6 @@ export default {
             tableName: modelName,
             timestamps: false
         });
-        await model.sync();
         return model;
     },
     validateJSON: async ({

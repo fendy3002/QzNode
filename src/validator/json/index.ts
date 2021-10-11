@@ -227,6 +227,11 @@ export const schema = (schema: any) => {
         return result;
     };
     return {
-        validate
+        validate,
+        formatMessage: async (validateResult: ValidateResult<any>, separator = ",\n") => {
+            return validateResult.errors
+                .map((k) => k.name + " " + k.message)
+                .join(separator);
+        }
     };
 };

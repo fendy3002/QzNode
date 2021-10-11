@@ -213,10 +213,10 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
-"@fendy3002/qz-node@^2.5.0":
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/@fendy3002/qz-node/-/qz-node-2.5.0.tgz#c27ff70be550e07cb41f8b720624511a5d6e34d0"
-  integrity sha512-AAYGgXVx3CT+M/l1LypCK6d6GxNsbbFzgbDvgMCuKyRtjFUOEY6g0gGI4vANniHrFrizAct0ChrSJyV2Ud0ikg==
+"@fendy3002/qz-node@^2.5.2":
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@fendy3002/qz-node/-/qz-node-2.5.2.tgz#6848699a2801a9fe9ddd70a73d9649a113f0eaee"
+  integrity sha512-iK646Z8VpuHIEHIHtHmnLSk57fn2Bxyawo/uYKS9Uq6oHidiREzrrn4zIioIn9g8q4wi5oZJXEwtFwjXwasJ2w==
   dependencies:
     chalk "^4.0.0"
     command-line-args "^5.1.1"

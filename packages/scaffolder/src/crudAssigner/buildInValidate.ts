@@ -12,9 +12,7 @@ export default async (baseEntity, action) => {
         return {
             data: validateResult.data,
             isValid: validateResult.isValid,
-            message: validateResult.errors
-                .map((k) => k.name + " " + k.message)
-                .join(",\n")
+            message: validator.json.formatMessage(validateResult)
         };
     }
 }

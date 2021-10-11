@@ -8,6 +8,7 @@ import string = require("./string");
 import number = require("./number");
 import promise = require("./promise");
 import func = require("./func");
+import validator = require("./validator");
 import * as types from './types';
 
 export = {
@@ -21,5 +22,6 @@ export = {
     number,
     promise,
     func,
-    types
+    types,
+    validator
 };

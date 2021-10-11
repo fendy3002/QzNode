@@ -1,4 +1,4 @@
-import { validator } from '@fendy3002/express-helper';
+import { validator } from '@fendy3002/qz-node';
 import entityMap from '../baseEntity/entityMap';
 
 export default async (baseEntity, action) => {

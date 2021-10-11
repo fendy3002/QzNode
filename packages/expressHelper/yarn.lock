@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@fendy3002/qz-node@^2.5.1":
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/@fendy3002/qz-node/-/qz-node-2.5.1.tgz#6006802a130325410a42b518a5a4b931a174fc0b"
-  integrity sha512-W0bCwQBoHJ1YIZVB/wK4PmJdvjnDEdcCu7W7GGnqL1jvVF50y/pVyrlmkNvSd3Y0bejfyKB3J6njfdbS61jVhA==
+"@fendy3002/qz-node@^2.5.2":
+  version "2.5.2"
+  resolved "https://registry.yarnpkg.com/@fendy3002/qz-node/-/qz-node-2.5.2.tgz#6848699a2801a9fe9ddd70a73d9649a113f0eaee"
+  integrity sha512-iK646Z8VpuHIEHIHtHmnLSk57fn2Bxyawo/uYKS9Uq6oHidiREzrrn4zIioIn9g8q4wi5oZJXEwtFwjXwasJ2w==
   dependencies:
     chalk "^4.0.0"
     command-line-args "^5.1.1"

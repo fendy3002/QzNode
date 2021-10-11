@@ -1,4 +1,7 @@
-import * as native from './native';
-import * as json from './json';
-export { json };
-export { native };
+import { validator } from '@fendy3002/qz-node';
+let json = validator.json;
+let native = validator.native;
+export {
+    json,
+    native
+};

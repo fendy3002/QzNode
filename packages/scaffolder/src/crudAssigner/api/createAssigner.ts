@@ -2,27 +2,14 @@ import { errorHandler } from "@fendy3002/express-helper";
 import * as multer from 'multer';
 import * as debugRaw from 'debug';
 const debug = debugRaw("app:routes/account/login");
+import {
+    ValidateResult,
+    ValidateResultParam, 
+    BaseHandlerParam, 
+    SqlTransactionParam,
+    CreatedDataParam
+} from '../../crudAssignerType';
 
-export interface ValidateResult {
-    isValid: boolean,
-    data: any,
-    message?: string
-};
-
-export interface BaseHandlerParam {
-    context: any,
-    req: any,
-    res: any
-};
-export interface ValidateResultParam {
-    validateResult?: ValidateResult,
-};
-export interface SqlTransactionParam {
-    sqlTransaction: any,
-};
-export interface CreatedDataParam {
-    createdData: any
-};
 export interface ValidateHandler {
     (param: BaseHandlerParam): Promise<ValidateResult>
 };

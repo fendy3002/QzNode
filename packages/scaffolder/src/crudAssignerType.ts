@@ -24,13 +24,18 @@ export interface SqlTransactionParam {
 export interface CreatedDataParam {
     createdData?: any
 };
+export interface UpdateDataParam {
+    originalData?: any
+    updatedData?: any
+};
 
 export interface UnifiedParam extends
     BaseHandlerParam,
     SequelizeModelParam,
     ValidateResultParam,
     SqlTransactionParam,
-    CreatedDataParam {
+    CreatedDataParam,
+    UpdateDataParam {
 
 }
 
@@ -75,6 +80,14 @@ export namespace handler {
             onSave: (param: UnifiedParam & {
                 files
             }) => Promise<void>
+        }): generalHandler
+    };
+    export interface findOne {
+        (param: SequelizeModelParam & {
+            raw?: boolean,
+            whereClause: (param: UnifiedParam) => Promise<any>
+            passAs: string,
+            onSuccess: generalHandler
         }): generalHandler
     };
 };

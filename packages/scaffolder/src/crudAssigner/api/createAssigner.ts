@@ -1,7 +1,5 @@
 import { errorHandler } from "@fendy3002/express-helper";
 import * as multer from 'multer';
-import * as debugRaw from 'debug';
-const debug = debugRaw("app:routes/account/login");
 import {
     handler
 } from '../../crudAssignerType';
@@ -10,6 +8,7 @@ export interface AssignParams {
     sequelizeDb: any,
     modelName: string,
     middleware?: any[],
+
     upload?: {
         fileSizeLimit?: number,
         fields: { name: string, maxCount: number }[],

@@ -18,6 +18,7 @@
   "dependencies": {
     "@fendy3002/express-helper": "^0.4.1",
     "@fendy3002/qz-node": "^2.5.2",
+    "http-errors": "^1.8.0",
     "multer": "^1.4.3",
     "sequelize": "^6.7.0"
   }

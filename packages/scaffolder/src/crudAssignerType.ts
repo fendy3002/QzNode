@@ -23,3 +23,20 @@ export interface SqlTransactionParam {
 export interface CreatedDataParam {
     createdData: any
 };
+
+export namespace handler {
+    export interface withSqlTransaction {
+        (param: SequelizeModelParam & {
+            handler: (param: SequelizeModelParam & SqlTransactionParam) => Promise<any>
+        }): Promise<any>
+    };
+    export interface createHandler {
+        (param: SequelizeModelParam
+            & BaseHandlerParam
+            & SqlTransactionParam
+            & ValidateResultParam
+            & {
+                getBody: (param: BaseHandlerParam & ValidateResultParam & SqlTransactionParam) => Promise<any>
+            }): Promise<any>
+    };
+};

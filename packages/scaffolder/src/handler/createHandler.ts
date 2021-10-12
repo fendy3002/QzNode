@@ -1,18 +1,8 @@
 import {
-    ValidateResultParam,
-    BaseHandlerParam,
-    SqlTransactionParam,
-    SequelizeModelParam
+    handler
 } from '../crudAssignerType';
 
-export interface Param extends
-    SequelizeModelParam,
-    BaseHandlerParam,
-    SqlTransactionParam,
-    ValidateResultParam {
-    getBody: (param: BaseHandlerParam & ValidateResultParam & SqlTransactionParam) => Promise<any>
-}
-export default async ({
+let service: handler.createHandler = async ({
     sequelizeDb,
     sqlTransaction,
     modelName,
@@ -21,7 +11,7 @@ export default async ({
     req,
     res,
     validateResult
-}: Param) => {
+}) => {
     const currentModuleModel = sequelizeDb.models[modelName];
     let createPayload = await getBody?.({ sqlTransaction, context, validateResult, req, res })
         ?? validateResult?.data ?? req.body;
@@ -35,3 +25,4 @@ export default async ({
     const currentModuleData = await currentModuleModel.create(createPayload, createOption);
     return currentModuleData;
 };
+export default service;

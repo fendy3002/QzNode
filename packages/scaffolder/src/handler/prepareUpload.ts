@@ -3,15 +3,15 @@ import {
     handler
 } from '../crudAssignerType';
 
-let prepareUpload: handler.prepareUpload = ({ req, fields, onSave }) => {
-    return async ({ ...params }) => {
+let prepareUpload: handler.prepareUpload = ({ fields, onSave }) => {
+    return async ({ req, ...params }) => {
         let files: any = {};
         for (let prop of fields.map(k => k.name)) {
             files[prop] = req.files[prop] || [];
         }
         return {
             files,
-            ...await onSave({ ...params, files })
+            ...await onSave({ ...params, req, files })
         };
     };
 };

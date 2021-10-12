@@ -73,7 +73,7 @@ export namespace handler {
         }): generalHandler
     };
     export interface prepareUpload {
-        (param: BaseHandlerParam & {
+        (param: {
             fields: { name: string, maxCount: number }[],
             onSave: (param: UnifiedParam & {
                 files
@@ -110,5 +110,5 @@ export namespace handler {
             onSuccess: generalHandler
         }): generalHandler
     };
-    
+
 };

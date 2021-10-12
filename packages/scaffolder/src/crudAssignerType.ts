@@ -46,7 +46,7 @@ export namespace handler {
 
     export interface withSqlTransaction {
         (param: SequelizeModelParam & {
-            handler: generalHandler
+            handle: generalHandler
         }): generalHandler
     };
     export interface createHandler {
@@ -59,6 +59,13 @@ export namespace handler {
             baseEntity: types.BaseEntity,
             action: Action,
             onValid: (param: BaseHandlerParam & ValidateResultParam) => Promise<any>
+        }): generalHandler
+    };
+    export interface withBeforeAfter {
+        (param: {
+            before: generalHandler,
+            handle: generalHandler,
+            after: generalHandler,
         }): generalHandler
     };
 };

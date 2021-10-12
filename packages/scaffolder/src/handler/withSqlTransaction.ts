@@ -3,7 +3,7 @@ import {
     handler
 } from '../crudAssignerType';
 
-let withSqlTransaction: handler.withSqlTransaction = ({ sequelizeDb, modelName, handler }) => {
+let withSqlTransaction: handler.withSqlTransaction = ({ sequelizeDb, modelName, handle }) => {
     return async ({ ...params }) => {
         let sqlTransaction = await sequelizeDb.transaction({ autocommit: false });
         try {

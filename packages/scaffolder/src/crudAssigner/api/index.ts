@@ -1,4 +1,11 @@
 import * as Sequelize from 'sequelize';
+
+import * as createAssignerType from '../basic/createAssigner';
+import * as updateAssignerType from '../basic/updateAssigner';
+import * as listAssignerType from '../basic/listAssigner';
+import * as viewAssignerType from '../basic/viewAssigner';
+import * as deleteAssignerType from '../basic/deleteAssigner';
+
 import basic from '../basic';
 import * as handler from '../../handler';
 import * as crudAssignerType from '../../crudAssignerType';
@@ -9,20 +16,20 @@ export interface BaseParam {
     middleware?: any[],
 };
 export interface AssignParams {
-    view?: BaseParam & {
+    view?: viewAssignerType.AssignParams & {
         whereClause: crudAssignerType.handler.generalHandler
     },
-    list?: BaseParam & {
+    list?: listAssignerType.AssignParams & {
         handler?: crudAssignerType.handler.generalHandler,
         modelParam?: crudAssignerType.handler.generalHandler
     },
-    create?: BaseParam & {
+    create?: createAssignerType.AssignParams & {
         handler: crudAssignerType.handler.generalHandler
     },
-    update?: BaseParam & {
+    update?: updateAssignerType.AssignParams & {
         handler: crudAssignerType.handler.generalHandler
     },
-    delete?: BaseParam & {
+    delete?: deleteAssignerType.AssignParams & {
         handler: crudAssignerType.handler.generalHandler
     },
 };

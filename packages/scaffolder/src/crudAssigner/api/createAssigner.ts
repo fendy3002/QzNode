@@ -37,7 +37,6 @@ export interface AssignParams {
     onSuccess?: (param: BaseHandlerParam & CreatedDataParam) => Promise<void>
     responseData?: (param: BaseHandlerParam & CreatedDataParam) => Promise<any>,
 };
-import * as types from "../../types";
 export default {
     assign: (option: AssignParams, router) => {
         let middleware = option.middleware ?? [];

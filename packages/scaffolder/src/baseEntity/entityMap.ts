@@ -55,5 +55,33 @@ export default {
             type: "object",
             properties: properties
         };
-    }
+    },
+    filterParser: async ({
+        entity
+    }: MapParam) => {
+        let schema: any = {};
+        for (let propName of Object.keys(entity.fields)) {
+            schema = {
+                ...schema,
+                ...await dataTypeMap.filterParser({
+                    entity: entity,
+                    field: entity.fields[propName],
+                    fieldName: propName,
+                })
+            };
+        }
+        return schema;
+    },
+    sortParser: async ({
+        entity
+    }: MapParam) => {
+        let schema: any = {};
+        for (let propName of Object.keys(entity.fields)) {
+            schema = {
+                ...schema,
+                [propName]: propName
+            };
+        }
+        return schema;
+    },
 };

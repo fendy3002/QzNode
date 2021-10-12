@@ -97,4 +97,18 @@ export namespace handler {
             onSuccess: generalHandler
         }): generalHandler
     };
+    export interface withBaseEntityFindAll {
+        (param: SequelizeModelParam & {
+            raw?: boolean,
+            baseEntity: types.BaseEntity,
+            filterOption?: any,
+            sortOption?: any,
+            additionalFilter?: generalHandler,
+            defaultSort?: any[],
+
+            passAs: string,
+            onSuccess: generalHandler
+        }): generalHandler
+    };
+    
 };

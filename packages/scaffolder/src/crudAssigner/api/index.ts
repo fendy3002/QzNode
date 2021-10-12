@@ -13,7 +13,8 @@ export interface AssignParams {
         whereClause: crudAssignerType.handler.generalHandler
     },
     list?: BaseParam & {
-        modelParam: crudAssignerType.handler.generalHandler
+        handler?: crudAssignerType.handler.generalHandler,
+        modelParam?: crudAssignerType.handler.generalHandler
     },
     create?: BaseParam & {
         handler: crudAssignerType.handler.generalHandler
@@ -46,7 +47,7 @@ let api = async (option: AssignParams, router) => {
         } : null,
         list: option.list ? {
             ...option.list,
-            handler: handler.findAll({
+            handler: option.list.handler ?? handler.findAll({
                 modelName: option.list.modelName,
                 sequelizeDb: option.list.sequelizeDb,
                 passAs: "listData",

@@ -109,5 +109,46 @@ export default {
         return {
             [field.sqlName ?? fieldName]: propField
         };
+    },
+    filterParser: async ({
+        entity, field, fieldName
+    }) => {
+        let result: any = {};
+
+        if ([
+            types.BaseEntityDataType.bigint,
+            types.BaseEntityDataType.tinyint,
+            types.BaseEntityDataType.decimal,
+            types.BaseEntityDataType.smallint,
+            types.BaseEntityDataType.integer,
+        ].some(k => k == field.dataType)) {
+            result = {
+                [fieldName]: { key: fieldName, type: "number" },
+            };
+        } else if ([
+            types.BaseEntityDataType.text,
+            types.BaseEntityDataType.guid,
+            types.BaseEntityDataType.char,
+            types.BaseEntityDataType.string,
+        ].some(k => k == field.dataType)) {
+            result = {
+                [fieldName]: fieldName,
+            };
+        } else if (field.dataType == types.BaseEntityDataType.date) {
+            result = {
+                [fieldName]: {
+                    key: fieldName,
+                    type: "date",
+                    formatTo: "YYYY-MM-DD HH:mm:ss",
+                    endOfDay: true
+                }
+            };
+        } else if (field.dataType == types.BaseEntityDataType.boolean) {
+            result = {
+                [fieldName]: { key: fieldName, type: "boolean" },
+            };
+        }
+
+        return result;
     }
 };

@@ -52,7 +52,7 @@ export default {
                 result.type = Sequelize.STRING(field.length);
             }
         } else if (field.dataType == types.BaseEntityDataType.boolean) {
-            result.type = Sequelize.TINYINT;
+            result.type = Sequelize.BOOLEAN;
         }
 
         return {

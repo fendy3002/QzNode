@@ -58,6 +58,19 @@ export namespace handler {
             onSuccess: generalHandler,
         }): generalHandler
     };
+    export interface updateHandler {
+        (param: {
+            getBody: generalHandler,
+            whereClause: generalHandler,
+            onSuccess: generalHandler,
+        }): generalHandler
+    };
+    export interface deleteHandler {
+        (param: {
+            whereClause: generalHandler,
+            onSuccess: generalHandler,
+        }): generalHandler
+    };
     export interface withBaseEntityValidation {
         (param: {
             baseEntity: types.BaseEntity,

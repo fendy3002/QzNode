@@ -1,4 +1,6 @@
 export * from './createHandler';
+export * from './updateHandler';
+export * from './deleteHandler';
 export * from './findAll';
 export * from './findOne';
 export * from './prepareUpload';

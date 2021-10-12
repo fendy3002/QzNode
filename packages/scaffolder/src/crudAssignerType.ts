@@ -13,7 +13,7 @@ export interface BaseHandlerParam {
 };
 export interface SequelizeModelParam {
     sequelizeDb: Sequelize.Sequelize,
-    modelName: string
+    modelName?: string
 };
 export interface ValidateResultParam {
     validateResult?: ValidateResult,
@@ -22,8 +22,18 @@ export interface SqlTransactionParam {
     sqlTransaction?: any,
 };
 export interface CreatedDataParam {
-    createdData: any
+    createdData?: any
 };
+
+export interface UnifiedParam extends
+    BaseHandlerParam,
+    SequelizeModelParam,
+    ValidateResultParam,
+    SqlTransactionParam,
+    CreatedDataParam {
+
+}
+
 export enum Action {
     create = "create",
     update = "update"
@@ -32,23 +42,19 @@ export enum Action {
 export namespace handler {
     export interface withSqlTransaction {
         (param: SequelizeModelParam & {
-            handler: (param: SequelizeModelParam & SqlTransactionParam) => Promise<any>
-        }): Promise<any>
+            handler: (param: UnifiedParam) => Promise<any>
+        }): (param: UnifiedParam) => Promise<any>
     };
     export interface createHandler {
-        (param: SequelizeModelParam
-            & BaseHandlerParam
-            & SqlTransactionParam
-            & ValidateResultParam
-            & {
-                getBody: (param: BaseHandlerParam & ValidateResultParam & SqlTransactionParam) => Promise<any>
-            }): Promise<any>
+        (param: {
+            getBody: (param: UnifiedParam) => Promise<any>
+        }): (param: UnifiedParam) => Promise<any>
     };
     export interface withBaseEntityValidation {
-        (param: BaseHandlerParam & {
+        (param: {
             baseEntity: types.BaseEntity,
             action: Action,
             onValid: (param: BaseHandlerParam & ValidateResultParam) => Promise<any>
-        })
+        }): (param: UnifiedParam) => Promise<any>
     };
 };

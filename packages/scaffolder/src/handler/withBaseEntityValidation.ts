@@ -20,7 +20,7 @@ let withBaseEntityValidation: handler.withBaseEntityValidation = ({ baseEntity, 
         } else {
             return {
                 validateResult,
-                ...await onValid({ req, ...params })
+                ...await onValid({ req, validateResult, ...params })
             };
         }
     };

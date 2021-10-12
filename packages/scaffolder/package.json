@@ -4,7 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "nyc mocha --config ./test/.mocharc.js 'test/**/*.spec.ts'"
+    "test": "nyc mocha --config ./test/.mocharc.js 'test/**/*.spec.ts'",
+    "compile": "tsc",
+    "compileWatch": "tsc --watch",
+    "prepublish": "npm run compile"
+
   },
   "devDependencies": {
     "@types/lodash": "^4.14.175",

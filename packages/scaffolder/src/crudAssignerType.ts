@@ -51,7 +51,8 @@ export namespace handler {
     };
     export interface createHandler {
         (param: {
-            getBody: (param: UnifiedParam) => Promise<any>
+            getBody: (param: UnifiedParam) => Promise<any>,
+            onSuccess: (param: UnifiedParam) => Promise<void>,
         }): generalHandler
     };
     export interface withBaseEntityValidation {
@@ -66,6 +67,14 @@ export namespace handler {
             before: generalHandler,
             handle: generalHandler,
             after: generalHandler,
+        }): generalHandler
+    };
+    export interface prepareUpload {
+        (param: BaseHandlerParam & {
+            fields: { name: string, maxCount: number }[],
+            onSave: (param: UnifiedParam & {
+                files
+            }) => Promise<void>
         }): generalHandler
     };
 };

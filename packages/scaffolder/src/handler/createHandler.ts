@@ -2,7 +2,7 @@ import {
     handler
 } from '../crudAssignerType';
 
-let createHandler: handler.createHandler = ({ getBody }) => {
+let createHandler: handler.createHandler = ({ getBody, onSuccess }) => {
     return async ({
         sequelizeDb,
         modelName,
@@ -22,7 +22,7 @@ let createHandler: handler.createHandler = ({ getBody }) => {
             };
         }
         const currentModuleData = await currentModuleModel.create(createPayload, createOption);
-        return currentModuleData;
+        await onSuccess({ sequelizeDb, modelName, req, validateResult, sqlTransaction, createdData: currentModuleData.toJSON(), ...params });
     };
 };
 

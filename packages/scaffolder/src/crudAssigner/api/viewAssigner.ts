@@ -1,4 +1,4 @@
-import listAssigner from '../basic/listAssigner';
+import viewAssigner from '../basic/viewAssigner';
 import * as handler from '../../handler';
 import {
     handler as handlerType
@@ -12,7 +12,7 @@ export interface AssignParams {
 };
 export default {
     assign: (option: AssignParams, router) => {
-        return listAssigner.assign({
+        return viewAssigner.assign({
             ...option,
             handler: handler.findOne({
                 raw: true,

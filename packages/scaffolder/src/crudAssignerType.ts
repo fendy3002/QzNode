@@ -12,7 +12,7 @@ export interface BaseHandlerParam {
     res: any
 };
 export interface SequelizeModelParam {
-    sequelizeDb: Sequelize.Sequelize,
+    sequelizeDb?: Sequelize.Sequelize,
     modelName?: string
 };
 export interface ValidateResultParam {

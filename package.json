@@ -3,6 +3,9 @@
   "version": "2.5.2",
   "description": "",
   "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "nyc mocha --config ./test/.mocharc.js 'test/**/*.spec.ts'",
     "compile": "tsc",

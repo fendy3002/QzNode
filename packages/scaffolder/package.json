@@ -1,15 +1,21 @@
 {
   "name": "@fendy3002/scaffolder",
   "version": "0.1.0",
-  "main": "index.js",
+  "main": "dist/index.js",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "nyc mocha --config ./test/.mocharc.js 'test/**/*.spec.ts'",
     "compile": "tsc",
     "compileWatch": "tsc --watch",
     "prepublish": "npm run compile"
-
   },
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
   "devDependencies": {
     "@types/lodash": "^4.14.175",
     "@types/node": "^16.10.3",

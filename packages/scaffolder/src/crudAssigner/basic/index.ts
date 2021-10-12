@@ -3,14 +3,12 @@ import updateAssigner from './updateAssigner';
 import listAssigner from './listAssigner';
 import viewAssigner from './viewAssigner';
 import deleteAssigner from './deleteAssigner';
-import deletePermanentAssigner from './deletePermanentAssigner';
 
 import * as createAssignerType from './createAssigner';
 import * as updateAssignerType from './updateAssigner';
 import * as listAssignerType from './listAssigner';
 import * as viewAssignerType from './viewAssigner';
 import * as deleteAssignerType from './deleteAssigner';
-import * as deletePermanentAssignerType from './deletePermanentAssigner';
 
 export interface AssignParams {
     create?: createAssignerType.AssignParams,
@@ -18,7 +16,6 @@ export interface AssignParams {
     list?: listAssignerType.AssignParams,
     view?: viewAssignerType.AssignParams,
     delete?: deleteAssignerType.AssignParams,
-    deletePermanent?: deletePermanentAssignerType.AssignParams
 };
 
 export default {
@@ -30,16 +27,13 @@ export default {
             updateAssigner.assign(option.update, router);
         }
         if (option.list) {
-            listAssigner.assign(option.list);
+            listAssigner.assign(option.list, router);
         }
         if (option.view) {
-            viewAssigner.assign(option.view);
+            viewAssigner.assign(option.view, router);
         }
         if (option.delete) {
-            deleteAssigner.assign(option.delete);
-        }
-        if (option.deletePermanent) {
-            deletePermanentAssigner.assign(option.deletePermanent);
+            deleteAssigner.assign(option.delete, router);
         }
     }
 }

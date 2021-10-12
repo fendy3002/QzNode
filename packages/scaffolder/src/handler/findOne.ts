@@ -18,7 +18,11 @@ let findOne: handler.findOne = ({ sequelizeDb, modelName, raw, passAs, whereClau
         if (!data) {
             throw httpErrors(500, "Data not found");
         }
-        await onSuccess({ ...params, sqlTransaction, [passAs]: data });
+        ;
+        return {
+            [passAs]: data,
+            ...await onSuccess({ ...params, sqlTransaction, [passAs]: data })
+        };
     };
 };
 export { findOne };

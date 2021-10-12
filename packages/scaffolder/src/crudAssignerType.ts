@@ -54,8 +54,8 @@ export namespace handler {
     };
     export interface createHandler {
         (param: {
-            getBody: (param: UnifiedParam) => Promise<any>,
-            onSuccess: (param: UnifiedParam) => Promise<void>,
+            getBody: generalHandler,
+            onSuccess: generalHandler,
         }): generalHandler
     };
     export interface withBaseEntityValidation {
@@ -67,9 +67,9 @@ export namespace handler {
     };
     export interface withBeforeAfter {
         (param: {
-            before: generalHandler,
+            before?: generalHandler,
             handle: generalHandler,
-            after: generalHandler,
+            after?: generalHandler,
         }): generalHandler
     };
     export interface prepareUpload {
@@ -77,13 +77,13 @@ export namespace handler {
             fields: { name: string, maxCount: number }[],
             onSave: (param: UnifiedParam & {
                 files
-            }) => Promise<void>
+            }) => Promise<any>
         }): generalHandler
     };
     export interface findOne {
         (param: SequelizeModelParam & {
             raw?: boolean,
-            whereClause: (param: UnifiedParam) => Promise<any>,
+            whereClause: generalHandler
             passAs: string,
             onSuccess: generalHandler
         }): generalHandler
@@ -91,7 +91,7 @@ export namespace handler {
     export interface findAll {
         (param: SequelizeModelParam & {
             raw?: boolean,
-            modelParam: (param: UnifiedParam) => Promise<any>,
+            modelParam: generalHandler,
 
             passAs: string,
             onSuccess: generalHandler

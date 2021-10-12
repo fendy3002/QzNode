@@ -1,56 +1,29 @@
-import { array } from "@fendy3002/qz-node";
-import { filterParser, sortParser, errorHandler } from "@fendy3002/express-helper";
-import httpErrors = require("http-errors");
-import * as debugRaw from 'debug';
-const debug = debugRaw("app:routes/account/login");
+import { errorHandler } from "@fendy3002/express-helper";
+import {
+    handler
+} from '../../crudAssignerType';
 
-export interface WhereClauseHandler {
-    (params: {req, res}): Promise<any>
-};
 export interface AssignParams {
-    connectionName?: string,
+    sequelizeDb: any,
     modelName: string,
     middleware?: any[],
-    formCode?: string,
-    formAction?: string,
-    whereClause?: WhereClauseHandler
+    handler: handler.generalHandler
 };
-import hasAccessMiddleware from '../../middleware/hasAccess';
-import * as types from "../../types";
-export default (router, config: types.config.app) => {
-    return {
-        assign: (option: AssignParams) => {
-            let middleware = option.middleware ?? [];
-            if (option.formCode) {
-                middleware = [
-                    hasAccessMiddleware(config)(option.formCode, option.formAction ?? "IsDisplay"),
-                    ...middleware
-                ];
-            }
-            router.get("/:id", middleware,
-                errorHandler.handled(async (req, res, next) => {
-                    const currentModuleModel = req.sql(option.connectionName ?? "default").models[option.modelName];
-                    const whereClause = (option.whereClause) ?
-                        (await option.whereClause({req, res})) :
-                        {
-                            RecordID: req.params.id
-                        };
-                    if (!await currentModuleModel.findOne({
-                        where: whereClause
-                    })) {
-                        return res.status(404).json({
-                            message: "Data not found"
-                        });
-                    }
-                    const responseData = await currentModuleModel.findOne({
-                        where: whereClause,
-                        raw: true
-                    });
-                    return res.status(200).json({
-                        data: responseData
-                    });
-                })
-            );
-        }
+export default {
+    assign: (option: AssignParams, router) => {
+        let middleware = option.middleware ?? [];
+
+        router.get("/:id", middleware,
+            errorHandler.handled(async (req, res, next) => {
+                let context: any = {};
+                await option.handler({
+                    context,
+                    req,
+                    res,
+                    sequelizeDb: option.sequelizeDb,
+                    modelName: option.modelName,
+                });
+            })
+        );
     }
-};
+}

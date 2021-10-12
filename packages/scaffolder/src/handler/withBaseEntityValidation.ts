@@ -18,7 +18,10 @@ let withBaseEntityValidation: handler.withBaseEntityValidation = ({ baseEntity, 
         if (!validateResult.isValid) {
             throw httpErrors(500, validator.json.formatMessage(validateResult));
         } else {
-            return await onValid({ req, ...params });
+            return {
+                validateResult,
+                ...await onValid({ req, ...params })
+            };
         }
     };
 };

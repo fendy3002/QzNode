@@ -22,7 +22,10 @@ let createHandler: handler.createHandler = ({ getBody, onSuccess }) => {
             };
         }
         const currentModuleData = await currentModuleModel.create(createPayload, createOption);
-        await onSuccess({ sequelizeDb, modelName, req, validateResult, sqlTransaction, createdData: currentModuleData.toJSON(), ...params });
+        return {
+            createdData: currentModuleData.toJSON(),
+            ...await onSuccess({ sequelizeDb, modelName, req, validateResult, sqlTransaction, createdData: currentModuleData.toJSON(), ...params })
+        };
     };
 };
 

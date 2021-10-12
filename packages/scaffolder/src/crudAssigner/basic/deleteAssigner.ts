@@ -1,61 +1,28 @@
-import { array } from "@fendy3002/qz-node";
 import { errorHandler } from "@fendy3002/express-helper";
-import httpErrors = require("http-errors");
-import * as Sequelize from 'sequelize';
-import * as debugRaw from 'debug';
-const debug = debugRaw("app:routes/account/login");
+import {
+    handler
+} from '../../crudAssignerType';
 
-export interface WhereClauseHandler {
-    (params: { req, res }): Promise<any>
-};
 export interface AssignParams {
-    connectionName?: string,
+    sequelizeDb: any,
     modelName: string,
-    formCode?: string,
-    formAction?: string,
     middleware?: any[],
-    whereClause?: WhereClauseHandler
+    handler: handler.generalHandler
 };
-import hasAccessMiddleware from '../../middleware/hasAccess';
-import * as types from "../../types";
-export default (router, config: types.config.app) => {
-    return {
-        assign: (option: AssignParams) => {
-            let middleware = option.middleware ?? [];
-            if (option.formCode) {
-                middleware = [
-                    hasAccessMiddleware(config)(option.formCode, option.formAction ?? "IsDelete"),
-                    ...middleware
-                ];
-            }
-            router.delete("/:id", middleware,
-                errorHandler.handled(async (req, res, next) => {
-                    const currentModuleModel = req.sql(option.connectionName ?? "default").models[option.modelName];
-                    const whereClause = (option.whereClause) ?
-                        (await option.whereClause({ req, res })) :
-                        {
-                            RecordID: req.params.id,
-                            OperationCode: {
-                                [Sequelize.Op.not]: "D"
-                            }
-                        };
-                    if (!await currentModuleModel.findOne({
-                        where: whereClause
-                    })) {
-                        return res.status(404).json({
-                            message: "Data not found"
-                        });
-                    }
-                    await currentModuleModel.update({
-                        OperationCode: "D"
-                    }, {
-                        where: whereClause,
-                    });
-                    return res.status(200).json({
-                        message: "ok"
-                    });
-                })
-            );
-        }
+export default {
+    assign: (option: AssignParams, router) => {
+        let middleware = option.middleware ?? [];
+        router.delete("/:id", middleware,
+            errorHandler.handled(async (req, res, next) => {
+                let context: any = {};
+                await option.handler({
+                    context,
+                    req,
+                    res,
+                    sequelizeDb: option.sequelizeDb,
+                    modelName: option.modelName,
+                });
+            })
+        );
     }
-};
+}

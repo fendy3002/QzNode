@@ -15,7 +15,10 @@ let findAll: handler.findAll = ({ sequelizeDb, modelName, raw, passAs, modelPara
             raw: raw ?? true,
             ...additionalOption
         });
-        await onSuccess({ ...params, sqlTransaction, [passAs]: data });
+        return {
+            [passAs]: data,
+            ...await onSuccess({ ...params, sqlTransaction, [passAs]: data })
+        };
     };
 };
 export { findAll };

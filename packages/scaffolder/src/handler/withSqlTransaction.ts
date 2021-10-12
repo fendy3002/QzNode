@@ -7,7 +7,7 @@ let withSqlTransaction: handler.withSqlTransaction = ({ sequelizeDb, modelName, 
     return async ({ ...params }) => {
         let sqlTransaction = await sequelizeDb.transaction({ autocommit: false });
         try {
-            let handlerResponse = await handler({ sequelizeDb, sqlTransaction, modelName, ...params });
+            let handlerResponse = await handle({ sequelizeDb, sqlTransaction, modelName, ...params });
             await sqlTransaction.commit();
             return handlerResponse;
         } catch (ex) {

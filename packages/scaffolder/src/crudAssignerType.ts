@@ -40,21 +40,25 @@ export enum Action {
 };
 
 export namespace handler {
+    export interface generalHandler {
+        (param: UnifiedParam): Promise<any>
+    };
+
     export interface withSqlTransaction {
         (param: SequelizeModelParam & {
-            handler: (param: UnifiedParam) => Promise<any>
-        }): (param: UnifiedParam) => Promise<any>
+            handler: generalHandler
+        }): generalHandler
     };
     export interface createHandler {
         (param: {
             getBody: (param: UnifiedParam) => Promise<any>
-        }): (param: UnifiedParam) => Promise<any>
+        }): generalHandler
     };
     export interface withBaseEntityValidation {
         (param: {
             baseEntity: types.BaseEntity,
             action: Action,
             onValid: (param: BaseHandlerParam & ValidateResultParam) => Promise<any>
-        }): (param: UnifiedParam) => Promise<any>
+        }): generalHandler
     };
 };

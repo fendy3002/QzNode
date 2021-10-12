@@ -22,12 +22,12 @@ export interface AssignParams {
 };
 
 export default {
-    assign: async (option: AssignParams) => {
+    assign: async (option: AssignParams, router) => {
         if (option.create) {
-            createAssigner.assign(option.create);
+            createAssigner.assign(option.create, router);
         }
         if (option.update) {
-            updateAssigner.assign(option.update);
+            updateAssigner.assign(option.update, router);
         }
         if (option.list) {
             listAssigner.assign(option.list);

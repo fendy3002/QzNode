@@ -21,12 +21,12 @@ export interface ValidateResultParam {
 export interface SqlTransactionParam {
     sqlTransaction?: any,
 };
-export interface CreatedDataParam {
-    createdData?: any
-};
-export interface UpdateDataParam {
-    originalData?: any
-    updatedData?: any
+export interface OperationDataParam {
+    createdData?: any,
+    originalData?: any,
+    updatedData?: any,
+    listData?: any,
+    viewData?: any
 };
 
 export interface UnifiedParam extends
@@ -34,9 +34,7 @@ export interface UnifiedParam extends
     SequelizeModelParam,
     ValidateResultParam,
     SqlTransactionParam,
-    CreatedDataParam,
-    UpdateDataParam {
-
+    OperationDataParam {
 }
 
 export enum Action {
@@ -85,7 +83,16 @@ export namespace handler {
     export interface findOne {
         (param: SequelizeModelParam & {
             raw?: boolean,
-            whereClause: (param: UnifiedParam) => Promise<any>
+            whereClause: (param: UnifiedParam) => Promise<any>,
+            passAs: string,
+            onSuccess: generalHandler
+        }): generalHandler
+    };
+    export interface findAll {
+        (param: SequelizeModelParam & {
+            raw?: boolean,
+            modelParam: (param: UnifiedParam) => Promise<any>,
+
             passAs: string,
             onSuccess: generalHandler
         }): generalHandler

@@ -18,6 +18,14 @@ export interface AssignParams {
     delete?: deleteAssignerType.AssignParams,
 };
 
+export {
+    createAssigner,
+    updateAssigner,
+    listAssigner,
+    viewAssigner,
+    deleteAssigner
+}
+
 export default {
     assign: async (option: AssignParams, router) => {
         if (option.create) {

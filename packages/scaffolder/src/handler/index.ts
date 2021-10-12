@@ -5,3 +5,4 @@ export * from './prepareUpload';
 export * from './withBaseEntityValidation';
 export * from './withBeforeAfter';
 export * from './withSqlTransaction';
+export * from './withBaseEntityFindAll';

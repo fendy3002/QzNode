@@ -54,7 +54,7 @@ export default {
         for (let association of [...associations.children, ...associations.parent, ...associations.sibling]) {
             if (association.type == "parentChild" && association.direction == "child") {
                 let childProperties: any = {};
-                for (let propName of Object.keys(association.childModel)) {
+                for (let propName of Object.keys(association.childModel.entity().fields)) {
                     childProperties = {
                         ...childProperties,
                         ...await dataTypeMap.validateJSON({

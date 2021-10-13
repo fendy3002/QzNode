@@ -6,8 +6,8 @@ import {
 let withBeforeAfter: handler.withBeforeAfter = ({ before, handle, after }) => {
     return async ({ ...params }) => {
         let beforeParams = (await before?.({ ...params })) ?? params;
-        let handleParams = await handle({ ...beforeParams }) ?? params;
-        return (await after?.({ ...handleParams })) ?? params;
+        let handleParams = await handle({ ...beforeParams }) ?? beforeParams;
+        return (await after?.({ ...handleParams })) ?? handleParams;
     };
 };
 export { withBeforeAfter };

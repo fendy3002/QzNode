@@ -134,5 +134,15 @@ export namespace handler {
             onSuccess: generalHandler
         }): generalHandler
     };
+    export interface withBaseEntityModelFindOne {
+        (param: SequelizeInstanceParam & {
+            baseEntityModel: types.BaseEntityModel,
+            whereClause: {
+                [modelName: string]: generalHandler
+            },
+            passAs: string,
+            onSuccess: generalHandler
+        }): generalHandler
+    };
 
 };

@@ -41,6 +41,11 @@ export interface BaseEntityModel {
         parentKey: string,
         childKey: string,
     }) => void,
+    association: () => {
+        parent: ParentChildAssociation[],
+        sibling: SiblingAssociation[],
+        children: ParentChildAssociation[],
+    }
 };
 export interface ParentChildAssociation {
     parentModel: BaseEntityModel,

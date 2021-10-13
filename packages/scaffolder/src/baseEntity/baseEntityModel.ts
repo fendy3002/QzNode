@@ -54,6 +54,13 @@ class BaseEntityModel implements BaseEntityModelType {
             parentKey: param.parentKey
         });
     }
+    association() {
+        return {
+            parent: this.parent,
+            sibling: this.sibling,
+            children: this.children
+        };
+    }
 }
 const fromBaseEntity = (baseEntity: BaseEntity): BaseEntityModel => {
     return new BaseEntityModel(baseEntity);

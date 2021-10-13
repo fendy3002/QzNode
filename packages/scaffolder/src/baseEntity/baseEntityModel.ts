@@ -19,6 +19,7 @@ class BaseEntityModel implements BaseEntityModelType {
         }
         this.children.push({
             type: "parentChild",
+            direction: "child",
             parentModel: this,
             childModel: model,
             as: param.as,
@@ -59,6 +60,7 @@ class BaseEntityModel implements BaseEntityModelType {
         }
         this.parent.push({
             type: "parentChild",
+            direction: "parent",
             parentModel: model,
             childModel: this,
             key: key,

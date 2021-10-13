@@ -49,6 +49,7 @@ export interface BaseEntityModel {
 };
 export interface ParentChildAssociation {
     type: 'parentChild',
+    direction: 'child' | 'parent',
     parentModel: BaseEntityModel,
     childModel: BaseEntityModel,
     key: string,

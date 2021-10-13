@@ -9,18 +9,21 @@ mocha.describe('withBeforeAfter', function () {
     mocha.it('should do actions', async function () {
         let result = await withBeforeAfter({
             before: async (param) => {
-                assert.equal(baseHandleParam.modelName, param.modelName);
-                return { ...param, modelName: "model 2" };
+                assert.equal(null, param.context["MyProp"]);
+                param.context["MyProp"] = "prop1";
+                return { ...param };
             },
             handle: async (param) => {
-                assert.equal("model 2", param.modelName);
-                return { ...param, modelName: "model 3" };
+                assert.equal("prop1", param.context["MyProp"]);
+                param.context["MyProp"] = "prop2";
+                return { ...param };
             },
             after: async (param) => {
-                assert.equal("model 3", param.modelName);
-                return { ...param, modelName: "model 4" };
+                assert.equal("prop2", param.context["MyProp"]);
+                param.context["MyProp"] = "prop3";
+                return { ...param };
             },
         })({ ...baseHandleParam });
-        assert.equal("model 4", result.modelName);
+        assert.equal("prop3", result.context["MyProp"]);
     });
 });

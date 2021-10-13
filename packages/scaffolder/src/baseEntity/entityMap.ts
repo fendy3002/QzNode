@@ -50,6 +50,47 @@ export default {
                 })
             };
         }
+        let associations = model.association();
+        for (let association of [...associations.children, ...associations.parent, ...associations.sibling]) {
+            if (association.type == "parentChild" && association.direction == "child") {
+                let childProperties: any = {};
+                for (let propName of Object.keys(association.childModel)) {
+                    childProperties = {
+                        ...childProperties,
+                        ...await dataTypeMap.validateJSON({
+                            model: association.childModel,
+                            field: association.childModel.entity().fields[propName],
+                            fieldName: propName,
+                            action: action
+                        })
+                    };
+                }
+                properties[association.as] = {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: childProperties
+                    }
+                };
+            } else if (association.type == "sibling") {
+                let siblingProperties: any = {};
+                for (let propName of Object.keys(association.siblingModel)) {
+                    siblingProperties = {
+                        ...siblingProperties,
+                        ...await dataTypeMap.validateJSON({
+                            model: association.siblingModel,
+                            field: association.siblingModel.entity().fields[propName],
+                            fieldName: propName,
+                            action: action
+                        })
+                    };
+                }
+                properties[association.as] = {
+                    type: "object",
+                    properties: siblingProperties
+                };
+            }
+        }
 
         return {
             type: "object",

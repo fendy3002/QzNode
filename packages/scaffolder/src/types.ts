@@ -24,6 +24,41 @@ export enum BaseFieldGuiType {
     date,
 };
 
+export interface BaseEntityModel {
+    entity: () => BaseEntity,
+    hasMany: (model: BaseEntityModel, params: {
+        as: string,
+        parentKey: string,
+        childKey: string,
+    }) => void,
+    hasOne: (model: BaseEntityModel, params: {
+        as: string,
+        myKey: string,
+        siblingKey: string,
+    }) => void,
+    belongsTo: (model: BaseEntityModel, params: {
+        as: string,
+        parentKey: string,
+        childKey: string,
+    }) => void,
+};
+export interface ParentChildAssociation {
+    parentModel: BaseEntityModel,
+    childModel: BaseEntityModel,
+    key: string,
+    as: string,
+    parentKey: string,
+    childKey: string,
+};
+export interface SiblingAssociation {
+    myModel: BaseEntityModel,
+    siblingModel: BaseEntityModel,
+    key: string,
+    as: string,
+    myKey: string,
+    siblingKey: string,
+};
+
 export interface BaseEntity {
     name: string,
     sqlName?: string,

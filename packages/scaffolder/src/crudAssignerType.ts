@@ -66,6 +66,17 @@ export namespace handler {
             }
         }): generalHandler
     }
+    export interface baseEntityModelUpdateHandler {
+        (param: SequelizeInstanceParam & {
+            baseEntityModel: types.BaseEntityModel,
+            baseWhereClause: generalHandler,
+            sourceBody?: generalHandler,
+            onSuccess: generalHandler,
+            getBody: {
+                [modelName: string]: (param: createGetBodyParam) => Promise<any>
+            }
+        }): generalHandler
+    }
     export interface createHandler {
         (param: SequelizeModelParam & {
             getBody: generalHandler,

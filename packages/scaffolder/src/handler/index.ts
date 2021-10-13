@@ -1,4 +1,5 @@
 export * from './baseEntityModelCreateHandler';
+export * from './baseEntityModelUpdateHandler';
 export * from './createHandler';
 export * from './updateHandler';
 export * from './deleteHandler';

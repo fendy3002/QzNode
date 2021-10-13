@@ -56,7 +56,7 @@ export namespace handler {
     export interface baseEntityModelCreateHandler {
         (param: SequelizeInstanceParam & {
             baseEntityModel: types.BaseEntityModel,
-            sourceBody: generalHandler,
+            sourceBody?: generalHandler,
             onSuccess: generalHandler,
             getBody: {
                 [modelName: string]: (param: UnifiedParam & { sourceBody: any }) => Promise<any>

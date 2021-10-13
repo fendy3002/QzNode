@@ -12,7 +12,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
         const currentModuleModel = sequelizeDb.models[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name];
         let generalHandlerParam = { req, validateResult, sqlTransaction, ...params };
 
-        let createSourceBody = await sourceBody(generalHandlerParam)
+        let createSourceBody = await sourceBody?.(generalHandlerParam)
             ?? validateResult?.data ?? req.body;
 
         let createOption = {};

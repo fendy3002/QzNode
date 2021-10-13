@@ -86,8 +86,8 @@ let baseEntityModelUpdateHandler: handler.baseEntityModelUpdateHandler = ({
         }
 
         return {
-            createdData: currentModuleData,
-            ...await onSuccess({ req, validateResult, sqlTransaction, createdData: currentModuleData, ...params })
+            updatedData: currentModuleData,
+            ...await onSuccess({ req, validateResult, sqlTransaction, updatedData: currentModuleData, ...params })
         };
     };
 };

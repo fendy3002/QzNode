@@ -40,7 +40,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
                         childrenToInsert,
                         createOption
                     );
-                currentModuleData[association.as] = createResult;
+                currentModuleData[association.as] = createResult.map(k => k.toJSON());
             } else if (association.type == "sibling") {
                 let siblingSourceBody = createSourceBody[association.as];
                 siblingSourceBody[association.siblingKey] = currentModuleData[association.myKey];

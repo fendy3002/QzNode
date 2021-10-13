@@ -58,7 +58,7 @@ let baseEntityModelUpdateHandler: handler.baseEntityModelUpdateHandler = ({
                         childrenToInsert,
                         updateOption
                     );
-                currentModuleData[association.as] = createResult;
+                currentModuleData[association.as] = createResult.map(k => k.toJSON());
             } else if (association.type == "sibling") {
                 let siblingSourceBody = updateSourceBody[association.as];
                 siblingSourceBody[association.siblingKey] = currentModuleData[association.myKey];

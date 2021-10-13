@@ -8,6 +8,13 @@ import entityMap from '../../../src/baseEntity/entityMap';
 mocha.describe('validateJSON', function () {
     mocha.it('should generate json schema', async function () {
         let result = await entityMap.validateJSON({ model: BaseEntityModelSingle, action: "create" });
-        console.log(result);
+        let expected = {
+            type: 'object',
+            properties: {
+                MyProp1: { type: 'string', maxLength: 50 },
+                MyProp2: { type: 'number' }
+            }
+        };
+        assert.deepEqual(expected, result);
     });
 });

@@ -9,7 +9,10 @@ let withSqlTransaction: handler.withSqlTransaction = ({ sequelizeDb, handle }) =
         try {
             let handlerResponse = await handle({ sqlTransaction, ...params });
             await sqlTransaction.commit();
-            return handlerResponse;
+            return {
+                ...handlerResponse,
+                sqlTransaction: null
+            };
         } catch (ex) {
             await sqlTransaction.rollback();
             throw error.rethrow.from(ex).original().asIs();

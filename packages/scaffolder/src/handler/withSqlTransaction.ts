@@ -3,11 +3,11 @@ import {
     handler
 } from '../crudAssignerType';
 
-let withSqlTransaction: handler.withSqlTransaction = ({ sequelizeDb, modelName, handle }) => {
+let withSqlTransaction: handler.withSqlTransaction = ({ sequelizeDb, handle }) => {
     return async ({ ...params }) => {
         let sqlTransaction = await sequelizeDb.transaction({ autocommit: false });
         try {
-            let handlerResponse = await handle({ sequelizeDb, sqlTransaction, modelName, ...params });
+            let handlerResponse = await handle({ sqlTransaction, ...params });
             await sqlTransaction.commit();
             return handlerResponse;
         } catch (ex) {

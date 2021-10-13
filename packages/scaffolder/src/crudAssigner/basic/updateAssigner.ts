@@ -5,8 +5,6 @@ import {
 } from '../../crudAssignerType';
 
 export interface AssignParams {
-    sequelizeDb: any,
-    modelName: string,
     middleware?: any[],
 
     upload?: {
@@ -37,8 +35,6 @@ export default {
                     context,
                     req,
                     res,
-                    sequelizeDb: option.sequelizeDb,
-                    modelName: option.modelName,
                 });
             })
         );

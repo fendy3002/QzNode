@@ -2,10 +2,8 @@ import {
     handler
 } from '../crudAssignerType';
 
-let deleteHandler: handler.deleteHandler = ({ whereClause, onSuccess }) => {
+let deleteHandler: handler.deleteHandler = ({ sequelizeDb, modelName, whereClause, onSuccess }) => {
     return async ({
-        sequelizeDb,
-        modelName,
         req,
         validateResult,
         sqlTransaction,
@@ -13,7 +11,7 @@ let deleteHandler: handler.deleteHandler = ({ whereClause, onSuccess }) => {
     }) => {
         const currentModuleModel = sequelizeDb.models[modelName];
         let deleteOption: any = {
-            where: await whereClause({ sequelizeDb, modelName, req, validateResult, sqlTransaction, ...params })
+            where: await whereClause({ req, validateResult, sqlTransaction, ...params })
         };
         if (sqlTransaction) {
             deleteOption = {
@@ -22,7 +20,7 @@ let deleteHandler: handler.deleteHandler = ({ whereClause, onSuccess }) => {
         }
         await currentModuleModel.destroy(deleteOption);
         return {
-            ...await onSuccess({ sequelizeDb, modelName, req, validateResult, sqlTransaction, ...params })
+            ...await onSuccess({ req, validateResult, sqlTransaction, ...params })
         };
     };
 };

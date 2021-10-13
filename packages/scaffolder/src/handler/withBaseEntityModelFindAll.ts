@@ -6,9 +6,9 @@ import {
     handler
 } from '../crudAssignerType';
 
-let withBaseEntityFindAll: handler.withBaseEntityFindAll = ({ sequelizeDb, modelName,
+let withBaseEntityFindAll: handler.withBaseEntityModelFindAll = ({ sequelizeDb, modelName,
     raw, passAs, filterOption, sortOption, defaultSort,
-    additionalFilter, baseEntity, onSuccess }) => {
+    additionalFilter, baseEntityModel, onSuccess }) => {
     return findAll({
         sequelizeDb,
         modelName,
@@ -16,7 +16,7 @@ let withBaseEntityFindAll: handler.withBaseEntityFindAll = ({ sequelizeDb, model
             let page_limit = parseInt(req.query.page_limit ?? "25");
             let page = parseInt(req.query.page ?? "1");
 
-            let filterSchema = await entityMap.filterParser({ entity: baseEntity });
+            let filterSchema = await entityMap.filterParser({ model: baseEntityModel });
             let filter = await filterParser.sequelize(req.query, filterSchema,
                 {
                     validateKey: true,
@@ -27,7 +27,7 @@ let withBaseEntityFindAll: handler.withBaseEntityFindAll = ({ sequelizeDb, model
                 ...filter,
                 ...await additionalFilter?.({ req, ...params })
             };
-            let sortSchema = await entityMap.sortParser({ entity: baseEntity });
+            let sortSchema = await entityMap.sortParser({ model: baseEntityModel });
             let sortBy = await sortParser.sequelize(req.query, sortSchema,
                 {
                     notFoundKeyError: true,

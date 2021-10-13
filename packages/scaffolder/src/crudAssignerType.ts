@@ -11,8 +11,10 @@ export interface BaseHandlerParam {
     req: any,
     res: any
 };
-export interface SequelizeModelParam {
+export interface SequelizeInstanceParam {
     sequelizeDb?: Sequelize.Sequelize,
+};
+export interface SequelizeModelParam extends SequelizeInstanceParam {
     modelName?: string
 };
 export interface ValidateResultParam {
@@ -31,7 +33,6 @@ export interface OperationDataParam {
 
 export interface UnifiedParam extends
     BaseHandlerParam,
-    SequelizeModelParam,
     ValidateResultParam,
     SqlTransactionParam,
     OperationDataParam {
@@ -48,32 +49,32 @@ export namespace handler {
     };
 
     export interface withSqlTransaction {
-        (param: SequelizeModelParam & {
+        (param: SequelizeInstanceParam & {
             handle: generalHandler
         }): generalHandler
     };
     export interface createHandler {
-        (param: {
+        (param: SequelizeModelParam & {
             getBody: generalHandler,
             onSuccess: generalHandler,
         }): generalHandler
     };
     export interface updateHandler {
-        (param: {
+        (param: SequelizeModelParam & {
             getBody: generalHandler,
             whereClause: generalHandler,
             onSuccess: generalHandler,
         }): generalHandler
     };
     export interface deleteHandler {
-        (param: {
+        (param: SequelizeModelParam & {
             whereClause: generalHandler,
             onSuccess: generalHandler,
         }): generalHandler
     };
-    export interface withBaseEntityValidation {
+    export interface withBaseEntityModelValidation {
         (param: {
-            baseEntity: types.BaseEntity,
+            baseEntityModel: types.BaseEntityModel,
             action: Action,
             onValid: (param: BaseHandlerParam & ValidateResultParam) => Promise<any>
         }): generalHandler
@@ -110,10 +111,10 @@ export namespace handler {
             onSuccess: generalHandler
         }): generalHandler
     };
-    export interface withBaseEntityFindAll {
+    export interface withBaseEntityModelFindAll {
         (param: SequelizeModelParam & {
             raw?: boolean,
-            baseEntity: types.BaseEntity,
+            baseEntityModel: types.BaseEntityModel,
             filterOption?: any,
             sortOption?: any,
             additionalFilter?: generalHandler,

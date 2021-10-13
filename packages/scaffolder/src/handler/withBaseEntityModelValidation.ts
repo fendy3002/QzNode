@@ -6,11 +6,11 @@ import {
     handler
 } from '../crudAssignerType';
 
-let withBaseEntityValidation: handler.withBaseEntityValidation = ({ baseEntity, action, onValid }) => {
+let withBaseEntityValidation: handler.withBaseEntityModelValidation = ({ baseEntityModel, action, onValid }) => {
     return async ({ req, ...params }) => {
         let validateResult = await validator.json.schema(
             await entityMap.validateJSON({
-                entity: baseEntity,
+                model: baseEntityModel,
                 action: action.toString()
             })
         ).validate(req.body);

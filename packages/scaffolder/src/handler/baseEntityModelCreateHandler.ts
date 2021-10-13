@@ -28,7 +28,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
         let associations = baseEntityModel.association();
         for (let association of [...associations.children, ...associations.parent, ...associations.sibling]) {
             if (association.type == "parentChild" && association.direction == "child") {
-                let childrenSourceBody = createPayload[association.as];
+                let childrenSourceBody = createSourceBody[association.as];
                 let childrenToInsert = [];
                 for (let each of childrenSourceBody) {
                     each[association.childKey] = currentModuleData[association.parentKey];
@@ -42,7 +42,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
                     );
                 currentModuleData[association.as] = createResult;
             } else if (association.type == "sibling") {
-                let siblingSourceBody = createPayload[association.as];
+                let siblingSourceBody = createSourceBody[association.as];
                 siblingSourceBody[association.siblingKey] = currentModuleData[association.myKey];
                 let siblingCreatePayload = await getBody[baseEntityModel.entity().name]?.({ ...generalHandlerParam, sourceBody: siblingSourceBody });
                 let siblingModelName = association.siblingModel.entity().sqlName ?? association.siblingModel.entity().name;

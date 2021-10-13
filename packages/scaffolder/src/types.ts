@@ -48,6 +48,7 @@ export interface BaseEntityModel {
     }
 };
 export interface ParentChildAssociation {
+    type: 'parentChild',
     parentModel: BaseEntityModel,
     childModel: BaseEntityModel,
     key: string,
@@ -56,6 +57,7 @@ export interface ParentChildAssociation {
     childKey: string,
 };
 export interface SiblingAssociation {
+    type: 'sibling',
     myModel: BaseEntityModel,
     siblingModel: BaseEntityModel,
     key: string,

@@ -18,10 +18,16 @@ class BaseEntityModel implements BaseEntityModelType {
             return;
         }
         this.children.push({
+            type: "parentChild",
             parentModel: this,
             childModel: model,
             as: param.as,
             key: key,
+            childKey: param.childKey,
+            parentKey: param.parentKey
+        });
+        model.belongsTo(this, {
+            as: param.as,
             childKey: param.childKey,
             parentKey: param.parentKey
         });
@@ -32,12 +38,18 @@ class BaseEntityModel implements BaseEntityModelType {
             return;
         }
         this.sibling.push({
+            type: "sibling",
             myModel: this,
             siblingModel: model,
             key: key,
             as: param.as,
             myKey: param.myKey,
             siblingKey: param.siblingKey
+        });
+        model.hasOne(this, {
+            as: param.as,
+            myKey: param.siblingKey,
+            siblingKey: param.myKey
         });
     }
     belongsTo(model, param) {
@@ -46,9 +58,15 @@ class BaseEntityModel implements BaseEntityModelType {
             return;
         }
         this.parent.push({
+            type: "parentChild",
             parentModel: model,
             childModel: this,
             key: key,
+            as: param.as,
+            childKey: param.childKey,
+            parentKey: param.parentKey
+        });
+        model.hasMany(this, {
             as: param.as,
             childKey: param.childKey,
             parentKey: param.parentKey

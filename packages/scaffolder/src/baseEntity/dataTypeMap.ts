@@ -2,14 +2,14 @@ import * as Sequelize from 'sequelize';
 
 import * as types from '../types';
 export interface MapParam {
-    entity: types.BaseEntity,
+    model: types.BaseEntityModel,
     field: types.BaseEntityField,
     fieldName: string,
     action?: string
 };
 export default {
     sequelizeMySql: async ({
-        entity, field, fieldName
+        model, field, fieldName
     }: MapParam) => {
         let result: any = {};
         if (field.autoIncrement) {
@@ -60,7 +60,7 @@ export default {
         };
     },
     validateJSON: async ({
-        entity, field, fieldName, action
+        model, field, fieldName, action
     }: MapParam) => {
         if (!field[action]?.editable) {
             return null;
@@ -111,7 +111,7 @@ export default {
         };
     },
     filterParser: async ({
-        entity, field, fieldName
+        model, field, fieldName
     }) => {
         let result: any = {};
 

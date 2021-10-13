@@ -3,48 +3,48 @@ import * as Sequelize from 'sequelize';
 import dataTypeMap from './dataTypeMap';
 import * as types from '../types';
 export interface MapParam {
-    entity: types.BaseEntity,
+    model: types.BaseEntityModel,
     action?: string,
     db?: Sequelize.Sequelize
 };
 export default {
     sequelizeMySql: async ({
-        entity,
+        model,
         db
     }: MapParam) => {
-        let modelName = entity.sqlName ?? entity.name;
+        let modelName = model.entity().sqlName ?? model.entity().name;
         if (db.models[modelName]) {
             // if already defined, return defined model
             return db.models[modelName];
         }
         let fields: any = {};
-        for (let propName of Object.keys(entity.fields)) {
+        for (let propName of Object.keys(model.entity().fields)) {
             fields = {
                 ...fields,
                 ...await dataTypeMap.sequelizeMySql({
-                    entity: entity,
-                    field: entity.fields[propName],
+                    model: model,
+                    field: model.entity().fields[propName],
                     fieldName: propName
                 })
             };
         }
 
-        const model = db.define(modelName, fields, {
+        const sequelizeModel = db.define(modelName, fields, {
             tableName: modelName,
             timestamps: false
         });
-        return model;
+        return sequelizeModel;
     },
     validateJSON: async ({
-        entity, action
+        model, action
     }: MapParam) => {
         let properties: any = {};
-        for (let propName of Object.keys(entity.fields)) {
+        for (let propName of Object.keys(model.entity().fields)) {
             properties = {
                 ...properties,
                 ...await dataTypeMap.validateJSON({
-                    entity: entity,
-                    field: entity.fields[propName],
+                    model: model,
+                    field: model.entity().fields[propName],
                     fieldName: propName,
                     action: action
                 })
@@ -57,15 +57,15 @@ export default {
         };
     },
     filterParser: async ({
-        entity
+        model
     }: MapParam) => {
         let schema: any = {};
-        for (let propName of Object.keys(entity.fields)) {
+        for (let propName of Object.keys(model.entity().fields)) {
             schema = {
                 ...schema,
                 ...await dataTypeMap.filterParser({
-                    entity: entity,
-                    field: entity.fields[propName],
+                    model: model,
+                    field: model.entity().fields[propName],
                     fieldName: propName,
                 })
             };
@@ -73,10 +73,10 @@ export default {
         return schema;
     },
     sortParser: async ({
-        entity
+        model
     }: MapParam) => {
         let schema: any = {};
-        for (let propName of Object.keys(entity.fields)) {
+        for (let propName of Object.keys(model.entity().fields)) {
             schema = {
                 ...schema,
                 [propName]: propName

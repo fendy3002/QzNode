@@ -1,13 +1,19 @@
-import { BaseEntity, BaseEntityModel } from '../types';
+import { BaseEntityModel } from './baseEntityModel';
+import { BaseEntity, BaseEntityModel as BaseEntityModelType } from '../types';
 class Manager {
-    entities: BaseEntityModel[] = [];
-    async define(baseEntity: BaseEntity) {
-        
+    models: BaseEntityModelType[] = [];
+    modelKey: any = {};
+    async addEntity(baseEntity: BaseEntity) {
+        let obj = new BaseEntityModel(baseEntity);
+        this.models.push(obj);
+        this.modelKey[baseEntity.name] = obj;
     }
-    async get(baseEntityName: string) {
-
+    async addModel(baseEtityModel: BaseEntityModelType) {
+        this.models.push(baseEtityModel);
+        this.modelKey[baseEtityModel.entity().name] = baseEtityModel;
+    }
+    async getModel(baseEntityName: string) {
+        return this.modelKey[baseEntityName];
     }
 };
-export default {
-
-};
+export default Manager;

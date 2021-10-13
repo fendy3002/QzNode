@@ -30,11 +30,11 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
             if (association.type == "parentChild" && association.direction == "child") {
                 let childrenSourceBody = createSourceBody[association.as];
                 let childrenToInsert = [];
+                let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
                 for (let each of childrenSourceBody) {
                     each[association.childKey] = currentModuleData[association.parentKey];
-                    childrenToInsert.push(await getBody[baseEntityModel.entity().name]?.({ ...generalHandlerParam, sourceBody: each }));
+                    childrenToInsert.push(await getBody[childModelName]?.({ ...generalHandlerParam, sourceBody: each }));
                 }
-                let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
                 let createResult = await sequelizeDb.models[childModelName]
                     .bulkCreate(
                         childrenToInsert,
@@ -44,8 +44,8 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
             } else if (association.type == "sibling") {
                 let siblingSourceBody = createSourceBody[association.as];
                 siblingSourceBody[association.siblingKey] = currentModuleData[association.myKey];
-                let siblingCreatePayload = await getBody[baseEntityModel.entity().name]?.({ ...generalHandlerParam, sourceBody: siblingSourceBody });
                 let siblingModelName = association.siblingModel.entity().sqlName ?? association.siblingModel.entity().name;
+                let siblingCreatePayload = await getBody[siblingModelName]?.({ ...generalHandlerParam, sourceBody: siblingSourceBody });
                 let createResult = await sequelizeDb.models[siblingModelName]
                     .create(
                         siblingCreatePayload,

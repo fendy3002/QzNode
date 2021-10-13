@@ -37,11 +37,11 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                 modelName: association.siblingModel.entity().sqlName ?? association.siblingModel.entity().name,
                 passAs: "viewData",
                 raw: true,
-                whereClause: async (param) => {
+                whereClause: whereClause[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name] ?? (async (param) => {
                     return {
                         [association.siblingKey]: viewData[association.myKey]
                     };
-                },
+                }),
                 onSuccess: async (param) => param,
             })(params);
             viewData[association.as] = siblingData;

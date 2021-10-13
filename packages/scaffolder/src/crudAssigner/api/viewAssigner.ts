@@ -3,20 +3,24 @@ import * as handler from '../../handler';
 import {
     handler as handlerType
 } from '../../crudAssignerType';
+import {
+    BaseEntityModel
+} from '../../types';
 
 export interface AssignParams {
     sequelizeDb: any,
-    modelName: string,
+    baseEntityModel: BaseEntityModel,
     middleware?: any[],
-    whereClause: handlerType.generalHandler
+    whereClause: {
+        [modelName: string]: handlerType.generalHandler
+    }
 };
 export default {
     assign: (option: AssignParams, router) => {
         return viewAssigner.assign({
             ...option,
-            handler: handler.findOne({
-                raw: true,
-                modelName: option.modelName,
+            handler: handler.withBaseEntityModelFindOne({
+                baseEntityModel: option.baseEntityModel,
                 whereClause: option.whereClause,
                 sequelizeDb: option.sequelizeDb,
                 passAs: "viewData",

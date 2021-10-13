@@ -1,11 +1,11 @@
 import { validator } from '@fendy3002/qz-node';
 import entityMap from '../baseEntity/entityMap';
 
-export default async (baseEntity, action) => {
+export default async (baseEntityModel, action) => {
     return async ({ req, res }) => {
         let validateResult = await validator.json.schema(
             await entityMap.validateJSON({
-                entity: baseEntity,
+                model: baseEntityModel,
                 action: action
             })
         ).validate(req.body);

@@ -1,6 +1,4 @@
-import * as httpErrors from "http-errors";
-import { filterParser, sortParser } from "@fendy3002/express-helper";
-import entityMap from '../baseEntity/entityMap';
+import { array } from "@fendy3002/qz-node";
 import { findOne } from './findOne';
 import { findAll } from './findAll';
 import {
@@ -21,11 +19,8 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
 
         let associations = baseEntityModel.association();
         for (let association of associations.children) {
-            let whereClause = {
-                ...association.relation.map(k => ({
-                    [k.childKey]: viewData[k.parentKey]
-                }))
-            };
+            let whereClause = array.toSet(association.relation, k => viewData[k.parentKey], k => k.childKey);
+
             let childEntityName = association.childModel.entity().name;
             const childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
             if (association.many) {

@@ -1,3 +1,4 @@
+import { array } from "@fendy3002/qz-node";
 import {
     handler,
 } from '../crudAssignerType';
@@ -42,11 +43,7 @@ let baseEntityModelUpdateHandler: handler.baseEntityModelUpdateHandler = ({
             let childrenSourceBody = updateSourceBody[association.as];
             let childEntityName = association.childModel.entity().name;
             let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
-            let whereClause: { [key: string]: any } = {
-                ...association.relation.map(k => ({
-                    [k.childKey]: currentModuleData[k.parentKey]
-                }))
-            };
+            let whereClause = array.toSet(association.relation, k => currentModuleData[k.parentKey], k => k.childKey);
             if (association.many) {
                 let childrenToInsert = [];
                 for (let each of childrenSourceBody) {

@@ -37,21 +37,28 @@ let baseEntityModelUpdateHandler: handler.baseEntityModelUpdateHandler = ({
         });
 
         let associations = baseEntityModel.association();
-        for (let association of [...associations.children, ...associations.parent, ...associations.sibling]) {
-            if (association.type == "parentChild" && association.direction == "child") {
-                let childrenSourceBody = updateSourceBody[association.as];
+        for (let association of associations.children) {
+            // if (association.type == "parentChild" && association.direction == "child") {
+            let childrenSourceBody = updateSourceBody[association.as];
+            let childEntityName = association.childModel.entity().name;
+            let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
+            let whereClause: { [key: string]: any } = {
+                ...association.relation.map(k => ({
+                    [k.childKey]: currentModuleData[k.parentKey]
+                }))
+            };
+            if (association.many) {
                 let childrenToInsert = [];
-                let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
                 for (let each of childrenSourceBody) {
-                    each[association.childKey] = currentModuleData[association.parentKey];
-                    childrenToInsert.push(await getBody[childModelName]?.({ ...generalHandlerParam, sourceBody: each }));
+                    for (let eachRelation of association.relation) {
+                        each[eachRelation.childKey] = currentModuleData[eachRelation.parentKey];
+                    }
+                    childrenToInsert.push(await getBody[childEntityName]?.({ ...generalHandlerParam, sourceBody: each }));
                 }
                 await sequelizeDb.models[childModelName]
                     .destroy({
                         ...updateOption,
-                        where: {
-                            [association.childKey]: currentModuleData[association.parentKey]
-                        }
+                        where: whereClause
                     });
                 let createResult = await sequelizeDb.models[childModelName]
                     .bulkCreate(
@@ -59,28 +66,24 @@ let baseEntityModelUpdateHandler: handler.baseEntityModelUpdateHandler = ({
                         updateOption
                     );
                 currentModuleData[association.as] = createResult.map(k => k.toJSON());
-            } else if (association.type == "sibling") {
-                let siblingSourceBody = updateSourceBody[association.as];
-                siblingSourceBody[association.siblingKey] = currentModuleData[association.myKey];
-                let siblingModelName = association.siblingModel.entity().sqlName ?? association.siblingModel.entity().name;
-                let siblingUpdatePayload = await getBody[siblingModelName]?.({ ...generalHandlerParam, sourceBody: siblingSourceBody });
-                await sequelizeDb.models[siblingModelName]
+            } else {
+                for (let eachRelation of association.relation) {
+                    childrenSourceBody[eachRelation.childKey] = currentModuleData[eachRelation.parentKey];
+                }
+                let childUpdatePayload = await getBody[childEntityName]?.({ ...generalHandlerParam, sourceBody: childrenSourceBody });
+                await sequelizeDb.models[childModelName]
                     .update(
-                        siblingUpdatePayload,
+                        childUpdatePayload,
                         {
                             ...updateOption,
-                            where: {
-                                [association.siblingKey]: currentModuleData[association.myKey]
-                            }
+                            where: whereClause
                         }
                     );
-                currentModuleData[association.as] = await sequelizeDb.models[siblingModelName]
+                currentModuleData[association.as] = await sequelizeDb.models[childModelName]
                     .findOne({
                         raw: true,
                         ...updateOption,
-                        where: {
-                            [association.siblingKey]: currentModuleData[association.myKey]
-                        }
+                        where: whereClause
                     });
             }
         }

@@ -1,4 +1,4 @@
-import { BaseEntity, ParentChildAssociation, SiblingAssociation, BaseEntityModel as BaseEntityModelType } from '../types';
+import { BaseEntity, ParentChildAssociation, BaseEntityModel as BaseEntityModelType } from '../types';
 
 class BaseEntityModel implements BaseEntityModelType {
     constructor(baseEntity: BaseEntity) {
@@ -7,7 +7,6 @@ class BaseEntityModel implements BaseEntityModelType {
     baseEntity: BaseEntity = null;
     parent: ParentChildAssociation[] = [];
     children: ParentChildAssociation[] = [];
-    sibling: SiblingAssociation[] = [];
 
     entity() {
         return this.baseEntity;
@@ -18,39 +17,36 @@ class BaseEntityModel implements BaseEntityModelType {
             return;
         }
         this.children.push({
-            type: "parentChild",
             direction: "child",
+            many: true,
             parentModel: this,
             childModel: model,
             as: param.as,
             key: key,
-            childKey: param.childKey,
-            parentKey: param.parentKey
+            relation: param.relation,
         });
         model.belongsTo(this, {
             as: param.as,
-            childKey: param.childKey,
-            parentKey: param.parentKey
+            relation: param.relation,
         });
     }
     hasOne(model, param) {
         let key = model.entity().name;
-        if (this.sibling.some(k => k.key == key)) {
+        if (this.children.some(k => k.key == key)) {
             return;
         }
-        this.sibling.push({
-            type: "sibling",
-            myModel: this,
-            siblingModel: model,
+        this.children.push({
+            direction: "child",
+            many: false,
+            parentModel: this,
+            childModel: model,
+            as: param.as,
             key: key,
+            relation: param.relation,
+        })
+        model.belongsTo(this, {
             as: param.as,
-            myKey: param.myKey,
-            siblingKey: param.siblingKey
-        });
-        model.hasOne(this, {
-            as: param.as,
-            myKey: param.siblingKey,
-            siblingKey: param.myKey
+            relation: param.relation,
         });
     }
     belongsTo(model, param) {
@@ -59,25 +55,29 @@ class BaseEntityModel implements BaseEntityModelType {
             return;
         }
         this.parent.push({
-            type: "parentChild",
             direction: "parent",
+            many: param.many,
             parentModel: model,
             childModel: this,
             key: key,
             as: param.as,
-            childKey: param.childKey,
-            parentKey: param.parentKey
+            relation: param.relation
         });
-        model.hasMany(this, {
-            as: param.as,
-            childKey: param.childKey,
-            parentKey: param.parentKey
-        });
+        if (param.many) {
+            model.hasMany(this, {
+                as: param.as,
+                relation: param.relation
+            });
+        } else {
+            model.hasOne(this, {
+                as: param.as,
+                relation: param.relation
+            });
+        }
     }
     association() {
         return {
             parent: this.parent,
-            sibling: this.sibling,
             children: this.children
         };
     }

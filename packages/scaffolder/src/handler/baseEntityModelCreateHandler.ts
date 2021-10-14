@@ -26,14 +26,17 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
         currentModuleData = currentModuleData.toJSON();
 
         let associations = baseEntityModel.association();
-        for (let association of [...associations.children, ...associations.parent, ...associations.sibling]) {
-            if (association.type == "parentChild" && association.direction == "child") {
-                let childrenSourceBody = createSourceBody[association.as];
+        for (let association of associations.children) {
+            let childrenSourceBody = createSourceBody[association.as];
+            let childEntityName = association.childModel.entity().name;
+            let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
+            if (association.many) {
                 let childrenToInsert = [];
-                let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
                 for (let each of childrenSourceBody) {
-                    each[association.childKey] = currentModuleData[association.parentKey];
-                    childrenToInsert.push(await getBody[childModelName]?.({ ...generalHandlerParam, sourceBody: each }));
+                    for (let eachRelation of association.relation) {
+                        each[eachRelation.childKey] = currentModuleData[eachRelation.parentKey];
+                    }
+                    childrenToInsert.push(await getBody[childEntityName]?.({ ...generalHandlerParam, sourceBody: each }));
                 }
                 let createResult = await sequelizeDb.models[childModelName]
                     .bulkCreate(
@@ -41,14 +44,14 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
                         createOption
                     );
                 currentModuleData[association.as] = createResult.map(k => k.toJSON());
-            } else if (association.type == "sibling") {
-                let siblingSourceBody = createSourceBody[association.as];
-                siblingSourceBody[association.siblingKey] = currentModuleData[association.myKey];
-                let siblingModelName = association.siblingModel.entity().sqlName ?? association.siblingModel.entity().name;
-                let siblingCreatePayload = await getBody[siblingModelName]?.({ ...generalHandlerParam, sourceBody: siblingSourceBody });
-                let createResult = await sequelizeDb.models[siblingModelName]
+            } else {
+                for (let eachRelation of association.relation) {
+                    childrenSourceBody[eachRelation.childKey] = currentModuleData[eachRelation.parentKey];
+                }
+                let childCreatePayload = await getBody[childEntityName]?.({ ...generalHandlerParam, sourceBody: childrenSourceBody });
+                let createResult = await sequelizeDb.models[childModelName]
                     .create(
-                        siblingCreatePayload,
+                        childCreatePayload,
                         createOption
                     );
                 currentModuleData[association.as] = createResult;

@@ -28,43 +28,42 @@ export interface BaseEntityModel {
     entity: () => BaseEntity,
     hasMany: (model: BaseEntityModel, params: {
         as: string,
-        parentKey: string,
-        childKey: string,
+        relation: {
+            parentKey: string,
+            childKey: string,
+        }[]
     }) => void,
     hasOne: (model: BaseEntityModel, params: {
         as: string,
-        myKey: string,
-        siblingKey: string,
+        relation: {
+            parentKey: string,
+            childKey: string,
+        }[]
     }) => void,
     belongsTo: (model: BaseEntityModel, params: {
         as: string,
-        parentKey: string,
-        childKey: string,
+        many: boolean,
+        relation: {
+            parentKey: string,
+            childKey: string,
+        }[]
     }) => void,
     association: () => {
         parent: ParentChildAssociation[],
-        sibling: SiblingAssociation[],
         children: ParentChildAssociation[],
     }
 };
 export interface ParentChildAssociation {
-    type: 'parentChild',
     direction: 'child' | 'parent',
+    many: boolean,
     parentModel: BaseEntityModel,
     childModel: BaseEntityModel,
     key: string,
     as: string,
-    parentKey: string,
-    childKey: string,
-};
-export interface SiblingAssociation {
-    type: 'sibling',
-    myModel: BaseEntityModel,
-    siblingModel: BaseEntityModel,
-    key: string,
-    as: string,
-    myKey: string,
-    siblingKey: string,
+    relation: {
+        parentKey: string,
+        childKey: string,
+    }[]
 };
 
 export interface BaseEntity {

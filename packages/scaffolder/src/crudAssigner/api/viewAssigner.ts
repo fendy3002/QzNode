@@ -13,18 +13,24 @@ export interface AssignParams {
     middleware?: any[],
     whereClause: {
         [modelName: string]: handlerType.generalHandler
-    }
+    },
+    beforeFetch?: handlerType.generalHandler,
+    afterFetch?: handlerType.generalHandler,
 };
 export default {
     assign: (option: AssignParams, router) => {
         return viewAssigner.assign({
             ...option,
-            handler: handler.withBaseEntityModelFindOne({
-                baseEntityModel: option.baseEntityModel,
-                whereClause: option.whereClause,
-                sequelizeDb: option.sequelizeDb,
-                passAs: "viewData",
-                onSuccess: async ({ res, viewData, ...params }) => {
+            handler: handler.withBeforeAfter({
+                before: option.beforeFetch,
+                handle: handler.withBaseEntityModelFindOne({
+                    baseEntityModel: option.baseEntityModel,
+                    whereClause: option.whereClause,
+                    sequelizeDb: option.sequelizeDb,
+                    passAs: "viewData",
+                    onSuccess: option.afterFetch
+                }),
+                after: async ({ res, viewData, ...params }) => {
                     res.status(200).json({
                         data: viewData
                     });

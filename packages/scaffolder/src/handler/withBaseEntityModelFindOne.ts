@@ -53,6 +53,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
         }
 
         return {
+            ...params,
             [passAs]: viewData,
             ...await onSuccess({ ...params, [passAs]: viewData })
         };

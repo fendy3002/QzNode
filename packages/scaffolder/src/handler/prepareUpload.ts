@@ -10,6 +10,8 @@ let prepareUpload: handler.prepareUpload = ({ fields, onSave }) => {
             files[prop] = req.files[prop] || [];
         }
         return {
+            req,
+            ...params,
             files,
             ...await onSave({ ...params, req, files })
         };

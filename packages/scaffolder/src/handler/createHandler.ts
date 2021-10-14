@@ -21,6 +21,10 @@ let createHandler: handler.createHandler = ({ sequelizeDb, modelName, getBody, o
         }
         const currentModuleData = await currentModuleModel.create(createPayload, createOption);
         return {
+            ...params,
+            req,
+            validateResult,
+            sqlTransaction,
             createdData: currentModuleData.toJSON(),
             ...await onSuccess({ req, validateResult, sqlTransaction, createdData: currentModuleData.toJSON(), ...params })
         };

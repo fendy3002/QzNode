@@ -59,6 +59,10 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
         }
 
         return {
+            ...params,
+            req,
+            validateResult,
+            sqlTransaction,
             createdData: currentModuleData,
             ...await onSuccess({ req, validateResult, sqlTransaction, createdData: currentModuleData, ...params })
         };

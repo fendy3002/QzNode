@@ -23,6 +23,10 @@ let updateHandler: handler.updateHandler = ({ sequelizeDb, modelName, getBody, w
         }
         await currentModuleModel.update(updatePayload, updateOption);
         return {
+            req,
+            validateResult,
+            sqlTransaction,
+            ...params,
             ...await onSuccess({ req, validateResult, sqlTransaction, ...params })
         };
     };

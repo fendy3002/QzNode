@@ -19,6 +19,8 @@ let withBaseEntityModelValidation: handler.withBaseEntityModelValidation = ({ ba
             throw httpErrors(500, validator.json.formatMessage(validateResult));
         } else {
             return {
+                ...params,
+                req,
                 validateResult,
                 ...await onValid({ req, validateResult, ...params })
             };

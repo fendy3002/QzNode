@@ -10,6 +10,7 @@ let withSqlTransaction: handler.withSqlTransaction = ({ sequelizeDb, handle }) =
             let handlerResponse = await handle({ sqlTransaction, ...params });
             await sqlTransaction.commit();
             return {
+                ...params,
                 ...handlerResponse,
                 sqlTransaction: null
             };

@@ -20,6 +20,10 @@ let deleteHandler: handler.deleteHandler = ({ sequelizeDb, modelName, whereClaus
         }
         await currentModuleModel.destroy(deleteOption);
         return {
+            ...params,
+            req,
+            validateResult,
+            sqlTransaction,
             ...await onSuccess({ req, validateResult, sqlTransaction, ...params })
         };
     };

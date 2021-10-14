@@ -1,3 +1,5 @@
+import * as debugRaw from 'debug';
+let debug = debugRaw("@fendy3002/scaffolder:handler/baseEntityModelCreateHandler");
 import {
     handler,
 } from '../crudAssignerType';
@@ -24,10 +26,12 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
         let createPayload = await getBody[baseEntityModel.entity().name]?.({ ...generalHandlerParam, sourceBody: createSourceBody });
         let currentModuleData: any = await currentModuleModel.create(createPayload, createOption);
         currentModuleData = currentModuleData.toJSON();
-
+        debug("currentModuleData", JSON.stringify(currentModuleData))
         let associations = baseEntityModel.association();
         for (let association of associations.children) {
             let childrenSourceBody = createSourceBody[association.as];
+            debug(association.key + ".sourceBody", JSON.stringify(childrenSourceBody));
+            
             let childEntityName = association.childModel.entity().name;
             let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
             if (association.many) {

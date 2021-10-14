@@ -16,6 +16,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
 
         let createSourceBody = await sourceBody?.(generalHandlerParam)
             ?? validateResult?.data ?? req.body;
+        debug("createSourceBody", JSON.stringify(createSourceBody));
 
         let createOption = {};
         if (sqlTransaction) {
@@ -31,7 +32,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
         for (let association of associations.children) {
             let childrenSourceBody = createSourceBody[association.as];
             debug(association.key + ".sourceBody", JSON.stringify(childrenSourceBody));
-            
+
             let childEntityName = association.childModel.entity().name;
             let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
             if (association.many) {

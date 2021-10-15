@@ -27,8 +27,9 @@ export interface OperationDataParam {
     createdData?: any,
     originalData?: any,
     updatedData?: any,
-    listData?: any,
-    viewData?: any
+    listData?: any[],
+    listTotalCount?: number,
+    viewData?: any[]
 };
 
 export interface UnifiedParam extends
@@ -122,7 +123,7 @@ export namespace handler {
         (param: SequelizeModelParam & {
             raw?: boolean,
             whereClause: generalHandler
-            passAs: string,
+            passAs?: string,
             onSuccess: generalHandler
         }): generalHandler
     };
@@ -131,7 +132,8 @@ export namespace handler {
             raw?: boolean,
             modelParam: generalHandler,
 
-            passAs: string,
+            passAs?: string,
+            passCountAs?: string,
             onSuccess: generalHandler
         }): generalHandler
     };
@@ -144,7 +146,8 @@ export namespace handler {
             additionalFilter?: generalHandler,
             defaultSort?: any[],
 
-            passAs: string,
+            passAs?: string,
+            passCountAs?: string,
             onSuccess: generalHandler
         }): generalHandler
     };

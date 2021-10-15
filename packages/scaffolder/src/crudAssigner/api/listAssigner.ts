@@ -25,11 +25,13 @@ export default {
                     modelName: option.modelName,
                     sequelizeDb: option.sequelizeDb,
                     passAs: "listData",
+                    passCountAs: "listTotalCount",
                     baseEntityModel: option.baseEntityModel,
                     raw: true,
                     onSuccess: option.afterFetch
                 }),
-                after: async ({ res, listData, ...params }) => {
+                after: async ({ res, listData, listTotalCount, ...params }) => {
+                    res.header("x-total-count", listTotalCount);
                     res.status(200).json({
                         data: listData
                     });

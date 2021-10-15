@@ -21,8 +21,8 @@ let findOne: handler.findOne = ({ sequelizeDb, modelName, raw, passAs, whereClau
         return {
             sqlTransaction,
             ...params,
-            [passAs]: data,
-            ...await onSuccess({ ...params, sqlTransaction, [passAs]: data })
+            [passAs ?? "viewData"]: data,
+            ...await onSuccess({ ...params, sqlTransaction, [passAs ?? "viewData"]: data })
         };
     };
 };

@@ -7,7 +7,7 @@ import {
 } from '../crudAssignerType';
 
 let withBaseEntityModelFindAll: handler.withBaseEntityModelFindAll = ({ sequelizeDb, modelName,
-    raw, passAs, filterOption, sortOption, defaultSort,
+    raw, passAs, passCountAs, filterOption, sortOption, defaultSort,
     additionalFilter, baseEntityModel, onSuccess }) => {
     return findAll({
         sequelizeDb,
@@ -44,6 +44,7 @@ let withBaseEntityModelFindAll: handler.withBaseEntityModelFindAll = ({ sequeliz
         },
         onSuccess,
         passAs,
+        passCountAs,
         raw
     })
 };

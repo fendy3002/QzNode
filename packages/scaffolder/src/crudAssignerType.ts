@@ -97,11 +97,16 @@ export namespace handler {
             onSuccess: generalHandler,
         }): generalHandler
     };
+    export interface returnOriginalParam {
+        (param: {
+            handle: generalHandler
+        }): generalHandler
+    };
     export interface withBaseEntityModelValidation {
         (param: {
             baseEntityModel: types.BaseEntityModel,
             action: Action,
-            onValid: (param: BaseHandlerParam & ValidateResultParam) => Promise<any>
+            onValid: generalHandler
         }): generalHandler
     };
     export interface withBeforeAfter {

@@ -6,6 +6,7 @@ export * from './deleteHandler';
 export * from './findAll';
 export * from './findOne';
 export * from './prepareUpload';
+export * from './returnOriginalParam';
 export * from './withBeforeAfter';
 export * from './withSqlTransaction';
 export * from './withBaseEntityModelValidation';

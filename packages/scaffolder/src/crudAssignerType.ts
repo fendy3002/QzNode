@@ -29,7 +29,7 @@ export interface OperationDataParam {
     updatedData?: any,
     listData?: any[],
     listTotalCount?: number,
-    viewData?: any[]
+    viewData?: any
 };
 
 export interface UnifiedParam extends

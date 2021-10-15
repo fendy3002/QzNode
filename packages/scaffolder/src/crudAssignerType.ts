@@ -162,6 +162,7 @@ export namespace handler {
             whereClause: {
                 [modelName: string]: generalHandler
             },
+            maxDepth?: number,
             passAs: string,
             onSuccess: generalHandler
         }): generalHandler

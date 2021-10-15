@@ -29,7 +29,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                         return {
                             ...k,
                             ...await processAssociation({
-                                associations: associationModel.entity().association(),
+                                associations: associationModel.association(),
                                 viewData: k
                             })
                         };
@@ -49,7 +49,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                 result[as] = {
                     ...childViewData,
                     ...await processAssociation({
-                        associations: associationModel.entity().association(),
+                        associations: associationModel.association(),
                         viewData: childViewData
                     })
                 };

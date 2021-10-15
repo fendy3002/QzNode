@@ -28,7 +28,7 @@ export default {
                     passCountAs: "listTotalCount",
                     baseEntityModel: option.baseEntityModel,
                     raw: true,
-                    onSuccess: option.afterFetch
+                    onSuccess: option.afterFetch ?? (async (param) => param)
                 }),
                 after: async ({ res, listData, listTotalCount, ...params }) => {
                     res.header("x-total-count", listTotalCount);

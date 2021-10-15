@@ -59,7 +59,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
         let processAssociation = async ({ associations, viewData }) => {
             let result: any = {};
             for (let association of associations.parent) {
-                let whereClause = array.toSet(association.relation, k => k.childKey, k => viewData[k.parentKey]);
+                let whereClause = array.toSet(association.relation, k => viewData[k.childKey], k => k.parentKey);
                 let parentEntityName = association.parentModel.entity().parent;
                 const parentModelName = association.parentModel.entity().sqlName ?? association.parentModel.entity().name;
                 result = {

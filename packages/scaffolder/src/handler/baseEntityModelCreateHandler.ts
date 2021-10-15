@@ -35,7 +35,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
 
             let childEntityName = association.childModel.entity().name;
             let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
-            if (association.many) {
+            if (association.many && childrenSourceBody && childrenSourceBody?.length > 0) {
                 let childrenToInsert = [];
                 for (let each of childrenSourceBody) {
                     for (let eachRelation of association.relation) {
@@ -49,7 +49,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
                         createOption
                     );
                 currentModuleData[association.as] = createResult.map(k => k.toJSON());
-            } else {
+            } else if (childrenSourceBody) {
                 for (let eachRelation of association.relation) {
                     childrenSourceBody[eachRelation.childKey] = currentModuleData[eachRelation.parentKey];
                 }

@@ -1,6 +1,6 @@
 {
   "name": "@fendy3002/scaffolder",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "main": "dist/index.js",
   "license": "MIT",
   "publishConfig": {

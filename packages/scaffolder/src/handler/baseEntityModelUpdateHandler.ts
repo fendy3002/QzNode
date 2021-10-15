@@ -44,7 +44,7 @@ let baseEntityModelUpdateHandler: handler.baseEntityModelUpdateHandler = ({
             let childEntityName = association.childModel.entity().name;
             let childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
             let whereClause = array.toSet(association.relation, k => currentModuleData[k.parentKey], k => k.childKey);
-            if (association.many) {
+            if (association.many && childrenSourceBody && childrenSourceBody?.length > 0) {
                 let childrenToInsert = [];
                 for (let each of childrenSourceBody) {
                     for (let eachRelation of association.relation) {
@@ -63,7 +63,7 @@ let baseEntityModelUpdateHandler: handler.baseEntityModelUpdateHandler = ({
                         updateOption
                     );
                 currentModuleData[association.as] = createResult.map(k => k.toJSON());
-            } else {
+            } else if (childrenSourceBody) {
                 for (let eachRelation of association.relation) {
                     childrenSourceBody[eachRelation.childKey] = currentModuleData[eachRelation.parentKey];
                 }

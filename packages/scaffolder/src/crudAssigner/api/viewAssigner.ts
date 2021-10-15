@@ -28,7 +28,7 @@ export default {
                     whereClause: option.whereClause,
                     sequelizeDb: option.sequelizeDb,
                     passAs: "viewData",
-                    onSuccess: option.afterFetch
+                    onSuccess: option.afterFetch ?? (async (param) => param)
                 }),
                 after: async ({ res, viewData, ...params }) => {
                     res.status(200).json({

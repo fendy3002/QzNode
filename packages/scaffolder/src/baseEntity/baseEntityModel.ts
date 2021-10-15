@@ -25,10 +25,6 @@ class BaseEntityModel implements BaseEntityModelType {
             key: key,
             relation: param.relation,
         });
-        model.belongsTo(this, {
-            as: param.as,
-            relation: param.relation,
-        });
     }
     hasOne(model, param) {
         let key = model.entity().name;
@@ -44,10 +40,6 @@ class BaseEntityModel implements BaseEntityModelType {
             key: key,
             relation: param.relation,
         })
-        model.belongsTo(this, {
-            as: param.as,
-            relation: param.relation,
-        });
     }
     belongsTo(model, param) {
         let key = model.entity().name;
@@ -56,24 +48,13 @@ class BaseEntityModel implements BaseEntityModelType {
         }
         this.parent.push({
             direction: "parent",
-            many: param.many,
+            many: false,
             parentModel: model,
             childModel: this,
             key: key,
             as: param.as,
             relation: param.relation
         });
-        if (param.many) {
-            model.hasMany(this, {
-                as: param.as,
-                relation: param.relation
-            });
-        } else {
-            model.hasOne(this, {
-                as: param.as,
-                relation: param.relation
-            });
-        }
     }
     association() {
         return {

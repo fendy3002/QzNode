@@ -42,7 +42,6 @@ export interface BaseEntityModel {
     }) => void,
     belongsTo: (model: BaseEntityModel, params: {
         as: string,
-        many: boolean,
         relation: {
             parentKey: string,
             childKey: string,

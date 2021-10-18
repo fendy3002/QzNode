@@ -150,5 +150,40 @@ export default {
         }
 
         return result;
-    }
+    },
+    apiField: async ({
+        model, field, fieldName, data, fieldValue, context
+    }) => {
+        let baseEntityField = (field as types.BaseEntityField);
+        if (!(baseEntityField.api?.isDisplayed ?? true)) {
+            return {};
+        }
+        if (baseEntityField.api?.responseConverter) {
+            return {
+                [fieldName]: await baseEntityField.api?.responseConverter({
+                    context: context,
+                    data: data,
+                    fieldValue: fieldValue,
+                    schemaModel: model,
+                    schemaField: field
+                })
+            };
+        } else {
+            if (baseEntityField.dataType == types.BaseEntityDataType.boolean) {
+                let booleanValue: boolean = null;
+                if (fieldValue == "1" || fieldValue == "true") {
+                    booleanValue = true;
+                } else if (fieldValue == "0" || fieldValue == "false") {
+                    booleanValue = false;
+                }
+                return {
+                    [fieldName]: booleanValue
+                };
+            } else {
+                return {
+                    [fieldName]: fieldValue
+                };
+            }
+        }
+    },
 };

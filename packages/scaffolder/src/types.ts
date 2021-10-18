@@ -90,6 +90,7 @@ export interface BaseEntityField {
     autoIncrement?: boolean,
     length?: number,
     gui?: BaseFieldGui,
+    api?: BaseFieldApi,
     create?: {
         editable?: boolean,
         required?: boolean
@@ -98,6 +99,24 @@ export interface BaseEntityField {
         editable?: boolean,
         required?: boolean
     }
+};
+
+export interface BaseFieldApi {
+    name?: string,
+    isDisplayed?: boolean | ((param: {
+        schemaModel: BaseEntityModel,
+        schemaField: BaseEntityField,
+        data: any,
+        fieldValue: any,
+        context: any
+    }) => Promise<boolean>),
+    responseConverter?: ((param: {
+        schemaModel: BaseEntityModel,
+        schemaField: BaseEntityField,
+        data: any,
+        fieldValue: any,
+        context: any
+    }) => Promise<any>),
 };
 
 export interface BaseFieldGui {

@@ -191,9 +191,13 @@ export default {
                     return {
                         [fieldName]: fieldValue
                     };
-                } else {
+                } else if (fieldValue != null) {
                     return {
                         [fieldName]: parseFloat(fieldValue)
+                    };
+                } else {
+                    return {
+                        [fieldName]: fieldValue
                     };
                 }
             } else {

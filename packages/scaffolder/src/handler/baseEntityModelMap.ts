@@ -5,14 +5,15 @@ import {
     handler
 } from '../crudAssignerType';
 
-let baseEntityModelMap: handler.baseEntityModelMap = ({ baseEntityModel, sourceData, passAs, onSuccess }) => {
+let baseEntityModelMap: handler.baseEntityModelMap = ({ baseEntityModel, sourceData, passAs, willMapAssociation, onSuccess }) => {
     return async ({ ...params }) => {
         let dataToMap = await sourceData(params);
         debug("sourceData", dataToMap);
         let mappedData = await entityMap.apiField({
             context: params,
             data: dataToMap,
-            model: baseEntityModel
+            model: baseEntityModel,
+            willMapAssociation
         });
         debug("mappedData", mappedData);
         return {

@@ -16,7 +16,8 @@ mocha.describe('apiField', function () {
         let actual = await entityMap.apiField({
             context: {},
             data: data,
-            model: BaseEntityModelSingle
+            model: BaseEntityModelSingle,
+            willMapAssociation: true
         });
         let expected = { MyProp1: 'string', MyProp2: 99.33, MyProp3: true };
         assert.deepEqual(expected, actual);
@@ -35,7 +36,8 @@ mocha.describe('apiField', function () {
         let actual = await entityMap.apiField({
             context: {},
             data: data,
-            model: BaseEntityModelParent
+            model: BaseEntityModelParent,
+            willMapAssociation: true
         });
         let expected = {
             MyProp1: 'string', MyProp2: 99.33, MyProp3: true,

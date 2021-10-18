@@ -82,6 +82,7 @@ export namespace handler {
         (param: {
             baseEntityModel: types.BaseEntityModel,
             sourceData: generalHandler,
+            willMapAssociation: boolean,
             passAs: string,
             onSuccess?: generalHandler,
         }): generalHandler

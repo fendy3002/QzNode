@@ -1,4 +1,5 @@
-import * as httpErrors from "http-errors";
+import * as debugRaw from 'debug';
+let debug = debugRaw("@fendy3002/scaffolder:handler/baseEntityModelMap");
 import entityMap from '../baseEntity/entityMap';
 import {
     handler
@@ -7,11 +8,13 @@ import {
 let baseEntityModelMap: handler.baseEntityModelMap = ({ baseEntityModel, sourceData, passAs, onSuccess }) => {
     return async ({ ...params }) => {
         let dataToMap = await sourceData(params);
+        debug("sourceData", dataToMap);
         let mappedData = await entityMap.apiField({
             context: params,
             data: dataToMap,
             model: baseEntityModel
         });
+        debug("mappedData", mappedData);
         return {
             ...params,
             [passAs]: mappedData,

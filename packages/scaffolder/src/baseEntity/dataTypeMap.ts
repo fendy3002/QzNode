@@ -1,3 +1,4 @@
+import { validator } from '@fendy3002/qz-node';
 import * as Sequelize from 'sequelize';
 
 import * as types from '../types';
@@ -179,6 +180,22 @@ export default {
                 return {
                     [fieldName]: booleanValue
                 };
+            } else if ([
+                types.BaseEntityDataType.bigint,
+                types.BaseEntityDataType.tinyint,
+                types.BaseEntityDataType.decimal,
+                types.BaseEntityDataType.smallint,
+                types.BaseEntityDataType.integer,
+            ].some(k => k == field.dataType)) {
+                if (validator.native.isNumeric(fieldValue)) {
+                    return {
+                        [fieldName]: fieldValue
+                    };
+                } else {
+                    return {
+                        [fieldName]: parseFloat(fieldValue)
+                    };
+                }
             } else {
                 return {
                     [fieldName]: fieldValue

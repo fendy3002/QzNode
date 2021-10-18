@@ -1,5 +1,6 @@
 import * as Sequelize from 'sequelize';
 
+import entityMapApiField from './entityMapApiField';
 import dataTypeMap from './dataTypeMap';
 import * as types from '../types';
 export interface MapParam {
@@ -114,48 +115,5 @@ export default {
         }
         return schema;
     },
-    apiField: async ({
-        model, data, context
-    }) => {
-        if (!data) { return null; }
-        if (Array.isArray(data)) {
-            let schema: any = [];
-            for (let propName of Object.keys(model.entity().fields)) {
-                let field = model.entity().fields[propName];
-
-                schema = await Promise.all(data.map(async k => {
-                    let fieldValue = k[propName];
-                    return await dataTypeMap.apiField({
-                        model: model,
-                        data: data,
-                        context: context,
-                        field: field,
-                        fieldName: propName,
-                        fieldValue: fieldValue
-                    })
-                }));
-            }
-            return schema;
-        } else {
-            let schema: any = {};
-            for (let propName of Object.keys(model.entity().fields)) {
-                let field = model.entity().fields[propName];
-
-                let fieldValue = data[propName];
-
-                schema = {
-                    ...schema,
-                    ...await dataTypeMap.apiField({
-                        model: model,
-                        data: data,
-                        context: context,
-                        field: field,
-                        fieldName: propName,
-                        fieldValue: fieldValue
-                    })
-                };
-            }
-            return schema;
-        }
-    }
+    apiField: entityMapApiField
 };

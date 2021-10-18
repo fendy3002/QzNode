@@ -13,7 +13,8 @@ mocha.describe('validateJSON', function () {
             type: 'object',
             properties: {
                 MyProp1: { type: 'string', maxLength: 50 },
-                MyProp2: { type: 'number' }
+                MyProp2: { type: 'number' },
+                MyProp3: { type: 'boolean' }
             }
         };
         assert.deepEqual(expected, result);
@@ -30,6 +31,9 @@ mocha.describe('validateJSON', function () {
                 "MyProp2": {
                     "type": "number"
                 },
+                "MyProp3": {
+                    "type": "boolean"
+                },
                 "myChild": {
                     "type": "array",
                     "items": {
@@ -41,7 +45,10 @@ mocha.describe('validateJSON', function () {
                             },
                             "MyProp2": {
                                 "type": "number"
-                            }
+                            },
+                            "MyProp3": {
+                                "type": "boolean"
+                            },
                         }
                     }
                 }

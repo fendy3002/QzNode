@@ -1,4 +1,6 @@
 import { array } from "@fendy3002/qz-node";
+import * as debugRaw from 'debug';
+let debug = debugRaw("@fendy3002/scaffolder:handler/withBaseEntityModelFindOne");
 import { findAll } from './findAll';
 import {
     handler
@@ -10,6 +12,8 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
     maxDepth = maxDepth ?? 2;
     let fetchedAssociationKey: any = {};
     return async ({ ...params }) => {
+        debug("maxDepth", maxDepth);
+
         let findOne = async ({ sqlTransaction, modelName, whereClause }) => {
             let additionalOption: any = {};
             if (sqlTransaction) {
@@ -25,6 +29,14 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
         };
 
         let get = async ({ whereClause, entityName, modelName, as, many, associationModel, depth }) => {
+            debug("get", {
+                modelName, 
+                entityName,
+                whereClause,
+                as,
+                many, 
+                depth
+            });
             let result: any = {};
             if (many) {
                 let { listData } = await findAll({
@@ -39,6 +51,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                     }),
                     onSuccess: async (param) => param,
                 })(params);
+                
                 if (depth < maxDepth) {
                     result[as] = await Promise.all(
                         listData.map(async k => {
@@ -55,6 +68,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                 } else {
                     result[as] = listData;
                 }
+                debug("get result[as]", result[as]);
             } else {
                 let childViewData = await findOne({
                     modelName: modelName,
@@ -79,6 +93,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                 } else {
                     result[as] = childViewData
                 }
+                debug("get result[as]", result[as]);
             }
             return result;
         };
@@ -108,6 +123,13 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                 let whereClause = array.toSet(association.relation, k => viewData[k.parentKey], k => k.childKey);
                 let childEntityName = association.childModel.entity().name;
                 const childModelName = association.childModel.entity().sqlName ?? association.childModel.entity().name;
+                debug("processAssociation", {
+                    childEntityName,
+                    "fetchedAssociationKey[childEntityName]": fetchedAssociationKey[childEntityName],
+                    depth: depth
+                });
+
+                // already fetched on previous depth
                 if (fetchedAssociationKey[childEntityName] > 0 && depth > fetchedAssociationKey[childEntityName]) {
                     continue;
                 }

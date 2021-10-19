@@ -108,6 +108,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                 }
                 fetchedAssociationKey[parentEntityName] = depth;
                 result = {
+                    ...result,
                     ...await get({
                         as: association.as,
                         many: association.many,
@@ -135,6 +136,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                 }
                 fetchedAssociationKey[childEntityName] = depth;
                 result = {
+                    ...result,
                     ...await get({
                         as: association.as,
                         many: association.many,

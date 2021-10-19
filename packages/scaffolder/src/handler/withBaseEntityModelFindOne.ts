@@ -1,5 +1,4 @@
 import { array } from "@fendy3002/qz-node";
-import { findOne } from './findOne';
 import { findAll } from './findAll';
 import {
     handler
@@ -11,6 +10,20 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
     maxDepth = maxDepth ?? 2;
     let fetchedAssociationKey: any = {};
     return async ({ ...params }) => {
+        let findOne = async ({ sqlTransaction, modelName, whereClause }) => {
+            let additionalOption: any = {};
+            if (sqlTransaction) {
+                additionalOption.transaction = sqlTransaction;
+            }
+
+            let data = await sequelizeDb.models[modelName].findOne({
+                where: await whereClause({ sqlTransaction, ...params }),
+                raw: true,
+                ...additionalOption
+            });
+            return data;
+        };
+
         let get = async ({ whereClause, entityName, modelName, as, many, associationModel, depth }) => {
             let result: any = {};
             if (many) {
@@ -43,16 +56,17 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                     result[as] = listData;
                 }
             } else {
-                let { viewData: childViewData } = await findOne({
-                    sequelizeDb,
+                let childViewData = await findOne({
                     modelName: modelName,
-                    passAs: "viewData",
-                    raw: true,
                     whereClause: whereClause[entityName] ?? (async (param) => {
                         return whereClause;
                     }),
-                    onSuccess: async (param) => param,
-                })(params);
+                    sqlTransaction: params.sqlTransaction
+                });
+                if (!childViewData) {
+                    return result;
+                }
+
                 if (depth < maxDepth) {
                     result[as] = {
                         ...childViewData,
@@ -112,14 +126,11 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
             }
             return result;
         };
-        let { viewData } = await findOne({
-            sequelizeDb,
+        let viewData = await findOne({
+            sqlTransaction: params.sqlTransaction,
             modelName: baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name,
-            raw: true,
-            onSuccess: async (param) => param,
-            passAs: "viewData",
             whereClause: whereClause[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name]
-        })(params);
+        });
         let associations = baseEntityModel.association();
         if (maxDepth > 0) {
             viewData = {

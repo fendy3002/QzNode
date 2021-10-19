@@ -12,6 +12,7 @@ export interface AssignParams {
     modelName: string,
     middleware?: any[],
     baseEntityModel: BaseEntityModel,
+    additionalFilter?: handlerType.generalHandler,
     beforeFetch?: handlerType.generalHandler,
     afterFetch?: handlerType.generalHandler,
 };
@@ -28,6 +29,7 @@ export default {
                     passCountAs: "listTotalCount",
                     baseEntityModel: option.baseEntityModel,
                     raw: true,
+                    additionalFilter: option.additionalFilter,
                     onSuccess: option.afterFetch ?? (async (param) => param)
                 }),
                 after: async ({ res, listData, listTotalCount, ...params }) => {

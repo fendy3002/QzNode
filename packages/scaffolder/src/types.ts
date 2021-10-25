@@ -59,6 +59,7 @@ export interface ParentChildAssociation {
     childModel: BaseEntityModel,
     key: string,
     as: string,
+    required: boolean,
     relation: {
         parentKey: string,
         childKey: string,

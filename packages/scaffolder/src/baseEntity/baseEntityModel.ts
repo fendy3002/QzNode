@@ -24,6 +24,7 @@ class BaseEntityModel implements BaseEntityModelType {
             as: param.as,
             key: key,
             relation: param.relation,
+            required: param.required ?? false
         });
     }
     hasOne(model, param) {
@@ -39,6 +40,7 @@ class BaseEntityModel implements BaseEntityModelType {
             as: param.as,
             key: key,
             relation: param.relation,
+            required: param.required ?? false
         })
     }
     belongsTo(model, param) {
@@ -53,7 +55,8 @@ class BaseEntityModel implements BaseEntityModelType {
             childModel: this,
             key: key,
             as: param.as,
-            relation: param.relation
+            relation: param.relation,
+            required: param.required ?? false
         });
     }
     association() {

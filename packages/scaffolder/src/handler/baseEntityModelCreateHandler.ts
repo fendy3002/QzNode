@@ -49,7 +49,7 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
                         createOption
                     );
                 currentModuleData[association.as] = createResult.map(k => k.toJSON());
-            } else if (childrenSourceBody) {
+            } else if (childrenSourceBody && !Array.isArray(childrenSourceBody)) {
                 for (let eachRelation of association.relation) {
                     childrenSourceBody[eachRelation.childKey] = currentModuleData[eachRelation.parentKey];
                 }
@@ -60,6 +60,8 @@ let baseEntityModelCreateHandler: handler.baseEntityModelCreateHandler = ({ sequ
                         createOption
                     );
                 currentModuleData[association.as] = createResult;
+            } else if (association.required) {
+                throw new Error(`Property '${association.as}' is required`);
             }
         }
 

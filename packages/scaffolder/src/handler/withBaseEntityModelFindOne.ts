@@ -52,7 +52,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                     onSuccess: async (param) => param,
                 })(params);
                 
-                if (depth < maxDepth) {
+                if (depth < maxDepth + 1) {
                     result[as] = await Promise.all(
                         listData.map(async k => {
                             return {
@@ -81,7 +81,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
                     return result;
                 }
 
-                if (depth < maxDepth) {
+                if (depth < maxDepth + 1) {
                     result[as] = {
                         ...childViewData,
                         ...await processAssociation({
@@ -155,9 +155,9 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
             modelName: baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name,
             whereClause: whereClause[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name]
         });
-        fetchedAssociationKey[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name] = 1;
+        fetchedAssociationKey[baseEntityModel.entity().name] = 1;
         let associations = baseEntityModel.association();
-        if (maxDepth > 0) {
+        if (maxDepth + 1 > 1) {
             viewData = {
                 ...viewData,
                 ...await processAssociation({ associations: associations, viewData: viewData, depth: 2 })

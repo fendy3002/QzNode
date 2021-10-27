@@ -14,6 +14,7 @@ export interface AssignParams {
     whereClause: {
         [modelName: string]: handlerType.generalHandler
     },
+    maxDepth ?: number,
     beforeFetch?: handlerType.generalHandler,
     afterFetch?: handlerType.generalHandler,
 };
@@ -28,6 +29,7 @@ export default {
                     whereClause: option.whereClause,
                     sequelizeDb: option.sequelizeDb,
                     passAs: "viewData",
+                    maxDepth: option.maxDepth ?? 2,
                     onSuccess: option.afterFetch ?? (async (param) => param)
                 }),
                 after: async ({ res, viewData, ...params }) => {

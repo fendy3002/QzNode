@@ -155,6 +155,7 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
             modelName: baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name,
             whereClause: whereClause[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name]
         });
+        fetchedAssociationKey[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name] = 0;
         let associations = baseEntityModel.association();
         if (maxDepth > 0) {
             viewData = {

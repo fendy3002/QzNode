@@ -155,12 +155,12 @@ let withBaseEntityModelFindOne: handler.withBaseEntityModelFindOne = ({ sequeliz
             modelName: baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name,
             whereClause: whereClause[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name]
         });
-        fetchedAssociationKey[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name] = 0;
+        fetchedAssociationKey[baseEntityModel.entity().sqlName ?? baseEntityModel.entity().name] = 1;
         let associations = baseEntityModel.association();
         if (maxDepth > 0) {
             viewData = {
                 ...viewData,
-                ...await processAssociation({ associations: associations, viewData: viewData, depth: 1 })
+                ...await processAssociation({ associations: associations, viewData: viewData, depth: 2 })
             };
         }
 

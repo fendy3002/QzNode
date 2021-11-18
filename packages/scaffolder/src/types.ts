@@ -10,6 +10,7 @@ export enum BaseEntityDataType {
     date,
     boolean,
     guid,
+    none
 };
 export enum BaseFieldGuiType {
     hidden,
@@ -22,6 +23,25 @@ export enum BaseFieldGuiType {
     selectAsync,
     file,
     date,
+};
+
+export enum DataGeneratorFieldHint {
+    name,
+    firstName,
+    lastName,
+    email,
+    address,
+    text,
+    brand,
+    country,
+    countrycode,
+    
+    timestampSecond,
+    timestampMS,
+
+    guid,
+    nanoid,
+
 };
 
 export interface BaseEntityModel {
@@ -52,6 +72,12 @@ export interface BaseEntityModel {
         children: ParentChildAssociation[],
     }
 };
+export interface BaseEntityModelManager {
+    addEntity: (baseEntity: BaseEntity) => void,
+    addModel: (baseEntity: BaseEntityModel) => void,
+    getModel: (baseEntityName: string) => BaseEntityModel,
+    getModels: () => BaseEntityModel[],
+};
 export interface ParentChildAssociation {
     direction: 'child' | 'parent',
     many: boolean,
@@ -80,7 +106,7 @@ export interface BaseEntity {
         createFileName?: string,
         updateFileName?: string,
         deleteFileName?: string,
-    }
+    },
 };
 
 export interface BaseEntityField {
@@ -92,6 +118,7 @@ export interface BaseEntityField {
     length?: number,
     gui?: BaseFieldGui,
     api?: BaseFieldApi,
+    hint?: DataGeneratorFieldHint,
     create?: {
         editable?: boolean,
         required?: boolean
@@ -145,4 +172,16 @@ export interface BaseFieldGui {
     number?: {
         fixedDecimal?: number
     }
+};
+
+export namespace DataGenerator {
+    export interface Configuration {
+        rowCount: number,
+    };
+    export interface GeneratedID {
+
+    };
+    export interface GeneratedIDSet {
+        [entityName: string]: GeneratedID
+    };
 };

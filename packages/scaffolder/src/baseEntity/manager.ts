@@ -1,12 +1,7 @@
 import { BaseEntityModel } from './baseEntityModel';
-import { BaseEntity, BaseEntityModel as BaseEntityModelType } from '../types';
-export interface Manager {
-    addEntity: (baseEntity: BaseEntity) => void,
-    addModel: (baseEntity: BaseEntityModelType) => void,
-    getModel: (baseEntityName: string) => BaseEntityModelType,
-    getModels: (baseEntityName: string) => BaseEntityModelType[],
-};
-class ManagerService implements Manager {
+import { BaseEntityModelManager, BaseEntityModel as BaseEntityModelType, BaseEntity } from '../types';
+
+class ManagerService implements BaseEntityModelManager {
     models: BaseEntityModelType[] = [];
     modelKey: any = {};
     addEntity(baseEntity: BaseEntity) {

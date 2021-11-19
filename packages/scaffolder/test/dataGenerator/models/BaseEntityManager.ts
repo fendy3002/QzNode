@@ -16,5 +16,26 @@ BaseEntityModelNanoid.belongsTo(BaseEntityModelSingle, {
         parentKey: "MyProp1"
     }]
 });
+BaseEntityModelSingle.hasMany(BaseEntityModelNanoid, {
+    as: "NanoidModel",
+    relation: [{
+        childKey: "MyModelKey",
+        parentKey: "MyProp1"
+    }]
+});
+BaseEntityModelSingle.hasMany(BaseEntityModelNumber, {
+    as: "NumberModel",
+    relation: [{
+        childKey: "MyModelKey",
+        parentKey: "MyProp1"
+    }]
+});
+BaseEntityModelNumber.hasMany(BaseEntityModelNanoid, {
+    as: "NanoidModel",
+    relation: [{
+        childKey: "MyNumberModelKey",
+        parentKey: "MyProp1"
+    }]
+});
 
 export default managerInstance;

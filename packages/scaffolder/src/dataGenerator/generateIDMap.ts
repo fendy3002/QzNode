@@ -21,7 +21,7 @@ const generatePrimaryKey = (field: types.BaseEntityField, context: GenerationCon
         context.incrementKey++;
         return currentKey;
     } else if (field.dataGeneration?.hint == types.DataGeneratorFieldHint.nanoid) {
-        return nanoid.nanoid(Math.max(20, field.length));
+        return nanoid.nanoid(Math.min(20, field.length));
     }
 };
 export const generateIDMap = (manager: types.BaseEntityModelManager, config?: types.DataGenerator.Configuration) => {

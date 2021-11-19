@@ -45,29 +45,32 @@ export enum DataGeneratorFieldHint {
 };
 
 export interface BaseEntityModel {
-    entity: () => BaseEntity,
-    hasMany: (model: BaseEntityModel, params: {
+    entity(): BaseEntity,
+    hasMany(model: BaseEntityModel, params: {
         as: string,
         relation: {
             parentKey: string,
             childKey: string,
-        }[]
-    }) => void,
-    hasOne: (model: BaseEntityModel, params: {
+        }[],
+        required?: boolean
+    }): void,
+    hasOne(model: BaseEntityModel, params: {
         as: string,
         relation: {
             parentKey: string,
             childKey: string,
-        }[]
-    }) => void,
-    belongsTo: (model: BaseEntityModel, params: {
+        }[],
+        required?: boolean
+    }): void,
+    belongsTo(model: BaseEntityModel, params: {
         as: string,
         relation: {
             parentKey: string,
             childKey: string,
-        }[]
-    }) => void,
-    association: () => {
+        }[],
+        required?: boolean
+    }): void,
+    association(): {
         parent: ParentChildAssociation[],
         children: ParentChildAssociation[],
     }

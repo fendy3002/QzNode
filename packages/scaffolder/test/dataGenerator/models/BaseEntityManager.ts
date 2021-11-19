@@ -9,5 +9,12 @@ managerInstance.addModel(BaseEntityModelSingle);
 managerInstance.addModel(BaseEntityModelRowCount);
 managerInstance.addModel(BaseEntityModelNumber);
 managerInstance.addModel(BaseEntityModelNanoid);
+BaseEntityModelNanoid.belongsTo(BaseEntityModelSingle, {
+    as: "MyModel",
+    relation: [{
+        childKey: "MyModelKey",
+        parentKey: "MyProp1"
+    }]
+});
 
 export default managerInstance;

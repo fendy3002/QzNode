@@ -2,7 +2,7 @@ import * as mocha from 'mocha';
 var assert = require('assert');
 const util = require('util');
 
-import BaseEntityManager from './BaseEntityManager';
+import BaseEntityManager from '../models/BaseEntityManager';
 import { generateIDMap } from '../../../src/dataGenerator/generateIDMap';
 
 mocha.describe('generateIDMap', function () {

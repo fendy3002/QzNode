@@ -1,5 +1,13 @@
 import { BaseEntity, ParentChildAssociation, BaseEntityModel as BaseEntityModelType } from '../types';
 
+interface RelationParamsType {
+    as: string,
+    relation: {
+        parentKey: string,
+        childKey: string,
+    }[],
+    required?: boolean
+};
 class BaseEntityModel implements BaseEntityModelType {
     constructor(baseEntity: BaseEntity) {
         this.baseEntity = baseEntity;
@@ -11,7 +19,7 @@ class BaseEntityModel implements BaseEntityModelType {
     entity() {
         return this.baseEntity;
     }
-    hasMany(model, param) {
+    hasMany(model: BaseEntityModelType, params: RelationParamsType) {
         let key = model.entity().name;
         if (this.children.some(k => k.key == key)) {
             return;
@@ -21,13 +29,13 @@ class BaseEntityModel implements BaseEntityModelType {
             many: true,
             parentModel: this,
             childModel: model,
-            as: param.as,
+            as: params.as,
             key: key,
-            relation: param.relation,
-            required: param.required ?? false
+            relation: params.relation,
+            required: params.required ?? false
         });
     }
-    hasOne(model, param) {
+    hasOne(model: BaseEntityModelType, params: RelationParamsType) {
         let key = model.entity().name;
         if (this.children.some(k => k.key == key)) {
             return;
@@ -37,13 +45,13 @@ class BaseEntityModel implements BaseEntityModelType {
             many: false,
             parentModel: this,
             childModel: model,
-            as: param.as,
+            as: params.as,
             key: key,
-            relation: param.relation,
-            required: param.required ?? false
+            relation: params.relation,
+            required: params.required ?? false
         })
     }
-    belongsTo(model, param) {
+    belongsTo(model: BaseEntityModelType, params: RelationParamsType) {
         let key = model.entity().name;
         if (this.parent.some(k => k.key == key)) {
             return;
@@ -54,9 +62,9 @@ class BaseEntityModel implements BaseEntityModelType {
             parentModel: model,
             childModel: this,
             key: key,
-            as: param.as,
-            relation: param.relation,
-            required: param.required ?? false
+            as: params.as,
+            relation: params.relation,
+            required: params.required ?? false
         });
     }
     association() {

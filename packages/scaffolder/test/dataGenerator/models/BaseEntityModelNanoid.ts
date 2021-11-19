@@ -11,6 +11,7 @@ export default new BaseEntityModel({
             },
             primaryKey: true
         },
+        MyModelKey: { dataType: BaseEntityDataType.guid },
         MyProp2: { dataType: BaseEntityDataType.string, length: 50, create: { editable: true } },
         MyProp3: { dataType: BaseEntityDataType.decimal, length: 10, decimalScale: 2, create: { editable: true } },
         MyProp4: { dataType: BaseEntityDataType.boolean, create: { editable: true } },

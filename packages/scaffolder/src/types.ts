@@ -26,7 +26,7 @@ export enum BaseFieldGuiType {
 };
 
 export enum DataGeneratorFieldHint {
-    name,
+    fullName,
     firstName,
     lastName,
     email,
@@ -35,7 +35,7 @@ export enum DataGeneratorFieldHint {
     brand,
     country,
     countrycode,
-    
+
     timestampSecond,
     timestampMS,
 
@@ -107,6 +107,9 @@ export interface BaseEntity {
         updateFileName?: string,
         deleteFileName?: string,
     },
+    dataGeneration?: {
+        rowCount?: number,
+    },
 };
 
 export interface BaseEntityField {
@@ -118,7 +121,9 @@ export interface BaseEntityField {
     length?: number,
     gui?: BaseFieldGui,
     api?: BaseFieldApi,
-    hint?: DataGeneratorFieldHint,
+    dataGeneration?: {
+        hint?: DataGeneratorFieldHint,
+    },
     create?: {
         editable?: boolean,
         required?: boolean
@@ -176,10 +181,10 @@ export interface BaseFieldGui {
 
 export namespace DataGenerator {
     export interface Configuration {
-        rowCount: number,
+        rowCount?: number,
     };
     export interface GeneratedID {
-
+        data: any[]
     };
     export interface GeneratedIDSet {
         [entityName: string]: GeneratedID

@@ -13,7 +13,9 @@ let parentModel = new BaseEntityModel({
 
 parentModel.hasMany(BaseEntityModelSingle, {
     as: "myChild",
-    parentKey: "MyProp1",
-    childKey: "MyProp2"
+    relation: [{
+        parentKey: "MyProp1",
+        childKey: "MyProp2"
+    }]
 });
 export default parentModel;

@@ -21,26 +21,28 @@ export const generateRelation = (manager: types.BaseEntityModelManager, idMap: t
     for (let eachModel of models) {
         if (eachModel.association()?.children?.length ||
             eachModel.association()?.parent?.length) {
-            let entity = eachModel.entity();
-            for (let association of eachModel.association().children) {
+            for (let association of eachModel.association().children.concat(
+                eachModel.association().parent
+            )) {
                 let childEntityName = association.childModel.entity().name;
-                if (mappedAssociation[entity.name]?.to[childEntityName]) {
+                let parentEntityName = association.parentModel.entity().name;
+                if (mappedAssociation[parentEntityName]?.to[childEntityName]) {
                     continue;
                 }
                 else {
-                    let parentData = idMap[entity.name].data;
+                    let parentData = idMap[parentEntityName].data;
                     for (let row of idMap[childEntityName].data) {
-                        let chosenParent = parentData[math.randBetweenInt(0, parentData.length)];
+                        let chosenParent = parentData[math.randBetweenInt(0, parentData.length - 1)];
                         mapKey(association, row, chosenParent);
                     }
 
-                    mappedAssociation[entity.name] = mappedAssociation[entity.name] ?? {
+                    mappedAssociation[parentEntityName] = mappedAssociation[parentEntityName] ?? {
                         to: {}
                     };
-                    mappedAssociation[entity.name].to[childEntityName] = true;
+                    mappedAssociation[parentEntityName].to[childEntityName] = true;
                 }
             }
         }
     }
-    return mappedAssociation;
+    return idMap;
 };

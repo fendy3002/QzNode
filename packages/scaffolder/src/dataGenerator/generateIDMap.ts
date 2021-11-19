@@ -25,7 +25,7 @@ const generatePrimaryKey = (field: types.BaseEntityField, context: GenerationCon
     }
 };
 export const generateIDMap = (manager: types.BaseEntityModelManager, config?: types.DataGenerator.Configuration) => {
-    let defaultRowCount = config.rowCount ?? 10;
+    let defaultRowCount = config?.rowCount ?? 10;
     let models = manager.getModels();
     let result: types.DataGenerator.GeneratedIDSet = {};
     for (let eachModel of models) {

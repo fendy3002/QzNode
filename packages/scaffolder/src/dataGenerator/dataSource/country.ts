@@ -250,7 +250,7 @@ export const countrycode = [
     "ZW",
 ];
 
-const country = [
+export const country = [
     "Andorra",
     "United Arab Emirates",
     "Afghanistan",

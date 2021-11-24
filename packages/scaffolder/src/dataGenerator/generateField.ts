@@ -7,13 +7,20 @@ const pickRandom = (arr: any[]) => {
     let index = math.randBetweenInt(0, arr.length - 1)
     return arr[index];
 };
+const maxLength = (value: string, field: types.BaseEntityField) => {
+    if (!field.length) {
+        return value;
+    } else {
+        return value.substring(0, field.length);
+    }
+};
 const generateFieldValue = (field: types.BaseEntityField) => {
     if (field.dataGeneration?.hint) {
         switch (+field.dataGeneration?.hint) {
             case types.DataGeneratorFieldHint.address:
-                return pickRandom(dataSource.address);
+                return maxLength(pickRandom(dataSource.address), field);
             case types.DataGeneratorFieldHint.brand:
-                return pickRandom(dataSource.brand);
+                return maxLength(pickRandom(dataSource.brand), field);
             case types.DataGeneratorFieldHint.country:
                 return pickRandom(dataSource.country);
             case types.DataGeneratorFieldHint.countrycode:
@@ -27,13 +34,36 @@ const generateFieldValue = (field: types.BaseEntityField) => {
             case types.DataGeneratorFieldHint.lastName:
                 return pickRandom(dataSource.name.map(k => k.split(" ")[1] ?? ""));
             case types.DataGeneratorFieldHint.text:
-                return pickRandom(dataSource.text);
+                return maxLength(pickRandom(dataSource.text), field);
             case types.DataGeneratorFieldHint.nanoid:
                 return nanoid.nanoid(Math.min(20, field.length));
         }
-
+    } else {
+        if ([
+            types.BaseEntityDataType.text,
+            types.BaseEntityDataType.string,
+        ].some(k => k == field.dataType)) {
+            return maxLength(pickRandom(dataSource.text), field);
+        } else if ([
+            types.BaseEntityDataType.integer,
+            types.BaseEntityDataType.bigint,
+        ].some(k => k == field.dataType)) {
+            return math.randBetweenInt(0, 9999);
+        } else if ([
+            types.BaseEntityDataType.smallint,
+            types.BaseEntityDataType.tinyint,
+        ].some(k => k == field.dataType)) {
+            return math.randBetweenInt(0, 255);
+        } else if ([
+            types.BaseEntityDataType.decimal,
+        ].some(k => k == field.dataType)) {
+            return math.randBetween(0, 9999);
+        } else if ([
+            types.BaseEntityDataType.boolean,
+        ].some(k => k == field.dataType)) {
+            return math.randBetweenInt(0, 1) == 1;
+        }
     }
-
     return null;
 };
 

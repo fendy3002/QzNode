@@ -47,7 +47,11 @@ export const generateField = (manager: types.BaseEntityModelManager, idMap: type
             let field = fields[fieldName];
             if (field.primaryKey) { continue; }
             for (let i = 0; i < modelMap.data.length; i++) {
-                let value = generateFieldValue(field);
+                let row = modelMap.data[i];
+                if (!row[fieldName]) {
+                    let value = generateFieldValue(field);
+                    row[fieldName] = value;
+                }
             }
         }
     }

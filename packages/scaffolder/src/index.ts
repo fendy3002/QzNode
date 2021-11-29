@@ -7,3 +7,4 @@ export {
     crudAssigner,
     handler
 };
+export * as dataGenerator from './dataGenerator';

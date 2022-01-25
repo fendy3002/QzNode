@@ -28,7 +28,19 @@ const getSelectionIndexFromValue = (value, baseSelection) => {
     return selectionBeforeDecimal - separatorOccurance + selectionAfterDecimal;
 };
 
-class NumericInput extends React.Component {
+interface NumericInputProps {
+    onChange?: (evt: any) => void | any,
+    allowEmpty?: boolean,
+    fixedDecimal?: number,
+    value: string,
+    name?: string,
+    placeholder?: string,
+    inputComponent?: any,
+    numberComponent?: any,
+    className?: string,
+    readOnly?: boolean
+};
+class NumericInput extends React.Component<NumericInputProps, any> {
     constructor(props) {
         super(props);
         this.inputRef = React.createRef();
@@ -92,8 +104,8 @@ class NumericInput extends React.Component {
         });
     }
     render() {
-        let baseInputComponent = this.props.inputComponent ?? <DefaultInput />;
-        let baseNumberComponent = this.props.numberComponent ?? <DefaultInput />;
+        let InputComponent = this.props.inputComponent ?? DefaultInput;
+        let NumberComponent = this.props.numberComponent ?? DefaultInput;
 
         let { value, fixedDecimal, onChange } = this.props;
         let overrideBaseDisplay: any = {};
@@ -118,28 +130,10 @@ class NumericInput extends React.Component {
         if (validate.string.isNumeric(renderValue) && fixedDecimal > 0) {
             renderValue = parseFloat(value).toFixed(fixedDecimal);
         }
-        let InputComponent = React.cloneElement(
-            baseInputComponent,
-            {
-                ref: this.displayRef,
-                value: format.number(renderValue),
-                onChange: () => { },
-                ...overrideBaseDisplay
-            }
-        );
-        let NumberComponent = React.cloneElement(
-            baseNumberComponent,
-            {
-                ref: this.inputRef,
-                value: value,
-                onChange: onChange,
-                ...overrideBaseNumber,
-            }
-        );
 
         return <>
-            {InputComponent}
-            {NumberComponent}
+            <InputComponent ref={this.displayRef} value={format.number(renderValue)} onChange={() => { }} {...overrideBaseDisplay} />
+            <NumberComponent ref={this.inputRef} value={value} onChange={onChange} {...overrideBaseNumber} />
         </>;
     }
 }

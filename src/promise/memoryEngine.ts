@@ -34,7 +34,7 @@ let construct = async () => {
             };
         }
     };
-    let memoryLock: types.Qz.Promise.LockEngine = {
+    let memoryLock: types.Promise.LockEngine = {
         lock
     };
     return memoryLock;

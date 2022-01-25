@@ -1,4 +1,5 @@
-export const append = (innerErr, newErr) => {
+import * as types from '../types';
+export const append: types.Error.Append = (innerErr, newErr) => {
     if (!newErr) {
         return innerErr;
     }
@@ -9,7 +10,12 @@ export const append = (innerErr, newErr) => {
     }
     return newErr;
 };
-export const from = (innerErr) => {
+/**
+ * Append existing error with other information
+ * @param innerErr {Object} error object 
+ * @returns 
+ */
+export const from: types.Error.From = (innerErr) => {
     return {
         error: (err) => {
             return append(innerErr, err);

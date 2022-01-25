@@ -2,7 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const debug = require('debug')('qz-node:require');
 
-export default (dirpath: string, ignore: string[] = ["index.js"]) : object => {
+export const cRequire = (dirpath: string, ignore: string[] = ["index.js"]) : object => {
     let load = (obj: object, dirpath: string, prefixPath: string = "") => {
         debug("begin require on path: " + dirpath + ", prefix: " + prefixPath);
         fs.readdirSync(dirpath).forEach(function(file) {

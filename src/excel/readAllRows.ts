@@ -1,7 +1,7 @@
 import * as types from '../types';
 
-const service = (qzExcel: types.Qz.Excel.QzExcel, qzSheet: types.Qz.Excel.SheetObject) => {
-    const readAllRows: types.Qz.Excel.ReadAllRows = async (schema, option) => {
+const service = (qzExcel: types.Excel.QzExcel, qzSheet: types.Excel.SheetObject) => {
+    const readAllRows: types.Excel.ReadAllRows = async (schema, option) => {
         let useOption = {
             skipRow: option?.skipRow ?? 1,
             rowHasNext: option?.rowHasNext ? option.rowHasNext : (row) => {
@@ -15,7 +15,7 @@ const service = (qzExcel: types.Qz.Excel.QzExcel, qzSheet: types.Qz.Excel.SheetO
         while (isContinue) {
             let rowObj = qzSheet.row(currentExcelRow);
             if (useOption.rowHasNext(rowObj)) {
-                let rowRecord: types.Qz.Excel.ReadAllRowsRecord = {
+                let rowRecord: types.Excel.ReadAllRowsRecord = {
                     _row: recordRow,
                     _excelRow: currentExcelRow
                 };

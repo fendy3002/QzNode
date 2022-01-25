@@ -4,15 +4,15 @@ import * as types from '../types';
 
 
 const rowObject = (ws, row) => {
-    let obj: types.Qz.Excel.RowObject = {
+    let obj: types.Excel.RowObject = {
         cell: (columnCode) => {
             return ws[columnCode + row];
         }
     };
     return obj;
 };
-const sheetObject = (qzExcel: types.Qz.Excel.QzExcel, ws, sheetName) => {
-    let obj: types.Qz.Excel.SheetObject = {
+const sheetObject = (qzExcel: types.Excel.QzExcel, ws, sheetName) => {
+    let obj: types.Excel.SheetObject = {
         name: sheetName,
         row: (row) => {
             return rowObject(ws, row)
@@ -23,7 +23,7 @@ const sheetObject = (qzExcel: types.Qz.Excel.QzExcel, ws, sheetName) => {
     return obj;
 };
 
-class QzExcel implements types.Qz.Excel.QzExcel {
+class QzExcel implements types.Excel.QzExcel {
     private constructor(wb) {
         this.wb = wb;
     }
@@ -33,7 +33,7 @@ class QzExcel implements types.Qz.Excel.QzExcel {
         return new QzExcel(wb);
     }
     getSheets() {
-        let result: types.Qz.Excel.SheetObject[] = [];
+        let result: types.Excel.SheetObject[] = [];
         for (let sheetName of this.wb.SheetNames) {
             result.push(
                 sheetObject(this, this.wb.Sheets[sheetName], sheetName)

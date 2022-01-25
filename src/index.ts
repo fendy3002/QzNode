@@ -1,27 +1,13 @@
-import array = require('./array');
-import date = require("./date");
-import math = require("./math");
-import error = require("./error");
-import excel from "./excel";
-import json = require("./json");
-import string = require("./string");
-import number = require("./number");
-import promise = require("./promise");
-import func = require("./func");
-import validator = require("./validator");
-import * as types from './types';
-
-export = {
-    array,
-    date,
-    math,
-    json,
-    error,
-    excel,
-    string,
-    number,
-    promise,
-    func,
-    types,
-    validator
-};
+export * as array from './array';
+export * as date from './date';
+export * as math from './math';
+export * as error from './error';
+export * as excel from './excel';
+export * as json from './json';
+export * as string from './string';
+export * as number from './number';
+export * as promise from './promise';
+export * as func from './func';
+export * as validator from './validator';
+export * as util from './util';
+export * as types from './types';

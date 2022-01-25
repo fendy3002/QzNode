@@ -7,7 +7,7 @@ const { promisify } = require("util");
 
 import * as types from '../types';
 
-const lockableSpawner: types.Qz.Promise.LockableSpawner = (redisClient, option) => {
+const lockableSpawner: types.Promise.LockableSpawner = (redisClient, option) => {
     let clients = [];
     if (Array.isArray(redisClient)) {
         clients = redisClient;

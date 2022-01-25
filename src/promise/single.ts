@@ -6,7 +6,7 @@ import memoryEngine from './memoryEngine';
 import * as qzPromise from './index';
 import * as types from '../types';
 
-let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
+let singlePromise = (option: types.Promise.SingleOption, handler) => {
     return {
         withDelay(delay) {
             if (delay < 0) {
@@ -26,7 +26,7 @@ let singlePromise = (option: types.Qz.Promise.SingleOption, handler) => {
                 timeout: timeout
             }, handler);
         },
-        withRetry: (amount, type, retryOption?: types.Qz.Promise.RetryableOptions) => {
+        withRetry: (amount, type, retryOption?: types.Promise.RetryableOptions) => {
             if (![
                 "times",
                 "ms"
@@ -139,7 +139,7 @@ const singleFactory = async () => {
         return singlePromise(context, handler);
     };
 
-    let withEngine = (context) => (engine: types.Qz.Promise.LockEngine, ttl: number) => {
+    let withEngine = (context) => (engine: types.Promise.LockEngine, ttl: number) => {
         let newContext = {
             ...context,
             lockEngine: engine,

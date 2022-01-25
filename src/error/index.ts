@@ -1,2 +1,1 @@
-import * as rethrow from './rethrow';
-export {rethrow};
+export * as rethrow from './rethrow';

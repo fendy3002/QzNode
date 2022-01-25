@@ -1,6 +1,6 @@
 import * as types from '../types';
 
-let delayPromise = (option: types.Qz.Promise.DelayOption) => {
+let delayPromise = (option: types.Promise.DelayOption) => {
     return {
         onElapsed: (handler) => {
             return delayPromise({

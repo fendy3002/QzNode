@@ -1,7 +1,7 @@
 let lo = require('lodash');
 import * as types from '../types'
 
-let toSet: types.Qz.Array.ToSet = function (
+let toSet: types.Array.ToSet = function (
     arr,
     valHandler?,
     keyHandler?
@@ -35,7 +35,7 @@ let toSet: types.Qz.Array.ToSet = function (
     return result;
 };
 
-let fromSet: types.Qz.Array.FromSet = function <T>(
+let fromSet: types.Array.FromSet = function <T>(
     data,
     handler = (val, key) => val
 ) {
@@ -55,7 +55,7 @@ let asArray = function (value: any) {
     }
 };
 
-let batchLoop: types.Qz.Array.BatchLoop = function (value, batchSize) {
+let batchLoop: types.Array.BatchLoop = function (value, batchSize) {
     let get = () => {
         let result = [];
         for (let i = 0; i < value.length; i += batchSize) {

@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import * as types from '../types';
 
-const Service = (source: moment.Moment): types.Qz.Date.Service => {
+const Service = (source: moment.Moment): types.Date.Service => {
     const isBetween = (from: moment.Moment, to: moment.Moment) => {
         return to.diff(source, "milliseconds") > 0 &&
             source.diff(from, "milliseconds") > 0;
@@ -52,9 +52,9 @@ const Service = (source: moment.Moment): types.Qz.Date.Service => {
         }
     };
 };
-const fromMoment: types.Qz.Date.FromMoment = (moment: moment.Moment) => Service(moment);
-const fromTimestamp: types.Qz.Date.FromTimestamp = (timestamp: number) => Service(moment(timestamp));
-const fromDate: types.Qz.Date.FromDate = (date: Date) => Service(moment(date));
+const fromMoment: types.Date.FromMoment = (moment: moment.Moment) => Service(moment);
+const fromTimestamp: types.Date.FromTimestamp = (timestamp: number) => Service(moment(timestamp));
+const fromDate: types.Date.FromDate = (date: Date) => Service(moment(date));
 export {
     fromMoment,
     fromTimestamp,

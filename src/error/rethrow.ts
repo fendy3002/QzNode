@@ -1,4 +1,13 @@
 import * as types from '../types';
+/**
+ * @module error
+ */
+/**
+ * Append an existing error with additional error information
+ * @param innerErr {Object} existing error object
+ * @param newErr {Object} the new error object
+ * @returns {Object}
+ */
 export const append: types.Error.Append = (innerErr, newErr) => {
     if (!newErr) {
         return innerErr;
@@ -11,9 +20,15 @@ export const append: types.Error.Append = (innerErr, newErr) => {
     return newErr;
 };
 /**
+ * @typedef {Object} FromErrorModel
+ * @property {Function} error 
+ * @property {Function} message
+ * @property {Function} original
+ */
+/**
  * Append existing error with other information
  * @param innerErr {Object} error object 
- * @returns 
+ * @returns {FromErrorModel} error object with added information
  */
 export const from: types.Error.From = (innerErr) => {
     return {

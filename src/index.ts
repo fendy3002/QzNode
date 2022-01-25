@@ -1,5 +1,4 @@
 export * as array from './array';
-export * as date from './date';
 export * as math from './math';
 export * as error from './error';
 export * as excel from './excel';

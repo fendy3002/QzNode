@@ -8,9 +8,10 @@
   },
   "scripts": {
     "test": "nyc mocha --config ./test/.mocharc.js 'test/**/*.spec.ts'",
-    "compile": "tsc",
-    "compileWatch": "tsc --watch",
-    "prepublish": "npm run compile"
+    "build": "yarn build:tsc && yarn build:jsdoc",
+    "build:tsc": "rm -rf ./dist && tsc",
+    "build:jsdoc": "rm -rf ./docs && jsdoc -d docs dist/**/*",
+    "prepublish": "yarn build"
   },
   "files": [
     "dist/**/*",
@@ -34,6 +35,7 @@
     "@types/moment": "^2.13.0",
     "@types/node": "^16.7.10",
     "debug": "^4.1.1",
+    "jsdoc": "^3.6.10",
     "mocha": "^9.1.1",
     "nyc": "^15.1.0",
     "redis": "^3.0.2",
@@ -46,8 +48,6 @@
     "json5": "^2.1.3",
     "jsonschema": "^1.4.0",
     "lodash": "^4.17.15",
-    "moment": "^2.24.0",
-    "moment-timezone": "^0.5.28",
     "redlock": "^4.1.0",
     "uuid": "^8.0.0",
     "xlsx": "^0.17.1"

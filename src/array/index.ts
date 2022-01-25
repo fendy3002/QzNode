@@ -1,6 +1,15 @@
 let lo = require('lodash');
 import * as types from '../types'
-
+/**
+ * @module array
+ */
+/**
+ * Convert an array to key-value object
+ * @param arr {Array} array to convert
+ * @param [valHandler] {Object} function to determine the value of object 
+ * @param [keyHandler] {Object} function to determine the key of object 
+ * @returns {Object} mapped object
+ */
 let toSet: types.Array.ToSet = function (
     arr,
     valHandler?,

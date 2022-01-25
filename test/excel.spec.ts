@@ -1,7 +1,6 @@
 import * as mocha from 'mocha';
 import qzExcel from '../src/excel';
 let assert = require('assert');
-import moment = require('moment');
 let path = require('path');
 
 mocha.describe('Excel', function () {

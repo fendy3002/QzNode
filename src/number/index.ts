@@ -1,4 +1,1 @@
-import thousandSeparator from './thousandSeparator';
-export {
-    thousandSeparator
-};
+export * from './thousandSeparator';

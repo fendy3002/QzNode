@@ -104,8 +104,8 @@ class NumericInput extends React.Component<NumericInputProps, any> {
         });
     }
     render() {
-        let InputComponent = this.props.inputComponent ?? DefaultInput;
-        let NumberComponent = this.props.numberComponent ?? DefaultInput;
+        let baseInputComponent = this.props.inputComponent ?? <DefaultInput />;
+        let baseNumberComponent = this.props.numberComponent ?? <DefaultInput />;
 
         let { value, fixedDecimal, onChange } = this.props;
         let overrideBaseDisplay: any = {};
@@ -131,9 +131,28 @@ class NumericInput extends React.Component<NumericInputProps, any> {
             renderValue = parseFloat(value).toFixed(fixedDecimal);
         }
 
+        const InputComponent = React.cloneElement(
+            baseInputComponent,
+            {
+                ref: this.displayRef,
+                value: format.number(renderValue),
+                onChange: () => { },
+                ...overrideBaseDisplay
+            }
+        );
+        const NumberComponent = React.cloneElement(
+            baseNumberComponent,
+            {
+                ref: this.inputRef,
+                value: value,
+                onChange: onChange,
+                ...overrideBaseNumber,
+            }
+        );
+
         return <>
-            <InputComponent ref={this.displayRef} value={format.number(renderValue)} onChange={() => { }} {...overrideBaseDisplay} />
-            <NumberComponent ref={this.inputRef} value={value} onChange={onChange} {...overrideBaseNumber} />
+            {InputComponent}
+            {NumberComponent}
         </>;
     }
 }

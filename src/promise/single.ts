@@ -2,7 +2,7 @@ import lo = require('lodash');
 const debug = require('debug')("QzNode:promise:lockable");
 const debugError = require('debug')("QzNode:promise:lockable/error");
 
-import memoryEngine from './memoryEngine';
+import { memoryEngine } from './memoryEngine';
 import * as qzPromise from './index';
 import * as types from '../types';
 
@@ -122,7 +122,7 @@ let singlePromise = (option: types.Promise.SingleOption, handler) => {
     };
 };
 
-const singleFactory = async () => {
+export const single = async () => {
     let defaultContext = {
         lockEngine: await memoryEngine(),
         lockTTL: 30000,
@@ -154,6 +154,4 @@ const singleFactory = async () => {
         withEngine: withEngine(defaultContext),
         handle: handle(defaultContext)
     };
-}
-
-export default singleFactory;
+};

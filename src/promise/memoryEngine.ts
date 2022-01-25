@@ -1,5 +1,5 @@
 import * as types from '../types';
-let construct = async () => {
+export const memoryEngine = async () => {
     let locks = {};
     let lock = async (key: string, ttl:number) => {
         if (locks[key]) {
@@ -39,4 +39,3 @@ let construct = async () => {
     };
     return memoryLock;
 };
-export default construct;

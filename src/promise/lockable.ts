@@ -7,7 +7,7 @@ const { promisify } = require("util");
 
 import * as types from '../types';
 
-const lockableSpawner: types.Promise.LockableSpawner = (redisClient, option) => {
+export const lockable: types.Promise.LockableSpawner = (redisClient, option) => {
     let clients = [];
     if (Array.isArray(redisClient)) {
         clients = redisClient;
@@ -103,4 +103,3 @@ const lockableSpawner: types.Promise.LockableSpawner = (redisClient, option) => 
         }
     };
 };
-export default lockableSpawner;

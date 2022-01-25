@@ -21,12 +21,10 @@ let delayPromise = (option: types.Promise.DelayOption) => {
     }
 };
 
-const delay = {
+export const delay = {
     for: (ms) => {
         return delayPromise({
             delay: ms
         })
     }
 };
-
-export default delay;
